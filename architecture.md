@@ -1,490 +1,416 @@
 # Architecture — Vietnamese Traffic Clip Dataset Pipeline
 
-**Status:** implemented, end-to-end verified · **Version:** `v0.1.0` · **Updated:** 2026-08-29
-**Governed by:** [`CLAUDE.md`](./CLAUDE.md) — the constitution wins any conflict with this doc.
+**Status:** implemented, verified end-to-end on real footage · **Updated:** 2026-08-29
+
+Governed by [`CLAUDE.md`](./CLAUDE.md). Where this document and the constitution
+disagree, the constitution wins.
 
 ---
 
 ## 1. Objective & scope
 
-Turn YouTube Vietnamese traffic compilations into clean, segmented short clips for later VQA
-annotation.
+Turn YouTube compilations from Vietnamese traffic channels into short, clean,
+single-incident clips on local disk, ready for later VQA annotation.
 
-```
-YouTube URL → download → detect boundaries → cut clips → blur overlays → triage → local dataset
-```
+**In scope:** download → segment → redact overlays → human review → export.
 
-**Out of scope:** VQA/QA generation, semantic event interpretation, Google Drive, benchmarks,
-threshold tuning, near-duplicate detection, multi-machine coordination.
-
-This is a **preprocessing pipeline, not an annotation platform**. Rough cuts are acceptable;
-review is where quality happens.
+**Out of scope, deliberately:** VQA/QA generation, Google Drive or any cloud
+storage, multi-machine coordination, formal boundary benchmarks, threshold
+tuning campaigns.
 
 ---
 
-## 2. Source material — the facts that drive the design
+## 2. Source material — what the footage actually looks like
 
-Confirmed from a reference frame (*Camera Giao thông*) and the author:
+Measured on `KdhIs56QWuQ` (*Camera giao thông*, "Bad driving [P314]"):
 
-1. Edited YouTube **compilations**, ~15 min (sometimes ~60 min).
-2. Each contains **20–100+ segments** separated by **hard cuts**.
-3. Each segment is **fixed-camera CCTV** — no pans, no zooms.
-4. Each segment carries a **burned-in counter** (`#01`, `#02`, …) at a fixed position, **in every
-   frame**.
-5. Segments are **≤30s**, one incident each.
-6. Static overlays are corner-anchored and **identical across a whole channel**: brand block
-   (top-right), circular logo (bottom-right), counter (bottom-left).
-
-### Why these matter
-
-| Fact | Consequence |
+| Property | Value |
 |---|---|
-| Hard cuts between unrelated fixed cameras | Frame difference at a cut is enormous. PySceneDetect defaults work. No tuning needed. |
-| Counter in **every** frame, not just at cuts | Sampling the ROI at 2fps shows exactly when it changes — and a change *is* a boundary. Strongest available signal, and it needs no OCR. |
-| 1 segment = 1 shot = 1 clip | **No SHOT/EVENT/CLIP hierarchy.** No semantic grouping code. |
-| Overlays static + per-channel | Find them once per channel by temporal pixel variance. No learned detector, no GPU, no false positives on traffic. |
-| Camera never moves | Optical-flow / motion heuristics are useless. Don't build them. |
+| Duration | 12 min (some are ~60 min) |
+| Resolution / fps | 1920×1080, 30fps |
+| Segments | ~35, separated by hard cuts |
+| Segment length | 5–58s |
+
+Every frame carries burned-in overlays, but **not the same ones**:
+
+| Overlay | Position | Behaviour |
+|---|---|---|
+| Channel logo "CAMERA Giao thông" | top-right | present always, **alpha-blended** |
+| Source clock | top-left (CCTV) *or* bottom-left (dashcam) | present always, digits change every second |
+| Compilation counter `#03` | bottom-left | **transient** — a few seconds per segment |
+| Source-camera name "Yen Hoa 1" | bottom-right | present on some segments only |
+
+Source footage is heterogeneous within one compilation: fixed CCTV and dashcam
+material are interleaved, which is why overlay positions move.
+
+### Why these facts drive the design
+
+1. **The logo is alpha-blended.** The scene shows through it, so no pixel is ever
+   truly static. Measured temporal-variance floor inside the logo box: **258**.
+   A static-overlay detector using an absolute threshold of 18 finds *nothing*.
+2. **The counter is transient.** It is absent from most frames, so per-pixel
+   temporal variance can never classify it as a static region.
+3. **Overlay positions vary by source.** No single fixed rectangle covers the
+   clock, the counter and the camera name.
 
 ---
 
 ## 3. System architecture
 
-**One Streamlit app. One process. One SQLite file.**
-
 ```
-   ┌──────────────────────────────────────────────────────────────┐
-   │                  streamlit run app.py                        │
-   │                                                              │
-   │   SIDEBAR                    MAIN AREA (tabs)                │
-   │   ┌────────────────┐  ┌────────────────────────────────────┐ │
-   │   │ ☑ review mode  │  │  📥 Queue    — paste URLs / upload │ │
-   │   │ ☑ blur         │  │              .txt, see table       │ │
-   │   │ ☑ desat+darken │  │  ▶️  Run      — start, progress,    │ │
-   │   │ ─ threshold    │  │              inline log tail       │ │
-   │   │ ─ min/max dur  │  │  👀 Review   — video + A/R/F       │ │
-   │   │ ─ output path  │  │  📦 Export   — write manifest      │ │
-   │   │ [Save]         │  │                                    │ │
-   │   └────────┬───────┘  └───────────────┬────────────────────┘ │
-   └────────────┼──────────────────────────┼──────────────────────┘
-                │ writes                   │ reads/writes
-                ▼                          ▼
-        config.json              ┌──────────────────┐
-                                 │   pipeline.db    │  ← SQLite
-                                 └────────┬─────────┘
-                                          │
-                    ┌─────────────────────┴──────────────────┐
-                    │  run_pipeline.py   (subprocess)        │
-                    │  spawned by the Run tab, writes state  │
-                    │  to SQLite + log file as it goes       │
-                    └─────────────────────┬──────────────────┘
-                                          ▼
-   ┌──────────────────────────────────────────────────────────────┐
-   │  S1 canonicalize → S2 download → S3 probe → S4 calibrate     │
-   │  → S5a counter change ∥ S5b PySceneDetect → S6 fuse          │
-   │  → S7 cut clips → S8 blur+encode → done                      │
-   └──────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────┐
+│  streamlit run app.py                    │
+│  Queue │ Run │ Review │ Export           │
+│  sidebar = all configuration             │
+└───────┬───────────────────────┬──────────┘
+        │ spawns                │ polls
+        ▼                       ▼
+┌────────────────────┐   ┌──────────────────┐
+│ run_pipeline.py    │──▶│ pipeline.db      │
+│ (subprocess)       │   │ SQLite, WAL      │
+│ drains the queue   │   └──────────────────┘
+└─────────┬──────────┘            ▲
+          │ appends               │ reads
+          ▼                       │
+   logs/latest.log ───────────────┘
 ```
 
 ### Why a subprocess and not a direct call
 
-Streamlit reruns the whole script on every widget interaction. A pipeline call inside the script
-would freeze the UI for hours and die on any rerun. So:
+Streamlit re-runs its entire script on every widget interaction. A pipeline
+running inside that script would be killed and restarted by any click. So the
+pipeline is a separate process; the app watches SQLite and the log file.
 
-- **Run tab** spawns `python run_pipeline.py` via `subprocess.Popen` and stores the PID.
-- The subprocess writes progress to **SQLite** and appends to `logs/run_<ts>.log`.
-- The Run tab polls: read DB → draw `st.progress` → `st.text` the log tail → `time.sleep(2)` →
-  `st.rerun()`.
-
-This is ~20 lines, survives browser refresh and Streamlit reruns, and the pipeline keeps running
-if the tab is closed. It's the *simplest thing that works*, not an architecture layer.
+SQLite is in **WAL** mode with `busy_timeout=30000`, so the app reads while the
+subprocess writes.
 
 ---
 
 ## 4. Configuration
 
-All config lives in **sidebar widgets**. Save writes `config.json`; the subprocess reads it at
-startup. No file editing, no CLI flags.
+One `config.json`, written **only** by the Streamlit sidebar. No CLI flags, no
+manual editing.
 
-```json
-{
-  "review_enabled": true,
-  "blur_enabled": true,
-  "color_kill_enabled": true,
-  "blur_sigma": 20,
-  "desaturate": 0.15,
-  "darken": 0.10,
-  "content_threshold": 27.0,
-  "min_duration_s": 5.0,
-  "max_duration_s": 30.0,
-  "counter_enabled": true,
-  "counter_sample_fps": 2.0,
-  "counter_change_threshold": 0.05,
-  "encoder": "h264_nvenc",
-  "nvenc_cq": 19,
-  "output_dir": "export",
-  "work_dir": "work"
-}
-```
-
-**Toggle behaviour**
-
-| Setting | Off means |
+| Group | Keys |
 |---|---|
-| `review_enabled` | **Headless.** No review gate; clips written with `decision='UNREVIEWED'` |
-| `blur_enabled` | No blur pass; delivered clip = copy of master |
-| `color_kill_enabled` | Blur only; brand colour survives as a smear (child of `blur_enabled`) |
-| `counter_enabled` | Visual-only detection; all confidence capped at MEDIUM |
+| Toggles | `review_enabled`, `blur_enabled`, `color_kill_enabled` |
+| Overlay removal | `blur_sigma`, `desaturate`, `darken`, `fixed_blur[]` |
+| Detection | `content_threshold` |
+| Clip policy | `min_duration_s`, `max_duration_s`, `safety_trim_frames` |
+| Encoding | `encoder`, `nvenc_cq`, `libx264_crf` |
+| Paths | `work_dir`, `output_dir` |
+| Download | `max_height`, `cookies_file`, `cookies_browser` |
 
-Config is snapshotted into the DB when a run starts, so mid-run sidebar edits can't retroactively
-change what earlier clips claim. That's one column, not a subsystem.
+`config_hash()` is the first 8 chars of the SHA-256 of the sorted config. Every
+clip records the hash of the config that produced it; the export manifest records
+the hash at export time. They can differ, and the field names say so.
+
+Settings are **locked during a run**, so one batch cannot span two configs.
 
 ---
 
 ## 5. Pipeline stages
 
-| # | Stage | Tool | Bound | Notes |
-|---|---|---|---|---|
-| S1 | Canonicalize URL → `video_id` | `urllib` | — | Handles `watch?v=`, `youtu.be/`, `&t=`, `/shorts/`. Video ID is the dedup key. |
-| S2 | Download | `yt-dlp` | net | `bestvideo[height<=1080]+bestaudio`. Retry 3×. |
-| S3 | Probe / validate | `ffprobe` | cpu | Reject corrupt, <720p, live streams. |
-| S4 | Overlay calibration | `opencv` | cpu | **Per channel, cached.** ~30s once. |
-| S5a | Counter change | numpy/cv2 | cpu | 2fps → change events. No OCR. |
-| S5b | Shot detection | PySceneDetect | cpu | `ContentDetector`, **defaults**. |
-| S6 | Fusion + confidence | — | — | See §6. |
-| S7 | Cut clips | `ffmpeg -c copy` | disk | Master, lossless, instant. |
-| S8 | Blur + encode | `ffmpeg` NVENC | gpu | Delivered derivative. |
+| # | Stage | Cache file | Notes |
+|---|---|---|---|
+| S1 | enqueue | `videos` row | video ID is the dedup key |
+| S2 | download | `source.mp4`, `metadata.json` | yt-dlp + cookies + JS runtime |
+| S3 | probe | `probe.json` | rejects anything under 30s |
+| S4 | calibrate | `channels` row | **per channel**, not per video |
+| S5 | shot detection | `shots.json` | PySceneDetect `ContentDetector` |
+| S6 | boundaries → clips | `boundaries.json` | clip policy + blank filter |
+| S7 | cut masters | `clips/*.mp4` | lossless `-c copy` |
+| S8 | blur + encode | `delivered/*.mp4` | NVENC, libx264 fallback |
+| S9 | **reviewer approve** | `trimmed/*.mp4` | **not** part of the automated run |
+
+### S2 — Download
+
+YouTube bot-gates most IPs. Two things are required and both are in the yt-dlp
+options:
+
+- **Cookies** — `cookies_file` accepts Netscape `.txt` or extension `.json`;
+  JSON is converted on the fly and cached by mtime.
+- **JS runtime** — `js_runtimes: {"deno": {}, "node": {}}` plus
+  `remote_components: ["ejs:github"]`. YouTube's "n" challenge needs a real JS
+  engine and yt-dlp's solver script; without both, extraction fails with
+  `The page needs to be reloaded`.
+
+> `ejs:github` fetches and executes a solver script from GitHub at run time.
+> That is yt-dlp's official mechanism and there is currently no offline
+> alternative, but it is third-party code running locally — worth knowing.
 
 ### S4 — Overlay calibration (per channel, cached)
 
-Sample 300 frames → **per-pixel temporal variance** → threshold → morphological close →
-connected components → keep boxes in the outer 25% margin only.
+Per-pixel temporal variance over ~300 sampled frames at 480px wide.
 
-A static overlay has ~zero variance while the scene around it moves. Real content moves, so this
-**cannot** mask a license plate, road sign, or shop signage — which a learned text detector
-absolutely would. It's also CPU-only and deterministic.
+The "static" cutoff is **relative**, not absolute:
 
-The **counter ROI** is the box that's static *within* a segment but varies *across* the video
-(windowed variance ≪ global variance).
+```python
+cutoff = max(VAR_MAX, percentile(var, VAR_PCT))   # VAR_MAX=18, VAR_PCT=1.0
+```
 
-Fails → skip blur, log it, keep going. (A manual x/y/w/h override per channel is designed but
-not yet built — see TODO Phase 3.)
+Real branding is alpha-blended, so an absolute threshold finds nothing. But
+overlay pixels are still ~4× steadier than scene pixels, and the steadiest 1% of
+the frame is overwhelmingly overlay: **97.8% of selected pixels fell inside the
+logo box** on real footage. `VAR_MAX` stays as a floor so an opaque overlay
+behaves exactly as before.
 
-### S5a — Counter change detection (no OCR)
+Candidate boxes are then filtered by area, by sitting in the outer 25% of the
+frame, and by having real spatial detail (flat sky and road are rejected).
 
-**The fusion never uses the counter's value — only *when it changes*.** So there is no reason to
-read the digits. We crop the ROI, binarize to isolate the glyph, and compare consecutive samples.
+Because this measures *motion*, it cannot mask a licence plate or a road sign —
+those move. A learned text detector absolutely would.
 
-Decode at 2fps → crop counter ROI → drop the outer 10% of the crop → threshold at a **fixed**
-bright level (≥190) → compare consecutive binary masks. A spike above
-`max(floor, 5 × median)` is a counter change.
+### S5 — Shot detection
 
-Design details that matter, each fixing a failure seen in testing:
-
-- **Fixed bright threshold, not Otsu.** Otsu re-thresholds per frame, so when the scene behind a
-  counter moves, the binarization flips and *every* frame looks like a change. A fixed cutoff
-  keeps only near-white glyph pixels, which traffic scenes rarely reach.
-- **Border dropped.** The outer 10% of the crop is where surrounding scene pixels leak in.
-- **Adaptive spike threshold.** A fixed cutoff misses a 1→2 digit change (a few percent of the
-  crop) while over-firing on busy footage. Comparing against the video's own median separates
-  them at any glyph size.
-
-**Not fragile:** the counter is in every frame, so a 20s segment yields ~40 samples of an
-identical glyph. Within-segment difference is ~0; a change is unmistakable.
-
-**What this buys:** no PaddleOCR, no torch, no model weights, no GPU for this stage — a ~2.5GB
-dependency removed, and more robust on a stylized font than OCR would have been.
-
-No counter, or the toggle is off → **non-fatal**, degrade to visual-only, cap confidence at
-MEDIUM.
-
-*Future work, not needed now:* actual digit values (EasyOCR has Python 3.14 wheels) would let the
-counter number each clip. The pipeline numbers clips sequentially instead.
+PySceneDetect `ContentDetector` at defaults, `auto_downscale = True`.
+**This is the only segmentation signal.**
 
 ---
 
-## 6. Boundary fusion — the core of the design
+## 6. Segmentation — one signal, honestly labelled
 
-Two signals that **fail in uncorrelated ways**. PySceneDetect is blind to fades and fires on
-headlight flashes; OCR fails independently of scene content. So agreement is strong evidence, and
-disagreement is exactly what a human should look at.
+An earlier design fused visual cuts with counter-change detection, routing
+agreement to `HIGH` confidence. **That path was removed after testing against
+real footage.**
+
+The counter exists — the yellow `#03` at bottom-left — but it is transient, so
+temporal variance cannot find it. Worse, when calibration *did* latch onto the
+alpha-blended logo and label it "counter", that region changed **whenever the
+scene behind it changed**. Measured change rate: logo `0.244` vs a pure-scene
+control `0.000`.
+
+A counter derived from scene bleed-through is not an independent signal. Fusing
+it with PySceneDetect would have produced `HIGH` confidence from **one signal
+wearing two hats** — confidence that looks earned and isn't.
+
+So: one signal, every boundary `MEDIUM`, and review order driven by clip duration
+instead. This is a real capability loss, recorded here rather than papered over.
+
+### Clip policy
 
 ```
-FOR each counter transition gap (last_seen[i], first_seen[i+1]):
-
-    cuts = PySceneDetect cuts inside the gap (±1s)
-
-    1 cut   → accept it                      → HIGH
-    0 cuts  → accept gap midpoint            → LOW   + auto-flag
-    ≥2 cuts → accept the highest-scoring one → MEDIUM
-
-PySceneDetect cut with NO counter change nearby
-    → SUPPRESS. The editor didn't cut here; it's a flash or a
-      vehicle filling frame.
-
-No counter in the video at all
-    → PySceneDetect alone, everything MEDIUM.
+edges  = [0] + boundaries + [duration]
+start  = edge + safety_trim   (except the first)
+end    = next_edge - safety_trim
 ```
 
-Then **frame-exact refinement**: decode ±0.5s at full rate, HSV-histogram L1 distance between
-consecutive frames, `argmax` = the cut frame. Trim 2 frames each side for transition residue.
+| Condition | Action |
+|---|---|
+| `duration < min_duration_s` | dropped |
+| `duration > max_duration_s` | kept, flagged `TOO_LONG` — never auto-split |
+| mean luma `< 12` | dropped, logged as `black` |
+| inter-frame motion `< 0.25` | dropped, logged as `static` |
 
-> **Deliberately dropped: TransNetV2 escalation.** The earlier design escalated ambiguous windows
-> to a neural shot detector. Per Constitution Principle 1, LOW-confidence boundaries go **straight
-> to the review flag bucket** instead. Same outcome (a human looks at it), one fewer dependency,
-> one fewer model download, ~half a day saved. Revisit only if the flagged bucket proves large.
-
-**Clip filter:** drop `<5s`; emit + flag `TOO_LONG` if `>30s` (never auto-split); drop black/blank
-(kills intro/outro) and fully static clips.
+The blank filter catches title cards and bumpers. The motion floor is
+deliberately low: a real traffic clip can be a genuinely quiet street at night.
+Drops are **counted and logged**, never silent.
 
 ---
 
 ## 7. Overlay removal
 
-Per-region ffmpeg chain, assembled from config:
+Two layers, both applied, both into one ffmpeg `filter_complex`:
 
-```bash
-ffmpeg -i master.mp4 -filter_complex "
-  [0:v]split=2[b0][c0];
-  [c0]crop=w:h:x:y,gblur=sigma=20:steps=3,hue=s=0.15,eq=brightness=-0.10[r0];
-  [b0][r0]overlay=x:y[v0];
-  [v0]null[vout]
-" -map "[vout]" -c:v h264_nvenc -rc vbr -cq 19 -preset p5 delivered.mp4
-```
+1. **Calibrated regions** (S4) — whatever branding is static enough to find.
+2. **Fixed bands** — `fixed_blur[]` from config, as fractions of the frame,
+   applied to **every** video. These cover the clock, the counter and the camera
+   name, which S4 structurally cannot see. Defaults: `bottom_left`, `top_left`,
+   `bottom_right`.
 
-Two implementation details found in testing:
+Per region: `crop → gblur → [hue → eq] → overlay`.
 
-- **`gblur`, not `boxblur`.** boxblur's radius is capped by the chroma plane size and fails
-  outright on small overlay regions (`Invalid chroma_param radius value 20`). gblur takes a real
-  sigma with no such limit.
-- **Explicit `split`.** Each stage needs the same frame twice — as the overlay base and as the
-  crop source. Reusing one label for both silently drops the overlay for every region but the
-  last, which is easy to miss because ffmpeg does not error.
+Two ffmpeg details that cost real debugging time:
 
-| `blur_enabled` | `color_kill_enabled` | Chain |
+- **`gblur`, not `boxblur`.** boxblur's radius is capped by the chroma plane size
+  and fails outright on small regions.
+- **Explicit `split=2` per region.** Each stage needs the same frame twice — as
+  the overlay base and as the crop source. Reusing one label for both silently
+  drops every overlay but the last, with no ffmpeg error. It was caught only by
+  measuring per-region pixel variance before and after.
+
+### Verified effect
+
+| Region | Master | Delivered |
 |---|---|---|
-| ✓ | ✓ | `split → crop → gblur → hue → eq → overlay` |
-| ✓ | ✗ | `split → crop → gblur → overlay` |
-| ✗ | — | none — delivered is a copy of master |
+| Logo | std 79.59 | std 18.83 (**−76.3%**) |
+| Roadway control, same size | std 17.71 | std 17.68 (−0.2%) |
 
-**Two-tier artifacts.** `master.mp4` is cut with `-c copy` (lossless, instant, never modified);
-`delivered.mp4` is the blurred derivative. Changing blur settings later = one re-derive pass over
-local masters. No re-download, no re-detection. Costs disk only.
-
-> **`h264_nvenc` has no CRF** — `-cq` is the equivalent. `-cq 19` ≈ `libx264 -crf 18`, and runs
-> ~1–2h instead of ~12–25h for this corpus.
-
-> **Honest limitation:** the overlay is composited on every frame, so the pixels underneath are
-> never revealed anywhere in the video. Nothing can recover them. Blurring a region whose content
-> *is* the logo yields a **blurred logo** — removing legibility, not presence. Desaturate+darken
-> kills the brand colour signature, which closes most of the gap. Good enough; moving on.
+Blur removes *legibility*, not *presence*. Pixels under a composited overlay are
+never revealed in any frame, so no method can recover them. Desaturate + darken
+removes the brand colour signature.
 
 ---
 
 ## 8. Data model
 
-Four tables. SQLite, WAL mode (app reads while subprocess writes).
-
 ```sql
-CREATE TABLE channels (
-    channel_id      TEXT PRIMARY KEY,
-    name            TEXT,
-    overlay_regions TEXT,          -- JSON [{x,y,w,h,role}]
-    counter_roi     TEXT,          -- JSON {x,y,w,h}
-    calibrated_at   TEXT
-);
-
-CREATE TABLE videos (
-    youtube_video_id TEXT PRIMARY KEY,   -- dedup key
-    canonical_url    TEXT NOT NULL,
-    title            TEXT,
-    channel_id       TEXT,
-    duration_s       REAL,
-    status           TEXT NOT NULL,      -- see §9
-    error_code       TEXT,
-    retry_count      INTEGER DEFAULT 0,
-    config_snapshot  TEXT,               -- JSON, frozen at run start
-    created_at       TEXT,
-    updated_at       TEXT
-);
-
-CREATE TABLE clips (
-    clip_id          TEXT PRIMARY KEY,   -- {video_id}_{start_ms}_{end_ms}
-    youtube_video_id TEXT,
-    counter_value    INTEGER,
-    start_ms         INTEGER NOT NULL,
-    end_ms           INTEGER NOT NULL,
-    confidence       TEXT NOT NULL,      -- HIGH | MEDIUM | LOW
-    flags            TEXT,               -- JSON: TOO_LONG, LOW_QUALITY, NO_COUNTER
-    master_path      TEXT,
-    delivered_path   TEXT,
-    pipeline_version TEXT,
-    config_hash      TEXT,
-    created_at       TEXT
-);
-
-CREATE TABLE reviews (
-    clip_id     TEXT PRIMARY KEY,
-    decision    TEXT NOT NULL,           -- APPROVED | REJECTED | FLAGGED | UNREVIEWED
-    reviewed_at TEXT
-);
+channels(channel_id PK, name, overlay_regions, calibrated_at)
+videos(youtube_video_id PK, canonical_url, title, channel_id, duration_s,
+       status, stage, error_code, error_detail, retry_count,
+       config_snapshot, n_clips, n_boundaries, created_at, updated_at)
+clips(clip_id PK, youtube_video_id, seq, start_ms, end_ms, duration_ms,
+      confidence, flags, master_path, delivered_path,
+      pipeline_version, config_hash, trim_segments, created_at)
+reviews(clip_id PK, decision, reviewed_at)
 ```
-
-**Dropped from the earlier design:** the `pipeline_runs` and `stage_events` tables. Progress goes
-to a log file; provenance lives in `config_snapshot` + `config_hash`. Two fewer tables to maintain.
 
 ### Clip ID is content-derived
 
-```python
-clip_id = f"{video_id}_{start_ms:06d}_{end_ms:06d}"   # dQw4w9WgXcQ_017033_034100
+```
+{video_id}_{start_ms:06d}_{end_ms:06d}
 ```
 
-Reprocessing the same video with the same config yields **identical IDs**, so re-runs overwrite
-instead of duplicating. The ID is also its own provenance — source and time range readable
-straight off the filename. Free idempotence for zero effort.
+Same input plus same config ⇒ same ID. That gives idempotent re-runs and safe
+merges for free, with no ID allocator.
+
+### `trim_segments` is JSON, not columns
+
+```json
+[{"start_ms": 4000, "end_ms": 9000, "path": "work/.../trimmed/..._t01.mp4"}]
+```
+
+One clip can produce several output files, so a fixed set of trim columns does
+not fit. `insert_clip` is an **UPSERT**, not `INSERT OR REPLACE` — a replace
+drops the whole row and would wipe the reviewer's work on every re-run.
+
+### Three tiers of artifact
+
+| Folder | Written by | Modified? |
+|---|---|---|
+| `clips/` | pipeline, lossless | never |
+| `delivered/` | pipeline, blurred | re-encoded on re-run |
+| `trimmed/` | **reviewer, on Approve** | replaced on re-approve, deleted on Reject |
+
+`trimmed/` is the finished product. When `delivered/` is re-encoded, any existing
+approved segments are **re-cut from the new file**, so a blur-settings change can
+never leave stale output in the deliverable.
 
 ---
 
 ## 9. States
 
 ```
-QUEUED → DOWNLOADING → PROCESSING → READY_FOR_REVIEW → DONE
+QUEUED → DOWNLOADING → PROCESSING → READY_FOR_REVIEW → (reviewed)
               ↓             ↓
-        DOWNLOAD_FAILED  FAILED     (both retryable from the Queue tab)
+      DOWNLOAD_FAILED    FAILED        ← both retryable from the Queue tab
 ```
 
-Per-clip: `UNREVIEWED → APPROVED | REJECTED | FLAGGED`.
+Headless runs end at `DONE` with clips marked `UNREVIEWED` — never `APPROVED`,
+and nothing is written to `trimmed/`. A headless batch must not be able to pass
+as a reviewed one.
 
-Five video states, not eleven. Retry is a button that resets status to `QUEUED`.
+Clip decisions: `UNREVIEWED` → `APPROVED` | `REJECTED` | `FLAGGED`.
 
 ---
 
-## 10. Resume & caching
+## 10. Review
 
-Each stage writes a predictable file. Resume = "what's on disk already?"
+Order is **duration-based**, because with one detection signal confidence carries
+no information:
 
-```
-work/<video_id>/
-  source.mp4          # S2 — the expensive one, never recomputed
-  probe.json          # S3
-  ocr_counter.json    # S5a
-  scenedetect.json    # S5b
-  boundaries.json     # S6
-  clips/*.mp4         # S7 masters
-  delivered/*.mp4     # S8 blurred
-```
+| Band | Rule |
+|---|---|
+| `TOP` | `duration_ms > 15000` |
+| `LOW` | otherwise |
 
-Crash during encoding → re-run reads `boundaries.json` and resumes. Nothing re-downloads. This is
-`if os.path.exists(): skip`, not a caching framework.
+TOP drains first, then LOW begins automatically. Priority comes from the
+**original** duration and never changes when a reviewer trims.
 
----
+| Action | Effect |
+|---|---|
+| **Approve** | cuts the defined segments from `delivered/` into `trimmed/` |
+| **Reject** | deletes this clip's files from `trimmed/`, nothing else |
+| **Flag** | records a decision, advances, writes nothing |
 
-## 11. Performance
+There is no Skip. A decision is required to advance.
 
-~25h of footage ≈ one overnight batch. Not the bottleneck — **review is.**
+**Multiple trim** lets one clip produce N files, for the case where the detector
+merged two incidents into one shot. Re-approving replaces the previous segments,
+so shrinking the row count never leaves orphans.
 
-3000 clips × ~5s attention ≈ 4h of human time. Mouse-clicking makes it 12h+. So **autoplay +
-preload the next clip** is the highest-leverage thing in the whole build.
+Reject is recoverable by construction: it touches only the finished-product
+folder. The master, the delivered clip and the download all survive.
 
-Modest parallelism, only if it's easy: 2–3 concurrent downloads while another video is in
-detection. NVENC runs on a separate ASIC block from CUDA, so encoding overlaps with OCR for free.
-Don't build a scheduler.
-
----
-
-## 12. Review (Streamlit)
-
-Tab shows one clip at a time, LOW-confidence first, with `st.video`, a confidence badge, and three
-actions.
-
-**Keyboard shortcuts:** use the `streamlit-shortcuts` package to bind `A`/`R`/`F` to the buttons.
-If it misbehaves, **ship plain buttons** — per Constitution Principle 2, this is not worth a day.
-
-Every decision writes to SQLite immediately, so a browser refresh or app restart resumes exactly
-where it left off.
-
-**Not building:** boundary nudging, split, merge, notes. `F` collects the exceptions; fix that
-bucket in bulk at the end. Revisit only if flagged clips exceed ~10%.
+The cut rule reviewers follow (impact → impact+5s) lives in
+[`GUIDE.md` §2.4](./GUIDE.md), not here — it is dataset policy, not architecture.
 
 ---
 
-## 13. Export
+## 11. Export
 
-```
-export/<batch>/
-  clips/<video_id>/<clip_id>.mp4
-  manifest.json
-```
+`export/<batch>/clips/<video_id>/` plus `manifest.json`, one entry per **file**
+(a clip with 3 segments yields 3 entries) carrying clip ID, segment index, trim
+points, priority, confidence, flags, decision, pipeline version and config hash.
 
-Interactive runs export `APPROVED` clips. Headless runs export everything as `UNREVIEWED`, and the
-manifest records `review_mode`. **A headless run must never be able to pass as a reviewed one** —
-otherwise nothing later distinguishes a clip you accepted from one nobody ever saw. That's one
-field, and it's worth it.
-
-Distribution is manual: copy the folder.
+`review_mode` in the manifest records `interactive` vs `headless`.
 
 ---
 
-## 14. Provenance
+## 12. Performance & disk
 
-Every clip carries enough to answer "what made you?":
+12-minute 1080p video, RTX-class GPU:
 
-```json
-{
-  "clip_id": "dQw4w9WgXcQ_017033_034100",
-  "youtube_video_id": "dQw4w9WgXcQ",
-  "start_ms": 17033, "end_ms": 34100, "counter_value": 2,
-  "confidence": "HIGH",
-  "pipeline_version": "v0.1.0",
-  "config_hash": "a3f9c1e2",
-  "review": { "decision": "APPROVED", "review_mode": "interactive" }
-}
-```
+| Stage | Time |
+|---|---|
+| download | ~30s |
+| calibration | ~2 min (per channel) |
+| shot detection | ~8 min |
+| cut + blur + encode | ~3 min |
 
-`config_hash` = SHA256 of `config.json`. Cheap, and it's what makes a thesis chapter defensible.
+| Artifact | Size |
+|---|---|
+| `source.mp4` | 149 MB |
+| `clips/` (35 masters) | 627 MB |
+| `delivered/` at `cq=23` | 608 MB |
+| **per video** | **~1.4 GB** |
+| **50 videos** | **~70 GB** |
+
+`cq` was 19 originally, which produced 905 MB of delivered — about 6× the
+lossless masters. 23 is visually equivalent and 33% smaller.
 
 ---
 
-## 15. Tech stack
+## 13. Tech stack
 
 | Layer | Choice |
 |---|---|
-| App | **Streamlit** — the entire interface |
+| UI | Streamlit (single process) |
 | Runner | `subprocess.Popen` + SQLite polling |
-| Download | `yt-dlp` |
-| Video | `ffmpeg` / `ffprobe` |
-| Shot detection | `PySceneDetect` `ContentDetector` (defaults) |
-| Counter | numpy + OpenCV threshold (no OCR) |
-| CV | `OpenCV`, `numpy` |
-| State | `sqlite3` (stdlib) |
-| Shortcuts | `streamlit-shortcuts` (optional) |
+| State | SQLite (WAL) |
+| Download | yt-dlp |
+| Segmentation | PySceneDetect `ContentDetector` |
+| Video | ffmpeg / ffprobe |
+| Arrays | numpy, OpenCV |
 
-**Rejected:** FastAPI, React/Next.js, Redis/Celery, PostgreSQL, ORM, TransNetV2, deep video
-inpainting, learned logo detection, optical flow, fixed-duration chunking, multi-machine locking.
-
-Two worth a sentence:
-
-- **TransNetV2** — a ~1% F1 gain on academic benchmarks is meaningless when the counter already
-  gives near-oracle boundaries. Dropped per Principle 3.
-- **Learned logo/text detection** — would mask license plates and road signs, the exact content a
-  traffic VQA model must read. Temporal variance can't make that mistake.
+Explicitly rejected: FastAPI, React/Next.js, Celery/Redis, an ORM, PaddleOCR or
+any OCR, TransNetV2, deep video inpainting, optical flow, cloud storage.
 
 ---
 
-## 16. Known limitations (accepted, not problems to solve now)
+## 14. Known limitations (accepted, not problems to solve now)
 
-| Thing | Why it's fine |
-|---|---|
-| Blur leaves a coloured smear | Legibility gone, presence remains. Desaturate+darken mitigates. |
-| No near-duplicate detection | **Revisit before drawing any train/test split** — the same incident in both splits would invalidate the dataset. Not a blocker for producing clips. |
-| ~50 videos → ~1200–1500 clips | Accepted per the constitution. Crawl more later if needed. |
-| No formal benchmark | Manual inspection. Free sanity check: detected boundary count vs. max counter value should nearly match. |
-| Gradual transitions handled weakly | Rare in this source. They land in the flag bucket. |
-| Pipeline stops if the machine sleeps | Resume handles it. Disable sleep for overnight runs. |
+1. **Every boundary is `MEDIUM`.** One signal. Every clip needs a human.
+2. **Blur is destructive and approximate.** Fixed bands blur whatever sits under
+   them, including a little roadway.
+3. **Overlays are obscured, not removed.** Nothing can recover pixels that were
+   never visible.
+4. **No near-duplicate detection.** Compilations re-use footage across uploads.
+   → **Must be revisited before drawing any train/test split.** The same incident
+   landing in both splits would invalidate the dataset.
+5. **Calibration is channel-scoped.** A channel that changes its layout
+   mid-catalogue needs its cached row cleared.
+6. **`remote_components: ejs:github`** executes third-party JS fetched at
+   download time.
+7. **Trim re-encodes an already-encoded file.** Generation loss, negligible at
+   `cq=23`. Cutting from masters and re-blurring would avoid it, at a few seconds
+   per trim.
 
 ---
 
 ## Sources
 
-- [PySceneDetect — Detection Algorithms](https://www.scenedetect.com/docs/latest/api/detectors.html)
-- [TransNet V2 (arXiv:2008.04838)](https://ar5iv.labs.arxiv.org/html/2008.04838) — evaluated, rejected
-- [FFmpeg boxblur region technique](https://ottverse.com/blur-a-video-using-ffmpeg-boxblur/)
+- PySceneDetect 0.7.1 — `open_video`, `SceneManager`, `ContentDetector`
+- ffmpeg filters — `gblur`, `crop`, `overlay`, `split`, `hue`, `eq`
+- NVENC rate control — `-rc vbr -cq N` (NVENC has no CRF)
+- yt-dlp — cookies, `js_runtimes`, `remote_components`

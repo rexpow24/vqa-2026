@@ -27,7 +27,7 @@ covered, default to "ship it" and move on.**
 3. **Do not overthink things that don't matter for this phase:**
    - Exact number of videos to crawl → just grab enough, ~50 is fine
    - Boundary P/R/F1 benchmarks → not needed until evaluation phase
-   - Optimal parameters → use PySceneDetect defaults + OCR fusion
+   - Optimal parameters → use PySceneDetect defaults
    - Review UI polish → ugly but functional is the goal
    - Multi-machine coordination → not needed (single user, single machine)
 
@@ -45,12 +45,15 @@ covered, default to "ship it" and move on.**
 | Decision | Choice |
 |---|---|
 | Tech stack | **Streamlit + Python** (no FastAPI, no JS framework, no separate web server) |
-| Review mode | Simple keyboard triage — `A`=approve, `R`=reject, `F`=flag |
-| Segmentation | OCR counter + PySceneDetect fusion, **defaults** |
-| Overlay removal | Blur + desaturate + darken (toggleable) |
+| Review mode | Triage — Approve / Reject / Flag. **No Skip**: a decision is required to advance. |
+| Segmentation | **PySceneDetect only**, defaults. Counter/OCR fusion removed 2026-08-29: the real counter is transient, and a mis-detected one made the two signals correlated. All boundaries are `MEDIUM`. |
+| Overlay removal | Blur + desaturate + darken (toggleable), over **calibrated regions + always-on fixed bands** |
 | Headless mode | Yes, clips marked `UNREVIEWED` |
 | Config | Streamlit sidebar widgets (no separate config file editing) |
 | Output | Local disk only (no Drive upload) |
+| Review order | Clip duration: `>15s` = TOP priority, drains before LOW |
+| Reviewer output | `trimmed/` is the finished product. Approve writes it (1 file, or N with Multiple trim); Reject deletes only from there. |
+| Cut rule | Impact → impact + 5s (`GUIDE.md` §2.4). Dataset policy, not architecture. |
 | Crawl target | ~50 videos, ~1200–1500 clips expected |
 
 ---
