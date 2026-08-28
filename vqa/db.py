@@ -50,9 +50,7 @@ CREATE TABLE IF NOT EXISTS clips (
     delivered_path   TEXT,
     pipeline_version TEXT,
     config_hash      TEXT,
-    trimmed_path     TEXT,
-    trim_start_ms    INTEGER,
-    trim_end_ms      INTEGER,
+    trim_segments    TEXT,
     created_at       TEXT
 );
 
@@ -120,10 +118,20 @@ def init() -> None:
         conn.executescript(SCHEMA)
         # Additive migration for databases created before trimming existed.
         have = {r["name"] for r in conn.execute("PRAGMA table_info(clips)")}
-        for col, decl in (("trimmed_path", "TEXT"), ("trim_start_ms", "INTEGER"),
-                          ("trim_end_ms", "INTEGER")):
-            if col not in have:
-                conn.execute(f"ALTER TABLE clips ADD COLUMN {col} {decl}")
+        if "trim_segments" not in have:
+            conn.execute("ALTER TABLE clips ADD COLUMN trim_segments TEXT")
+            have.add("trim_segments")
+        # Fold a pre-existing single trim into the segment list.
+        if "trimmed_path" in have:
+            for r in conn.execute(
+                    "SELECT clip_id, trimmed_path, trim_start_ms, trim_end_ms"
+                    " FROM clips WHERE trimmed_path IS NOT NULL"
+                    " AND trim_segments IS NULL"):
+                conn.execute(
+                    "UPDATE clips SET trim_segments=? WHERE clip_id=?",
+                    (json.dumps([{"start_ms": r["trim_start_ms"],
+                                  "end_ms": r["trim_end_ms"],
+                                  "path": r["trimmed_path"]}]), r["clip_id"]))
 
 
 # ── videos ────────────────────────────────────────────────────────────────
@@ -229,13 +237,23 @@ def save_channel(channel_id: str, name: str, regions: list) -> None:
 
 def insert_clip(clip: dict) -> None:
     with tx() as conn:
+        # UPSERT, not INSERT OR REPLACE: a replace drops the whole row, wiping
+        # the reviewer's trim columns on every re-run.
         conn.execute(
-            "INSERT OR REPLACE INTO clips (clip_id, youtube_video_id, seq, start_ms,"
+            "INSERT INTO clips (clip_id, youtube_video_id, seq, start_ms,"
             " end_ms, duration_ms, confidence, flags, master_path, delivered_path,"
             " pipeline_version, config_hash, created_at)"
             " VALUES (:clip_id,:youtube_video_id,:seq,:start_ms,:end_ms,:duration_ms,"
             ":confidence,:flags,:master_path,:delivered_path,:pipeline_version,"
-            ":config_hash,:created_at)",
+            ":config_hash,:created_at)"
+            " ON CONFLICT(clip_id) DO UPDATE SET"
+            " youtube_video_id=excluded.youtube_video_id, seq=excluded.seq,"
+            " start_ms=excluded.start_ms, end_ms=excluded.end_ms,"
+            " duration_ms=excluded.duration_ms, confidence=excluded.confidence,"
+            " flags=excluded.flags, master_path=excluded.master_path,"
+            " delivered_path=excluded.delivered_path,"
+            " pipeline_version=excluded.pipeline_version,"
+            " config_hash=excluded.config_hash",
             {**clip, "created_at": now()},
         )
         conn.execute(
@@ -267,6 +285,12 @@ def list_clips(video_id: str | None = None, decision: str | None = None,
         return conn.execute(q, args).fetchall()
 
 
+def get_clip(clip_id: str) -> sqlite3.Row | None:
+    with tx() as conn:
+        return conn.execute(
+            "SELECT * FROM clips WHERE clip_id=?", (clip_id,)).fetchone()
+
+
 def set_decision(clip_id: str, decision: str) -> None:
     with tx() as conn:
         conn.execute(
@@ -291,9 +315,14 @@ def clip_counts() -> dict:
     }
 
 
-def set_trim(clip_id: str, path: str, start_ms: int, end_ms: int) -> None:
-    """Record a reviewer trim. The master and delivered files are untouched."""
+def set_trim_segments(clip_id: str, segments: list[dict]) -> None:
+    """Record the materialised output segments. Masters are never touched."""
     with tx() as conn:
-        conn.execute(
-            "UPDATE clips SET trimmed_path=?, trim_start_ms=?, trim_end_ms=?"
-            " WHERE clip_id=?", (path, start_ms, end_ms, clip_id))
+        conn.execute("UPDATE clips SET trim_segments=? WHERE clip_id=?",
+                     (json.dumps(segments) if segments else None, clip_id))
+
+
+def trim_segments(row) -> list[dict]:
+    """Parse a clip row's segment list. [] when the clip was never materialised."""
+    raw = row["trim_segments"] if row is not None else None
+    return json.loads(raw) if raw else []

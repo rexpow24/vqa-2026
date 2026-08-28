@@ -17,7 +17,7 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-from vqa import config, db, urls
+from vqa import config, db, media, review, urls
 
 st.set_page_config(page_title="VQA Clip Pipeline", page_icon="🎬", layout="wide")
 
@@ -257,29 +257,53 @@ with tab_review:
         )
 
     pending = db.list_clips(decision=db.UNREVIEWED)
+    top = [c for c in pending if db.priority(c["duration_ms"]) == db.TOP]
+    low = [c for c in pending if db.priority(c["duration_ms"]) == db.LOW_PRIORITY]
+
     counts = db.clip_counts()
     total = sum(counts["by_decision"].values()) or 1
     approved = counts["by_decision"].get(db.APPROVED, 0)
     reviewed = total - counts["by_decision"].get(db.UNREVIEWED, 0)
 
     m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Pending", len(pending))
-    m2.metric("Reviewed", reviewed)
-    m3.metric("Approved", approved)
-    m4.metric("Approval rate", f"{(approved / reviewed * 100) if reviewed else 0:.0f}%")
+    m1.metric("Top priority left", len(top))
+    m2.metric("Low priority left", len(low))
+    m3.metric("Reviewed", reviewed)
+    m4.metric("Approved", approved)
 
-    if not pending:
+    # Last decision, echoed so the reviewer sees the approve landed.
+    last = st.session_state.get("last_decision")
+    if last:
+        cid_done, decision, detail = last
+        icon = {"APPROVED": "✅", "REJECTED": "❌", "FLAGGED": "🚩"}[decision]
+        label = {"APPROVED": "Approved", "REJECTED": "Rejected",
+                 "FLAGGED": "Flagged"}[decision]
+        banner = st.success if decision == "APPROVED" else st.info
+        banner(f"{icon} `{cid_done}` — + {label} · {detail}")
+
+    # Top priority drains first, then Low. The handover is automatic: no
+    # "Next batch" click, because there is nothing for the reviewer to decide.
+    queue = top or low
+    band = db.TOP if top else db.LOW_PRIORITY
+
+    if not queue:
         st.success("Nothing left to review.")
     else:
-        clip = pending[0]
+        clip = queue[0]
+        cid = clip["clip_id"]
+        dur = clip["duration_ms"] / 1000
         flags = json.loads(clip["flags"] or "[]")
-        badge = {"HIGH": "🟢", "MEDIUM": "🟡", "LOW": "🔴"}[clip["confidence"]]
+        chip = "🔺 TOP PRIORITY" if band == db.TOP else "▪️ Low priority"
 
         st.markdown(
-            f"### {badge} `{clip['clip_id']}`  ·  {clip['duration_ms']/1000:.1f}s"
-            + (f"  ·  ⚠️ {', '.join(flags)}" if flags else "")
+            f"### {chip} · `{cid}` · {dur:.1f}s"
+            + (f" · ⚠️ {', '.join(flags)}" if flags else "")
         )
-        st.caption("LOW-confidence clips are shown first.")
+        st.caption(
+            f"Clips longer than {db.PRIORITY_SECONDS}s are reviewed first. "
+            "Priority comes from the original duration and does not change "
+            "when you trim."
+        )
 
         path = clip["delivered_path"] or clip["master_path"]
         if path and Path(path).exists():
@@ -287,21 +311,102 @@ with tab_review:
         else:
             st.error(f"Missing file: {path}")
 
+        existing = db.trim_segments(clip)
+        if existing:
+            st.info(
+                f"Already materialised as {len(existing)} file(s) in `trimmed/`. "
+                "Approving again overwrites them; Reject deletes them."
+            )
+
+        # ── trim: define the output segments ──────────────────────────────
+        st.divider()
+        multi = st.toggle(
+            "✂️ Multiple trim", key=f"multi_{cid}",
+            help="One shot sometimes holds two incidents. Split it into several "
+                 "clips instead of throwing the whole thing away.")
+
+        segments: list[tuple[float, float]] = []
+        seg_error = None
+        dmax = round(dur, 1)
+
+        if multi:
+            st.caption(
+                f"One row per output clip. Times are within this clip "
+                f"(0 – {media.fmt_time(dur)}); `HH:MM:SS` or plain seconds both "
+                "work. Use the last row to add another, the ✗ to remove one."
+            )
+            default = pd.DataFrame(
+                [{"Start": "00:00:00.0", "End": media.fmt_time(dur)}])
+            table = st.data_editor(
+                default, num_rows="dynamic", width='stretch',
+                key=f"segs_{cid}",
+                column_config={
+                    "Start": st.column_config.TextColumn(required=True),
+                    "End": st.column_config.TextColumn(required=True),
+                })
+            for i, row in enumerate(table.itertuples(index=False), 1):
+                try:
+                    a, b = media.parse_time(row.Start), media.parse_time(row.End)
+                except (media.MediaError, ValueError):
+                    seg_error = f"Row {i}: could not read the times."
+                    break
+                segments.append((a, b))
+            if not segments and not seg_error:
+                seg_error = "Add at least one row."
+        else:
+            lo, hi = st.slider("Keep range (s)", 0.0, dmax, (0.0, dmax), 0.1,
+                               key=f"tr_{cid}")
+            c1, c2 = st.columns(2)
+            a = c1.number_input("Start (s)", 0.0, dmax, float(lo), 0.1, key=f"ts_{cid}")
+            b = c2.number_input("End (s)", 0.0, dmax, float(hi), 0.1, key=f"te_{cid}")
+            if b > a:
+                segments = [(a, b)]
+            else:
+                seg_error = "End time must be after start time."
+
+        if seg_error:
+            st.warning(seg_error)
+        else:
+            st.caption(
+                f"Approve writes **{len(segments)} file(s)** to `trimmed/`: "
+                + ", ".join(f"{media.fmt_time(a)}→{media.fmt_time(b)}"
+                            for a, b in segments)
+                + ". Cut only — no crop, rotate or effects. The master and the "
+                  "delivered clip are never modified."
+            )
+
+        # ── decision ──────────────────────────────────────────────────────
+        st.divider()
+        st.caption(
+            "Approve or Reject is required to advance — there is no Skip. "
+            "Approve materialises the segments into `trimmed/`; Reject removes "
+            "this clip from `trimmed/` and leaves the source untouched."
+        )
         b1, b2, b3 = st.columns(3)
-        if b1.button("✅ Approve (A)", width='stretch', type="primary"):
-            db.set_decision(clip["clip_id"], db.APPROVED)
-            st.rerun()
-        if b2.button("❌ Reject (R)", width='stretch'):
-            db.set_decision(clip["clip_id"], db.REJECTED)
-            st.rerun()
-        if b3.button("🚩 Flag (F)", width='stretch'):
-            db.set_decision(clip["clip_id"], db.FLAGGED)
+
+        if b1.button("✅ Approve", width='stretch', type="primary",
+                     disabled=bool(seg_error)):
+            try:
+                with st.spinner("Writing segments…"):
+                    written = review.materialize(clip, segments, cfg)
+                db.set_decision(cid, db.APPROVED)
+                st.session_state["last_decision"] = (
+                    cid, db.APPROVED, f"{len(written)} file(s) → trimmed/")
+                st.rerun()
+            except media.MediaError as exc:
+                st.error(str(exc))
+
+        if b2.button("🗑️ Reject", width='stretch'):
+            removed = review.discard(clip)
+            db.set_decision(cid, db.REJECTED)
+            st.session_state["last_decision"] = (
+                cid, db.REJECTED, f"removed {removed} file(s) from trimmed/")
             st.rerun()
 
-        st.caption(
-            "Keyboard triage: `pip install streamlit-shortcuts`, then bind A/R/F. "
-            "Buttons work fine meanwhile."
-        )
+        if b3.button("🚩 Flag", width='stretch'):
+            db.set_decision(cid, db.FLAGGED)
+            st.session_state["last_decision"] = (cid, db.FLAGGED, "needs a second look")
+            st.rerun()
 
 
 with tab_export:
@@ -326,22 +431,34 @@ with tab_export:
             "clips": [],
         }
         for c in clips:
-            src = Path(c["delivered_path"] or c["master_path"])
-            if not src.exists():
-                continue
+            # trimmed/ is the finished product: an approved clip is always
+            # materialised there, as one file or several.
+            segs = db.trim_segments(c)
+            sources = ([Path(x["path"]) for x in segs] or
+                       [Path(c["delivered_path"] or c["master_path"])])
             dest_dir = out / "clips" / c["youtube_video_id"]
             dest_dir.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, dest_dir / f"{c['clip_id']}.mp4")
-            manifest["clips"].append({
-                "clip_id": c["clip_id"],
-                "youtube_video_id": c["youtube_video_id"],
-                "start_ms": c["start_ms"], "end_ms": c["end_ms"],
-                "confidence": c["confidence"],
-                "flags": json.loads(c["flags"] or "[]"),
-                "decision": c["decision"],
-                "pipeline_version": c["pipeline_version"],
-                "config_hash": c["config_hash"],
-            })
+            for i, src in enumerate(sources, 1):
+                if not src.exists():
+                    continue
+                name = src.name if segs else f"{c['clip_id']}.mp4"
+                shutil.copy2(src, dest_dir / name)
+                manifest["clips"].append({
+                    "clip_id": c["clip_id"],
+                    "file": name,
+                    "segment": i,
+                    "of_segments": len(sources),
+                    "youtube_video_id": c["youtube_video_id"],
+                    "start_ms": c["start_ms"], "end_ms": c["end_ms"],
+                    "priority": db.priority(c["duration_ms"]),
+                    "trim_start_ms": segs[i - 1]["start_ms"] if segs else None,
+                    "trim_end_ms": segs[i - 1]["end_ms"] if segs else None,
+                    "confidence": c["confidence"],
+                    "flags": json.loads(c["flags"] or "[]"),
+                    "decision": c["decision"],
+                    "pipeline_version": c["pipeline_version"],
+                    "config_hash": c["config_hash"],
+                })
         (out / "manifest.json").write_text(
             json.dumps(manifest, indent=2), encoding="utf-8")
         st.success(f"Exported {len(manifest['clips'])} clips to {out}")

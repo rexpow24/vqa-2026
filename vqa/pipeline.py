@@ -158,6 +158,18 @@ def process_video(video_id: str, url: str, cfg: dict, log) -> None:
 
             if not delivered.exists():
                 media.encode_delivered(master, delivered, blur_regions, cfg)
+                # A reviewer's trim was cut from the OLD delivered file. Now that
+                # delivered has been re-encoded (different blur settings, say),
+                # that trim is stale — re-cut it from the new one rather than
+                # letting export ship the old blur.
+                prev = db.get_clip(clip_id)
+                segs = db.trim_segments(prev) if prev else []
+                if segs:
+                    from . import review
+                    review.materialize(
+                        prev, [(x["start_ms"] / 1000, x["end_ms"] / 1000)
+                               for x in segs], cfg)
+                    log(f"[{video_id}] re-cut {len(segs)} segment(s) for {clip_id}")
         except media.MediaError as exc:
             log(f"[{video_id}] clip {clip_id} encode failed: {exc}")
             continue

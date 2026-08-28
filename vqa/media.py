@@ -286,3 +286,35 @@ def trim_clip(src: Path, dst: Path, start_s: float, end_s: float, cfg: dict) -> 
                    "-c:a", "aac", str(dst)])
     if cp.returncode != 0:
         raise MediaError(f"trim failed: {cp.stderr.decode(errors='replace')[:300]}")
+
+
+def parse_time(text: str) -> float:
+    """Accept `HH:MM:SS`, `MM:SS`, `SS.s` or a bare number of seconds."""
+    t = str(text).strip()
+    if not t:
+        raise MediaError("empty time")
+    if ":" in t:
+        parts = t.split(":")
+        if len(parts) > 3:
+            raise MediaError(f"bad time: {text}")
+        total = 0.0
+        for part in parts:
+            total = total * 60 + float(part or 0)
+        return total
+    return float(t)
+
+
+def fmt_time(seconds: float) -> str:
+    """Seconds -> HH:MM:SS.s, the same shape parse_time accepts."""
+    s = max(0.0, float(seconds))
+    h, rem = divmod(s, 3600)
+    m, sec = divmod(rem, 60)
+    return f"{int(h):02d}:{int(m):02d}:{sec:04.1f}"
+
+
+def copy_stream(src: Path, dst: Path) -> None:
+    """Container copy, no re-encode. Used when a segment is the whole clip."""
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    cp = _run([FFMPEG, "-v", "error", "-y", "-i", str(src), "-c", "copy", str(dst)])
+    if cp.returncode != 0:
+        raise MediaError(f"copy failed: {cp.stderr.decode(errors='replace')[:300]}")
