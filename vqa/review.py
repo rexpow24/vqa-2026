@@ -40,6 +40,31 @@ def discard(clip) -> int:
     return removed
 
 
+def purge_video(video_id: str) -> tuple[int, int]:
+    """Remove a video from the queue, outputs and all. Returns (rows, files).
+
+    `db.remove_video` only knows about rows. A video stopped mid-encode can
+    already own APPROVED files in `trimmed/`, because clips become reviewable
+    as soon as they are encoded -- the reviewer does not wait for the run to
+    finish. Those files have to go too, or nothing will ever reference them
+    again.
+
+    Paths are collected first but deleted only if the row actually went: the
+    status check lives inside the DELETE, so a refusal must leave the disk
+    exactly as it was.
+    """
+    paths = [Path(seg["path"]) for seg in db.video_trim_segments(video_id)]
+    removed = db.remove_video(video_id)
+    if not removed:
+        return 0, 0
+    gone = 0
+    for p in paths:
+        if p.exists():
+            p.unlink()
+            gone += 1
+    return removed, gone
+
+
 def materialize(clip, segments_s: list[tuple[float, float]], cfg: dict) -> list[dict]:
     """Write the approved output into `trimmed/`, one file per segment.
 

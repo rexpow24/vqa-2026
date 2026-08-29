@@ -57,3 +57,46 @@ def test_pasting_a_known_url_says_which_one_and_where_it_got_to(app, fresh_db):
     shown = " ".join([e.value for e in app.info] + [e.value for e in app.success])
     assert old in shown and "DOWNLOAD_FAILED" in shown
     assert db.get_video(new) is not None
+
+
+def test_removing_a_stopped_video_through_the_app_also_clears_trimmed(
+        app, fresh_db, tmp_path):
+    """The Queue tab must go through review.purge_video, not db.remove_video:
+    only the former knows about files the reviewer already produced."""
+    from tests.test_purge import _approved_clip
+    video_id, approved_file = _approved_clip(tmp_path)
+
+    app.run()
+    app.multiselect[0].set_value([f"{video_id} (STOPPED)"]).run()
+    app.button(key="rm_go").click().run()
+
+    assert not app.exception, [e.value for e in app.exception]
+    assert db.get_video(video_id) is None
+    assert not approved_file.exists(), "orphaned the reviewer's output"
+
+
+def test_a_stopped_video_can_be_resumed_from_the_queue_tab(app, fresh_db):
+    """Removal is one way out; carrying on from the downloaded file is the other."""
+    db.enqueue("stoppedvid1", "https://youtu.be/stoppedvid1")
+    db.set_status("stoppedvid1", db.STOPPED, stage="encode")
+
+    app.run()
+    app.button(key="retry_stopped").click().run()
+
+    assert not app.exception, [e.value for e in app.exception]
+    assert db.get_video("stoppedvid1")["status"] == db.QUEUED
+
+
+def test_a_video_stranded_by_a_crash_can_still_be_freed(app, fresh_db):
+    """Stop is disabled when no run is in progress, so a row left at PROCESSING
+    by a crash or a closed browser had no way out at all."""
+    db.enqueue("crashedvid1", "https://youtu.be/crashedvid1")
+    db.set_status("crashedvid1", db.PROCESSING, stage="shots")
+
+    app.run()
+    assert app.multiselect[0].options == []      # not removable while in-flight
+    app.button(key="unstick").click().run()
+
+    assert not app.exception, [e.value for e in app.exception]
+    assert db.get_video("crashedvid1")["status"] == db.STOPPED
+    assert app.multiselect[0].options == ["crashedvid1 (STOPPED)"]

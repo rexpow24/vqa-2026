@@ -62,13 +62,21 @@ sidebar widget, saved to `config.json` behind the scenes.
    finished video from one whose download failed. **A duplicate is never
    downloaded again.**
 2. **Remove from queue** (same tab) — drops a URL you no longer want, typically
-   a `DOWNLOAD_FAILED` one you want to re-add and retry. Only URLs that have not
-   produced clips are offered; a `READY_FOR_REVIEW` video cannot be removed here,
-   because its clips would outlive it and keep appearing in Review. Nothing is
-   deleted from disk, so re-adding resumes a part-downloaded file.
+   a `DOWNLOAD_FAILED` one you want to re-add and retry. Only videos the runner
+   has finished with are offered; a `READY_FOR_REVIEW` one cannot be removed
+   here, because its clips are the product. Removing a `STOPPED` video also
+   deletes the clips it managed to produce, **including anything you already
+   approved into `trimmed/`**. The download stays on disk either way, so
+   re-adding the URL resumes rather than starting over.
 3. **Sidebar** — set toggles, then **Save settings**. Settings lock during a run
    so a batch cannot end up half-processed under two different configs.
-4. **Run tab** — **Start**. Progress and the log update inline.
+4. **Run tab** — **Start**. Progress and the log update inline. **Stop** kills
+   the runner and marks whatever it was working on `STOPPED`; from the Queue tab
+   you can then **Resume STOPPED** (carries on from the downloaded file — it does
+   not re-download) or remove it. If a video is stuck at `DOWNLOADING` /
+   `PROCESSING` with nothing running — after a crash, a reboot, or a closed
+   browser tab — the Queue tab offers **Mark them STOPPED** to free it. Only
+   press that when you are sure no run is going, including in another tab.
 
 You do **not** have to wait for the queue to drain before reviewing. Clips are
 written to the database one at a time as each is encoded, so the Review tab

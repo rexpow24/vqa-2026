@@ -227,11 +227,33 @@ with tab_queue:
         } for r in rows])
         st.dataframe(frame, width='stretch', hide_index=True)
 
-        c1, c2 = st.columns(2)
-        if c1.button("🔁 Retry DOWNLOAD_FAILED", disabled=busy):
+        c1, c2, c3 = st.columns(3)
+        if c1.button("🔁 Retry DOWNLOAD_FAILED", key="retry_dl", disabled=busy):
             st.info(f"Requeued {db.retry_status(db.DOWNLOAD_FAILED)}")
-        if c2.button("🔁 Retry FAILED", disabled=busy):
+        if c2.button("🔁 Retry FAILED", key="retry_failed", disabled=busy):
             st.info(f"Requeued {db.retry_status(db.FAILED)}")
+        # Resuming a stopped video is cheap: the download and every completed
+        # stage are already on disk, so it picks up where it was killed.
+        if c3.button("▶️ Resume STOPPED", key="retry_stopped", disabled=busy):
+            st.info(f"Requeued {db.retry_status(db.STOPPED)}")
+
+        # A crash, a reboot or a closed browser tab leaves rows at DOWNLOADING
+        # or PROCESSING with no runner behind them. Stop cannot reach those --
+        # it is disabled when this session has no subprocess -- so they need a
+        # way out of their own. Deliberately a button and not automatic: this
+        # session's `busy` says nothing about a run started from another tab.
+        stranded = [r for r in rows
+                    if r["status"] in (db.DOWNLOADING, db.PROCESSING)]
+        if stranded and not busy:
+            st.warning(
+                f"{len(stranded)} video(s) sit at DOWNLOADING/PROCESSING with "
+                "no run in progress here — a crash, a reboot, or a run started "
+                "from another browser tab.")
+            if st.button("🔓 Mark them STOPPED", key="unstick",
+                         help="Only do this if nothing is actually running."):
+                st.info(f"Marked {db.mark_stopped()} — now resumable "
+                        "and removable.")
+                st.rerun()
 
         # Remove a URL from the queue. Only rows that cannot have produced
         # clips are offered: `clips` has no foreign key to `videos`, so
@@ -240,9 +262,11 @@ with tab_queue:
         # a separate process reading the same table.
         st.markdown("**Remove from queue**")
         st.caption(
-            "Drops the URL only. Nothing on disk is deleted, so re-adding it "
-            "resumes a part-downloaded file instead of starting over. Videos "
-            "that already produced clips cannot be removed here."
+            "Drops the URL and, for a STOPPED video, any clips it managed to "
+            "produce — including files already approved into `trimmed/`. The "
+            "download itself stays on disk, so re-adding the URL resumes "
+            "instead of starting over. A video that finished its run cannot be "
+            "removed here."
         )
         labels = {f"{r['youtube_video_id']} ({r['status']})": r["youtube_video_id"]
                   for r in rows if r["status"] in db.REMOVABLE}
@@ -259,10 +283,16 @@ with tab_queue:
             label_visibility="collapsed")
         if st.button("🗑️ Remove from queue", key="rm_go",
                      disabled=busy or not picked):
-            gone = sum(db.remove_video(labels[p]) for p in picked)
+            # purge_video, not db.remove_video: a STOPPED video can already own
+            # APPROVED files in trimmed/, since clips are reviewable while the
+            # run is still going.
+            results = [review.purge_video(labels[p]) for p in picked]
+            gone = sum(rows for rows, _ in results)
+            files = sum(n for _, n in results)
             st.session_state["rm_rev"] = rm_rev + 1
             st.session_state["rm_said"] = (
                 f"Removed {gone} of {len(picked)}"
+                + (f", and {files} file(s) from trimmed/" if files else "")
                 + (f" — {len(picked) - gone} had already started processing."
                    if gone < len(picked) else "."))
             st.rerun()
@@ -281,12 +311,27 @@ with tab_run:
     if c1.button("▶️ Start", disabled=busy or queued == 0, type="primary"):
         start_run()
         st.rerun()
-    if c2.button("⏹ Stop", disabled=not busy):
+    if c2.button("⏹ Stop", key="stop_go", disabled=not busy):
         proc = running_proc()
         if proc:
             proc.terminate()
+            # Wait for it to actually die before writing status: the runner
+            # writes status too, and a dying one would overwrite STOPPED with
+            # whatever stage it was in.
+            try:
+                proc.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait(timeout=5)
+        st.session_state["stop_said"] = (
+            f"Stopped. {db.mark_stopped()} video(s) marked STOPPED — "
+            "retry to resume from what is already downloaded, or remove them.")
         st.rerun()
     c3.metric("Queued", queued)
+
+    stopped = st.session_state.pop("stop_said", None)
+    if stopped:
+        st.warning(stopped)
 
     @st.fragment(run_every=2 if busy else None)
     def run_monitor() -> None:

@@ -39,6 +39,8 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
 | Mark cut always collided | every new shot hit the whole-clip default | first mark **replaces** the untouched default |
 | Deleting shot 1 kept shot 1 | the wrong shot survived, silently | Streamlit widget state outlives `value=`; stale inputs overwrote the new list → versioned widget keys |
 | "Cannot auto-adjust" said nothing | reviewer could not tell what was in the way | `trim.why_no_room()` names the blocking shot or the clip edge |
+| Stop stranded a video permanently | row stuck at `PROCESSING`; no retry, no remove, no requeue could see it | `terminate()` never touched the DB → `STOPPED` state, set after `proc.wait()` |
+| Removing a stopped video orphaned approved .mp4s | files left in `trimmed/` that nothing lists or exports | reviewing-during-a-run means a removable video can own outputs → `review.purge_video()` |
 | Could not review while the pipeline ran | `st.video` restarted every 2s; `AppTest` never returned | `time.sleep(2); st.rerun()` at app scope reran *every* tab → `st.fragment(run_every=2)` |
 | Removing a URL crashed the Queue tab | `st.session_state.rm_pick cannot be modified after the widget is instantiated` | same widget-ownership trap as the trim rows → versioned key |
 | Log would have frozen at its first line | (caught by a test before shipping) | keyed `st.text_area` ignores `value=` on re-render → `st.code` |

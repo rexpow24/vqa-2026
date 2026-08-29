@@ -292,9 +292,28 @@ never leave stale output in the deliverable.
 
 ```
 QUEUED → DOWNLOADING → PROCESSING → READY_FOR_REVIEW → (reviewed)
-              ↓             ↓
-      DOWNLOAD_FAILED    FAILED        ← both retryable from the Queue tab
+   ↑          ↓             ↓
+   │  DOWNLOAD_FAILED    FAILED        ← both retryable from the Queue tab
+   │          ↓             ↓
+   └────────STOPPED ←───────┘          ← Stop, or a crash left it in-flight
 ```
+
+`STOPPED` exists because `proc.terminate()` used to be the whole of Stop. The
+row the runner was working on stayed at `DOWNLOADING`/`PROCESSING` forever:
+`next_queued()` would not pick it up, neither retry button saw it, and removal
+refused it — stranded from all four paths at once.
+
+`db.mark_stopped()` moves every in-flight row to `STOPPED`. It must run **after
+the process has actually exited**, not merely after `terminate()`: the runner
+writes status too, and a dying one will overwrite `STOPPED` with the stage it
+was in. The Stop button therefore `proc.wait(timeout=10)`s, escalating to
+`kill()`.
+
+Stop cannot reach a row stranded by a crash, a reboot or a closed browser tab —
+it is disabled when this session holds no subprocess. The Queue tab offers a
+separate **Mark them STOPPED** button for that case. Deliberately manual: this
+session's `busy` flag says nothing about a run started from another tab, so
+automatic reconciliation could mark a genuinely running video as stopped.
 
 Headless runs end at `DONE` with clips marked `UNREVIEWED` — never `APPROVED`,
 and nothing is written to `trimmed/`. A headless batch must not be able to pass
@@ -304,11 +323,21 @@ Clip decisions: `UNREVIEWED` → `APPROVED` | `REJECTED` | `FLAGGED`.
 
 ### Removing a URL from the queue
 
-`db.remove_video()` deletes the row, and only from `db.REMOVABLE` —
-`QUEUED`, `DOWNLOAD_FAILED`, `FAILED`. Those are exactly the states that cannot
-have produced clips yet, and `clips` has no foreign key back to `videos`: a
-processed video removed here would leave orphans that `list_clips()` keeps
-handing to the reviewer forever.
+`db.REMOVABLE` is `QUEUED`, `DOWNLOAD_FAILED`, `FAILED`, `STOPPED` — the states
+the runner is finished with. `READY_FOR_REVIEW` and `DONE` are not removable:
+their clips are the product.
+
+`clips` has no foreign key back to `videos`, so `db.remove_video()` deletes the
+`clips` and `reviews` rows itself. The first three states never own clips, but
+`STOPPED` can: the pipeline inserts one clip per iteration of the encode loop,
+so a video killed halfway through has some.
+
+Rows are not the whole story. Clips become reviewable as soon as they are
+encoded — the reviewer does not wait for the run to finish — so a `STOPPED`
+video may already own `APPROVED` files in `trimmed/`. **Use
+`review.purge_video()`, not `db.remove_video()`**: it collects those paths
+first, deletes the rows, and only unlinks the files if the row actually went, so
+a refusal leaves the disk untouched.
 
 The status test lives **inside the DELETE**, not in the caller. `run_pipeline.py`
 is a separate process reading the same table, so a row can move from `QUEUED` to

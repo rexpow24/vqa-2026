@@ -21,12 +21,18 @@ class FakeProc:
 
     def __init__(self, alive: bool = True):
         self._alive = alive
+        self.waited = False
 
     def poll(self):
         return None if self._alive else 0
 
     def terminate(self):
         self._alive = False
+
+    def wait(self, timeout=None):
+        self.waited = True
+        self._alive = False
+        return 0
 
 
 @pytest.fixture
@@ -111,3 +117,24 @@ def test_the_log_keeps_updating_as_the_run_writes_to_it(app, tmp_path,
 
 def _log_text(at) -> str:
     return " ".join([e.value for e in at.code] + [e.value for e in at.text_area])
+
+
+def test_stop_marks_the_in_flight_video_instead_of_stranding_it(app, fresh_db):
+    """Stop used to only kill the process. The row it was working on stayed at
+    PROCESSING forever: invisible to next_queued, to both retries, and to
+    removal."""
+    db = fresh_db
+    db.enqueue("stoppedvid1", "https://youtu.be/stoppedvid1")
+    db.set_status("stoppedvid1", db.PROCESSING, stage="encode")
+    db.enqueue("waitingvid1", "https://youtu.be/waitingvid1")
+    proc = FakeProc(alive=True)
+    app.session_state["proc"] = proc
+
+    app.run()
+    app.button(key="stop_go").click().run()
+
+    assert not app.exception, [e.value for e in app.exception]
+    assert db.get_video("stoppedvid1")["status"] == db.STOPPED
+    assert proc.waited, "must wait for the runner to die before writing status"
+    # A video that never started is still simply queued.
+    assert db.get_video("waitingvid1")["status"] == db.QUEUED

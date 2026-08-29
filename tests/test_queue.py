@@ -68,3 +68,41 @@ def test_enqueue_many_names_the_duplicates_and_their_state(fresh_db):
     assert added == ["new"]
     assert dupes == [("old_ok", db.READY_FOR_REVIEW),
                      ("old_bad", db.DOWNLOAD_FAILED)]
+
+
+def test_a_stopped_video_can_be_removed_and_can_be_retried(fresh_db):
+    """Stop used to strand a row: no retry saw it, no remove touched it."""
+    db = fresh_db
+    db.enqueue("stoppedvid1", "https://youtu.be/stoppedvid1")
+    db.set_status("stoppedvid1", db.STOPPED, stage="encode")
+
+    assert db.retry_status(db.STOPPED) == 1
+    assert db.get_video("stoppedvid1")["status"] == db.QUEUED
+
+    db.set_status("stoppedvid1", db.STOPPED)
+    assert db.remove_video("stoppedvid1") == 1
+
+
+def _half_encoded(db, video_id="stoppedvid1"):
+    """A video Stop caught mid-encode: some clips already in the DB."""
+    db.enqueue(video_id, f"https://youtu.be/{video_id}")
+    db.set_status(video_id, db.STOPPED, stage="encode")
+    for i in range(2):
+        db.insert_clip({
+            "clip_id": f"{video_id}_{i}", "youtube_video_id": video_id, "seq": i,
+            "start_ms": 0, "end_ms": 9000, "duration_ms": 9000,
+            "confidence": "MEDIUM", "flags": "[]", "master_path": "m",
+            "delivered_path": "d", "pipeline_version": "v", "config_hash": "h"})
+    return video_id
+
+
+def test_removing_a_stopped_video_takes_its_half_encoded_clips_with_it(fresh_db):
+    """`clips` has no FK to `videos`; leftovers would haunt the review queue."""
+    db = fresh_db
+    vid = _half_encoded(db)
+    assert len(db.list_clips(video_id=vid)) == 2
+
+    assert db.remove_video(vid) == 1
+
+    assert db.list_clips(video_id=vid) == []
+    assert db.clip_counts()["by_decision"] == {}

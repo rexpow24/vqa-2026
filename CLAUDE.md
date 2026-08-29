@@ -55,7 +55,8 @@ covered, default to "ship it" and move on.**
 | Reviewer output | `trimmed/` is the finished product. Approve writes it (one file per shot, up to 3); Reject deletes only from there. |
 | Cut rule | Impact → impact + 5s (`GUIDE.md` §2.4). Dataset policy, not architecture. |
 | Trim UI | **Mark cut** (playhead → `impact ± pad`) + visual timeline. Max 3 shots. Overlaps auto-shrink ±5s→±1s, then refuse; a conflict blocks Approve. |
-| Queue removal | Only `QUEUED` / `DOWNLOAD_FAILED` / `FAILED` — the states that own no clips. DB row only, disk untouched. Status checked inside the `DELETE`, since the runner is another process. |
+| Queue removal | Removable = the states the runner is done with: `QUEUED` / `DOWNLOAD_FAILED` / `FAILED` / `STOPPED`. Status checked inside the `DELETE`, since the runner is another process. Go through `review.purge_video()` — a `STOPPED` video can own clips *and* approved files in `trimmed/`. The download itself is never deleted. |
+| Stop | Marks in-flight rows `STOPPED`, after `proc.wait()` — a dying runner overwrites the status otherwise. `STOPPED` is both resumable and removable. Rows stranded by a crash get a separate manual button; never reconcile automatically, since `busy` is per-session and another tab may be running. |
 | Run monitoring | `st.fragment(run_every=2)`. Never poll at app scope: Streamlit runs every tab's body, so it restarts the reviewer's video player. |
 | Crawl target | ~50 videos, ~1200–1500 clips expected |
 
@@ -67,9 +68,12 @@ covered, default to "ship it" and move on.**
 - **Don't add a layer.** No API tier, no task broker, no ORM, no build step.
 - **Don't propose benchmarks, tuning campaigns, or coordination mechanisms** for this phase —
   they are explicitly out of scope per Principle 3.
-- **`python -m pytest tests -q` before calling anything done.** 18 tests, ~6s,
+- **`python -m pytest tests -q` before calling anything done.** 26 tests, ~7s,
   no ffmpeg and no network. They drive the real app through `AppTest`, which is
-  how three of the widget-state bugs above were found.
+  the only way the widget-state and stranded-state bugs above were ever found.
+- **Run the `ship-feature` skill for any feature or bug fix.** Read the code →
+  ask short grounded questions → `feature-conflict-audit` → `tdd`. It exists
+  because features here break at the seam with what was already there.
 - **Audit new features against old ones before building.** Run the
   `feature-conflict-audit` skill on any proposed feature that touches shared state,
   reviewer outputs, the DB schema, or a recorded decision. Every serious bug here has

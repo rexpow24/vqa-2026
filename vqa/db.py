@@ -72,8 +72,12 @@ READY_FOR_REVIEW = "READY_FOR_REVIEW"
 DONE = "DONE"
 DOWNLOAD_FAILED = "DOWNLOAD_FAILED"
 FAILED = "FAILED"
+# Pressing Stop kills the runner mid-video. Without a state of its own that row
+# sits at DOWNLOADING or PROCESSING forever: `next_queued()` will not pick it up,
+# neither retry button sees it, and removal refuses it.
+STOPPED = "STOPPED"
 
-RETRYABLE = (DOWNLOAD_FAILED, FAILED)
+RETRYABLE = (DOWNLOAD_FAILED, FAILED, STOPPED)
 
 # Review priority: longer clips carry more to look at, so they go first.
 PRIORITY_SECONDS = 15
@@ -171,27 +175,35 @@ def enqueue_many(pairs) -> tuple[list[str], list[tuple[str, str]]]:
     return added, dupes
 
 
-REMOVABLE = (QUEUED, DOWNLOAD_FAILED, FAILED)
+REMOVABLE = (QUEUED, DOWNLOAD_FAILED, FAILED, STOPPED)
 
 
 def remove_video(video_id: str) -> int:
     """Take a URL back out of the queue. Returns 1 if it went, 0 if refused.
 
-    Only rows that cannot have produced clips yet are removable -- `clips` has
-    no foreign key to `videos`, so deleting a processed video would leave
-    orphans that `list_clips()` keeps handing to the reviewer. The status test
-    is inside the DELETE rather than in the caller: the runner is a separate
-    process and can move a row from QUEUED to DOWNLOADING between the two.
+    Only rows the pipeline has finished with are removable. A STOPPED video may
+    already own half-encoded clips, so its `clips` and `reviews` rows go with
+    it -- `clips` has no foreign key to `videos`, and leftovers would be handed
+    to the reviewer by `list_clips()` forever.
 
-    Nothing on disk is touched. A half-downloaded `source.part` survives, so
-    re-adding the URL resumes the download instead of restarting it.
+    The status test is inside the DELETE rather than in the caller: the runner
+    is a separate process and can move a row from QUEUED to DOWNLOADING between
+    the two. Nothing outside the database is touched here; files the reviewer
+    already produced are `review.purge_video`'s job.
     """
+    placeholders = ",".join("?" * len(REMOVABLE))
     with tx() as conn:
         cur = conn.execute(
-            "DELETE FROM videos WHERE youtube_video_id=? AND status IN"
-            f" ({','.join('?' * len(REMOVABLE))})",
+            f"DELETE FROM videos WHERE youtube_video_id=? AND status IN"
+            f" ({placeholders})",
             (video_id, *REMOVABLE),
         )
+        if not cur.rowcount:
+            return 0
+        conn.execute(
+            "DELETE FROM reviews WHERE clip_id IN"
+            " (SELECT clip_id FROM clips WHERE youtube_video_id=?)", (video_id,))
+        conn.execute("DELETE FROM clips WHERE youtube_video_id=?", (video_id,))
         return cur.rowcount
 
 
@@ -239,6 +251,24 @@ def next_queued() -> sqlite3.Row | None:
         return conn.execute(
             "SELECT * FROM videos WHERE status=? ORDER BY created_at LIMIT 1", (QUEUED,)
         ).fetchone()
+
+
+def mark_stopped() -> int:
+    """Whatever the killed runner was working on becomes STOPPED. Returns rows.
+
+    Only in-flight rows are touched. Videos it had already finished keep their
+    own result, and ones it never reached stay QUEUED.
+
+    Call this *after* the process has actually exited, not just after
+    `terminate()`: the runner writes status too, and a dying one can overwrite
+    STOPPED with the stage it was in.
+    """
+    with tx() as conn:
+        cur = conn.execute(
+            "UPDATE videos SET status=?, updated_at=? WHERE status IN (?,?)",
+            (STOPPED, now(), DOWNLOADING, PROCESSING),
+        )
+        return cur.rowcount
 
 
 def retry_status(status: str) -> int:
@@ -362,6 +392,20 @@ def set_trim_segments(clip_id: str, segments: list[dict]) -> None:
     with tx() as conn:
         conn.execute("UPDATE clips SET trim_segments=? WHERE clip_id=?",
                      (json.dumps(segments) if segments else None, clip_id))
+
+
+def video_trim_segments(video_id: str) -> list[dict]:
+    """Every materialised segment belonging to one video, flattened.
+
+    Reads `clips` directly rather than going through `list_clips()`, which
+    inner-joins `reviews` and would silently skip a clip whose review row never
+    got written.
+    """
+    with tx() as conn:
+        rows = conn.execute(
+            "SELECT trim_segments FROM clips WHERE youtube_video_id=?"
+            " AND trim_segments IS NOT NULL", (video_id,)).fetchall()
+    return [seg for r in rows for seg in json.loads(r["trim_segments"])]
 
 
 def trim_segments(row) -> list[dict]:
