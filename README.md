@@ -121,14 +121,17 @@ automatically, so a settings change can never leave stale output in `trimmed/`.
 `trimmed/` is the finished-product folder. Nothing lands there until a reviewer
 approves.
 
-- **Approve** cuts the segments out of the *delivered* clip (the blurred video
-  they actually watched) into `trimmed/{clip_id}_tNN.mp4`. With no trim that is
-  one file, stream-copied. With **Multiple trim** it is one file per row — for
-  the case where the detector merged two incidents into one shot.
+- **Approve** cuts the marked shots out of the *delivered* clip (the blurred
+  video they actually watched) into `trimmed/{clip_id}_tNN.mp4`. Untrimmed, that
+  is one file, stream-copied; otherwise one file per shot, up to 3. The reviewer
+  marks a shot by parking the playhead on the impact and pressing **Mark cut**,
+  which builds `impact ± 5s` and shrinks it automatically if it would run off
+  the clip or into another shot. Overlaps show red on the timeline and block
+  Approve until resolved. See [`GUIDE.md` §2.5](./GUIDE.md).
 - **Reject** deletes that clip's files from `trimmed/` and nothing else. The
   master, the delivered clip and the downloaded source all survive, so a
   rejection is always recoverable.
-- Re-approving replaces the previous segments, so shrinking the row count never
+- Re-approving replaces the previous shots, so shrinking the shot count never
   leaves orphans behind.
 
 ## Resume
