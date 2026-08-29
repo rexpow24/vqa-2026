@@ -57,10 +57,22 @@ sidebar widget, saved to `config.json` behind the scenes.
 
 1. **Queue tab** — paste YouTube URLs (one per line) or upload a `.txt`.
    Duplicates are skipped automatically; the video ID is the dedup key, so the
-   same video pasted with different tracking parameters is caught.
-2. **Sidebar** — set toggles, then **Save settings**. Settings lock during a run
+   same video pasted with different tracking parameters is caught. Anything
+   already queued is listed by ID with the state it reached, so you can tell a
+   finished video from one whose download failed. **A duplicate is never
+   downloaded again.**
+2. **Remove from queue** (same tab) — drops a URL you no longer want, typically
+   a `DOWNLOAD_FAILED` one you want to re-add and retry. Only URLs that have not
+   produced clips are offered; a `READY_FOR_REVIEW` video cannot be removed here,
+   because its clips would outlive it and keep appearing in Review. Nothing is
+   deleted from disk, so re-adding resumes a part-downloaded file.
+3. **Sidebar** — set toggles, then **Save settings**. Settings lock during a run
    so a batch cannot end up half-processed under two different configs.
-3. **Run tab** — **Start**. Progress and the log update inline.
+4. **Run tab** — **Start**. Progress and the log update inline.
+
+You do **not** have to wait for the queue to drain before reviewing. Clips are
+written to the database one at a time as each is encoded, so the Review tab
+fills up during the run — open it and work while the pipeline keeps going.
 
 Expect roughly, for a 12-minute 1080p video:
 

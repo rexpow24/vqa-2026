@@ -12,3 +12,6 @@ numpy>=2.0
 # Optional: real digit values from the counter (not required — the pipeline
 # only needs to know WHEN the counter changes, not what it says).
 # easyocr
+
+# Dev only (not needed to run the pipeline)
+pytest>=8

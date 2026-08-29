@@ -302,6 +302,25 @@ as a reviewed one.
 
 Clip decisions: `UNREVIEWED` → `APPROVED` | `REJECTED` | `FLAGGED`.
 
+### Removing a URL from the queue
+
+`db.remove_video()` deletes the row, and only from `db.REMOVABLE` —
+`QUEUED`, `DOWNLOAD_FAILED`, `FAILED`. Those are exactly the states that cannot
+have produced clips yet, and `clips` has no foreign key back to `videos`: a
+processed video removed here would leave orphans that `list_clips()` keeps
+handing to the reviewer forever.
+
+The status test lives **inside the DELETE**, not in the caller. `run_pipeline.py`
+is a separate process reading the same table, so a row can move from `QUEUED` to
+`DOWNLOADING` between the moment the app renders the picker and the moment the
+button is clicked. The UI additionally disables removal during a run, matching
+the two retry buttons.
+
+Nothing on disk is touched. A part-downloaded `source.part` survives, so
+re-adding the URL resumes rather than restarting — and a complete
+`source.mp4` + `metadata.json` pair means `download.download()` returns the
+cached metadata without calling yt-dlp at all.
+
 ---
 
 ## 10. Review
@@ -410,9 +429,30 @@ lossless masters. 23 is visually equivalent and 33% smaller.
 | Segmentation | PySceneDetect `ContentDetector` |
 | Video | ffmpeg / ffprobe |
 | Arrays | numpy, OpenCV |
+| Tests | pytest + `streamlit.testing.v1.AppTest` (`tests/`, dev-only) |
 
 Explicitly rejected: FastAPI, React/Next.js, Celery/Redis, an ORM, PaddleOCR or
 any OCR, TransNetV2, deep video inpainting, optical flow, cloud storage.
+
+---
+
+### Polling without hijacking the app
+
+Streamlit executes **every tab's body in one script run**. The Run tab used to
+end with `time.sleep(2); st.rerun()`, which therefore re-created the Review
+tab's `st.video` element every two seconds — a reviewer could not watch a clip
+while the pipeline ran, and the whole app stalled 2s before the Review tab was
+even reached. `AppTest` never terminated.
+
+Progress, the counters and the log now live in an `st.fragment(run_every=2)`,
+which reruns only itself. Two consequences worth knowing:
+
+- `busy` is computed once at the top of the script and nothing recomputes it
+  any more, so the fragment calls `st.rerun(scope="app")` once when it sees the
+  subprocess has exited. Without that, a finished run leaves the sidebar locked.
+- The log is `st.code`, not `st.text_area`. A keyed text area would pin the
+  first read forever — Streamlit ignores `value=` once the key exists. The log
+  is output, not input.
 
 ---
 

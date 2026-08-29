@@ -12,3 +12,4 @@ cookies.txt
 .env
 cookies.json
 cookies.netscape.txt
+.pytest_cache/

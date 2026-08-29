@@ -153,6 +153,48 @@ def enqueue(video_id: str, url: str) -> bool:
     return True
 
 
+def enqueue_many(pairs) -> tuple[list[str], list[tuple[str, str]]]:
+    """Queue a batch of (video_id, url). Returns (added ids, duplicates).
+
+    Each duplicate comes back with the status it already has, because "3
+    duplicates" leaves the user unable to tell a finished video from one whose
+    download failed and needs removing.
+    """
+    added: list[str] = []
+    dupes: list[tuple[str, str]] = []
+    for video_id, url in pairs:
+        if enqueue(video_id, url):
+            added.append(video_id)
+        else:
+            row = get_video(video_id)
+            dupes.append((video_id, row["status"] if row else "?"))
+    return added, dupes
+
+
+REMOVABLE = (QUEUED, DOWNLOAD_FAILED, FAILED)
+
+
+def remove_video(video_id: str) -> int:
+    """Take a URL back out of the queue. Returns 1 if it went, 0 if refused.
+
+    Only rows that cannot have produced clips yet are removable -- `clips` has
+    no foreign key to `videos`, so deleting a processed video would leave
+    orphans that `list_clips()` keeps handing to the reviewer. The status test
+    is inside the DELETE rather than in the caller: the runner is a separate
+    process and can move a row from QUEUED to DOWNLOADING between the two.
+
+    Nothing on disk is touched. A half-downloaded `source.part` survives, so
+    re-adding the URL resumes the download instead of restarting it.
+    """
+    with tx() as conn:
+        cur = conn.execute(
+            "DELETE FROM videos WHERE youtube_video_id=? AND status IN"
+            f" ({','.join('?' * len(REMOVABLE))})",
+            (video_id, *REMOVABLE),
+        )
+        return cur.rowcount
+
+
 def set_status(video_id: str, status: str, *, stage: str | None = None,
                error_code: str | None = None, error_detail: str | None = None) -> None:
     with tx() as conn:

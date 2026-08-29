@@ -11,7 +11,6 @@ import json
 import shutil
 import subprocess
 import sys
-import time
 from pathlib import Path
 
 import pandas as pd
@@ -57,6 +56,18 @@ def log_tail(n: int = 40) -> str:
         return "(log unavailable)"
 
 
+def report_enqueue(added: list, dupes: list, bad: list) -> None:
+    """One place for both paste paths to say what happened to each line."""
+    st.success(f"Added {len(added)}, duplicate {len(dupes)}, invalid {len(bad)}")
+    if dupes:
+        # Naming them is the point: a duplicate sitting at DOWNLOAD_FAILED needs
+        # removing and re-adding, one at READY_FOR_REVIEW needs nothing at all.
+        st.info("Already in the queue — not downloaded again:\n"
+                + "\n".join(f"- `{v}` — {s}" for v, s in dupes))
+    for line_no, raw in bad[:10]:
+        st.caption(f"line {line_no}: {raw}")
+
+
 # ── sidebar: all configuration ────────────────────────────────────────────
 
 cfg = config.load()
@@ -74,6 +85,7 @@ with st.sidebar:
     st.subheader("Toggles")
     cfg["review_enabled"] = st.checkbox(
         "Review mode", value=cfg["review_enabled"], disabled=busy,
+        key="review_enabled",
         help="Off = headless. Clips are written UNREVIEWED, never APPROVED.")
     cfg["blur_enabled"] = st.checkbox(
         "Blur overlays", value=cfg["blur_enabled"], disabled=busy)
@@ -185,24 +197,18 @@ with tab_queue:
     col_a, col_b = st.columns(2)
 
     with col_a:
-        pasted = st.text_area("Paste URLs (one per line)", height=140,
+        pasted = st.text_area("Paste URLs (one per line)", height=140, key="paste",
                               placeholder="https://youtu.be/...\nhttps://www.youtube.com/watch?v=...")
-        if st.button("Add pasted URLs"):
+        if st.button("Add pasted URLs", key="paste_go"):
             ok, bad = urls.parse_lines(pasted)
-            added = sum(db.enqueue(v, u) for v, u in ok)
-            st.success(f"Added {added}, duplicate {len(ok) - added}, invalid {len(bad)}")
-            for line_no, raw in bad[:5]:
-                st.caption(f"line {line_no}: {raw}")
+            report_enqueue(*db.enqueue_many(ok), bad)
 
     with col_b:
         up = st.file_uploader("Or upload a .txt (one URL per line)", type=["txt"])
-        if up is not None and st.button("Add from file"):
+        if up is not None and st.button("Add from file", key="file_go"):
             text = up.read().decode("utf-8", errors="replace")
             ok, bad = urls.parse_lines(text)
-            added = sum(db.enqueue(v, u) for v, u in ok)
-            st.success(f"Added {added}, duplicate {len(ok) - added}, invalid {len(bad)}")
-            for line_no, raw in bad[:10]:
-                st.caption(f"line {line_no}: {raw}")
+            report_enqueue(*db.enqueue_many(ok), bad)
 
     st.divider()
     st.subheader("Queue")
@@ -226,6 +232,43 @@ with tab_queue:
             st.info(f"Requeued {db.retry_status(db.DOWNLOAD_FAILED)}")
         if c2.button("🔁 Retry FAILED", disabled=busy):
             st.info(f"Requeued {db.retry_status(db.FAILED)}")
+
+        # Remove a URL from the queue. Only rows that cannot have produced
+        # clips are offered: `clips` has no foreign key to `videos`, so
+        # dropping a processed video would leave orphans in the review queue.
+        # Disabled during a run, like the retry buttons above -- the runner is
+        # a separate process reading the same table.
+        st.markdown("**Remove from queue**")
+        st.caption(
+            "Drops the URL only. Nothing on disk is deleted, so re-adding it "
+            "resumes a part-downloaded file instead of starting over. Videos "
+            "that already produced clips cannot be removed here."
+        )
+        labels = {f"{r['youtube_video_id']} ({r['status']})": r["youtube_video_id"]
+                  for r in rows if r["status"] in db.REMOVABLE}
+        # Streamlit owns widget state under `key=`, and refuses to let the
+        # script write it once the widget exists. Bumping a revision renders a
+        # *new* multiselect instead, which starts empty — otherwise the URL you
+        # just removed stays selected, naming a row that no longer exists.
+        rm_rev = st.session_state.get("rm_rev", 0)
+        picked = st.multiselect(
+            "URLs", sorted(labels), key=f"rm_pick_{rm_rev}",
+            disabled=busy or not labels,
+            placeholder=("nothing removable" if not labels
+                         else "pick one or more URLs"),
+            label_visibility="collapsed")
+        if st.button("🗑️ Remove from queue", key="rm_go",
+                     disabled=busy or not picked):
+            gone = sum(db.remove_video(labels[p]) for p in picked)
+            st.session_state["rm_rev"] = rm_rev + 1
+            st.session_state["rm_said"] = (
+                f"Removed {gone} of {len(picked)}"
+                + (f" — {len(picked) - gone} had already started processing."
+                   if gone < len(picked) else "."))
+            st.rerun()
+        said = st.session_state.pop("rm_said", None)
+        if said:
+            st.info(said)
     else:
         st.info("Queue is empty. Add some URLs above.")
 
@@ -245,17 +288,35 @@ with tab_run:
         st.rerun()
     c3.metric("Queued", queued)
 
-    all_rows = db.list_videos()
-    if all_rows:
-        done = sum(1 for r in all_rows
-                   if r["status"] in (db.READY_FOR_REVIEW, db.DONE))
-        st.progress(done / len(all_rows), text=f"{done}/{len(all_rows)} videos complete")
+    @st.fragment(run_every=2 if busy else None)
+    def run_monitor() -> None:
+        """Poll progress without rerunning the app.
 
-    st.text_area("Log", log_tail(), height=320)
+        Streamlit executes every tab's body in one script run, so the old
+        `time.sleep(2); st.rerun()` at app scope re-created the Review tab's
+        `st.video` element every two seconds — you could not watch a clip while
+        the pipeline ran. A fragment reruns only itself.
+        """
+        rows = db.list_videos()
+        if rows:
+            done = sum(1 for r in rows
+                       if r["status"] in (db.READY_FOR_REVIEW, db.DONE))
+            st.progress(done / len(rows),
+                        text=f"{done}/{len(rows)} videos complete")
+        # st.code, not st.text_area: a keyed text_area would pin the first read
+        # forever (Streamlit ignores `value=` once the key exists), and an
+        # unkeyed one inside a fragment is a widget with no stable identity.
+        # The log is output, not input.
+        st.markdown("**Log**")
+        st.code(log_tail(), language=None, height=320)
 
-    if busy:
-        time.sleep(2)
-        st.rerun()
+        # `busy` was computed once, at the top of the script. Nothing else will
+        # recompute it now that the app no longer reruns on a timer, so the
+        # finished run would leave the sidebar locked and Start greyed out.
+        if busy and running_proc() is None:
+            st.rerun(scope="app")
+
+    run_monitor()
 
 
 with tab_review:
