@@ -165,6 +165,10 @@ So for a collision at `00:00:12.0` in the clip, the trim is:
 | Start | `00:00:12.0` |
 | End | `00:00:17.0` |
 
+**You do not have to type this.** Park the playhead on the impact and press
+**📍 Mark cut** — see [§2.5](#25-mark-cut-and-the-timeline). The default
+padding is ±5s, set in the sidebar under *Review → Mark cut padding*.
+
 Apply this to every approved clip unless one of the exceptions below applies.
 
 ### Exceptions
@@ -174,7 +178,7 @@ Apply this to every approved clip unless one of the exceptions below applies.
 | The collision is in the last 5s of the clip | End at the end of the clip. Do not pad. |
 | No collision — a near-miss or a violation | Start at the moment the event is unmistakable, still +5s. |
 | The event genuinely continues past 5s (pile-up, vehicle rolls) | Extend the end until the motion settles. Do not cut mid-event. |
-| Two separate incidents in one clip | Use **Multiple trim** — see §2.5. |
+| Two separate incidents in one clip | Mark each one — see §2.6. |
 
 ### Reading the timeline
 
@@ -189,28 +193,75 @@ are accepted, so `00:00:12.0`, `0:12` and `12` are the same instant.
 > the rule should become **impact −3s to impact +5s**. Until that is decided,
 > follow the rule as written above.
 
-## 2.5 Multiple trim — two incidents in one clip
+## 2.5 Mark cut and the timeline
+
+### Marking one incident
+
+1. Drag **Playhead (s)** to the moment of impact.
+2. Press **📍 Mark cut**.
+
+That creates a shot of *playhead ± padding* (±5s by default). The first Mark cut
+replaces the whole-clip default you arrive with, so you are not fighting it.
+
+### When ±5s does not fit
+
+If the window would run off the end of the clip, or land on a shot you already
+marked, it **shrinks evenly on both sides** — ±5s, ±4s, ±3s, ±2s, ±1s — until it
+fits. An adjusted shot gets a **yellow dashed border** on the timeline and the
+tooltip *auto-adjusted to avoid overlap*. Nothing is silently discarded.
+
+If it is still stuck at ±1s, no shot is created and you get **"Cannot
+auto-adjust"** followed by the reason, e.g. *the playhead is inside (or within
+1s of) shot 1 [0.0–22.8s]*. The two common causes:
+
+| Reason | Fix |
+|---|---|
+| The playhead is inside a shot you already marked — including the whole-clip shot, if you have edited it | Delete that shot with ✗, or move the playhead into free space |
+| The playhead is less than 1s from the start or end of the clip | Type the times by hand; a shot needs 1s on each side |
+
+### Reading the timeline
+
+Under the player is a bar showing the whole clip, with one block per shot:
+
+| | |
+|---|---|
+| 🟩 Shot 1 | green |
+| 🟦 Shot 2 | blue |
+| 🟧 Shot 3 | orange |
+
+Each block is labelled with its shot number and its start and end in seconds.
+Hover for the exact range and duration. **Maximum 3 shots per clip.**
+
+### Conflicts
+
+If two shots overlap by more than 0.1s, the shared region turns **red with a
+blinking border**, the overlap is listed underneath, and **Approve is disabled**.
+
+Press **🔧 Resolve conflict** and the *newer* shot shrinks — ±5s, ±4s, … — until
+it clears the older one. If it cannot (the newer shot is entirely inside the
+older one), you get *"Cannot resolve automatically – please adjust Start/End
+manually"*, the red stays, and Approve stays blocked until you fix it by hand.
+
+### Adjusting by hand
+
+Every shot has **Start (s)** and **End (s)** boxes stepping in 0.1s. The timeline
+and the conflict check update as you type. **✗** removes a shot; **➕ Add shot**
+adds an empty one if you would rather not use the playhead.
+
+## 2.6 Two incidents in one clip
 
 The detector sometimes merges two incidents into a single shot. Rather than
-throwing the clip away or keeping only one:
+throwing the clip away or keeping only one, mark each one:
 
-1. Turn on **✂️ Multiple trim**.
-2. Each row is one output clip. Fill in `Start` and `End`.
-3. Click the last row to add another; the ✗ removes one.
-4. **Approve** writes one file per row.
+1. Playhead on the first impact → **Mark cut**.
+2. Playhead on the second impact → **Mark cut**.
+3. **Approve** writes one file per shot.
 
-Apply the §2.4 rule to **each** incident independently.
+Apply the §2.4 rule to **each** incident independently. Example — impacts at 6s
+and 20s in a 26s clip give shots `1.0–11.0` and `15.0–25.0`, and two files:
+`..._t01.mp4` and `..._t02.mp4`.
 
-Example — impacts at 4s and 31s in a 45s clip:
-
-| Start | End |
-|---|---|
-| `00:00:04.0` | `00:00:09.0` |
-| `00:00:31.0` | `00:00:36.0` |
-
-→ two files: `..._t01.mp4` and `..._t02.mp4`.
-
-## 2.6 When to Reject
+## 2.7 When to Reject
 
 Reject when the clip is not usable, regardless of how it was cut:
 
@@ -224,17 +275,19 @@ Reject deletes this clip's files from `trimmed/` and **nothing else**. The
 blurred clip and the original download both survive, so a rejection can always be
 revisited.
 
-## 2.7 What happens when you press Approve
+## 2.8 What happens when you press Approve
 
-The segments you defined are cut out of the blurred clip you were watching and
+The shots you defined are cut out of the blurred clip you were watching and
 written to `work/<video_id>/trimmed/` as `{clip_id}_t01.mp4`, `_t02.mp4`, …
 
 - The master and the blurred clip are **never** modified.
-- Approving the same clip again **replaces** its previous segments — going from
-  3 rows to 2 does not leave a stray third file behind.
+- Approving the same clip again **replaces** its previous shots — going from
+  3 shots to 2 does not leave a stray third file behind.
+- Approve is refused while any conflict or out-of-range shot remains, so a
+  broken trim cannot reach `trimmed/`.
 - A confirmation banner shows the clip ID and how many files were written.
 
-## 2.8 Pace
+## 2.9 Pace
 
 Clips are short and the decision is usually obvious. Do not study them. If you
 cannot tell within two viewings whether a clip is usable, **Flag** it and move

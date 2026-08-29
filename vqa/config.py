@@ -40,6 +40,10 @@ DEFAULTS = {
     "encoder": "h264_nvenc",
     "nvenc_cq": 23,   # 19 was ~6x the master size; 23 is visually equivalent
     "libx264_crf": 18,
+    # Review. Mark cut builds "impact +/- pad" and shrinks from there; see
+    # GUIDE.md 2.4. Reviewer-side only, but it lives here so the sidebar value
+    # persists across sessions rather than dying with the browser tab.
+    "trim_pad_s": 5.0,
     # Paths
     "work_dir": "work",
     "output_dir": "export",

@@ -52,8 +52,9 @@ covered, default to "ship it" and move on.**
 | Config | Streamlit sidebar widgets (no separate config file editing) |
 | Output | Local disk only (no Drive upload) |
 | Review order | Clip duration: `>15s` = TOP priority, drains before LOW |
-| Reviewer output | `trimmed/` is the finished product. Approve writes it (1 file, or N with Multiple trim); Reject deletes only from there. |
+| Reviewer output | `trimmed/` is the finished product. Approve writes it (one file per shot, up to 3); Reject deletes only from there. |
 | Cut rule | Impact → impact + 5s (`GUIDE.md` §2.4). Dataset policy, not architecture. |
+| Trim UI | **Mark cut** (playhead → `impact ± pad`) + visual timeline. Max 3 shots. Overlaps auto-shrink ±5s→±1s, then refuse; a conflict blocks Approve. |
 | Crawl target | ~50 videos, ~1200–1500 clips expected |
 
 ---
@@ -64,5 +65,10 @@ covered, default to "ship it" and move on.**
 - **Don't add a layer.** No API tier, no task broker, no ORM, no build step.
 - **Don't propose benchmarks, tuning campaigns, or coordination mechanisms** for this phase —
   they are explicitly out of scope per Principle 3.
+- **Audit new features against old ones before building.** Run the
+  `feature-conflict-audit` skill on any proposed feature that touches shared state,
+  reviewer outputs, the DB schema, or a recorded decision. Every serious bug here has
+  been a new feature colliding with an existing default, owner or invariant — and none
+  were found by reading code, only by running it.
 - When a design question comes up that the constitution doesn't answer: pick the option that
   ships soonest, note the choice in a comment, and keep going.

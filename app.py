@@ -17,7 +17,10 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-from vqa import config, db, media, review, urls
+from vqa import config, db, media, review, trim, urls, winasyncio
+
+# Must run before the first websocket drops. Windows only; no-op elsewhere.
+winasyncio.patch()
 
 st.set_page_config(page_title="VQA Clip Pipeline", page_icon="🎬", layout="wide")
 
@@ -118,6 +121,12 @@ with st.sidebar:
     cfg["content_threshold"] = st.slider(
         "Content threshold", 5.0, 60.0, float(cfg["content_threshold"]), 1.0,
         disabled=busy, help="PySceneDetect default is 27. Leave it alone.")
+
+    st.subheader("Review")
+    cfg["trim_pad_s"] = st.number_input(
+        "Mark cut padding (s)", 1.0, 30.0, float(cfg.get("trim_pad_s", 5.0)), 0.5,
+        help="Mark cut builds impact +/- this. It shrinks automatically when the "
+             "window runs off the clip or into another shot.")
 
     st.subheader("Clips")
     cfg["min_duration_s"] = st.number_input(
@@ -318,71 +327,152 @@ with tab_review:
                 "Approving again overwrites them; Reject deletes them."
             )
 
-        # ── trim: define the output segments ──────────────────────────────
+        # ── trim: define the output shots ─────────────────────
         st.divider()
-        multi = st.toggle(
-            "✂️ Multiple trim", key=f"multi_{cid}",
-            help="One shot sometimes holds two incidents. Split it into several "
-                 "clips instead of throwing the whole thing away.")
-
-        segments: list[tuple[float, float]] = []
-        seg_error = None
+        pad = float(cfg.get("trim_pad_s", trim.PAD_DEFAULT))
+        # One rounded duration for every widget: a slider maxing at dur and a
+        # number_input maxing at round(dur,1) disagree, and Streamlit throws.
         dmax = round(dur, 1)
+        skey = f"shots_{cid}"
+        if skey not in st.session_state:
+            # Re-opening an already-approved clip should show what it was cut to.
+            st.session_state[skey] = (
+                [trim.shot(x["start_ms"] / 1000, x["end_ms"] / 1000)
+                 for x in existing] if existing else trim.whole_clip(dmax))
+        shots = st.session_state[skey]
 
-        if multi:
-            st.caption(
-                f"One row per output clip. Times are within this clip "
-                f"(0 – {media.fmt_time(dur)}); `HH:MM:SS` or plain seconds both "
-                "work. Use the last row to add another, the ✗ to remove one."
-            )
-            default = pd.DataFrame(
-                [{"Start": "00:00:00.0", "End": media.fmt_time(dur)}])
-            table = st.data_editor(
-                default, num_rows="dynamic", width='stretch',
-                key=f"segs_{cid}",
-                column_config={
-                    "Start": st.column_config.TextColumn(required=True),
-                    "End": st.column_config.TextColumn(required=True),
-                })
-            for i, row in enumerate(table.itertuples(index=False), 1):
-                try:
-                    a, b = media.parse_time(row.Start), media.parse_time(row.End)
-                except (media.MediaError, ValueError):
-                    seg_error = f"Row {i}: could not read the times."
-                    break
-                segments.append((a, b))
-            if not segments and not seg_error:
-                seg_error = "Add at least one row."
-        else:
-            lo, hi = st.slider("Keep range (s)", 0.0, dmax, (0.0, dmax), 0.1,
-                               key=f"tr_{cid}")
-            c1, c2 = st.columns(2)
-            a = c1.number_input("Start (s)", 0.0, dmax, float(lo), 0.1, key=f"ts_{cid}")
-            b = c2.number_input("End (s)", 0.0, dmax, float(hi), 0.1, key=f"te_{cid}")
-            if b > a:
-                segments = [(a, b)]
+        # Streamlit widget state outlives the value= argument: once s_<cid>_0
+        # exists, re-rendering it with a new value is ignored and the old number
+        # wins. That silently undid Mark cut and, on delete, kept the removed
+        # shot's numbers on top of the surviving shot. Versioning the keys makes
+        # every programmatic change render *new* widgets, which do take value=.
+        rkey = f"rev_{cid}"
+        rev = int(st.session_state.get(rkey, 0))
+
+        def _set(new_shots: list[dict]) -> None:
+            st.session_state[skey] = new_shots
+            st.session_state[rkey] = rev + 1
+
+        st.markdown("**✂️ Trim**")
+        st.caption(
+            f"Park the playhead on the impact and press **Mark cut**: that "
+            f"becomes impact ±{pad:g}s, shrunk automatically if it runs off the "
+            f"clip or into another shot. Up to {trim.MAX_SHOTS} shots, one "
+            "output file each. Cut only — no crop, rotate or effects."
+        )
+
+        mc1, mc2, mc3 = st.columns([5, 1.4, 1.4])
+        x = mc1.slider("Playhead (s)", 0.0, dmax, round(dmax / 2, 1), 0.1,
+                       key=f"play_{cid}")
+        full = len(shots) >= trim.MAX_SHOTS and not trim.is_untouched(shots, dmax)
+        if mc2.button("📍 Mark cut", key=f"mark_{cid}", disabled=full,
+                      width='stretch'):
+            # The first mark replaces the untouched whole-clip default rather
+            # than colliding with it.
+            base = [] if trim.is_untouched(shots, dmax) else list(shots)
+            made = trim.mark_cut(x, dmax, base, pad)
+            if made is None:
+                st.session_state[f"err_{cid}"] = (
+                    "Cannot auto-adjust – "
+                    + trim.why_no_room(x, dmax, base, pad)
+                    + ". Move the playhead, remove a shot, or type the times in "
+                      "by hand.")
             else:
-                seg_error = "End time must be after start time."
+                _set(base + [made])
+                st.session_state[f"toast_{cid}"] = (
+                    f"Shot at {made['start']:.1f}–{made['end']:.1f}s"
+                    + (" (auto-adjusted)" if made["auto"] else ""))
+            st.rerun()
+        if mc3.button("➕ Add shot", key=f"add_{cid}", disabled=full,
+                      width='stretch'):
+            base = [] if trim.is_untouched(shots, dmax) else list(shots)
+            last = base[-1]["end"] if base else 0.0
+            _set(base + [trim.shot(last, min(last + 2 * pad, dmax))])
+            st.rerun()
 
-        if seg_error:
-            st.warning(seg_error)
-        else:
+        st.markdown(trim.timeline_html(shots, dmax), unsafe_allow_html=True)
+
+        for c in trim.conflicts(shots):
+            k1, k2 = st.columns([4, 1])
+            k1.error(
+                f"Shots {c['i'] + 1} and {c['j'] + 1} overlap by "
+                f"{c['amount']:.1f}s ({c['start']:.1f}–{c['end']:.1f}s).")
+            if k2.button("🔧 Resolve conflict", width='stretch',
+                         key=f"res_{cid}_{c['i']}_{c['j']}"):
+                fixed = list(shots)
+                # Shrink the newer shot; the earlier one is the reviewer's
+                # settled decision.
+                if trim.resolve(fixed, c["j"], dmax):
+                    _set(fixed)
+                    st.session_state[f"toast_{cid}"] = "Resolved"
+                else:
+                    st.session_state[f"err_{cid}"] = (
+                        "Cannot resolve automatically – please adjust "
+                        "Start/End manually.")
+                st.rerun()
+
+        edited: list[dict] = []
+        for i, s in enumerate(shots):
+            r1, r2, r3, r4 = st.columns([0.7, 2, 2, 0.7])
+            r1.markdown(
+                "<div style='height:38px;display:flex;align-items:center;gap:6px'>"
+                f"<span style='width:14px;height:14px;border-radius:3px;"
+                f"background:{trim.COLORS[i % len(trim.COLORS)]}'></span>"
+                f"<b>{i + 1}</b></div>", unsafe_allow_html=True)
+            a = r2.number_input("Start (s)", 0.0, dmax, min(float(s["start"]), dmax),
+                                0.1, key=f"s_{cid}_{rev}_{i}")
+            b = r3.number_input("End (s)", 0.0, dmax, min(float(s["end"]), dmax),
+                                0.1, key=f"e_{cid}_{rev}_{i}")
+            if r4.button("✗", key=f"del_{cid}_{rev}_{i}",
+                         help="Remove this shot"):
+                _set([t for k, t in enumerate(shots) if k != i])
+                st.rerun()
+            moved = abs(a - s["start"]) > 1e-6 or abs(b - s["end"]) > 1e-6
+            edited.append(trim.shot(
+                a, b, auto=s.get("auto") and not moved,
+                default=s.get("default") and not moved))
+        if edited != shots:
+            # Typing a number must move the timeline, so take the edit and redraw.
+            # No revision bump: these values came *from* the widgets.
+            st.session_state[skey] = edited
+            st.rerun()
+
+        toast = st.session_state.pop(f"toast_{cid}", None)
+        if toast:
+            st.toast(toast)
+        failed = st.session_state.pop(f"err_{cid}", None)
+        if failed:
+            st.error(failed)
+
+        errs = trim.errors(shots, dmax)
+        segments = trim.segments(shots)
+        seg_error = bool(errs)
+        for msg in errs:
+            st.warning(msg)
+        if not errs:
             st.caption(
                 f"Approve writes **{len(segments)} file(s)** to `trimmed/`: "
                 + ", ".join(f"{media.fmt_time(a)}→{media.fmt_time(b)}"
                             for a, b in segments)
-                + ". Cut only — no crop, rotate or effects. The master and the "
-                  "delivered clip are never modified."
+                + ". The master and the delivered clip are never modified."
             )
 
         # ── decision ──────────────────────────────────────────────────────
         st.divider()
         st.caption(
             "Approve or Reject is required to advance — there is no Skip. "
-            "Approve materialises the segments into `trimmed/`; Reject removes "
-            "this clip from `trimmed/` and leaves the source untouched."
+            "Approve materialises the shots into `trimmed/`; Reject removes "
+            "this clip from `trimmed/` and leaves the source untouched. "
+            "Approve stays disabled while any conflict or out-of-range shot "
+            "remains."
         )
         b1, b2, b3 = st.columns(3)
+
+        def _done(decision: str, detail: str) -> None:
+            # Drop this clip's editing state; a re-review reloads from trimmed/.
+            for k in [skey, rkey, f"play_{cid}", f"toast_{cid}", f"err_{cid}"]:
+                st.session_state.pop(k, None)
+            st.session_state["last_decision"] = (cid, decision, detail)
 
         if b1.button("✅ Approve", width='stretch', type="primary",
                      disabled=bool(seg_error)):
@@ -390,8 +480,7 @@ with tab_review:
                 with st.spinner("Writing segments…"):
                     written = review.materialize(clip, segments, cfg)
                 db.set_decision(cid, db.APPROVED)
-                st.session_state["last_decision"] = (
-                    cid, db.APPROVED, f"{len(written)} file(s) → trimmed/")
+                _done(db.APPROVED, f"{len(written)} file(s) → trimmed/")
                 st.rerun()
             except media.MediaError as exc:
                 st.error(str(exc))
@@ -399,13 +488,12 @@ with tab_review:
         if b2.button("🗑️ Reject", width='stretch'):
             removed = review.discard(clip)
             db.set_decision(cid, db.REJECTED)
-            st.session_state["last_decision"] = (
-                cid, db.REJECTED, f"removed {removed} file(s) from trimmed/")
+            _done(db.REJECTED, f"removed {removed} file(s) from trimmed/")
             st.rerun()
 
         if b3.button("🚩 Flag", width='stretch'):
             db.set_decision(cid, db.FLAGGED)
-            st.session_state["last_decision"] = (cid, db.FLAGGED, "needs a second look")
+            _done(db.FLAGGED, "needs a second look")
             st.rerun()
 
 

@@ -36,6 +36,10 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
 | Stale trims shipped silently | export used old-blur files | re-cut segments when `delivered/` is re-encoded |
 | 3 of 4 clips vanished | no log line | blank filter dropped silently → counted and logged |
 | Delivered 6× the master | 905 MB per video | `cq=19` → `cq=23` |
+| Mark cut always collided | every new shot hit the whole-clip default | first mark **replaces** the untouched default |
+| Deleting shot 1 kept shot 1 | the wrong shot survived, silently | Streamlit widget state outlives `value=`; stale inputs overwrote the new list → versioned widget keys |
+| "Cannot auto-adjust" said nothing | reviewer could not tell what was in the way | `trim.why_no_room()` names the blocking shot or the clip edge |
+| `WinError 10054` traceback on every reload | looked cosmetic; actually leaked a socket + left the transport attached to the server | CPython's unguarded `sock.shutdown()` skips its own teardown → `vqa/winasyncio.py` completes it |
 
 ---
 
@@ -93,10 +97,15 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
 
 - [x] Duration-based priority: `>15s` = TOP, drains before LOW automatically
 - [x] Priority derived from the **original** duration, unchanged by trimming
-- [x] Single trim — slider + numeric inputs
-- [x] **Multiple trim** — dynamic table, N segments → N files
+- [x] **Mark cut** — playhead + button builds `impact ± pad`, pad configurable
+- [x] **Auto-shrink** — ±5s → ±1s when the window overruns the clip or another
+      shot; adjusted shots marked yellow, refusal is explicit
+- [x] **Visual timeline** — one colour per shot, hover tooltips, overlap in red
+- [x] **Resolve conflict** — shrinks the newer shot, or says it cannot
+- [x] Up to 3 shots, N shots → N files; per-shot ±0.1s Start/End boxes
 - [x] Time input accepts `HH:MM:SS`, `MM:SS` and plain seconds
 - [x] Approve materialises into `trimmed/`; re-approve replaces, no orphans
+- [x] Approve blocked while any conflict or out-of-range shot remains
 - [x] Reject deletes only from `trimmed/`; master, delivered and source survive
 - [x] No Skip — a decision is required to advance
 - [x] Confirmation banner: `✅ <clip_id> — + Approved · N file(s) → trimmed/`
@@ -135,7 +144,9 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
 
 ## P2 — Nice to have, not blocking
 
-- [ ] Keyboard shortcuts for A/R/F (`streamlit-shortcuts`)
+- [ ] Keyboard shortcuts for A/R/F and Mark cut (`streamlit-shortcuts`)
+- [ ] Drag the shot blocks on the timeline instead of typing numbers — needs a
+      custom component, which is a build step (`CLAUDE.md`: don't add a layer)
 - [ ] Review filters (by video, by flag, by priority band)
 - [ ] Manual overlay ROI override in the UI, for a channel where calibration
       picks the wrong box

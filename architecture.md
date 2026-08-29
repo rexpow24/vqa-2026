@@ -325,9 +325,37 @@ TOP drains first, then LOW begins automatically. Priority comes from the
 
 There is no Skip. A decision is required to advance.
 
-**Multiple trim** lets one clip produce N files, for the case where the detector
-merged two incidents into one shot. Re-approving replaces the previous segments,
-so shrinking the row count never leaves orphans.
+### Trim geometry (`vqa/trim.py`)
+
+The reviewer defines up to **3 shots** per clip, each becoming one file. The
+geometry rules live in `trim.py` rather than `app.py` so they can be exercised
+without starting Streamlit:
+
+| Function | Rule |
+|---|---|
+| `mark_cut(x, dur, others, pad)` | `x ± pad`, shrinking `pad → pad-1 → … → 1s` until it clears the clip edges and every other shot. `None` when even ±1s cannot fit. |
+| `resolve(shots, i, dur)` | same ladder applied to one existing shot, around its own centre. `False` when it is buried inside another. |
+| `conflicts(shots)` | overlapping pairs and the region they share. Under `OVERLAP_TOL = 0.1s` is rounding noise, not a conflict. |
+| `errors(shots, dur)` | everything blocking Approve: conflicts, inverted shots, out-of-range shots. |
+| `timeline_html(shots, dur)` | the whole clip as a bar, one colour per shot, overlaps in red. Plain HTML+CSS via `st.markdown`. |
+
+Three design points worth stating:
+
+- **Shrink evenly, never one-sided.** The clip stays centred on the impact, so
+  an auto-adjusted clip is still a valid answer to "what happened here".
+- **Refuse rather than emit a sliver.** Below ±1s the tool stops and says so.
+  A 0.4s clip is worse than no clip, and the reviewer can always type times.
+- **The first Mark cut replaces the whole-clip default.** Otherwise every new
+  shot would collide with the shot the reviewer was handed on arrival.
+
+A shot is a plain dict (`start`, `end`, `auto`, `default`) so it survives
+`st.session_state` unchanged. `auto` drives the yellow marker; `default` marks
+the untouched arrival state. Re-approving replaces the previous segments, so
+shrinking the shot count never leaves orphans.
+
+The timeline is HTML in `st.markdown`, not a custom component: a component
+would mean a JS build step, which `CLAUDE.md` rules out. The cost is that
+blocks cannot be dragged — numbers are typed into 0.1s-step inputs instead.
 
 Reject is recoverable by construction: it touches only the finished-product
 folder. The master, the delivered clip and the download all survive.
@@ -385,6 +413,21 @@ lossless masters. 23 is visually equivalent and 33% smaller.
 
 Explicitly rejected: FastAPI, React/Next.js, Celery/Redis, an ORM, PaddleOCR or
 any OCR, TransNetV2, deep video inpainting, optical flow, cloud storage.
+
+---
+
+## 13b. Windows asyncio teardown
+
+`vqa/winasyncio.py` patches `_ProactorBasePipeTransport._call_connection_lost`.
+CPython calls `socket.shutdown()` there without a guard, so a browser tab close,
+a page refresh or an aborted `st.video` range request raises
+`ConnectionResetError` (WinError 10054) **and skips the four teardown lines that
+follow it** — the socket is never closed and the server never detaches the
+transport. The exception surfaces inside the event loop's callback, where no
+application `try/except` can reach it, so wrapping the transport method is the
+only option. The patch swallows only `ConnectionReset`/`ConnectionAborted`,
+finishes the teardown by hand, and is idempotent because Streamlit re-executes
+the script on every interaction.
 
 ---
 
