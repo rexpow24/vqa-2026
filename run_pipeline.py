@@ -12,8 +12,6 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-from vqa import config, db, pipeline
-
 LOG_DIR = Path("logs")
 
 
@@ -34,8 +32,16 @@ def main() -> int:
         handle.write(line + "\n")
         print(line, flush=True)
 
-    db.init()
-    cfg = config.load()
+    try:
+        from vqa import config, db, pipeline
+        db.init()
+        cfg = config.load()
+    except Exception as exc:
+        log(f"RUNNER STARTUP FAILED: {exc}")
+        log(traceback.format_exc()[:2000])
+        handle.close()
+        return 1
+
     log(f"run start | config {config.config_hash(cfg)} | "
         f"review={'on' if cfg.get('review_enabled') else 'OFF (headless)'} | "
         f"blur={'on' if cfg.get('blur_enabled') else 'off'}")

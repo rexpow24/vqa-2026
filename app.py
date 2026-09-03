@@ -24,6 +24,7 @@ winasyncio.patch()
 st.set_page_config(page_title="VQA Clip Pipeline", page_icon="🎬", layout="wide")
 
 db.init()
+APP_DIR = Path(__file__).resolve().parent
 LOG_DIR = Path("logs")
 
 
@@ -37,8 +38,12 @@ def running_proc() -> subprocess.Popen | None:
 
 
 def start_run() -> None:
+    python_exe = APP_DIR / "venv" / "Scripts" / "python.exe"
+    if not python_exe.exists():
+        python_exe = Path(sys.executable)
     proc = subprocess.Popen(
-        [sys.executable, "run_pipeline.py"],
+        [str(python_exe), str(APP_DIR / "run_pipeline.py")],
+        cwd=APP_DIR,
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
     st.session_state["proc"] = proc
