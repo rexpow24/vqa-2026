@@ -27,6 +27,7 @@ DEFAULTS = {
         {"name": "bottom_left",  "enabled": True, "x": 0.0,  "y": 0.88, "w": 0.30, "h": 0.12},
         {"name": "top_left",     "enabled": True, "x": 0.0,  "y": 0.0,  "w": 0.30, "h": 0.08},
         {"name": "bottom_right", "enabled": True, "x": 0.68, "y": 0.84, "w": 0.32, "h": 0.11},
+        {"name": "middle_bottom", "enabled": True, "x": 0.30, "y": 0.78, "w": 0.40, "h": 0.22},
     ],
     "desaturate": 0.15,
     "darken": 0.10,
