@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phuong an 2 &mdash; Two-Tier Escalation</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+
+<style>
+  :root{
+    --paper:#fbf9f3; --ink:#1f2430; --blue:#1e5fbf; --green:#1f8a4c;
+    --red:#c0392b; --orange:#e07b1a; --purple:#7b3ea8; --line:#d8d2c4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,sans-serif;line-height:1.5;
+    background-image:linear-gradient(90deg,rgba(30,95,191,.04) 1px,transparent 1px),
+      linear-gradient(rgba(30,95,191,.04) 1px,transparent 1px);
+    background-size:28px 28px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 22px 60px}
+  h1{color:var(--blue);font-size:28px;margin:0 0 4px;letter-spacing:.3px}
+  .sub{color:#5c6270;font-size:15px;margin:0 0 26px}
+  h2{color:var(--green);font-size:19px;margin:34px 0 12px;
+    border-bottom:2px solid var(--green);display:inline-block;padding-bottom:2px}
+  .flow{background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin:8px 0 22px;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;
+    overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05);font-size:14px}
+  th{background:var(--blue);color:#fff;text-align:left;padding:9px 12px;font-weight:600}
+  td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:#faf8f2}
+  .num{font-weight:700;color:var(--blue)}
+  .callouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:8px 0 8px}
+  .c{border-radius:12px;padding:12px 14px;font-size:13.5px;border:1px dashed}
+  .c b{display:block;margin-bottom:3px;font-size:13px;text-transform:uppercase;letter-spacing:.4px}
+  .c.blue{border-color:var(--blue);background:rgba(30,95,191,.06)} .c.blue b{color:var(--blue)}
+  .c.orange{border-color:var(--orange);background:rgba(224,123,26,.07)} .c.orange b{color:var(--orange)}
+  .c.purple{border-color:var(--purple);background:rgba(123,62,168,.06)} .c.purple b{color:var(--purple)}
+  .c.green{border-color:var(--green);background:rgba(31,138,76,.06)} .c.green b{color:var(--green)}
+  .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;margin-left:10px}
+  .badge.top{background:rgba(31,138,76,.15);color:var(--green)}
+  .badge.mid{background:rgba(224,123,26,.15);color:var(--orange)}
+  .badge.low{background:rgba(123,62,168,.15);color:var(--purple)}
+  .note{background:rgba(224,123,26,.08);border-left:4px solid var(--orange);border-radius:8px;padding:10px 14px;font-size:14px;margin-top:14px}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<h1>Phuong an 2 &mdash; Two-Tier Escalation <span class="badge mid">NANG CAP NHE</span></h1>
+<p class="sub">Giong Phuong an 1, nhung them 1 buoc re tien (mien phi) de PHAT HIEN som cau co nguy co shortcut, chi 'chi tien' them cho nhung cau do</p>
+<h2>So do quy trinh</h2>
+<div class="flow"><pre class="mermaid">
+
+flowchart TD
+    A["&#9312; Collect &amp; Ingest"] --> B["&#9313; Filter &amp; Dedup + An danh"]
+    B --> C["&#9314; PASS-1 (MU): YOLO+event-log -&gt; VLM draft"]
+    C --> D["&#9315; PASS-2 (SANG): VLM xem video tu sua"]
+    D --> E{"&#9316; Heuristic MIEN PHI<br/><small>P1 va P2 khac nhau nhieu khong?<br/>(so sanh chuoi dap an, khong goi VLM them)</small>"}
+    E -- "khac nhieu (binh thuong,<br/>~80% cau)" --> F["&#9317;a Human Annotate<br/><small>1 nguoi</small>"]
+    E -- "khac it / giong het<br/>(nghi shortcut, ~20% cau)" --> G["&#9317;b ESCALATE<br/><small>+1 lan goi Visual-Verifier<br/>kiem tra grounding + de xuat distractor</small>"]
+    G --> H["Human Annotate<br/><small>2 nguoi (ky hon)</small>"]
+    F --> I["&#9318; QC nhe + Audit SAMPLE (P0)"]
+    H --> I
+    I --> J{"Dat chuan VG/BG/McNemar?"}
+    J -- "chua" --> K["Sua tay, khong quay lai VLM"]
+    K --> I
+    J -- "roi" --> L["&#9319; Split &amp; Package"]
+    V["Nhom V (vi pham)"] -.->|"luon di thang sang 2 nguoi<br/>+ cheat-sheet luat, khong RAG"| H
+    classDef auto fill:#eef4fd,stroke:#1e5fbf,color:#123f80;
+    classDef prob fill:#fdecea,stroke:#c0392b,color:#7d241a;
+    classDef ok fill:#eaf7ef,stroke:#1f8a4c,color:#155e34;
+    class C,D auto; class E,J prob; class L ok;
+
+</pre></div>
+<h2>Chi phi uoc tinh</h2>
+<table><tr><th>Muc</th><th>Gia tri</th></tr><tr><td>VLM calls / video (tao QA)</td><td>2 (giong Phuong an 1)</td></tr><tr><td>VLM calls them (escalation)</td><td>+1 lan CHI cho ~20% cau bi nghi shortcut (P1&asymp;P2)</td></tr><tr><td>Nhan luc annotate</td><td>1 nguoi cho ~80% cau de; 2 nguoi cho ~20% cau kho/escalated + toan bo nhom V</td></tr><tr><td>Ha tang can them</td><td>1 ham so sanh chuoi don gian (edit-distance / exact-match) &mdash; vai dong code, khong can model them</td></tr><tr><td>Metric Gate B dung</td><td>P0 nhu Phuong an 1, tren sample toan bo (khong chi 25%) vi da loc bot cau xau tu dau</td></tr><tr><td>Rui ro chinh</td><td>Heuristic string-diff co the bo sot shortcut tinh vi (dap an doi tu nhung van do duoc bang ngon ngu) &mdash; van can Gate B phia sau de bat</td></tr></table>
+<h2>Vi sao thiet ke the nay?</h2>
+<div class="callouts"><div class="c blue"><b>Vi sao dung heuristic mien phi?</b>So sanh P1 vs P2 khong ton them API call nao &mdash; chi la string compare. Day la cach 're' nhat de biet cau nao dang nghi ngo.</div><div class="c purple"><b>Vi sao chi escalate ~20%?</b>Phan lon cau (S/E don gian) VLM se tu sua nhieu giua P1/P2 mot cach tu nhien &mdash; chi nhom nghi ngo moi can dau tu them, giu tong chi phi gan Phuong an 1.</div><div class="c orange"><b>Vi sao V luon di 2 nguoi?</b>Rui ro phap ly khong the danh gia bang heuristic tan suat &mdash; luon uu tien nhan luc cho nhom nay bat ke ket qua P1/P2.</div><div class="c green"><b>Loi ich so voi Phuong an 1?</b>Bat duoc nhieu cau shortcut hon ma khong phai tra gia bang 3-agent crew day du &mdash; danh doi hop ly neu con chut ngan sach.</div></div>
+<div class="note">Chon phuong an nay neu Phuong an 1 chay thu on dinh va ban muon nang chat luong len mot chut ma khong phai tra them nhieu chi phi &mdash; phan lon do phat sinh chi roi vao ~20% cau thuc su can.</div>
+
+</div>
+<script>mermaid.initialize({{startOnLoad:true,theme:"base",themeVariables:{{primaryColor:"#eef4fd",primaryBorderColor:"#1e5fbf",primaryTextColor:"#123f80",lineColor:"#5c6270",fontSize:"14px"}}}});</script>
+</body>
+</html>
