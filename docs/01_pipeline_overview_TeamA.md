@@ -56,7 +56,7 @@ flowchart TD
 | # | Bước | Mục đích | Input | Output |
 |---|---|---|---|---|
 | 1 | Collect & Ingest | Thu thập nguyên liệu thô | Video YouTube/nguồn khác | Video thô trong kho trung tâm |
-| 2 | Filter & Dedup + Anonymize | Đảm bảo đúng phân phối VN, bỏ trùng, tuân thủ riêng tư | Video thô | Video đã lọc + đã blur mặt/biển số |
+| 2 | Filter & Dedup + Anonymize | Đảm bảo đúng phân phối VN, bỏ trùng, tuân thủ riêng tư | Video thô | Video đã lọc + **đã blur overlay của kênh**. ⚠️ **SỬA 2026-09-05: pipeline KHÔNG blur mặt hay biển số** — nó chỉ xoá overlay (logo, đồng hồ, tên camera). Kiểm bằng mắt trên `trimmed/` còn thấy biển số `37B-016.09` cháy chữ chưa bị che, vì 30 file hiện có được dựng trước khi vùng `middle_bottom` được thêm vào `config.json`. |
 | 3 | PASS-1 (mù) | Tạo nháp câu hỏi rẻ, làm điểm neo đo mức cần-video | YOLO detections + event-log ngắn (**không phải video**) | Nháp câu hỏi + đáp án tạm (P1), 5 nhóm S/E/T/C/V |
 | 4 | PASS-2 (sáng mắt) | Cho VLM xem video thật, sửa/hoàn thiện P1 | Video đã anonymize + nháp P1 | Câu hỏi hoàn chỉnh + đáp án tạm (P2) + keyframe candidate |
 | 4b | So sánh P1 vs P2 | Phát hiện sớm & miễn phí câu có nguy cơ shortcut | Cặp (P1, P2) | Nhãn "đã đổi" (bình thường) hoặc "giống hệt" (ưu tiên audit) |
@@ -75,7 +75,17 @@ flowchart TD
 
 **Pass-1 / Pass-2 và delta.** Pass-1 là VLM đoán "mù" (chỉ có nhãn YOLO + event-log, không có pixel). Pass-2 là cùng VLM đó, giờ xem video thật, tự sửa lại Pass-1. Nếu P1 ≠ P2 → tốt, chứng tỏ cần video mới trả lời đúng. Nếu P1 = P2 → đáng ngờ (có thể đoán được không cần video) → ưu tiên đưa vào mẫu audit + Team A xem lại event-log có lộ quá nhiều thông tin không.
 
-**Distractor.** Là các phương án SAI nhưng hợp lý, đặt cạnh đáp án đúng trong câu trắc nghiệm để kiểm tra model có thực sự hiểu video hay chỉ đoán theo cảm giác ngôn ngữ. Theo đúng thứ tự VRU-Accident: **người/Team B chốt đáp án đúng trước**, sau đó VLM **chỉ** sinh 3 distractor dựa trên cặp (câu hỏi, đáp án đúng) — VLM không bao giờ được tự chọn đáp án đúng.
+**Distractor.** Là các phương án SAI nhưng hợp lý, đặt cạnh đáp án đúng trong câu trắc nghiệm để kiểm tra model có thực sự hiểu video hay chỉ đoán theo cảm giác ngôn ngữ. Theo đúng thứ tự VRU-Accident: **người/Team B chốt đáp án đúng trước**, sau đó VLM **chỉ** sinh 3 distractor dựa trên cặp (câu hỏi, đáp án đúng).
+
+> **SỬA 2026-09-05 — quy tắc "VLM không bao giờ tự chọn đáp án đúng" đã bị thay đổi có chủ ý.**
+> Hệ thống trong `vlm/` **có** sinh đáp án nháp cho từng shot. Quyết định này được đưa ra khi
+> đã biết rõ cái giá: (1) annotator nhìn thấy đáp án nháp sẽ bị *anchoring*, nên κ giữa hai
+> annotator không còn là tín hiệu độc lập như mục 5 giả định; (2) Gate B ở bước 11 sẽ đo model
+> trên nhãn mà chính model đã góp phần tạo ra, nên `VG = Acc_video − Acc_blind` không còn là
+> bằng chứng chống-shortcut mạnh như `modality_collapse_evaluation.md` mô tả.
+> Rào chắn duy nhất còn giữ: nhãn nháp nằm trong `vlm/data/output/`, **không bao giờ** được ghi
+> vào bảng `reviews` hay `pipeline.db`. Ai muốn khôi phục sức mạnh của Gate B thì phải bỏ nhãn
+> nháp khỏi màn hình annotator, không phải sửa công thức.
 
 **Keyframe evidence.** 1–3 chỉ số frame làm bằng chứng cho đáp án — do Team B chọn thủ công khi xem video, không phải VLM tự đề xuất.
 

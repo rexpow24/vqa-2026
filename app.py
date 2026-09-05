@@ -478,27 +478,26 @@ with tab_review:
         full = len(shots) >= trim.MAX_SHOTS and not trim.is_untouched(shots, dmax)
         if mc2.button("📍 Mark cut", key=f"mark_{cid}", disabled=full,
                       width='stretch'):
-            # The first mark replaces the untouched whole-clip default rather
-            # than colliding with it.
-            base = [] if trim.is_untouched(shots, dmax) else list(shots)
-            made = trim.mark_cut(x, dmax, base, pad)
-            if made is None:
+            new_shots = trim.apply_mark(shots, dmax, x, pad)
+            if new_shots is None:
+                base = [] if trim.is_untouched(shots, dmax) else shots
                 st.session_state[f"err_{cid}"] = (
                     "Cannot auto-adjust – "
                     + trim.why_no_room(x, dmax, base, pad)
                     + ". Move the playhead, remove a shot, or type the times in "
                       "by hand.")
             else:
-                _set(base + [made])
+                made = new_shots[-1]
+                _set(new_shots)
                 st.session_state[f"toast_{cid}"] = (
                     f"Shot at {made['start']:.1f}–{made['end']:.1f}s"
                     + (" (auto-adjusted)" if made["auto"] else ""))
             st.rerun()
         if mc3.button("➕ Add shot", key=f"add_{cid}", disabled=full,
                       width='stretch'):
-            base = [] if trim.is_untouched(shots, dmax) else list(shots)
-            last = base[-1]["end"] if base else 0.0
-            _set(base + [trim.shot(last, min(last + 2 * pad, dmax))])
+            new_shots = trim.append_shot(shots, dmax, pad)
+            if new_shots is not None:
+                _set(new_shots)
             st.rerun()
 
         st.markdown(trim.timeline_html(shots, dmax), unsafe_allow_html=True)
@@ -510,11 +509,11 @@ with tab_review:
                 f"{c['amount']:.1f}s ({c['start']:.1f}–{c['end']:.1f}s).")
             if k2.button("🔧 Resolve conflict", width='stretch',
                          key=f"res_{cid}_{c['i']}_{c['j']}"):
-                fixed = list(shots)
                 # Shrink the newer shot; the earlier one is the reviewer's
                 # settled decision.
-                if trim.resolve(fixed, c["j"], dmax):
-                    _set(fixed)
+                new_shots = trim.resolve(shots, c["j"], dmax)
+                if new_shots is not None:
+                    _set(new_shots)
                     st.session_state[f"toast_{cid}"] = "Resolved"
                 else:
                     st.session_state[f"err_{cid}"] = (
@@ -538,10 +537,7 @@ with tab_review:
                          help="Remove this shot"):
                 _set([t for k, t in enumerate(shots) if k != i])
                 st.rerun()
-            moved = abs(a - s["start"]) > 1e-6 or abs(b - s["end"]) > 1e-6
-            edited.append(trim.shot(
-                a, b, auto=s.get("auto") and not moved,
-                default=s.get("default") and not moved))
+            edited.append(trim.reshape(s, a, b))
         if edited != shots:
             # Typing a number must move the timeline, so take the edit and redraw.
             # No revision bump: these values came *from* the widgets.

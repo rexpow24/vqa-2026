@@ -13,3 +13,22 @@ cookies.txt
 cookies.json
 cookies.netscape.txt
 .pytest_cache/
+
+# --- Phase 2: VLM server ----------------------------------------------------
+
+# Model weights are ~1.9 GB and are fetched from HuggingFace (GUIDE.md 3.1).
+# Ignore the whole directory rather than listing formats: a resumed curl leaves
+# *.gguf.part behind and a retry leaves *.gguf.1, and either one is a gigabyte
+# nobody meant to commit. SHA256SUMS is the part worth keeping -- it is how a
+# download gets verified without shipping the files.
+models/*
+!models/SHA256SUMS
+*.gguf
+
+# Everything the VLM path reads or writes. test_api.py recreates output/ on
+# demand, so nothing here needs to exist in a fresh clone.
+vlm/data/
+
+# Redundant with the bare `.env` above, kept explicit because this is the file
+# that holds machine-specific model paths and context sizes.
+docker/.env

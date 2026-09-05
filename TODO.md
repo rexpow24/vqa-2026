@@ -1,6 +1,6 @@
 # TODO — Vietnamese Traffic Clip Dataset Pipeline
 
-**Updated:** 2026-08-29 · Governed by [`CLAUDE.md`](./CLAUDE.md) ·
+**Updated:** 2026-09-05 · Governed by [`CLAUDE.md`](./CLAUDE.md) ·
 Design: [`architecture.md`](./architecture.md) · Usage: [`GUIDE.md`](./GUIDE.md)
 
 ---
@@ -12,6 +12,10 @@ video (`KdhIs56QWuQ`, *Camera giao thông*, 12 min) went download → segment �
 blur → review → export and produced **35 clips**.
 
 **Open P0 items: none.**
+
+**Phase 2 opened 2026-09-05** — VLM-assisted QA annotation. V1 shipped: a self-hosted
+Qwen3-VL-2B server proven to actually read the clips. See `architecture.md` §15 and
+`features/qa-pipeline/ship-review.md`.
 
 ### What real footage changed
 
@@ -44,6 +48,11 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
 | Could not review while the pipeline ran | `st.video` restarted every 2s; `AppTest` never returned | `time.sleep(2); st.rerun()` at app scope reran *every* tab → `st.fragment(run_every=2)` |
 | Removing a URL crashed the Queue tab | `st.session_state.rm_pick cannot be modified after the widget is instantiated` | same widget-ownership trap as the trim rows → versioned key |
 | Log would have frozen at its first line | (caught by a test before shipping) | keyed `st.text_area` ignores `value=` on re-render → `st.code` |
+| Reject orphaned a VLM annotation | annotation pointed at a `trimmed/` file that `review.discard()` had already `unlink()`ed, with nothing logged | a stored file path is not an identity; records now key on `clip_id` + `shot` + `source_sha256` and resolve the path at read time |
+| `clips.trimmed_path` is a dead column that fails two different ways | on this database: NULL on all 141 rows while 30 files exist, so a query silently returns nothing. On a database created today: `sqlite3.OperationalError: no such column` | `db.py:129` reads it once during migration and never writes it again; `CREATE TABLE` for new databases omits it entirely. `trim_segments` is the live owner |
+| Evenly spaced keyframes miss the impact | on the longest clip (29s) four even frames land 5.8s and 23.2s — ~9s from the collision, useless for a group-C question | the cut rule is `impact ± pad`, so the collision is at the *middle* of a finished shot, not the start |
+| `temperature=0` is not byte-reproducible | a second run diverged mid-sentence at char 92, text-only condition only | llama.cpp prompt cache: the second run hits the cache the first left behind, changing float reduction order on CUDA. Long free-form generations amplify it; short ones stop before it shows |
+| Any script printing model output crashes on Windows | `UnicodeEncodeError: 'charmap' codec can't encode 'ả'` *after* a correct answer came back | console is cp1252, the model answers in Vietnamese → `sys.stdout.reconfigure(encoding="utf-8")` |
 | `WinError 10054` traceback on every reload | looked cosmetic; actually leaked a socket + left the transport attached to the server | CPython's unguarded `sock.shutdown()` skips its own teardown → `vqa/winasyncio.py` completes it |
 
 ---
@@ -171,3 +180,41 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
 | Vendoring the yt-dlp JS solver | `ejs:github` works | the remote fetch becomes unacceptable or unavailable |
 | Trimming from masters instead of `delivered` | generation loss negligible at `cq=23` | quality complaints from annotation |
 | VQA / QA generation | **explicitly out of scope for this phase** | clips are reviewed and exported |
+
+
+---
+
+# Phase 2 — open items
+
+## TODO
+
+- [ ] **Batch inference over all 30 approved shots** — `vlm/scripts/batch_inference.py`
+      with checkpoint, retry, timeout, resume and duplicate prevention.
+      Deferred from V1 deliberately: `features/qa-pipeline/spec.md` non-goals.
+- [ ] **Annotation dashboard** — the reviewer in `app.py` is the model to copy, not
+      a second Streamlit app.
+- [ ] **Decide whether Team B still double-annotates** now that a draft answer exists.
+      Open question Q10 in `features/qa-pipeline/requirements.md`; it changes the label
+      schema (one label per item, or ≥2 for κ).
+- [ ] **Distractor generation, Pass-1/Pass-2, κ/α, Gate B** — the methodology in `docs/`,
+      none of it started.
+
+## BLOCKED / needs a decision
+
+- [ ] **30 files in `trimmed/` still show a burned-in plate `37B-016.09`.** They were
+      built before `middle_bottom` was added to `config.json`. Re-cutting them means
+      re-running blur + re-approving, which throws away reviewer decisions unless the
+      trim segments are replayed. Found by looking at a keyframe, 2026-09-05.
+- [ ] **The pipeline does not blur faces or licence plates at all** — only channel
+      overlays, and calibration measures *motion*, so it structurally cannot mask a
+      plate on a moving vehicle (`architecture.md` §5). `docs/01…TeamA.md` step 2 has
+      been corrected to stop claiming otherwise, but the capability gap is real and
+      matters before any dataset leaves this machine.
+
+## Known limitation, accepted
+
+- Draft answers from the VLM weaken the anti-shortcut argument: annotators anchor on
+  them, and Gate B measures a model on labels a model helped write. Accepted knowingly
+  on 2026-09-05 (`CLAUDE.md` decision log). The mitigation that remains is structural:
+  drafts live in `vlm/data/output/`, never in `pipeline.db`, enforced by
+  `tests/test_vlm_isolation.py`.

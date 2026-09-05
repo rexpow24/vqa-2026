@@ -5,6 +5,8 @@ Two audiences in one file:
 - **[Part 1 — Operator](#part-1--operator)**: whoever runs the pipeline.
 - **[Part 2 — Reviewer](#part-2--reviewer)**: whoever decides what makes it into
   the dataset. **The trim rule is in [§2.4](#24-where-to-cut--the-rule).**
+- **[Part 3 — VLM server](#part-3--vlm-server)**: asking a local vision model
+  about a clip. Phase 2, added 2026-09-05.
 
 ---
 
@@ -316,3 +318,121 @@ on — that is what the flag is for.
 Rough expectation: **~1500 clips for 50 videos**. Every clip needs a human
 decision, because with a single detection signal none of them can be trusted
 automatically.
+
+
+---
+
+# Part 3 — VLM server
+
+A local Qwen3-VL-2B answering questions about video, for drafting QA labels.
+Nothing here writes to `pipeline.db` — it only reads.
+
+## 3.1 One-time setup
+
+Weights are not in the repo (~1.9 GB). Fetch them into `models/`:
+
+```bash
+B=https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct-GGUF/resolve/main
+curl -L -o models/Qwen3VL-2B-Instruct-Q4_K_M.gguf   $B/Qwen3VL-2B-Instruct-Q4_K_M.gguf
+curl -L -o models/mmproj-Qwen3VL-2B-Instruct-F16.gguf $B/mmproj-Qwen3VL-2B-Instruct-F16.gguf
+sha256sum -c models/SHA256SUMS      # must both say OK before you go further
+```
+
+A truncated download loads and then fails strangely later, so check the hashes.
+
+## 3.2 Start and stop
+
+```bash
+docker compose -f docker/docker-compose.yml up -d      # ~60s to load
+docker compose -f docker/docker-compose.yml logs -f    # watch it come up
+docker compose -f docker/docker-compose.yml down       # stop, free the VRAM
+```
+
+It is up when `docker ps` shows `(healthy)`. Two lines in the log matter:
+
+```
+loaded multimodal model, '/models/mmproj-Qwen3VL-2B-Instruct-F16.gguf'
+listening on http://0.0.0.0:8080
+```
+
+**Without the `mmproj` line the model is text-only** — it will answer your
+questions confidently and never look at a single pixel.
+
+`0.0.0.0` there is *inside* the container. From your machine it is reachable
+only on `127.0.0.1:8080`, which is deliberate: llama.cpp has no password and
+allows any origin. Do not publish the port to the LAN without putting
+something in front of it.
+
+## 3.3 Ask about a video
+
+```bash
+python -m vlm.scripts.ask <video> "<your question>"
+```
+
+```
+$ python -m vlm.scripts.ask work/fy_MyGNqwfI/trimmed/fy_MyGNqwfI_065967_094167_t01.mp4       "Chuyện gì xảy ra trong video này?"
+
+video  : fy_MyGNqwfI_065967_094167_t01.mp4  (10.0s)
+frames : 4 at [2.0, 4.0, 6.0, 8.0]
+
+Video ghi lại cảnh một chiếc xe máy đang di chuyển trên đường... xe máy bị va
+chạm với xe tải.
+
+(9455 ms, 1375 prompt tokens)
+```
+
+| Flag | What it does |
+|---|---|
+| `--frames 8` | more keyframes. Each costs ~344 tokens of a 4096 context, so **8 is the practical ceiling** |
+| `--at 5.0 5.5 6.0` | exact seconds instead of sampling — use when you know where the incident is |
+| `--middle` | cluster the frames around the middle, where `impact ± pad` puts the collision. Default spreads them across the whole file |
+| `--json` | one JSON object, for piping into something else |
+| `--timeout`, `--width`, `--temperature`, `--max-tokens` | as named |
+
+**It sends frames, not video.** Motion between two frames is lost, so the model
+*infers* a collision from stills rather than seeing it. Read its answers with
+that in mind, especially for questions about order of events.
+
+First question after startup takes ~50s; after that 3–10s.
+
+## 3.4 Check the model is really looking
+
+Run this before trusting a batch of answers, and any time the answers start
+feeling generic:
+
+```bash
+python -m vlm.scripts.test_api
+```
+
+It asks one approved clip the same question three ways — real keyframes, flat
+grey frames, and no image at all — and **fails if the real answer matches the
+no-image answer**, because that means the vision encoder is not contributing.
+Exit code 0 is the only pass.
+
+```
+[real ]   7256 ms   1384 tok  - Xe tải: Xanh bạc, có logo Hyundai...
+[grey ]   8982 ms   1384 tok  Không có phương tiện nào được nhìn thấy trong hình ảnh.
+[blind]    991 ms     32 tok  Các phương tiện thường có màu sắc như: trắng, xanh...
+PASS: real != grey != blind
+```
+
+## 3.5 When something is wrong
+
+| Symptom | What it means |
+|---|---|
+| `no VLM server at http://127.0.0.1:8080` | container is down — `docker compose ... up -d` |
+| healthy, but no `loaded multimodal model` line | `--mmproj` did not load; the model is blind |
+| `test_api` fails with *real == blind* | same thing, caught by behaviour instead of by log |
+| CUDA OOM on load | lower `VLM_CTX` in `docker/.env` before anything else |
+| answers ignore later frames | context is full — use fewer `--frames` |
+| `UnicodeEncodeError` in your own script | the model replies in Vietnamese; add `sys.stdout.reconfigure(encoding="utf-8")` |
+
+## 3.6 What you should not trust it for
+
+The model **drafts** answers. It does not decide them. A draft answer is not
+ground truth, and a reviewer who reads it before deciding will tend to agree
+with it — which is exactly what destroys the value of two annotators working
+independently. Decide first, then compare.
+
+Measured on the 6 GB GTX 1660 Ti: 3.3 GB VRAM in use, 4 keyframes = 1378 of
+4096 tokens, 3–10s per question once warm.

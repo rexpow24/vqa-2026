@@ -1,0 +1,40 @@
+stateDiagram-v2
+    direction TB
+
+    note as N1
+        Trạng thái của MỘT clip nhìn từ đường VLM.
+        Nguồn sự thật là clips.trim_segments + file trên đĩa,
+        cả hai đều do pipeline clip sở hữu -- vlm/ chỉ đọc.
+    end note
+
+    [*] --> KhongDuDieuKien: clip chưa APPROVED<br/>hoặc trim_segments rỗng
+    KhongDuDieuKien --> SanSang: reviewer bấm Approve<br/>(materialize ghi trimmed/)
+
+    SanSang --> DaHoi: ask() trả lời được
+    SanSang --> LoiCoTen: timeout / HTTP lỗi / ảnh hỏng
+    LoiCoTen --> SanSang: chạy lại
+
+    SanSang --> NguonBienMat: reviewer bấm Reject<br/>hoặc purge_video()
+    DaHoi --> NguonBienMat: như trên, SAU khi đã có nhãn nháp
+    NguonBienMat --> SanSang: reviewer Approve lại
+
+    DaHoi --> Stale: reviewer cắt lại clip<br/>-> source_sha256 lệch
+    Stale --> DaHoi: hỏi lại trên nội dung mới
+
+    note as N2
+        CHUYỂN TIẾP KHÔNG TỒN TẠI (cố ý):
+
+        * Không có mũi tên nào từ vlm/ ghi ngược vào
+          pipeline.db. Kết nối mở mode=ro -- nên
+          KhongDuDieuKien -> SanSang chỉ có thể do
+          NGƯỜI bấm Approve, không bao giờ do VLM.
+
+        * DaHoi KHÔNG bao giờ trở thành ground truth.
+          Nhãn nháp sống trong vlm/data/output/, không
+          có đường nào dẫn nó vào bảng reviews.
+          Đây là rào chắn duy nhất còn lại cho rủi ro A6.
+
+        * NguonBienMat là trạng thái CÓ TÊN, không phải
+          lỗi. Bản ghi khoá theo clip_id nên nó không
+          bao giờ suy biến thành đường dẫn hỏng im lặng.
+    end note

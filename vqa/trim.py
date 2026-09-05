@@ -101,10 +101,54 @@ def why_no_room(x: float, duration: float, others: list[dict],
             + (f" ({where})" if where else ""))
 
 
-def resolve(shots: list[dict], idx: int, duration: float) -> bool:
+def apply_mark(shots: list[dict], duration: float, x: float,
+                pad: float = PAD_DEFAULT) -> list[dict] | None:
+    """Mark cut: centre a shot on `x`, replacing an untouched default.
+
+    The first Mark cut replaces the whole-clip default rather than colliding
+    with it; after that it extends the list. Returns None if even PAD_MIN
+    can't fit, or if the clip is already at MAX_SHOTS.
+    """
+    base = [] if is_untouched(shots, duration) else list(shots)
+    if len(base) >= MAX_SHOTS:
+        return None
+    made = mark_cut(x, duration, base, pad)
+    if made is None:
+        return None
+    return base + [made]
+
+
+def reshape(old: dict, start: float, end: float) -> dict:
+    """Rebuild a shot at new Start/End, clearing `auto`/`default` if they moved.
+
+    A reviewer typing new numbers over an auto-adjusted or default shot is
+    making a manual decision — the flags that mark it as untouched no longer
+    apply.
+    """
+    moved = abs(start - old["start"]) > 1e-6 or abs(end - old["end"]) > 1e-6
+    return shot(start, end, auto=old.get("auto") and not moved,
+                default=old.get("default") and not moved)
+
+
+def append_shot(shots: list[dict], duration: float,
+                 pad: float = PAD_DEFAULT) -> list[dict] | None:
+    """Add shot: a new shot starting where the last one ends (or at 0).
+
+    Replaces an untouched default like `apply_mark` does. Returns None at
+    MAX_SHOTS.
+    """
+    base = [] if is_untouched(shots, duration) else list(shots)
+    if len(base) >= MAX_SHOTS:
+        return None
+    last = base[-1]["end"] if base else 0.0
+    return base + [shot(last, min(last + 2 * pad, duration))]
+
+
+def resolve(shots: list[dict], idx: int, duration: float) -> list[dict] | None:
     """Shrink `shots[idx]` around its own centre until it clears everything.
 
-    Mutates the list in place. False means it hit PAD_MIN still overlapping.
+    Returns the new shot list, or None if it hit PAD_MIN still overlapping.
+    Does not mutate `shots`.
     """
     target = shots[idx]
     centre = (target["start"] + target["end"]) / 2.0
@@ -115,9 +159,10 @@ def resolve(shots: list[dict], idx: int, duration: float) -> bool:
             continue          # the ladder floor may exceed an already-tiny shot
         a, b = round(centre - p, 1), round(centre + p, 1)
         if _fits(a, b, duration, others):
-            shots[idx] = shot(a, b, auto=True)
-            return True
-    return False
+            new_shots = list(shots)
+            new_shots[idx] = shot(a, b, auto=True)
+            return new_shots
+    return None
 
 
 def conflicts(shots: list[dict]) -> list[dict]:

@@ -1,0 +1,59 @@
+sequenceDiagram
+    autonumber
+    actor Op as Operator
+    participant TA as test_api.py
+    participant SRC as vlm/source.py
+    participant DB as pipeline.db (READ-ONLY)
+    participant FR as vlm/frames.py (ffmpeg)
+    participant CL as vlm/client.py
+    participant SV as llama.cpp server<br/>127.0.0.1:8080
+    participant OUT as vlm/data/output/*.jsonl
+
+    Op->>TA: python -m vlm.scripts.test_api
+    TA->>SRC: approved_clips()
+    SRC->>DB: SELECT clips JOIN reviews<br/>decision='APPROVED' AND trim_segments<>'[]'
+    Note over SRC,DB: dùng trim_segments, KHÔNG dùng trimmed_path (cột chết)
+    DB-->>SRC: 27 rows
+    SRC->>SRC: sha256 từng file trong trimmed/
+
+    alt file đã bị Reject/purge xoá
+        SRC-->>TA: bỏ qua clip, đếm vào "nguồn đã biến mất"
+        Note right of SRC: trạng thái nhìn thấy được,<br/>không phải con trỏ hỏng im lặng
+    end
+
+    TA->>FR: keyframes(clip, keyframe_times(segment, 4))
+    alt ffmpeg lỗi / trả 0 byte
+        FR-->>TA: MediaError có tên
+        TA-->>Op: exit != 0, in tên lỗi
+    end
+    FR-->>TA: 4 JPEG bytes
+
+    TA->>CL: health()
+    alt server chưa chạy
+        CL-->>TA: connection refused
+        TA-->>Op: exit != 0, "server chưa chạy" (không traceback trần)
+    end
+
+    loop 3 điều kiện: real / grey / blind
+        TA->>CL: ask(question, images, timeout)
+        CL->>SV: POST /v1/chat/completions (base64 images)
+        alt timeout hoặc HTTP lỗi
+            SV--xCL: --
+            CL->>OUT: {status:"error", error:"..."}
+            Note right of CL: ghi lại, KHÔNG nuốt im lặng
+        else ok
+            SV-->>CL: answer + latency
+            CL->>OUT: {status:"success", clip_id, source_sha256, condition, answer}
+        end
+    end
+
+    TA->>TA: so sánh A(real) / B(grey) / C(blind)
+    alt A == C
+        TA-->>Op: exit 1 — "vision encoder không tham gia"
+    else A == B
+        TA-->>Op: exit 1 — "không phân biệt được ảnh thật/xám"
+    else
+        TA-->>Op: exit 0 — latency + câu trả lời
+    end
+
+    Note over DB: pipeline.db mở mode=ro<br/>sha256 của nó KHÔNG đổi sau toàn bộ luồng

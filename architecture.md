@@ -14,7 +14,9 @@ single-incident clips on local disk, ready for later VQA annotation.
 
 **In scope:** download → segment → redact overlays → human review → export.
 
-**Out of scope, deliberately:** VQA/QA generation, Google Drive or any cloud
+**Phase 2, added 2026-09-05:** VLM-assisted QA annotation — `vlm/` and `docker/`. See §15.
+
+**Out of scope, deliberately:** Google Drive or any cloud
 storage, multi-machine coordination, formal boundary benchmarks, threshold
 tuning campaigns.
 
@@ -381,11 +383,23 @@ without starting Streamlit:
 
 | Function | Rule |
 |---|---|
-| `mark_cut(x, dur, others, pad)` | `x ± pad`, shrinking `pad → pad-1 → … → 1s` until it clears the clip edges and every other shot. `None` when even ±1s cannot fit. |
-| `resolve(shots, i, dur)` | same ladder applied to one existing shot, around its own centre. `False` when it is buried inside another. |
+| `apply_mark(shots, dur, x, pad)` | Mark cut end-to-end: replaces an untouched default, calls `mark_cut`, refuses past `MAX_SHOTS`. Returns the new shot list, or `None`. |
+| `append_shot(shots, dur, pad)` | Add shot end-to-end: replaces an untouched default, places the new shot at the previous one's end (or 0), refuses past `MAX_SHOTS`. Returns the new shot list, or `None`. |
+| `mark_cut(x, dur, others, pad)` | `x ± pad`, shrinking `pad → pad-1 → … → 1s` until it clears the clip edges and every other shot. `None` when even ±1s cannot fit. The geometry `apply_mark` builds on. |
+| `resolve(shots, i, dur)` | same ladder applied to one existing shot, around its own centre. Returns the new shot list, or `None` when it is buried inside another. Does not mutate `shots`. |
+| `reshape(shot, start, end)` | rebuilds one shot at new Start/End, clearing `auto`/`default` if the numbers actually moved — a manual edit is a manual decision. |
 | `conflicts(shots)` | overlapping pairs and the region they share. Under `OVERLAP_TOL = 0.1s` is rounding noise, not a conflict. |
 | `errors(shots, dur)` | everything blocking Approve: conflicts, inverted shots, out-of-range shots. |
 | `timeline_html(shots, dur)` | the whole clip as a bar, one colour per shot, overlaps in red. Plain HTML+CSS via `st.markdown`. |
+
+`apply_mark`/`append_shot`/`resolve`/`reshape` are the only functions `app.py`
+calls from the Review tab; every mutation decision (replace-vs-extend,
+auto-shrink, MAX_SHOTS, clearing `auto`/`default` on a manual edit) lives here,
+not in the button handlers. `app.py` calls one function per handler and either
+`_set()`s the result or shows the error — no shot-list rule is inlined in
+`app.py` itself. This is what makes the module deep: a small interface (four
+functions) in front of every rule the Review tab enforces, all of it reachable
+by `pytest` with no Streamlit involved.
 
 Three design points worth stating:
 
@@ -393,8 +407,10 @@ Three design points worth stating:
   an auto-adjusted clip is still a valid answer to "what happened here".
 - **Refuse rather than emit a sliver.** Below ±1s the tool stops and says so.
   A 0.4s clip is worse than no clip, and the reviewer can always type times.
-- **The first Mark cut replaces the whole-clip default.** Otherwise every new
-  shot would collide with the shot the reviewer was handed on arrival.
+- **The first Mark cut (or Add shot) replaces the whole-clip default.**
+  Otherwise every new shot would collide with the shot the reviewer was handed
+  on arrival. Enforced once, inside `apply_mark`/`append_shot`, not at each
+  call site.
 
 A shot is a plain dict (`start`, `end`, `auto`, `default`) so it survives
 `st.session_state` unchanged. `auto` drives the yellow marker; `default` marks
@@ -517,6 +533,68 @@ the script on every interaction.
 7. **Trim re-encodes an already-encoded file.** Generation loss, negligible at
    `cq=23`. Cutting from masters and re-blurring would avoid it, at a few seconds
    per trim.
+
+---
+
+## 15. Phase 2 — the VLM annotation path
+
+Added 2026-09-05, verified end to end on real clips the same day.
+
+```
+vlm/scripts/test_api.py
+   │
+   ├── vlm/source.py ──(mode=ro)──▶ pipeline.db      clips ⋈ reviews, APPROVED
+   ├── vlm/select.py                                 4 times around the middle
+   ├── vlm/frames.py ──ffmpeg──▶ 4 colour JPEGs
+   └── vlm/client.py ──HTTP──▶ 127.0.0.1:8080 ──▶ docker: llama.cpp server-cuda
+                                                     Qwen3-VL-2B Q4_K_M + mmproj
+   └──▶ vlm/data/output/*.jsonl        the only thing this path writes
+```
+
+**One-way dependency.** `vlm/` imports `vqa/`; `vqa/` never imports `vlm/`. Deleting
+`vlm/` entirely leaves the clip pipeline and its 55 original tests untouched.
+
+**Why the database is read-only.** `run_pipeline.py` and the Streamlit reviewer already
+contend over `pipeline.db`, and every serious bug in §14's history came from a second
+writer. `vlm/source.py` opens it `file:...?mode=ro`, and `tests/test_vlm_isolation.py`
+fails the build if write SQL ever appears under `vlm/`.
+
+**Why records key on `clip_id + shot + sha256`, never a path.** `review.discard()` deletes
+from `trimmed/` when the reviewer rejects a clip, and `review.purge_video()` deletes when a
+video leaves the queue. A stored path silently starts pointing at nothing. Keying on the
+clip and hashing the file turns both cases into visible states: a missing file is reported
+as a missing source, and a re-cut clip shows up as a changed hash rather than an old answer
+quietly describing a different video.
+
+**Why `trim_segments` and not `trimmed_path`.** `trimmed_path` looks like the owner and is
+not: `db.py` reads it once during migration and never writes it again. On this project's
+database it is NULL on all 141 rows while 30 files sit in `trimmed/`; on a database created
+today the column does not exist at all, so the same mistake fails silently on one machine
+and crashes on another.
+
+**Why keyframes cluster at the middle.** The cut rule is `impact ± pad`, so in a finished
+shot the collision is near the centre. Reviewer-adjusted shots run 9.2–29.0s (median 16.0),
+and spreading four frames evenly across the longest one puts them ~9s from the impact —
+useless for a group-C question, which needs the frame just before it.
+
+**Measured, 2026-09-05** (GTX 1660 Ti, 6144 MiB):
+
+| Quantity | Value |
+|---|---|
+| VRAM idle → model loaded | 544 → 3259 MiB (attributed by stopping the container: 532 MiB) |
+| VRAM during inference | 3317 MiB, 54% of the card |
+| Prompt tokens | 1 image 364 · 2 images 702 · **4 images 1378** of a 4096 context |
+| Latency | 52.5s cold, then 3–7s warm |
+| Determinism | `temperature=0` gives byte-identical answers across runs |
+
+**Known limitation.** llama.cpp warns Qwen-VL wants ≥1024 image tokens for grounding tasks;
+at 768px each image costs ~344. Raising `--image-min-tokens` would push 4 images past a 4096
+context and need `--ctx-size 8192` plus more VRAM. Left at the default because the model
+reads licence plates and shop signs correctly as configured.
+
+**Security.** llama.cpp has no authentication and enables CORS `*` — it says so in its own
+startup log. The only thing keeping it private is the `127.0.0.1` in the compose port
+mapping. Do not change that to `0.0.0.0` without putting something in front of it.
 
 ---
 

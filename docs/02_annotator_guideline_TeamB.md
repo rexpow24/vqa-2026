@@ -13,6 +13,13 @@ Bạn nhận một **video** + một **câu hỏi** + một **guideline** (do Te
 ## Quy trình 1 item, từng bước
 
 1. Đọc câu hỏi + guideline (không xem đáp án gợi ý nếu có — nếu file có cột "đáp án dự kiến của Team A", **đừng mở** cho tới khi bạn đã tự quyết xong).
+
+   > **CẬP NHẬT 2026-09-05.** Từ Phase 2, hệ thống có thể hiển thị **đáp án nháp do VLM sinh**.
+   > Quy tắc trên vẫn giữ nguyên và giờ còn quan trọng hơn: **tự quyết đáp án trước khi đọc
+   > đáp án nháp**. Đáp án của máy không phải đáp án đúng — nó chỉ là gợi ý và nó *sai thường
+   > xuyên*. Nếu bạn đọc nó trước, bạn sẽ có xu hướng đồng ý với nó, và toàn bộ giá trị của
+   > việc hai annotator làm độc lập sẽ mất. Khi bạn không đồng ý với đáp án nháp, **cứ nộp
+   > đáp án của bạn** — bất đồng đó là dữ liệu, không phải lỗi.
 2. Xem toàn bộ video ít nhất 1 lần trước khi trả lời (không tua nhanh qua đoạn có vẻ "không liên quan" — nhiều câu cố ý có bằng chứng nằm ngoài đoạn va chạm).
 3. Chọn đáp án theo nguyên tắc ở mục "Nguyên tắc chọn đáp án" bên dưới.
 4. Ghi lại 1–3 chỉ số khung hình (keyframe) làm bằng chứng — theo mục "Chọn keyframe".

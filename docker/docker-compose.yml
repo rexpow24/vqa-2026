@@ -1,0 +1,50 @@
+# llama.cpp VLM server — Qwen3-VL-2B on a 6 GB GTX 1660 Ti.
+#
+# Priority is STABILITY > QUALITY > THROUGHPUT (overview.md §7): one request at a
+# time, a context small enough to leave headroom, and no attempt to fill the card.
+#
+# The image is pinned by digest, not by tag: `server-cuda` moves, and a model that
+# loads today must still load after the next push (overview.md §22.4).
+services:
+  vlm:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda@sha256:7f87a3bbe3143cdb857f5c84f82d2c15528be70ca0e7c5ade9a47d56b791f93f
+    container_name: vlm
+    restart: unless-stopped
+
+    # Loopback only. The server has no authentication of its own, so the host
+    # firewall is the only thing between it and the LAN (overview.md §17).
+    # Inside the container it must listen on 0.0.0.0 for the mapping to reach it;
+    # what keeps it private is the 127.0.0.1 on the left of this line.
+    ports:
+      - "127.0.0.1:${VLM_PORT:-8080}:8080"
+
+    volumes:
+      - ../models:/models:ro
+
+    command: >
+      --model /models/${VLM_MODEL:-Qwen3VL-2B-Instruct-Q4_K_M.gguf}
+      --mmproj /models/${VLM_MMPROJ:-mmproj-Qwen3VL-2B-Instruct-F16.gguf}
+      --alias ${VLM_ALIAS:-qwen3-vl-2b}
+      --host 0.0.0.0
+      --port 8080
+      --ctx-size ${VLM_CTX:-4096}
+      --n-gpu-layers ${VLM_NGL:-99}
+      --parallel 1
+      --batch-size 512
+      --ubatch-size 256
+      --jinja
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
