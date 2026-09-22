@@ -205,11 +205,32 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
       built before `middle_bottom` was added to `config.json`. Re-cutting them means
       re-running blur + re-approving, which throws away reviewer decisions unless the
       trim segments are replayed. Found by looking at a keyframe, 2026-09-05.
-- [ ] **The pipeline does not blur faces or licence plates at all** — only channel
+- [x] **The pipeline does not blur faces or licence plates at all** — only channel
       overlays, and calibration measures *motion*, so it structurally cannot mask a
       plate on a moving vehicle (`architecture.md` §5). `docs/01…TeamA.md` step 2 has
       been corrected to stop claiming otherwise, but the capability gap is real and
       matters before any dataset leaves this machine.
+      **Closed 2026-09-22** via a standalone script, `scripts/anonymize.py` +
+      `vqa/anonymize.py` (`features/face-plate-anonymization/`). Detects faces
+      (`cv2.FaceDetectorYN`/YuNet) and plates (YOLOv9-t end2end ONNX,
+      ankandrew/open-image-models, MIT) per frame with `onnxruntime`, blurs both in
+      pixel space, writes a non-destructive copy alongside the input (never modifies
+      `trimmed/` in place). CPU-only, no torch. Run:
+      `python scripts/anonymize.py <folder> [--output <folder>]`.
+      Caveats found during the real-footage smoke test, not just synthetic tests:
+      (a) **not wired into the app/reviewer** — an operator must run it explicitly on
+      whichever folder (e.g. `trimmed/`) needs anonymizing before the dataset leaves
+      the machine; it does not run automatically anywhere in the pipeline.
+      (b) **plate recall is not 100%** — on real night/glare dashcam footage, one
+      legible plate was missed (raw detector confidence 2.2%, below the 0.25
+      threshold); confirmed a genuine low-confidence miss, not a coordinate bug, by
+      cross-checking the same code against a clean daylight frame (54% confidence).
+      (c) **face blur is untested on a real face** — no face appeared clearly enough
+      in the available real footage to exercise `detect_faces()` end-to-end; only
+      verified via synthetic unit tests plus that the detector loads and runs.
+      (d) does **not** retroactively fix the 30 `trimmed/` files flagged above — an
+      operator has to run it against that folder separately.
+      See `features/face-plate-anonymization/ship-review.md` for the full writeup.
 
 ## Known limitation, accepted
 

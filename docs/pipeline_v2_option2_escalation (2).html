@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phuong an 2 (ban day du) &mdash; co buoc so sanh P1/P2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+
+<style>
+  :root{
+    --paper:#fbf9f3; --ink:#1f2430; --blue:#1e5fbf; --green:#1f8a4c;
+    --red:#c0392b; --orange:#e07b1a; --purple:#7b3ea8; --line:#d8d2c4;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:"Segoe UI",system-ui,-apple-system,sans-serif;line-height:1.5;
+    background-image:linear-gradient(90deg,rgba(30,95,191,.04) 1px,transparent 1px),
+      linear-gradient(rgba(30,95,191,.04) 1px,transparent 1px);
+    background-size:28px 28px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 22px 60px}
+  h1{color:var(--blue);font-size:28px;margin:0 0 4px;letter-spacing:.3px}
+  .sub{color:#5c6270;font-size:15px;margin:0 0 26px}
+  h2{color:var(--green);font-size:19px;margin:34px 0 12px;
+    border-bottom:2px solid var(--green);display:inline-block;padding-bottom:2px}
+  .flow{background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin:8px 0 22px;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;
+    overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05);font-size:14px}
+  th{background:var(--blue);color:#fff;text-align:left;padding:9px 12px;font-weight:600}
+  td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:#faf8f2}
+  .num{font-weight:700;color:var(--blue)}
+  .callouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:8px 0 8px}
+  .c{border-radius:12px;padding:12px 14px;font-size:13.5px;border:1px dashed}
+  .c b{display:block;margin-bottom:3px;font-size:13px;text-transform:uppercase;letter-spacing:.4px}
+  .c.blue{border-color:var(--blue);background:rgba(30,95,191,.06)} .c.blue b{color:var(--blue)}
+  .c.orange{border-color:var(--orange);background:rgba(224,123,26,.07)} .c.orange b{color:var(--orange)}
+  .c.purple{border-color:var(--purple);background:rgba(123,62,168,.06)} .c.purple b{color:var(--purple)}
+  .c.green{border-color:var(--green);background:rgba(31,138,76,.06)} .c.green b{color:var(--green)}
+  .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700;margin-left:10px}
+  .badge.top{background:rgba(31,138,76,.15);color:var(--green)}
+  .badge.mid{background:rgba(224,123,26,.15);color:var(--orange)}
+  .badge.low{background:rgba(123,62,168,.15);color:var(--purple)}
+  .note{background:rgba(224,123,26,.08);border-left:4px solid var(--orange);border-radius:8px;padding:10px 14px;font-size:14px;margin-top:14px}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<h1>Phuong an 2 (ban day du) <span class="badge mid">CO SO SANH P1/P2</span></h1>
+<p class="sub">Them lai buoc 4b (so sanh Pass-1 vs Pass-2) lam tin hieu mien phi uu tien mau audit &mdash; giu nguyen Team A (thiet ke) / Team B (gan nhan + do agreement).</p>
+<h2>So do quy trinh</h2>
+<div class="flow"><pre class="mermaid">
+
+flowchart TD
+    A["&#9312; Collect &amp; Ingest"] --> B["&#9313; Filter &amp; Dedup + An danh"]
+    B --> C["&#9314; PASS-1 (MU): VLM draft cau hoi<br/><small>tu YOLO+event-log, KHONG xem video</small>"]
+    C --> D["&#9315; PASS-2 (SANG): VLM xem video<br/><small>de xuat cau hoi + dap an TAM THOI + keyframe</small>"]
+    D --> E{"&#9316; So sanh P1 vs P2<br/><small>MIEN PHI &mdash; khong goi VLM them</small>"}
+    E -- "khac nhau (binh thuong)" --> F["&#9317; TEAM A (2 nguoi): duyet cau hoi<br/>+ viet GUIDELINE/rubric xac dinh dap an"]
+    E -- "GIONG HET (nghi shortcut)" --> F
+    E -.->|"neu giong het: gan co<br/>'uu tien audit' + xem lai<br/>event-log co qua lo lieu"| N
+    F --> G["&#9318; TEAM B (&ge;2 annotator, doc lap)<br/><small>ap dung guideline, tu gan dap an+keyframe+answerability<br/>KHONG biet nhan cua nguoi kia</small>"]
+    G --> H["&#9319; Tinh AGREEMENT giua Team B<br/><small>Cohen's/Fleiss'/Krippendorff, tach theo nhom + truc U</small>"]
+    H --> I{"&kappa;/&alpha; &ge;0.6<br/>VA dong thuan dap an?"}
+    I -- "co" --> J["GT = dap an dong thuan"]
+    I -- "khong" --> K["Adjudicate (Team A/nguoi thu 3)<br/>hoac gan 'ambiguous'"]
+    K --> J
+    J --> L["&#9320; VLM sinh 3 distractor (TEXT-ONLY, re)<br/><small>dua tren (cau hoi, dap an GT)</small>"]
+    L --> M["&#9321; QC nhe"]
+    M --> N["&#9322; Audit SAMPLE ~25% (P0)<br/><small>UU TIEN het cac cau co co 'uu tien audit'<br/>1 model mo: Acc_video vs Acc_blind + McNemar</small>"]
+    N --> O{"Dat chuan?"}
+    O -- "chua" --> P["Sua tay, khong quay lai VLM"]
+    P --> M
+    O -- "roi" --> Q["&#9323; Split &amp; Package<br/><small>bao cao &kappa;/&alpha; THEO TUNG NHOM</small>"]
+    V["Nhom V (vi pham)"] -.->|"Team B lam ky hon<br/>+ cheat-sheet luat cua Team A"| G
+    classDef auto fill:#eef4fd,stroke:#1e5fbf,color:#123f80;
+    classDef prob fill:#fdecea,stroke:#c0392b,color:#7d241a;
+    classDef ok fill:#eaf7ef,stroke:#1f8a4c,color:#155e34;
+    class C,D,L auto; class E,H,I,O prob; class Q ok;
+
+</pre></div>
+<h2>Muc dich &ndash; Input &ndash; Output tung buoc</h2>
+<table><tr><th>#</th><th>Buoc</th><th>Muc dich</th><th>Input</th><th>Output</th></tr><tr><td class='num'>1</td><td>Collect &amp; Ingest</td><td>Thu thap nguyen lieu tho</td><td>Video YouTube/nguon khac</td><td>Video tho trong kho trung tam</td></tr><tr><td class='num'>2</td><td>Filter &amp; Dedup + Anonymize</td><td>Dam bao dung phan phoi VN, bo trung, tuan thu rieng tu</td><td>Video tho (buoc 1)</td><td>Video da loc + da blur mat/bien so</td></tr><tr><td class='num'>3</td><td>PASS-1 (mu)</td><td>Tao nhap cau hoi re, lam diem neo do muc can-video</td><td>YOLO detections + event-log ngan (KHONG phai video)</td><td>Nhap cau hoi + dap an tam (P1), 5 nhom S/E/T/C/V</td></tr><tr><td class='num'>4</td><td>PASS-2 (sang mat)</td><td>Cho VLM xem video that, sua/hoan thien P1</td><td>Video da anonymize + nhap P1</td><td>Cau hoi hoan chinh + dap an tam (P2) + keyframe candidate</td></tr><tr><td class='num'>4b</td><td>So sanh P1 vs P2</td><td>Phat hien som &amp; mien phi cau co nguy co shortcut</td><td>Cap (P1, P2) cua cung cau hoi</td><td>Nhan 'da doi' (binh thuong) hoac 'giong het' (uu tien audit)</td></tr><tr><td class='num'>5</td><td>Team A viet guideline</td><td>Chuan hoa tieu chi xac dinh dap an</td><td>Cau hoi tu P2 (da qua 4b)</td><td>Cau hoi da duyet + guideline/rubric (khong kem dap an)</td></tr><tr><td class='num'>6</td><td>Team B gan nhan doc lap</td><td>Tao ground-truth tu &ge;2 annotator doc lap</td><td>Video + cau hoi + guideline</td><td>&ge;2 bo nhan doc lap: dap an + keyframe + answerability</td></tr><tr><td class='num'>7</td><td>Tinh agreement</td><td>Dinh luong muc dong thuan bang thong ke</td><td>Cac bo nhan tu Team B</td><td>Chi so &kappa;/&alpha; (tach theo nhom + truc U)</td></tr><tr><td class='num'>8</td><td>Gate quyet dinh GT</td><td>Chot dap an cuoi, xu ly bat dong</td><td>Chi so agreement + nhan Team B</td><td>Dap an GT da chot, hoac chuyen adjudicate/'ambiguous'</td></tr><tr><td class='num'>9</td><td>VLM sinh distractor</td><td>Tao phuong an sai hop ly cho MCQ</td><td>Cap (cau hoi, dap an GT) &mdash; KHONG can video</td><td>3 distractor cung mien, do dai tuong duong</td></tr><tr><td class='num'>10</td><td>QC nhe</td><td>Kiem tra hinh thuc truoc khi audit sau</td><td>Bo QA hoan chinh</td><td>QA dat chuan hinh thuc, hoac tra ve sua</td></tr><tr><td class='num'>11</td><td>Audit Gate B (mau)</td><td>Kiem chung dinh luong muc phu thuoc video</td><td>Mau QA (uu tien nhom 'giong het') + 1 model mo, 2 dieu kien</td><td>Acc_video, Acc_blind, VG, BG, ket qua McNemar</td></tr><tr><td class='num'>12</td><td>Split &amp; Package</td><td>Ban giao dataset cuoi kem bang chung</td><td>QA da audit + cac chi so &kappa;/&alpha;/VG/BG</td><td>Train/Val/Test + bao cao chi so theo tung nhom</td></tr></table>
+<div class="note"><b>P1 &ne; P2 (khac nhau):</b> binh thuong, chiem da so &mdash; VLM phai sua lai khi xem video that, dung la tin hieu video-dependent ban muon. Khong can lam gi them, dung P2 lam nhap chinh thuc.<br/><br/><b>P1 = P2 (giong het):</b> thieu so, dang ngo &mdash; VLM doan dung/doan giong het ma KHONG can xem video. Hanh dong: (1) uu tien dua vao mau audit Gate B thay vi random-sample, (2) Team A xem lai event-log dua cho Pass-1 co qua lo lieu khong, rut gon cho cac video sau.</div>
+
+</div>
+<script>mermaid.initialize({{startOnLoad:true,theme:"base",themeVariables:{{primaryColor:"#eef4fd",primaryBorderColor:"#1e5fbf",primaryTextColor:"#123f80",lineColor:"#5c6270",fontSize:"14px"}}}});</script>
+</body>
+</html>

@@ -45,7 +45,8 @@ covered, default to "ship it" and move on.**
 
 | Decision | Choice |
 |---|---|
-| Tech stack | **Streamlit + Python** (no FastAPI, no JS framework, no separate web server) |
+| Tech stack | **SUPERSEDED 2026-09-22 — see below.** Was: Streamlit + Python (no FastAPI, no JS framework, no separate web server). |
+| Tech stack (frontend), 2026-09-22 | **Next.js**, dark mode + minimalist theme, replacing the Streamlit UI. Reverses the row above deliberately, after the cost was stated explicitly (invalidates the `AppTest`-based test suite in §Repo rules below; needs a new backend tier for `pipeline.db`/`run_pipeline.py` access). Migration in progress under `features/nextjs-frontend-migration/`; until it ships, `app.py` remains the reviewer's real interface and its 66 tests remain the regression net. |
 | Review mode | Triage — Approve / Reject / Flag. **No Skip**: a decision is required to advance. |
 | Segmentation | **PySceneDetect only**, defaults. Counter/OCR fusion removed 2026-08-29: the real counter is transient, and a mis-detected one made the two signals correlated. All boundaries are `MEDIUM`. |
 | Overlay removal | Blur + desaturate + darken (toggleable), over **calibrated regions + always-on fixed bands** |
@@ -71,11 +72,15 @@ covered, default to "ship it" and move on.**
 
 ## Working agreements
 
-- **One app, one process.** `streamlit run app.py` is the entire interface.
-- **Don't add a layer** — one explicit exception, granted 2026-09-05. The VLM server is a
+- **One app, one process — superseded 2026-09-22, mid-migration.** `streamlit run app.py`
+  was the entire interface. It is being replaced by a Next.js frontend (Decision Log); until
+  that migration ships, `app.py` is still the real reviewer interface and must keep working.
+- **Don't add a layer** — two exceptions now. (1) granted 2026-09-05: the VLM server is a
   Docker container with an HTTP API, because a GGUF model cannot live inside a Streamlit
-  process. The exception is bounded: `vlm/` may import `vqa/`, **never the reverse**, and
-  `vlm/` opens `pipeline.db` read-only. No other tier is authorised.
+  process; bounded so `vlm/` may import `vqa/`, **never the reverse**, and `vlm/` opens
+  `pipeline.db` read-only. (2) granted 2026-09-22: the Next.js frontend needs its own backend
+  tier for `pipeline.db` and `run_pipeline.py` access — design and document that boundary in
+  `features/nextjs-frontend-migration/architecture.md` rather than improvising it per-route.
 - **Don't propose benchmarks, tuning campaigns, or coordination mechanisms** for this phase —
   they are explicitly out of scope per Principle 3.
 - **`python -m pytest tests -q` before calling anything done.** 66 tests, ~10s,

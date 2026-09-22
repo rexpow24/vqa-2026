@@ -5,6 +5,10 @@ scenedetect>=0.7
 opencv-python-headless>=5.0
 numpy>=2.0
 
+# scripts/anonymize.py: CPU-only license-plate ONNX detector (face detector
+# is cv2.FaceDetectorYN, already covered by opencv-python-headless above).
+onnxruntime>=1.19
+
 # Optional: keyboard shortcuts in the review tab.
 # If it misbehaves, plain buttons work fine (CLAUDE.md Principle 2).
 # streamlit-shortcuts

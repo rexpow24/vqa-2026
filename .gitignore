@@ -32,3 +32,11 @@ vlm/data/
 # Redundant with the bare `.env` above, kept explicit because this is the file
 # that holds machine-specific model paths and context sizes.
 docker/.env
+
+
+node_modules/
+
+anonymized/
+
+artifacts/
+
