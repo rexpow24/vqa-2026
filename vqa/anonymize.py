@@ -138,6 +138,38 @@ def detect_faces(frame: np.ndarray, detector: cv2.FaceDetectorYN) -> list[Box]:
     return [(int(f[0]), int(f[1]), int(f[2]), int(f[3])) for f in faces]
 
 
+def scan_faces(video_path: Path, detector: cv2.FaceDetectorYN | None = None):
+    """Yield (frame_idx, timestamp_s, box, score) for every face detected in
+    `video_path`, one entry per detected face per frame -- lets
+    scripts/check_face_blur.py verify whether blurring actually removed a
+    detectable face: if this still finds one on an *anonymized* file, that
+    frame wasn't blurred enough. `detector` is injectable for tests (a stub
+    exposing setInputSize()/detect()); defaults to load_face_detector() when
+    None.
+    """
+    detector = detector or load_face_detector()
+    cap = cv2.VideoCapture(str(video_path))
+    if not cap.isOpened():
+        raise AnonymizeError(f"cannot open {video_path}")
+    fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
+    idx = 0
+    try:
+        while True:
+            ok, frame = cap.read()
+            if not ok:
+                break
+            h, w = frame.shape[:2]
+            detector.setInputSize((w, h))
+            _, faces = detector.detect(frame)
+            if faces is not None:
+                for f in faces:
+                    box = (int(f[0]), int(f[1]), int(f[2]), int(f[3]))
+                    yield idx, idx / fps, box, float(f[-1])
+            idx += 1
+    finally:
+        cap.release()
+
+
 def _tile_origins(dim: int, tile: int, overlap: int) -> list[int]:
     """Overlapping tile start coordinates covering [0, dim). Consecutive tiles
     are `tile - overlap` apart; the last one is pulled back to end exactly at
@@ -384,12 +416,19 @@ def anonymize_file(input_path: Path, output_path: Path | None = None) -> Path:
     return dst
 
 
-def anonymize_folder(input_folder: Path, output_folder: Path | None = None) -> list[Path]:
-    """Anonymize every .mp4 in `input_folder`, writing copies to a sibling folder.
+def anonymize_folder(input_folder: Path, output_folder: Path | None = None,
+                      force: bool = False) -> list[Path]:
+    """Anonymize every .mp4 in `input_folder`, writing copies to a sibling
+    folder. `input_folder` is only ever read.
 
-    `input_folder` is only ever read. Re-running is idempotent: each output
-    is produced via write-to-temp-then-rename, so a clean overwrite never
-    leaves an orphaned partial file.
+    Skips a file whose output already exists, unless `force=True` -- lets
+    this be re-run over a growing `trimmed/` folder (the eventual
+    run_pipeline.py integration) without re-paying CPU time on videos
+    already done. `force=True` restores the original "always reprocess"
+    behaviour, e.g. after changing detection parameters and wanting existing
+    outputs redone. Detector/session are loaded lazily, only once at least
+    one file actually needs processing, so a folder that's fully done
+    already pays no model-load cost at all.
     """
     input_folder = Path(input_folder)
     if output_folder is None:
@@ -398,12 +437,41 @@ def anonymize_folder(input_folder: Path, output_folder: Path | None = None) -> l
         output_folder = Path(output_folder)
     output_folder.mkdir(parents=True, exist_ok=True)
 
-    face_detector = load_face_detector()
-    plate_session = load_plate_session()
+    face_detector = None
+    plate_session = None
 
     outputs = []
     for src in sorted(input_folder.glob("*.mp4")):
         dst = output_folder / src.name
+        if dst.exists() and not force:
+            outputs.append(dst)
+            continue
+        if face_detector is None:
+            face_detector = load_face_detector()
+            plate_session = load_plate_session()
         process_video(src, dst, face_detector, plate_session)
         outputs.append(dst)
     return outputs
+
+
+def anonymize_all_trimmed(work_root: Path, force: bool = False) -> dict[str, list[Path]]:
+    """Sweep every `work/<video_id>/trimmed/` folder under `work_root`,
+    writing anonymized copies to a sibling `work/<video_id>/finished/` --
+    never touching `trimmed/` itself. One `anonymize_folder` call per video,
+    so the existing skip-if-exists/`force` behaviour applies per file same as
+    it always did.
+
+    Known limitation, accepted rather than solved here: if a clip's
+    `trimmed/` file is later regenerated (e.g. `delivered/` gets re-encoded
+    and the pipeline re-cuts the trim), the corresponding `finished/` file is
+    stale and will NOT be refreshed automatically -- this only checks
+    existence, not freshness. Re-run with `force=True` for that video's
+    folder if that ever matters in practice.
+    """
+    work_root = Path(work_root)
+    results: dict[str, list[Path]] = {}
+    for trimmed_dir in sorted(work_root.glob("*/trimmed")):
+        video_id = trimmed_dir.parent.name
+        finished_dir = trimmed_dir.parent / "finished"
+        results[video_id] = anonymize_folder(trimmed_dir, finished_dir, force=force)
+    return results

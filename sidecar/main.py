@@ -168,6 +168,42 @@ def run_stop():
     return {"stopped": True, "marked": marked}
 
 
+# ── anonymize (trimmed/ -> finished/) ───────────────────────────────────
+#
+# Same subprocess pattern as /run/* above, held as its own module global so
+# an anonymize sweep and a pipeline run can be tracked independently -- they
+# touch disjoint files (trimmed/ + finished/ vs pipeline.db + delivered/) and
+# don't need to exclude each other.
+
+_anon_proc: subprocess.Popen | None = None
+
+
+def _anon_busy() -> bool:
+    return _anon_proc is not None and _anon_proc.poll() is None
+
+
+@app.get("/anonymize/status")
+def anonymize_status():
+    return {"busy": _anon_busy()}
+
+
+@app.post("/anonymize/start")
+def anonymize_start():
+    global _anon_proc
+    if _anon_busy():
+        raise HTTPException(409, "an anonymize sweep is already in progress")
+    python_exe = REPO_ROOT / "venv" / "Scripts" / "python.exe"
+    if not python_exe.exists():
+        python_exe = Path(sys.executable)
+    _anon_proc = subprocess.Popen(
+        [str(python_exe), str(REPO_ROOT / "scripts" / "anonymize_all.py")],
+        cwd=REPO_ROOT,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return {"started": True, "pid": _anon_proc.pid}
+
+
 # ── review ───────────────────────────────────────────────────────────────
 
 

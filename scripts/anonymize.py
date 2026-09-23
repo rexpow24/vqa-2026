@@ -1,9 +1,13 @@
 """Blur faces and license plates in a single .mp4 file, or every .mp4 in a folder.
 
     python scripts/anonymize.py <video.mp4> [--output <file-or-folder>]
-    python scripts/anonymize.py <input_folder> [--output <folder>]
+    python scripts/anonymize.py <input_folder> [--output <folder>] [--force]
     python scripts/anonymize.py work/AeseZkBqBf0/trimmed/shot_1.mp4
     python scripts/anonymize.py work/AeseZkBqBf0/trimmed --output work/AeseZkBqBf0/trimmed_anon
+
+Folder mode skips a file whose output already exists, so re-running over a
+growing trimmed/ folder only pays for what's new. Pass --force to redo
+everything (e.g. after changing detection parameters).
 
 Standalone: reads whatever file or folder it's pointed at, writes anonymized
 copies next to it. Never touches pipeline.db, config.json, or the
@@ -35,6 +39,8 @@ def main(argv: list[str] | None = None) -> int:
                     help="destination file or folder (default: alongside the input -- "
                          "<stem>_anonymized.mp4 for a single file, "
                          "<input>_anonymized/ for a folder)")
+    ap.add_argument("--force", action="store_true",
+                    help="reprocess even if output already exists (folder mode only)")
     args = ap.parse_args(argv)
 
     if args.input_path.is_file():
@@ -51,7 +57,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.input_path.is_dir():
         try:
-            outputs = anonymize.anonymize_folder(args.input_path, args.output)
+            outputs = anonymize.anonymize_folder(args.input_path, args.output, force=args.force)
         except anonymize.AnonymizeError as e:
             print(f"FAIL: {e}")
             return 1

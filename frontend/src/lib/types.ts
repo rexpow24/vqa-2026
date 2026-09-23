@@ -47,6 +47,13 @@ export interface RunStatus {
   log_tail: string;
 }
 
+// Sweeps every work/<id>/trimmed/ into a sibling finished/ -- separate from
+// RunStatus because it's a different subprocess (sidecar's /anonymize/*),
+// tracked independently of the main pipeline run.
+export interface AnonymizeStatus {
+  busy: boolean;
+}
+
 export interface Shot {
   start: number;
   end: number;

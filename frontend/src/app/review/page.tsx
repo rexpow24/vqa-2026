@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { Timeline } from "@/components/Timeline";
 import {
   fmtTime,
+  type AnonymizeStatus,
   type ReviewClip,
   type ReviewNextResponse,
   type ReviewSummary,
@@ -27,6 +28,9 @@ export default function ReviewPage() {
   const [markError, setMarkError] = useState<string | null>(null);
   const [lastDecision, setLastDecision] = useState<string | null>(null);
   const [deciding, setDeciding] = useState(false);
+  const [anonBusy, setAnonBusy] = useState(false);
+  const [anonPending, setAnonPending] = useState(false);
+  const [anonMessage, setAnonMessage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const loadNext = useCallback(async () => {
@@ -54,6 +58,16 @@ export default function ReviewPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadNext();
   }, [loadNext]);
+
+  // Anonymize runs after trimming, not before -- this reads the sweep's busy
+  // state (a separate subprocess, see sidecar/main.py's /anonymize/*) once on
+  // mount and again after every decision, so the button here reflects reality
+  // rather than staying stale across a whole review session.
+  useEffect(() => {
+    api<AnonymizeStatus>("/anonymize/status")
+      .then((s) => setAnonBusy(s.busy))
+      .catch(() => {});
+  }, [lastDecision]);
 
   // Re-validate on every shot-list change -- this is exactly the stateless
   // RPC pattern architecture.md describes: trim.py's pure functions take the
@@ -100,6 +114,36 @@ export default function ReviewPage() {
       )}
 
       {lastDecision && <p className="text-sm text-green">{lastDecision}</p>}
+
+      <div className="flex items-center gap-4 rounded-lg border-2 border-accent bg-surface px-4 py-3">
+        <div className="flex-1 text-sm text-muted">
+          Runs <span className="text-base font-semibold text-foreground">face/plate blurring</span>{" "}
+          over every video&apos;s <code className="text-base">trimmed/</code> folder into a sibling{" "}
+          <code className="text-base">finished/</code> -- skips clips already done, safe to click
+          after every <span className="text-base font-semibold text-foreground">Approve</span>.
+          Runs in the background (can take a while).
+        </div>
+        <button
+          className="px-6 py-3 text-base font-bold rounded-md bg-accent text-white shadow-lg hover:brightness-110 disabled:opacity-40 shrink-0"
+          disabled={anonPending || anonBusy}
+          onClick={async () => {
+            setAnonPending(true);
+            setAnonMessage(null);
+            try {
+              await api("/anonymize/start", { method: "POST" });
+              setAnonBusy(true);
+              setAnonMessage("Anonymize sweep started.");
+            } catch (e) {
+              setAnonMessage(e instanceof Error ? e.message : String(e));
+            } finally {
+              setAnonPending(false);
+            }
+          }}
+        >
+          {anonBusy ? "Anonymizing..." : "Anonymize trimmed/ -> finished/"}
+        </button>
+      </div>
+      {anonMessage && <p className="text-sm text-muted">{anonMessage}</p>}
 
       {!clip ? (
         <p className="text-sm text-green">Nothing left to review.</p>
