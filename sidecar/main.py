@@ -19,7 +19,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, FiniteFloat
 
 from vqa import config, db, media, review, trim, urls
 
@@ -176,15 +176,51 @@ def run_stop():
 # don't need to exclude each other.
 
 _anon_proc: subprocess.Popen | None = None
+ANON_PAUSE_FILE = LOG_DIR / "anonymize.pause"
 
 
 def _anon_busy() -> bool:
     return _anon_proc is not None and _anon_proc.poll() is None
 
 
+def _anonymize_progress(work_root: Path) -> dict:
+    """Count only finished outputs corresponding to current trimmed clips."""
+    sources = sorted(work_root.glob("*/trimmed/*.mp4"))
+    completed_files = []
+    for src in sources:
+        dst = src.parent.parent / "finished" / src.name
+        try:
+            finished_at = dst.stat().st_mtime
+        except FileNotFoundError:
+            continue
+        completed_files.append({
+            "video_id": src.parent.parent.name,
+            "file_name": src.name,
+            "completed_at": finished_at,
+        })
+    completed_files.sort(key=lambda item: (item["completed_at"], item["video_id"], item["file_name"]))
+    return {
+        "total": len(sources),
+        "completed": len(completed_files),
+        "completed_files": completed_files,
+    }
+
+
 @app.get("/anonymize/status")
 def anonymize_status():
-    return {"busy": _anon_busy()}
+    busy = _anon_busy()
+    exit_code = _anon_proc.poll() if _anon_proc is not None else None
+    progress = _anonymize_progress(REPO_ROOT / "work")
+    pause_requested = ANON_PAUSE_FILE.exists()
+    return {
+        "busy": busy,
+        "pause_supported": True,
+        "pause_requested": busy and pause_requested,
+        "paused": pause_requested and not busy and exit_code in (None, 0)
+                  and progress["completed"] < progress["total"],
+        "exit_code": exit_code,
+        **progress,
+    }
 
 
 @app.post("/anonymize/start")
@@ -192,16 +228,28 @@ def anonymize_start():
     global _anon_proc
     if _anon_busy():
         raise HTTPException(409, "an anonymize sweep is already in progress")
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    ANON_PAUSE_FILE.unlink(missing_ok=True)
     python_exe = REPO_ROOT / "venv" / "Scripts" / "python.exe"
     if not python_exe.exists():
         python_exe = Path(sys.executable)
     _anon_proc = subprocess.Popen(
-        [str(python_exe), str(REPO_ROOT / "scripts" / "anonymize_all.py")],
+        [str(python_exe), str(REPO_ROOT / "scripts" / "anonymize_all.py"),
+         "--pause-file", str(ANON_PAUSE_FILE)],
         cwd=REPO_ROOT,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
     return {"started": True, "pid": _anon_proc.pid}
+
+
+@app.post("/anonymize/pause")
+def anonymize_pause():
+    if not _anon_busy():
+        return {"pause_requested": False, "message": "no anonymize sweep is running"}
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    ANON_PAUSE_FILE.touch()
+    return {"pause_requested": True, "message": "finishing the current clip before pausing"}
 
 
 # ── review ───────────────────────────────────────────────────────────────
@@ -367,15 +415,23 @@ def trim_reshape(req: ReshapeRequest):
     return {"shot": trim.reshape(req.shot, req.start, req.end)}
 
 
+class ValidateShot(BaseModel):
+    start: FiniteFloat
+    end: FiniteFloat
+    auto: bool = False
+    default: bool = False
+
+
 class ValidateRequest(BaseModel):
-    shots: list[dict]
-    duration: float
+    shots: list[ValidateShot]
+    duration: FiniteFloat
 
 
 @app.post("/trim/validate")
 def trim_validate(req: ValidateRequest):
+    shots = [s.model_dump() for s in req.shots]
     return {
-        "errors": trim.errors(req.shots, req.duration),
-        "conflicts": trim.conflicts(req.shots),
-        "segments": trim.segments(req.shots),
+        "errors": trim.errors(shots, req.duration),
+        "conflicts": trim.conflicts(shots),
+        "segments": trim.segments(shots),
     }

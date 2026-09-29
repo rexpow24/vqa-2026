@@ -29,9 +29,16 @@ export default function ReviewPage() {
   const [lastDecision, setLastDecision] = useState<string | null>(null);
   const [deciding, setDeciding] = useState(false);
   const [anonBusy, setAnonBusy] = useState(false);
+  const [anonStatus, setAnonStatus] = useState<AnonymizeStatus | null>(null);
+  const [anonStatusError, setAnonStatusError] = useState<string | null>(null);
   const [anonPending, setAnonPending] = useState(false);
   const [anonMessage, setAnonMessage] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const updateShots = useCallback((next: Shot[]) => {
+    setValidation(null);
+    setShots(next);
+  }, []);
 
   const loadNext = useCallback(async () => {
     setLoading(true);
@@ -39,6 +46,7 @@ export default function ReviewPage() {
     setMarkError(null);
     try {
       const data = await api<ReviewNextResponse>("/review/next");
+      setValidation(null);
       setClip(data.clip);
       setShots(data.initial_shots);
       setSummary(data.summary);
@@ -59,14 +67,29 @@ export default function ReviewPage() {
     loadNext();
   }, [loadNext]);
 
-  // Anonymize runs after trimming, not before -- this reads the sweep's busy
-  // state (a separate subprocess, see sidecar/main.py's /anonymize/*) once on
-  // mount and again after every decision, so the button here reflects reality
-  // rather than staying stale across a whole review session.
+  // Progress comes from completed files on disk, so it also reflects work
+  // started before this tab opened or before the sidecar was restarted.
   useEffect(() => {
-    api<AnonymizeStatus>("/anonymize/status")
-      .then((s) => setAnonBusy(s.busy))
-      .catch(() => {});
+    let active = true;
+    const load = () => {
+      api<AnonymizeStatus>("/anonymize/status")
+        .then((s) => {
+          if (active) {
+            setAnonStatus(s);
+            setAnonBusy(s.busy);
+            setAnonStatusError(null);
+          }
+        })
+        .catch((e) => {
+          if (active) setAnonStatusError(e instanceof Error ? e.message : String(e));
+        });
+    };
+    load();
+    const id = setInterval(load, 2000);
+    return () => {
+      active = false;
+      clearInterval(id);
+    };
   }, [lastDecision]);
 
   // Re-validate on every shot-list change -- this is exactly the stateless
@@ -87,7 +110,13 @@ export default function ReviewPage() {
         if (!cancelled) setValidation(v);
       })
       .catch((e) => {
-        if (!cancelled) setError(e instanceof Error ? e.message : String(e));
+        if (!cancelled) {
+          setValidation({
+            errors: [e instanceof Error ? e.message : String(e)],
+            conflicts: [],
+            segments: [],
+          });
+        }
       });
     return () => {
       cancelled = true;
@@ -123,27 +152,119 @@ export default function ReviewPage() {
           after every <span className="text-base font-semibold text-foreground">Approve</span>.
           Runs in the background (can take a while).
         </div>
-        <button
-          className="px-6 py-3 text-base font-bold rounded-md bg-accent text-white shadow-lg hover:brightness-110 disabled:opacity-40 shrink-0"
-          disabled={anonPending || anonBusy}
-          onClick={async () => {
-            setAnonPending(true);
-            setAnonMessage(null);
-            try {
-              await api("/anonymize/start", { method: "POST" });
-              setAnonBusy(true);
-              setAnonMessage("Anonymize sweep started.");
-            } catch (e) {
-              setAnonMessage(e instanceof Error ? e.message : String(e));
-            } finally {
-              setAnonPending(false);
-            }
-          }}
-        >
-          {anonBusy ? "Anonymizing..." : "Anonymize trimmed/ -> finished/"}
-        </button>
+        <div className="flex gap-2 shrink-0">
+          <button
+            className="px-6 py-3 text-base font-bold rounded-md bg-accent text-white shadow-lg hover:brightness-110 disabled:opacity-40"
+            disabled={anonPending || anonBusy}
+            onClick={async () => {
+              setAnonPending(true);
+              setAnonMessage(null);
+              try {
+                await api("/anonymize/start", { method: "POST" });
+                setAnonBusy(true);
+                setAnonStatus((previous) => previous && {
+                  ...previous, busy: true, paused: false, pause_requested: false, exit_code: null,
+                });
+              } catch (e) {
+                setAnonMessage(e instanceof Error ? e.message : String(e));
+              } finally {
+                setAnonPending(false);
+              }
+            }}
+          >
+            {anonBusy ? "Anonymizing..." : anonStatus?.paused
+              ? "Resume anonymization" : "Anonymize trimmed/ -> finished/"}
+          </button>
+          {anonStatus?.pause_supported && (
+            <button
+              className="px-4 py-3 text-sm rounded-md border border-border disabled:opacity-40"
+              disabled={anonPending || !anonBusy || anonStatus.pause_requested}
+              onClick={async () => {
+                setAnonPending(true);
+                setAnonMessage(null);
+                try {
+                  const result = await api<{ pause_requested: boolean; message: string }>(
+                    "/anonymize/pause", { method: "POST" },
+                  );
+                  if (result.pause_requested) {
+                    setAnonStatus((previous) => previous && {
+                      ...previous, pause_requested: true,
+                    });
+                  } else {
+                    setAnonMessage(result.message);
+                  }
+                } catch (e) {
+                  setAnonMessage(e instanceof Error ? e.message : String(e));
+                } finally {
+                  setAnonPending(false);
+                }
+              }}
+            >
+              {anonStatus.pause_requested ? "Pausing..." : anonStatus.paused
+                ? "Paused" : "Pause after this clip"}
+            </button>
+          )}
+        </div>
       </div>
       {anonMessage && <p className="text-sm text-muted">{anonMessage}</p>}
+      {anonStatusError && <p className="text-sm text-red">{anonStatusError}</p>}
+      {anonBusy && anonStatus && !anonStatus.pause_supported && (
+        <p className="text-sm text-muted">
+          Pause becomes available after this older sweep finishes and the backend restarts.
+        </p>
+      )}
+      {anonStatus?.pause_requested && (
+        <p className="text-sm text-amber">Finishing the current clip before pausing.</p>
+      )}
+      {anonStatus?.paused && (
+        <p className="text-sm text-amber">Paused. Completed clips are saved; Resume will skip them.</p>
+      )}
+
+      {anonStatus && (
+        <section className="flex flex-col gap-3" aria-label="Anonymize progress">
+          <div className="flex justify-between text-sm text-muted">
+            <span>{anonStatus.completed} / {anonStatus.total} trimmed clips finished</span>
+            <span>{anonStatus.total > 0
+              ? `${Math.round((anonStatus.completed / anonStatus.total) * 100)}%`
+              : "0%"}</span>
+          </div>
+          <div
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={Math.max(anonStatus.total, 1)}
+            aria-valuenow={anonStatus.completed}
+            className="h-2 rounded-full bg-surface-2 overflow-hidden"
+          >
+            <div
+              className="h-full bg-accent transition-[width]"
+              style={{ width: `${anonStatus.total > 0
+                ? (anonStatus.completed / anonStatus.total) * 100
+                : 0}%` }}
+            />
+          </div>
+          {anonStatus.exit_code !== null && anonStatus.exit_code !== 0 && (
+            <p className="text-sm text-red">
+              Anonymize stopped with exit code {anonStatus.exit_code}. Start it again to process unfinished clips.
+            </p>
+          )}
+          <div>
+            <h2 className="text-sm font-medium text-muted mb-2">Completed clips</h2>
+            <ol className="rounded-md border border-border bg-surface max-h-64 overflow-y-auto divide-y divide-border">
+              {anonStatus.completed_files.length === 0 ? (
+                <li className="px-3 py-2 text-xs text-muted">No clips finished yet.</li>
+              ) : anonStatus.completed_files.slice().reverse().map((item) => (
+                <li key={`${item.video_id}/${item.file_name}`} className="flex gap-3 px-3 py-2 text-xs">
+                  <time className="shrink-0 text-muted">
+                    {new Date(item.completed_at * 1000).toLocaleTimeString()}
+                  </time>
+                  <span className="text-green">Done</span>
+                  <code className="break-all">{item.video_id}/{item.file_name}</code>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )}
 
       {!clip ? (
         <p className="text-sm text-green">Nothing left to review.</p>
@@ -152,7 +273,7 @@ export default function ReviewPage() {
           key={clip.clip_id}
           clip={clip}
           shots={shots}
-          setShots={setShots}
+          setShots={updateShots}
           validation={validation}
           playhead={playhead}
           setPlayhead={setPlayhead}
@@ -214,7 +335,8 @@ function ReviewClipEditor({
   const errors = validation?.errors ?? [];
   const conflicts = validation?.conflicts ?? [];
   const segments = validation?.segments ?? [];
-  const segError = errors.length > 0;
+  const segError = validation === null || errors.length > 0 ||
+    shots.some((s) => !Number.isFinite(s.start) || !Number.isFinite(s.end));
 
   const videoSrc = `/api/media/${clip.video_path.split("/").map(encodeURIComponent).join("/")}`;
 
@@ -410,7 +532,7 @@ function ReviewClipEditor({
                   min={0}
                   max={dmax}
                   step={0.1}
-                  value={s.start}
+                  value={Number.isFinite(s.start) ? s.start : ""}
                   onChange={(e) => {
                     const next = shots.slice();
                     next[i] = { ...next[i], start: parseFloat(e.target.value) };
@@ -427,7 +549,7 @@ function ReviewClipEditor({
                   min={0}
                   max={dmax}
                   step={0.1}
-                  value={s.end}
+                  value={Number.isFinite(s.end) ? s.end : ""}
                   onChange={(e) => {
                     const next = shots.slice();
                     next[i] = { ...next[i], end: parseFloat(e.target.value) };

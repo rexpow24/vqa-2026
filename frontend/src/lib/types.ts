@@ -52,6 +52,17 @@ export interface RunStatus {
 // tracked independently of the main pipeline run.
 export interface AnonymizeStatus {
   busy: boolean;
+  pause_supported?: boolean;
+  pause_requested: boolean;
+  paused: boolean;
+  exit_code: number | null;
+  total: number;
+  completed: number;
+  completed_files: {
+    video_id: string;
+    file_name: string;
+    completed_at: number;
+  }[];
 }
 
 export interface Shot {

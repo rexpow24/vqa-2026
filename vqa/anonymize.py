@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import hashlib
 import urllib.request
+from collections.abc import Callable
 from pathlib import Path
 
 import cv2
@@ -417,7 +418,8 @@ def anonymize_file(input_path: Path, output_path: Path | None = None) -> Path:
 
 
 def anonymize_folder(input_folder: Path, output_folder: Path | None = None,
-                      force: bool = False) -> list[Path]:
+                      force: bool = False,
+                      should_pause: Callable[[], bool] | None = None) -> list[Path]:
     """Anonymize every .mp4 in `input_folder`, writing copies to a sibling
     folder. `input_folder` is only ever read.
 
@@ -442,6 +444,8 @@ def anonymize_folder(input_folder: Path, output_folder: Path | None = None,
 
     outputs = []
     for src in sorted(input_folder.glob("*.mp4")):
+        if should_pause is not None and should_pause():
+            break
         dst = output_folder / src.name
         if dst.exists() and not force:
             outputs.append(dst)
@@ -454,7 +458,8 @@ def anonymize_folder(input_folder: Path, output_folder: Path | None = None,
     return outputs
 
 
-def anonymize_all_trimmed(work_root: Path, force: bool = False) -> dict[str, list[Path]]:
+def anonymize_all_trimmed(work_root: Path, force: bool = False,
+                          should_pause: Callable[[], bool] | None = None) -> dict[str, list[Path]]:
     """Sweep every `work/<video_id>/trimmed/` folder under `work_root`,
     writing anonymized copies to a sibling `work/<video_id>/finished/` --
     never touching `trimmed/` itself. One `anonymize_folder` call per video,
@@ -473,5 +478,8 @@ def anonymize_all_trimmed(work_root: Path, force: bool = False) -> dict[str, lis
     for trimmed_dir in sorted(work_root.glob("*/trimmed")):
         video_id = trimmed_dir.parent.name
         finished_dir = trimmed_dir.parent / "finished"
-        results[video_id] = anonymize_folder(trimmed_dir, finished_dir, force=force)
+        results[video_id] = anonymize_folder(
+            trimmed_dir, finished_dir, force=force, should_pause=should_pause)
+        if should_pause is not None and should_pause():
+            break
     return results

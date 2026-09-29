@@ -24,13 +24,17 @@ def main(argv: list[str] | None = None) -> int:
                      help="folder containing per-video work dirs (default: work)")
     ap.add_argument("--force", action="store_true",
                      help="reprocess even where a finished/ file already exists")
+    ap.add_argument("--pause-file", type=Path,
+                    help="finish the current clip, then stop before the next one")
     args = ap.parse_args(argv)
 
     if not args.work_root.is_dir():
         print(f"FAIL: no such folder: {args.work_root}")
         return 1
 
-    results = anonymize.anonymize_all_trimmed(args.work_root, force=args.force)
+    should_pause = (lambda: args.pause_file.exists()) if args.pause_file else None
+    results = anonymize.anonymize_all_trimmed(
+        args.work_root, force=args.force, should_pause=should_pause)
     total = sum(len(v) for v in results.values())
     print(f"anonymized {total} file(s) across {len(results)} video folder(s)")
     for video_id, outputs in results.items():
