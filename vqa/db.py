@@ -55,9 +55,11 @@ CREATE TABLE IF NOT EXISTS clips (
 );
 
 CREATE TABLE IF NOT EXISTS reviews (
-    clip_id     TEXT PRIMARY KEY,
-    decision    TEXT NOT NULL,
-    reviewed_at TEXT
+    clip_id      TEXT PRIMARY KEY,
+    decision     TEXT NOT NULL,
+    difficulty   TEXT,
+    event_label  TEXT,
+    reviewed_at  TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_clips_video ON clips(youtube_video_id);
@@ -136,6 +138,10 @@ def init() -> None:
                     (json.dumps([{"start_ms": r["trim_start_ms"],
                                   "end_ms": r["trim_end_ms"],
                                   "path": r["trimmed_path"]}]), r["clip_id"]))
+        review_columns = {r["name"] for r in conn.execute("PRAGMA table_info(reviews)")}
+        for column in ("difficulty", "event_label"):
+            if column not in review_columns:
+                conn.execute(f"ALTER TABLE reviews ADD COLUMN {column} TEXT")
 
 
 # ── videos ────────────────────────────────────────────────────────────────
@@ -363,13 +369,20 @@ def get_clip(clip_id: str) -> sqlite3.Row | None:
             "SELECT * FROM clips WHERE clip_id=?", (clip_id,)).fetchone()
 
 
-def set_decision(clip_id: str, decision: str) -> None:
+def set_decision(
+    clip_id: str,
+    decision: str,
+    difficulty: str | None = None,
+    event_label: str | None = None,
+) -> None:
     with tx() as conn:
         conn.execute(
-            "INSERT INTO reviews (clip_id, decision, reviewed_at) VALUES (?,?,?)"
+            "INSERT INTO reviews (clip_id, decision, difficulty, event_label, reviewed_at)"
+            " VALUES (?,?,?,?,?)"
             " ON CONFLICT(clip_id) DO UPDATE SET decision=excluded.decision,"
+            " difficulty=excluded.difficulty, event_label=excluded.event_label,"
             " reviewed_at=excluded.reviewed_at",
-            (clip_id, decision, now()),
+            (clip_id, decision, difficulty, event_label, now()),
         )
 
 

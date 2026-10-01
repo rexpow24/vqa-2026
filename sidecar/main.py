@@ -316,6 +316,8 @@ def review_next():
 class DecisionRequest(BaseModel):
     decision: str  # APPROVED | REJECTED | FLAGGED
     shots: list[dict] = []
+    difficulty: str | None = None
+    event_label: str | None = None
 
 
 @app.post("/review/{clip_id}/decision")
@@ -323,6 +325,11 @@ def review_decision(clip_id: str, req: DecisionRequest):
     clip = db.get_clip(clip_id)
     if clip is None:
         raise HTTPException(404, "clip not found")
+
+    if req.difficulty not in {"easy", "medium", "high"}:
+        raise HTTPException(422, "difficulty must be easy, medium, or high")
+    if req.event_label not in {"accident", "near-miss"}:
+        raise HTTPException(422, "event_label must be accident or near-miss")
 
     if req.decision == db.APPROVED:
         errs = trim.errors(req.shots, clip["duration_ms"] / 1000.0)
@@ -333,16 +340,16 @@ def review_decision(clip_id: str, req: DecisionRequest):
             written = review.materialize(clip, trim.segments(req.shots), cfg)
         except media.MediaError as exc:
             raise HTTPException(400, str(exc))
-        db.set_decision(clip_id, db.APPROVED)
+        db.set_decision(clip_id, db.APPROVED, req.difficulty, req.event_label)
         return {"decision": db.APPROVED, "detail": f"{len(written)} file(s) -> trimmed/"}
 
     if req.decision == db.REJECTED:
         removed = review.discard(clip)
-        db.set_decision(clip_id, db.REJECTED)
+        db.set_decision(clip_id, db.REJECTED, req.difficulty, req.event_label)
         return {"decision": db.REJECTED, "detail": f"removed {removed} file(s) from trimmed/"}
 
     if req.decision == db.FLAGGED:
-        db.set_decision(clip_id, db.FLAGGED)
+        db.set_decision(clip_id, db.FLAGGED, req.difficulty, req.event_label)
         return {"decision": db.FLAGGED, "detail": "needs a second look"}
 
     raise HTTPException(400, f"unknown decision {req.decision!r}")

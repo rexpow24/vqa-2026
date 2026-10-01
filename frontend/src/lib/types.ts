@@ -85,6 +85,9 @@ export interface ReviewClip {
   max_shots: number;
 }
 
+export type Difficulty = "easy" | "medium" | "high";
+export type EventLabel = "accident" | "near-miss";
+
 export interface ReviewSummary {
   top_left: number;
   low_left: number;

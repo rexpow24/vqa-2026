@@ -6,6 +6,8 @@ import { Timeline } from "@/components/Timeline";
 import {
   fmtTime,
   type AnonymizeStatus,
+  type Difficulty,
+  type EventLabel,
   type ReviewClip,
   type ReviewNextResponse,
   type ReviewSummary,
@@ -330,6 +332,9 @@ function ReviewClipEditor({
   videoRef,
   onDecided,
 }: EditorProps) {
+  const [view, setView] = useState<"review" | "guide">("review");
+  const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
+  const [eventLabel, setEventLabel] = useState<EventLabel | null>(null);
   const dmax = clip.duration_rounded;
   const full = shots.length >= clip.max_shots && !isUntouched(shots);
   const errors = validation?.errors ?? [];
@@ -404,11 +409,18 @@ function ReviewClipEditor({
   }
 
   async function decide(decision: "APPROVED" | "REJECTED" | "FLAGGED") {
+    if (!difficulty || !eventLabel) {
+      setMarkError("Choose a difficulty and event label before deciding.");
+      setView("review");
+      return;
+    }
     setDeciding(true);
     try {
       const res = await api<{ decision: string; detail: string }>(
         `/review/${clip.clip_id}/decision`,
-        { method: "POST", body: JSON.stringify({ decision, shots }) },
+        { method: "POST", body: JSON.stringify({
+          decision, shots, difficulty, event_label: eventLabel,
+        }) },
       );
       const icon = { APPROVED: "Approved", REJECTED: "Rejected", FLAGGED: "Flagged" }[
         res.decision as "APPROVED" | "REJECTED" | "FLAGGED"
@@ -423,6 +435,34 @@ function ReviewClipEditor({
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex gap-2 border-b border-border" role="tablist" aria-label="Review views">
+        {([['review', 'Review'], ['guide', 'Guide']] as const).map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            role="tab"
+            aria-selected={view === value}
+            className={`px-3 py-2 text-sm border-b-2 ${view === value
+              ? "border-accent text-foreground" : "border-transparent text-muted"}`}
+            onClick={() => setView(value)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {view === "guide" ? (
+        <section className="rounded-md border border-border bg-surface p-4 text-sm" role="tabpanel">
+          <h2 className="font-medium mb-3">Labeling guide</h2>
+          <div className="flex flex-col gap-3 text-muted">
+            <p><strong className="text-foreground">Easy:</strong> clear event, few ambiguities, and the cause or action is easy to observe.</p>
+            <p><strong className="text-foreground">Medium:</strong> multiple objects or moments need tracking, or there is moderate occlusion or ambiguity.</p>
+            <p><strong className="text-foreground">High:</strong> substantial temporal or causal reasoning is needed, with multiple actors, occlusion, or hard-to-distinguish evidence.</p>
+            <p><strong className="text-foreground">Accident:</strong> an actual collision occurs.</p>
+            <p><strong className="text-foreground">Near-miss:</strong> no collision occurs, but there is a clear close call or dangerous evasive action.</p>
+          </div>
+        </section>
+      ) : (
+        <>
       <div>
         <h2 className="text-sm">
           <span className={clip.band === "TOP" ? "text-amber" : "text-muted"}>
@@ -452,6 +492,24 @@ function ReviewClipEditor({
           again overwrites them; Reject deletes them.
         </p>
       )}
+
+      <div className="border-t border-border pt-4">
+        <h3 className="text-sm font-medium mb-3">Labels</h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <LabelGroup
+            legend="Difficulty"
+            value={difficulty}
+            options={["easy", "medium", "high"] as Difficulty[]}
+            onChange={setDifficulty}
+          />
+          <LabelGroup
+            legend="Event"
+            value={eventLabel}
+            options={["accident", "near-miss"] as EventLabel[]}
+            onChange={setEventLabel}
+          />
+        </div>
+      </div>
 
       <div className="border-t border-border pt-4">
         <h3 className="text-sm font-medium mb-1">Trim</h3>
@@ -594,27 +652,61 @@ function ReviewClipEditor({
         <div className="flex gap-3">
           <button
             className="flex-1 px-4 py-2 text-sm rounded-md bg-green text-black font-medium disabled:opacity-40"
-            disabled={segError || deciding}
+            disabled={segError || deciding || !difficulty || !eventLabel}
             onClick={() => decide("APPROVED")}
           >
             Approve
           </button>
           <button
             className="flex-1 px-4 py-2 text-sm rounded-md border border-border disabled:opacity-40"
-            disabled={deciding}
+            disabled={deciding || !difficulty || !eventLabel}
             onClick={() => decide("REJECTED")}
           >
             Reject
           </button>
           <button
             className="flex-1 px-4 py-2 text-sm rounded-md border border-amber/40 text-amber disabled:opacity-40"
-            disabled={deciding}
+            disabled={deciding || !difficulty || !eventLabel}
             onClick={() => decide("FLAGGED")}
           >
             Flag
           </button>
         </div>
       </div>
+        </>
+      )}
     </div>
+  );
+}
+
+function LabelGroup<T extends string>({
+  legend,
+  value,
+  options,
+  onChange,
+}: {
+  legend: string;
+  value: T | null;
+  options: T[];
+  onChange: (value: T) => void;
+}) {
+  return (
+    <fieldset>
+      <legend className="text-xs text-muted mb-1">{legend}</legend>
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => (
+          <button
+            key={option}
+            type="button"
+            aria-pressed={value === option}
+            className={`px-3 py-1.5 rounded-md border text-sm ${value === option
+              ? "border-accent bg-accent/20 text-foreground" : "border-border text-muted"}`}
+            onClick={() => onChange(option)}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </fieldset>
   );
 }
