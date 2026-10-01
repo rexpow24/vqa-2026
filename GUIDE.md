@@ -55,6 +55,31 @@ venv/Scripts/streamlit run app.py
 This is the whole interface. There are no command-line flags — everything is a
 sidebar widget, saved to `config.json` behind the scenes.
 
+## 1.2.1 Start the Next.js frontend and FastAPI backend
+
+The current review UI uses two processes.
+
+Open two PowerShell windows at the project root.
+
+In the first window, start the backend:
+
+```powershell
+.\.venv\Scripts\python.exe -m uvicorn sidecar.main:app --port 8787
+```
+
+In the second window, start the frontend:
+
+```powershell
+Set-Location frontend
+npm run dev
+```
+
+Open [http://localhost:3000/review](http://localhost:3000/review) after both
+processes are running.
+
+If the frontend dependencies have not been installed yet, run `npm install`
+once inside `frontend/`.
+
 ## 1.3 Queue → Run
 
 1. **Queue tab** — paste YouTube URLs (one per line) or upload a `.txt`.
@@ -175,6 +200,49 @@ should look at this again" — it is a decision, not a skip, and it also advance
 
 This is deliberate: a Skip button turns into a pile of clips nobody ever
 revisits.
+
+## 2.3.1 Difficulty and event labels
+
+Choose one difficulty label and one event label before pressing **Approve**,
+**Reject** or **Flag**.
+
+### Difficulty
+
+| Label | Guideline |
+|---|---|
+| **Easy** | Thời tiết quang đãng, ánh sáng tốt, chất lượng camera rõ, và tình huống dễ quan sát, phân tích. |
+| **Medium** | Chất lượng hình ảnh ở mức trung bình, tình huống vẫn quan sát được nhưng cần chú ý, có che khuất nhẹ hoặc góc nhìn chưa tối ưu. |
+| **High** | Chất lượng hình ảnh thấp, ánh sáng kém, góc quay khó hoặc bị che khuất nhiều, khiến người review khó xác định chính xác diễn biến và loại sự kiện. |
+
+### Event
+
+| Label | Guideline |
+|---|---|
+| **Accident** | Có va chạm thực tế giữa các phương tiện, người hoặc vật thể. |
+| **Near-miss** | Không xảy ra va chạm, nhưng có tình huống suýt va chạm hoặc phải phanh, đánh lái, tránh gấp để tránh tai nạn. |
+
+Use **High** when the footage makes it difficult to determine the sequence of
+events or the event type from the available evidence.
+
+The saved database values are `easy`, `medium`, `high`, `accident` and
+`near-miss`.
+
+### Check labels from the database
+
+Query the top five clips for one video:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\query_review_labels.py OpSb78KKmXA --top 5
+```
+
+Query only clips that have both a difficulty label and an event label:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\query_review_labels.py OpSb78KKmXA --top 5 --labeled-only
+```
+
+The reusable script is
+[`scripts/query_review_labels.py`](scripts/query_review_labels.py).
 
 ## 2.4 Where to cut — the rule
 

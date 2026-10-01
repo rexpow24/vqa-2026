@@ -460,6 +460,17 @@ function ReviewClipEditor({
             <p><strong className="text-foreground">Accident:</strong> có va chạm thực tế giữa các phương tiện, người hoặc vật thể.</p>
             <p><strong className="text-foreground">Near-miss:</strong> không xảy ra va chạm, nhưng có tình huống suýt va chạm hoặc phải phanh, đánh lái, tránh gấp để tránh tai nạn.</p>
           </div>
+          <div className="mt-5 border-t border-border pt-4">
+            <h3 className="font-medium text-foreground mb-2">Khởi động hệ thống</h3>
+            <p className="mb-2 text-xs">Mở hai cửa sổ PowerShell tại thư mục project:</p>
+            <pre className="overflow-x-auto rounded bg-black/30 p-3 text-xs text-foreground"><code>{`# Cửa sổ 1: backend\n.\\.venv\\Scripts\\python.exe -m uvicorn sidecar.main:app --port 8787\n\n# Cửa sổ 2: frontend\nSet-Location frontend\nnpm run dev\n\n# Mở giao diện\nhttp://localhost:3000/review`}</code></pre>
+          </div>
+          <div className="mt-5 border-t border-border pt-4">
+            <h3 className="font-medium text-foreground mb-2">Kiểm tra nhãn bằng script</h3>
+            <p className="mb-2 text-xs">Query top 5 clip của một video:</p>
+            <pre className="overflow-x-auto rounded bg-black/30 p-3 text-xs text-foreground"><code>{`.\\.venv\\Scripts\\python.exe scripts\\query_review_labels.py OpSb78KKmXA --top 5\n\n# Chỉ lấy clip đã có đủ difficulty và event label\n.\\.venv\\Scripts\\python.exe scripts\\query_review_labels.py OpSb78KKmXA --top 5 --labeled-only`}</code></pre>
+            <p className="mt-2 text-xs">Script nằm tại <code className="text-foreground">scripts/query_review_labels.py</code>.</p>
+          </div>
         </section>
       ) : (
         <>
