@@ -454,11 +454,11 @@ function ReviewClipEditor({
         <section className="rounded-md border border-border bg-surface p-4 text-sm" role="tabpanel">
           <h2 className="font-medium mb-3">Labeling guide</h2>
           <div className="flex flex-col gap-3 text-muted">
-            <p><strong className="text-foreground">Easy:</strong> clear event, few ambiguities, and the cause or action is easy to observe.</p>
-            <p><strong className="text-foreground">Medium:</strong> multiple objects or moments need tracking, or there is moderate occlusion or ambiguity.</p>
-            <p><strong className="text-foreground">High:</strong> substantial temporal or causal reasoning is needed, with multiple actors, occlusion, or hard-to-distinguish evidence.</p>
-            <p><strong className="text-foreground">Accident:</strong> an actual collision occurs.</p>
-            <p><strong className="text-foreground">Near-miss:</strong> no collision occurs, but there is a clear close call or dangerous evasive action.</p>
+            <p><strong className="text-foreground">Easy:</strong> thời tiết quang đãng, ánh sáng tốt, chất lượng camera rõ, và tình huống dễ quan sát, phân tích.</p>
+            <p><strong className="text-foreground">Medium:</strong> chất lượng hình ảnh ở mức trung bình, tình huống vẫn quan sát được nhưng cần chú ý, có che khuất nhẹ hoặc góc nhìn chưa tối ưu.</p>
+            <p><strong className="text-foreground">High:</strong> chất lượng hình ảnh thấp, ánh sáng kém, góc quay khó hoặc bị che khuất nhiều, khiến người review khó xác định chính xác diễn biến và loại sự kiện.</p>
+            <p><strong className="text-foreground">Accident:</strong> có va chạm thực tế giữa các phương tiện, người hoặc vật thể.</p>
+            <p><strong className="text-foreground">Near-miss:</strong> không xảy ra va chạm, nhưng có tình huống suýt va chạm hoặc phải phanh, đánh lái, tránh gấp để tránh tai nạn.</p>
           </div>
         </section>
       ) : (
@@ -508,6 +508,17 @@ function ReviewClipEditor({
             options={["accident", "near-miss"] as EventLabel[]}
             onChange={setEventLabel}
           />
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-md border border-border bg-surface p-3 text-xs text-muted">
+        <h4 className="mb-2 text-sm font-medium text-foreground">Guidelines</h4>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <p><strong className="text-foreground">Easy:</strong> thời tiết quang đãng, ánh sáng tốt, camera rõ, tình huống dễ quan sát.</p>
+          <p><strong className="text-foreground">Medium:</strong> hình ảnh trung bình, vẫn quan sát được nhưng cần chú ý, che khuất nhẹ hoặc góc nhìn chưa tối ưu.</p>
+          <p><strong className="text-foreground">High:</strong> hình ảnh thấp, ánh sáng kém, góc quay khó hoặc che khuất nhiều, khó xác định chính xác diễn biến và loại sự kiện.</p>
+          <p><strong className="text-foreground">Accident:</strong> có va chạm thực tế giữa các phương tiện, người hoặc vật thể.</p>
+          <p><strong className="text-foreground">Near-miss:</strong> không va chạm, nhưng suýt va chạm hoặc phải phanh, đánh lái, tránh gấp để tránh tai nạn.</p>
         </div>
       </div>
 
