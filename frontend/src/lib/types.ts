@@ -101,6 +101,22 @@ export interface ReviewNextResponse {
   summary: ReviewSummary;
 }
 
+// A clip decided before difficulty/event_label existed -- already
+// APPROVED/REJECTED/FLAGGED, just missing one or both labels.
+export interface RelabelClip {
+  clip_id: string;
+  youtube_video_id: string;
+  duration_s: number;
+  flags: string[];
+  video_path: string;
+  decision: string;
+}
+
+export interface RelabelNextResponse {
+  clip: RelabelClip | null;
+  remaining: number;
+}
+
 export interface Conflict {
   i: number;
   j: number;

@@ -355,6 +355,67 @@ def review_decision(clip_id: str, req: DecisionRequest):
     raise HTTPException(400, f"unknown decision {req.decision!r}")
 
 
+# ── relabel backlog: clips decided before difficulty/event_label existed ──
+
+
+def _trimmed_path(clip) -> str | None:
+    """First trim_segments path that still exists on disk, or None.
+
+    trim_segments can go stale (a clip re-cut or its trimmed/ file removed by
+    hand outside the normal Approve/Reject flow) without the DB row noticing,
+    so existence is checked here rather than trusted.
+    """
+    for seg in json.loads(clip["trim_segments"] or "[]"):
+        p = Path(seg["path"])
+        if p.exists():
+            return str(p).replace("\\", "/")
+    return None
+
+
+@app.get("/relabel/next")
+def relabel_next():
+    # trimmed_only=True: this backlog is scoped to clips whose output is
+    # actually in trimmed/ -- the finished-product folder -- not every
+    # decided clip, so a REJECTED clip (no trimmed/ output) never appears here.
+    backlog = [(c, _trimmed_path(c)) for c in db.list_missing_labels(trimmed_only=True)]
+    backlog = [(c, p) for c, p in backlog if p is not None]
+
+    if not backlog:
+        return {"clip": None, "remaining": 0}
+
+    clip, path = backlog[0]
+    return {
+        "clip": {
+            "clip_id": clip["clip_id"],
+            "youtube_video_id": clip["youtube_video_id"],
+            "duration_s": clip["duration_ms"] / 1000.0,
+            "flags": json.loads(clip["flags"] or "[]"),
+            "video_path": path,
+            "decision": clip["decision"],
+        },
+        "remaining": len(backlog),
+    }
+
+
+class LabelRequest(BaseModel):
+    difficulty: str | None = None
+    event_label: str | None = None
+
+
+@app.post("/relabel/{clip_id}")
+def relabel_clip(clip_id: str, req: LabelRequest):
+    clip = db.get_clip(clip_id)
+    if clip is None:
+        raise HTTPException(404, "clip not found")
+    if req.difficulty not in {"easy", "medium", "high"}:
+        raise HTTPException(422, "difficulty must be easy, medium, or high")
+    if req.event_label not in {"accident", "near-miss"}:
+        raise HTTPException(422, "event_label must be accident or near-miss")
+
+    db.set_labels(clip_id, req.difficulty, req.event_label)
+    return {"ok": True}
+
+
 # ── trim geometry: stateless wrappers around vqa/trim.py's pure functions ─
 #
 # The frontend owns the shot list in React state (no server-side session

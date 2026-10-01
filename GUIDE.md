@@ -244,6 +244,25 @@ Query only clips that have both a difficulty label and an event label:
 The reusable script is
 [`scripts/query_review_labels.py`](scripts/query_review_labels.py).
 
+### Backfilling clips decided before labels existed
+
+Clips Approved before this feature shipped have a decision but no
+`difficulty`/`event_label` — `/review/next` only queues `UNREVIEWED` clips, so
+that backlog never resurfaces in the normal Review tab on its own.
+
+Find it (add `--trimmed-only` to match what the Relabel tab shows — only
+clips actually materialized into `trimmed/`, i.e. not REJECTED):
+
+```powershell
+.\.venv\Scripts\python.exe scripts\query_missing_labels.py --by-video --trimmed-only
+```
+
+Clear it: open the **Relabel** tab. It only lists clips whose output is in
+`trimmed/` — the finished-product folder — so a REJECTED clip never appears
+there. It shows one clip at a time (the decision is not re-made, only the two
+labels are filled in) and **Save & next** moves to the next one until the
+backlog is empty.
+
 ## 2.4 Where to cut — the rule
 
 > **Start the clip at the moment of impact. End it 5 seconds later.**

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
 import { Timeline } from "@/components/Timeline";
+import { LabelGroup } from "@/components/LabelGroup";
 import {
   fmtTime,
   type AnonymizeStatus,
@@ -698,37 +699,5 @@ function ReviewClipEditor({
         </>
       )}
     </div>
-  );
-}
-
-function LabelGroup<T extends string>({
-  legend,
-  value,
-  options,
-  onChange,
-}: {
-  legend: string;
-  value: T | null;
-  options: T[];
-  onChange: (value: T) => void;
-}) {
-  return (
-    <fieldset>
-      <legend className="text-xs text-muted mb-1">{legend}</legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map((option) => (
-          <button
-            key={option}
-            type="button"
-            aria-pressed={value === option}
-            className={`px-3 py-1.5 rounded-md border text-sm ${value === option
-              ? "border-accent bg-accent/20 text-foreground" : "border-border text-muted"}`}
-            onClick={() => onChange(option)}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-    </fieldset>
   );
 }

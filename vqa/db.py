@@ -386,6 +386,42 @@ def set_decision(
         )
 
 
+def list_missing_labels(trimmed_only: bool = False) -> list[sqlite3.Row]:
+    """Decided clips missing difficulty and/or event_label.
+
+    Covers the backlog reviewed before those columns existed: `review_next()`
+    only queues `UNREVIEWED` clips, so a clip already decided has no other way
+    back into any UI.
+
+    `trimmed_only` restricts to clips that actually materialized output into
+    trimmed/ (non-null `trim_segments`) -- in practice APPROVED clips, since
+    REJECTED clears trim_segments on discard. Existence of the file itself is
+    not checked here; that is a filesystem concern for the caller.
+    """
+    q = ("SELECT c.*, r.decision, r.reviewed_at FROM clips c"
+         " JOIN reviews r ON r.clip_id = c.clip_id"
+         " WHERE r.decision != ? AND (r.difficulty IS NULL OR r.event_label IS NULL)")
+    args: list = [UNREVIEWED]
+    if trimmed_only:
+        q += " AND c.trim_segments IS NOT NULL"
+    q += " ORDER BY c.youtube_video_id, c.start_ms"
+    with tx() as conn:
+        return conn.execute(q, args).fetchall()
+
+
+def set_labels(clip_id: str, difficulty: str, event_label: str) -> None:
+    """Backfill difficulty/event_label on an already-decided clip.
+
+    Decision and reviewed_at are untouched -- this does not re-review the
+    clip, only fills in labels that did not exist yet when it was decided.
+    """
+    with tx() as conn:
+        conn.execute(
+            "UPDATE reviews SET difficulty=?, event_label=? WHERE clip_id=?",
+            (difficulty, event_label, clip_id),
+        )
+
+
 def clip_counts() -> dict:
     with tx() as conn:
         rows = conn.execute(
