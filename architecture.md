@@ -254,7 +254,10 @@ videos(youtube_video_id PK, canonical_url, title, channel_id, duration_s,
 clips(clip_id PK, youtube_video_id, seq, start_ms, end_ms, duration_ms,
       confidence, flags, master_path, delivered_path,
       pipeline_version, config_hash, trim_segments, created_at)
-reviews(clip_id PK, decision, reviewed_at)
+reviews(clip_id PK, decision, difficulty, event_label, reviewed_at)
+review_segments(clip_id, segment_index, start_ms, end_ms,
+                difficulty, event_label, reviewed_at,
+                PRIMARY KEY (clip_id, segment_index))
 ```
 
 ### Clip ID is content-derived
@@ -271,6 +274,14 @@ merges for free, with no ID allocator.
 ```json
 [{"start_ms": 4000, "end_ms": 9000, "path": "work/.../trimmed/..._t01.mp4"}]
 ```
+
+`reviews` owns the clip-level decision.
+`review_segments` owns labels for each approved output shot, so two cuts from
+the same source clip can have different difficulty and event labels.
+`segment_index` follows the materialized `trim_segments` order and is replaced
+when the reviewer approves again.
+Reject clears both the materialized segments and their per-shot labels, while
+the source and delivered files remain recoverable.
 
 One clip can produce several output files, so a fixed set of trim columns does
 not fit. `insert_clip` is an **UPSERT**, not `INSERT OR REPLACE` — a replace

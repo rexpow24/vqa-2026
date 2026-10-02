@@ -37,6 +37,7 @@ def discard(clip) -> int:
             p.unlink()
             removed += 1
     db.set_trim_segments(clip["clip_id"], [])
+    db.clear_segment_labels(clip["clip_id"])
     return removed
 
 

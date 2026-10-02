@@ -62,6 +62,17 @@ CREATE TABLE IF NOT EXISTS reviews (
     reviewed_at  TEXT
 );
 
+CREATE TABLE IF NOT EXISTS review_segments (
+    clip_id       TEXT NOT NULL,
+    segment_index INTEGER NOT NULL,
+    start_ms      INTEGER NOT NULL,
+    end_ms        INTEGER NOT NULL,
+    difficulty    TEXT,
+    event_label   TEXT,
+    reviewed_at   TEXT,
+    PRIMARY KEY (clip_id, segment_index)
+);
+
 CREATE INDEX IF NOT EXISTS idx_clips_video ON clips(youtube_video_id);
 CREATE INDEX IF NOT EXISTS idx_videos_status ON videos(status);
 """
@@ -209,6 +220,9 @@ def remove_video(video_id: str) -> int:
         conn.execute(
             "DELETE FROM reviews WHERE clip_id IN"
             " (SELECT clip_id FROM clips WHERE youtube_video_id=?)", (video_id,))
+        conn.execute(
+            "DELETE FROM review_segments WHERE clip_id IN"
+            " (SELECT clip_id FROM clips WHERE youtube_video_id=?)", (video_id,))
         conn.execute("DELETE FROM clips WHERE youtube_video_id=?", (video_id,))
         return cur.rowcount
 
@@ -342,7 +356,7 @@ def insert_clip(clip: dict) -> None:
 
 def list_clips(video_id: str | None = None, decision: str | None = None,
                confidence: str | None = None) -> list[sqlite3.Row]:
-    q = ("SELECT c.*, r.decision, r.reviewed_at FROM clips c"
+    q = ("SELECT c.*, r.decision, r.difficulty, r.event_label, r.reviewed_at FROM clips c"
          " JOIN reviews r ON r.clip_id = c.clip_id WHERE 1=1")
     args: list = []
     if video_id:
@@ -386,6 +400,47 @@ def set_decision(
         )
 
 
+def set_segment_labels(clip_id: str, segments: list[dict]) -> None:
+    """Replace per-output-shot labels for one approved clip.
+
+    Segment index is the stable identity within one materialized cut.  The
+    trim output rows and this table are replaced together by the review flow.
+    """
+    with tx() as conn:
+        conn.execute("DELETE FROM review_segments WHERE clip_id=?", (clip_id,))
+        conn.executemany(
+            "INSERT INTO review_segments"
+            " (clip_id, segment_index, start_ms, end_ms, difficulty, event_label, reviewed_at)"
+            " VALUES (?,?,?,?,?,?,?)",
+            [
+                (
+                    clip_id,
+                    i,
+                    int(segment["start_ms"]),
+                    int(segment["end_ms"]),
+                    segment.get("difficulty"),
+                    segment.get("event_label"),
+                    now(),
+                )
+                for i, segment in enumerate(segments, 1)
+            ],
+        )
+
+
+def segment_labels(clip_id: str) -> list[sqlite3.Row]:
+    """Return per-shot labels in materialized output order."""
+    with tx() as conn:
+        return conn.execute(
+            "SELECT * FROM review_segments WHERE clip_id=? ORDER BY segment_index",
+            (clip_id,),
+        ).fetchall()
+
+
+def clear_segment_labels(clip_id: str) -> None:
+    with tx() as conn:
+        conn.execute("DELETE FROM review_segments WHERE clip_id=?", (clip_id,))
+
+
 def list_missing_labels(trimmed_only: bool = False) -> list[sqlite3.Row]:
     """Decided clips missing difficulty and/or event_label.
 
@@ -398,10 +453,16 @@ def list_missing_labels(trimmed_only: bool = False) -> list[sqlite3.Row]:
     REJECTED clears trim_segments on discard. Existence of the file itself is
     not checked here; that is a filesystem concern for the caller.
     """
-    q = ("SELECT c.*, r.decision, r.reviewed_at FROM clips c"
+    q = ("SELECT c.*, r.decision, r.difficulty, r.event_label, r.reviewed_at FROM clips c"
          " JOIN reviews r ON r.clip_id = c.clip_id"
-         " WHERE r.decision != ? AND (r.difficulty IS NULL OR r.event_label IS NULL)")
-    args: list = [UNREVIEWED]
+         " WHERE r.decision != ? AND (r.difficulty IS NULL OR r.event_label IS NULL)"
+         " AND NOT (r.decision=? AND c.trim_segments IS NOT NULL"
+         " AND (SELECT COUNT(*) FROM review_segments rs"
+         "      WHERE rs.clip_id=c.clip_id)=json_array_length(c.trim_segments)"
+         " AND NOT EXISTS (SELECT 1 FROM review_segments missing"
+         "                 WHERE missing.clip_id=c.clip_id"
+         "                   AND (missing.difficulty IS NULL OR missing.event_label IS NULL)))")
+    args: list = [UNREVIEWED, APPROVED]
     if trimmed_only:
         q += " AND c.trim_segments IS NOT NULL"
     q += " ORDER BY c.youtube_video_id, c.start_ms"

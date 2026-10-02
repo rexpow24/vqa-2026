@@ -20,6 +20,14 @@ function isUntouched(shots: Shot[]): boolean {
   return shots.length === 1 && shots[0].default;
 }
 
+function preserveShotLabels(next: Shot[], previous: Shot[]): Shot[] {
+  return next.map((shot, i) => ({
+    ...shot,
+    difficulty: previous[i]?.difficulty ?? null,
+    event_label: previous[i]?.event_label ?? null,
+  }));
+}
+
 export default function ReviewPage() {
   const [clip, setClip] = useState<ReviewClip | null>(null);
   const [shots, setShots] = useState<Shot[]>([]);
@@ -334,8 +342,6 @@ function ReviewClipEditor({
   onDecided,
 }: EditorProps) {
   const [view, setView] = useState<"review" | "guide">("review");
-  const [difficulty, setDifficulty] = useState<Difficulty | null>(null);
-  const [eventLabel, setEventLabel] = useState<EventLabel | null>(null);
   const dmax = clip.duration_rounded;
   const full = shots.length >= clip.max_shots && !isUntouched(shots);
   const errors = validation?.errors ?? [];
@@ -356,7 +362,7 @@ function ReviewClipEditor({
       if (res.shots === null) {
         setMarkError(res.error);
       } else {
-        setShots(res.shots);
+        setShots(preserveShotLabels(res.shots, shots));
       }
     } catch (e) {
       setMarkError(e instanceof Error ? e.message : String(e));
@@ -369,7 +375,7 @@ function ReviewClipEditor({
         method: "POST",
         body: JSON.stringify({ shots, duration: dmax, pad: clip.pad_default }),
       });
-      if (res.shots) setShots(res.shots);
+      if (res.shots) setShots(preserveShotLabels(res.shots, shots));
     } catch (e) {
       setMarkError(e instanceof Error ? e.message : String(e));
     }
@@ -384,7 +390,7 @@ function ReviewClipEditor({
       if (res.shots === null) {
         setMarkError(res.error ?? "Cannot resolve automatically - adjust Start/End manually.");
       } else {
-        setShots(res.shots);
+        setShots(preserveShotLabels(res.shots, shots));
       }
     } catch (e) {
       setMarkError(e instanceof Error ? e.message : String(e));
@@ -398,7 +404,11 @@ function ReviewClipEditor({
         body: JSON.stringify({ shot: shots[i], start, end }),
       });
       const next = shots.slice();
-      next[i] = res.shot;
+      next[i] = {
+        ...res.shot,
+        difficulty: shots[i].difficulty ?? null,
+        event_label: shots[i].event_label ?? null,
+      };
       setShots(next);
     } catch (e) {
       setMarkError(e instanceof Error ? e.message : String(e));
@@ -410,8 +420,9 @@ function ReviewClipEditor({
   }
 
   async function decide(decision: "APPROVED" | "REJECTED" | "FLAGGED") {
-    if (!difficulty || !eventLabel) {
-      setMarkError("Choose a difficulty and event label before deciding.");
+    const shotsLabeled = shots.every((shot) => shot.difficulty && shot.event_label);
+    if (decision !== "REJECTED" && !shotsLabeled) {
+      setMarkError("Choose difficulty and event label for every shot before deciding.");
       setView("review");
       return;
     }
@@ -420,7 +431,9 @@ function ReviewClipEditor({
       const res = await api<{ decision: string; detail: string }>(
         `/review/${clip.clip_id}/decision`,
         { method: "POST", body: JSON.stringify({
-          decision, shots, difficulty, event_label: eventLabel,
+          decision, shots,
+          difficulty: decision === "REJECTED" ? null : shots[0]?.difficulty ?? null,
+          event_label: decision === "REJECTED" ? null : shots[0]?.event_label ?? null,
         }) },
       );
       const icon = { APPROVED: "Approved", REJECTED: "Rejected", FLAGGED: "Flagged" }[
@@ -506,21 +519,11 @@ function ReviewClipEditor({
       )}
 
       <div className="border-t border-border pt-4">
-        <h3 className="text-sm font-medium mb-3">Labels</h3>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <LabelGroup
-            legend="Difficulty"
-            value={difficulty}
-            options={["easy", "medium", "high"] as Difficulty[]}
-            onChange={setDifficulty}
-          />
-          <LabelGroup
-            legend="Event"
-            value={eventLabel}
-            options={["accident", "near-miss"] as EventLabel[]}
-            onChange={setEventLabel}
-          />
-        </div>
+        <h3 className="text-sm font-medium mb-1">Shot labels</h3>
+        <p className="text-xs text-muted">
+          Each detected or manually cut shot is labeled independently. A manually cut small
+          shot is treated as a normal shot in the dataset.
+        </p>
       </div>
 
       <div className="mt-4 rounded-md border border-border bg-surface p-3 text-xs text-muted">
@@ -600,7 +603,8 @@ function ReviewClipEditor({
 
         <div className="flex flex-col gap-2 mt-2">
           {shots.map((s, i) => (
-            <div key={i} className="flex items-center gap-3">
+            <div key={i} className="flex flex-col gap-2 rounded-md border border-border bg-surface p-3">
+              <div className="flex items-center gap-3">
               <span
                 className="w-3.5 h-3.5 rounded-sm shrink-0"
                 style={{ background: ["#22C55E", "#3B82F6", "#F59E0B"][i % 3] }}
@@ -647,6 +651,29 @@ function ReviewClipEditor({
               >
                 Remove
               </button>
+              </div>
+              <div className="grid gap-3 border-t border-border pt-2 sm:grid-cols-2">
+                <LabelGroup
+                  legend={`Shot ${i + 1} difficulty`}
+                  value={s.difficulty ?? null}
+                  options={["easy", "medium", "high"] as Difficulty[]}
+                  onChange={(value) => {
+                    const next = shots.slice();
+                    next[i] = { ...next[i], difficulty: value };
+                    setShots(next);
+                  }}
+                />
+                <LabelGroup
+                  legend={`Shot ${i + 1} event`}
+                  value={s.event_label ?? null}
+                  options={["accident", "near-miss"] as EventLabel[]}
+                  onChange={(value) => {
+                    const next = shots.slice();
+                    next[i] = { ...next[i], event_label: value };
+                    setShots(next);
+                  }}
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -669,27 +696,27 @@ function ReviewClipEditor({
 
       <div className="border-t border-border pt-4">
         <p className="text-xs text-muted mb-3">
-          Approve or Reject is required to advance -- there is no Skip. Approve stays disabled
-          while any conflict or out-of-range shot remains.
+          Approve or Reject is required to advance -- there is no Skip. Approve and Flag stay
+          disabled while any conflict, out-of-range shot, or missing per-shot label remains.
         </p>
         <div className="flex gap-3">
           <button
             className="flex-1 px-4 py-2 text-sm rounded-md bg-green text-black font-medium disabled:opacity-40"
-            disabled={segError || deciding || !difficulty || !eventLabel}
+            disabled={segError || deciding || !shots.every((s) => s.difficulty && s.event_label)}
             onClick={() => decide("APPROVED")}
           >
             Approve
           </button>
           <button
             className="flex-1 px-4 py-2 text-sm rounded-md border border-border disabled:opacity-40"
-            disabled={deciding || !difficulty || !eventLabel}
+            disabled={deciding}
             onClick={() => decide("REJECTED")}
           >
             Reject
           </button>
           <button
             className="flex-1 px-4 py-2 text-sm rounded-md border border-amber/40 text-amber disabled:opacity-40"
-            disabled={deciding || !difficulty || !eventLabel}
+            disabled={deciding}
             onClick={() => decide("FLAGGED")}
           >
             Flag

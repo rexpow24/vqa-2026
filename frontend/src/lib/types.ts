@@ -70,6 +70,8 @@ export interface Shot {
   end: number;
   auto: boolean;
   default: boolean;
+  difficulty?: Difficulty | null;
+  event_label?: EventLabel | null;
 }
 
 export interface ReviewClip {

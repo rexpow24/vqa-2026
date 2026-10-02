@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sidecar.main as sidecar_main
+from sidecar.main import DecisionRequest, review_decision
 
 def test_review_labels_migrate_and_persist(fresh_db):
     conn = fresh_db.connect()
@@ -84,3 +86,83 @@ def test_set_labels_backfills_without_touching_decision(fresh_db):
         ).fetchone()
     assert tuple(row) == (fresh_db.REJECTED, "high", "near-miss")
     assert fresh_db.list_missing_labels() == []
+
+
+def test_segment_labels_are_stored_independently(fresh_db):
+    _insert_clip(fresh_db, "clip-split")
+    fresh_db.set_decision("clip-split", fresh_db.APPROVED)
+    fresh_db.set_trim_segments("clip-split", [
+        {"start_ms": 0, "end_ms": 10000, "path": "a.mp4"},
+        {"start_ms": 10000, "end_ms": 20000, "path": "b.mp4"},
+    ])
+
+    fresh_db.set_segment_labels("clip-split", [
+        {"start_ms": 0, "end_ms": 10000, "difficulty": "easy", "event_label": "accident"},
+        {"start_ms": 10000, "end_ms": 20000, "difficulty": "high", "event_label": "near-miss"},
+    ])
+
+    rows = fresh_db.segment_labels("clip-split")
+    assert [(r["segment_index"], r["difficulty"], r["event_label"]) for r in rows] == [
+        (1, "easy", "accident"),
+        (2, "high", "near-miss"),
+    ]
+    assert fresh_db.list_missing_labels(trimmed_only=True) == []
+
+    fresh_db.clear_segment_labels("clip-split")
+    assert fresh_db.segment_labels("clip-split") == []
+
+
+def test_reject_does_not_require_or_store_labels(fresh_db):
+    _insert_clip(fresh_db, "clip-reject")
+
+    result = review_decision("clip-reject", DecisionRequest(decision=fresh_db.REJECTED))
+
+    assert result["decision"] == fresh_db.REJECTED
+    with fresh_db.tx() as check:
+        row = check.execute(
+            "SELECT decision, difficulty, event_label FROM reviews WHERE clip_id=?",
+            ("clip-reject",),
+        ).fetchone()
+    assert tuple(row) == (fresh_db.REJECTED, None, None)
+
+
+def test_approved_small_shots_are_independent_without_clip_label(fresh_db, monkeypatch):
+    _insert_clip(fresh_db, "clip-small-shots")
+    with fresh_db.tx() as conn:
+        conn.execute(
+            "UPDATE clips SET end_ms=20000, duration_ms=20000 WHERE clip_id=?",
+            ("clip-small-shots",),
+        )
+    monkeypatch.setattr(
+        sidecar_main.review,
+        "materialize",
+        lambda clip, segments, cfg: [
+            {"start_ms": 0, "end_ms": 10000, "path": "a.mp4"},
+            {"start_ms": 10000, "end_ms": 20000, "path": "b.mp4"},
+        ],
+    )
+
+    result = review_decision(
+        "clip-small-shots",
+        DecisionRequest(
+            decision=fresh_db.APPROVED,
+            difficulty=None,
+            event_label=None,
+            shots=[
+                {"start": 0, "end": 10, "difficulty": "easy", "event_label": "accident"},
+                {"start": 10, "end": 20, "difficulty": "high", "event_label": "near-miss"},
+            ],
+        ),
+    )
+
+    assert result["decision"] == fresh_db.APPROVED
+    assert [(r["difficulty"], r["event_label"]) for r in fresh_db.segment_labels("clip-small-shots")] == [
+        ("easy", "accident"),
+        ("high", "near-miss"),
+    ]
+    with fresh_db.tx() as check:
+        row = check.execute(
+            "SELECT difficulty, event_label FROM reviews WHERE clip_id=?",
+            ("clip-small-shots",),
+        ).fetchone()
+    assert tuple(row) == (None, None)

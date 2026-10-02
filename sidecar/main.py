@@ -287,8 +287,16 @@ def review_next():
     dur = clip["duration_ms"] / 1000.0
     dmax = round(dur, 1)
     existing = db.trim_segments(clip)
+    saved_labels = db.segment_labels(clip["clip_id"])
     initial_shots = (
-        [trim.shot(x["start_ms"] / 1000, x["end_ms"] / 1000) for x in existing]
+        [
+            {
+                **trim.shot(x["start_ms"] / 1000, x["end_ms"] / 1000),
+                "difficulty": saved_labels[i]["difficulty"] if i < len(saved_labels) else None,
+                "event_label": saved_labels[i]["event_label"] if i < len(saved_labels) else None,
+            }
+            for i, x in enumerate(existing)
+        ]
         if existing else trim.whole_clip(dmax)
     )
     # Forward slashes only: this string becomes a URL path segment on the
@@ -326,29 +334,49 @@ def review_decision(clip_id: str, req: DecisionRequest):
     if clip is None:
         raise HTTPException(404, "clip not found")
 
-    if req.difficulty not in {"easy", "medium", "high"}:
-        raise HTTPException(422, "difficulty must be easy, medium, or high")
-    if req.event_label not in {"accident", "near-miss"}:
-        raise HTTPException(422, "event_label must be accident or near-miss")
-
     if req.decision == db.APPROVED:
         errs = trim.errors(req.shots, clip["duration_ms"] / 1000.0)
         if errs:
             raise HTTPException(400, "; ".join(errs))
+        for i, shot in enumerate(req.shots, 1):
+            if shot.get("difficulty") not in {"easy", "medium", "high"}:
+                raise HTTPException(422, f"shot {i}: choose a difficulty")
+            if shot.get("event_label") not in {"accident", "near-miss"}:
+                raise HTTPException(422, f"shot {i}: choose an event label")
         cfg = config.load()
         try:
             written = review.materialize(clip, trim.segments(req.shots), cfg)
         except media.MediaError as exc:
             raise HTTPException(400, str(exc))
-        db.set_decision(clip_id, db.APPROVED, req.difficulty, req.event_label)
+        labeled = [
+            {**segment, "difficulty": req.shots[i].get("difficulty"),
+             "event_label": req.shots[i].get("event_label")}
+            for i, segment in enumerate(written)
+        ]
+        db.set_segment_labels(clip_id, labeled)
+        # Keep the legacy clip-level columns only as a compatibility summary.
+        # The authoritative labels for a split clip are review_segments.
+        same_difficulty = len({x["difficulty"] for x in labeled}) == 1
+        same_event = len({x["event_label"] for x in labeled}) == 1
+        db.set_decision(
+            clip_id,
+            db.APPROVED,
+            labeled[0]["difficulty"] if same_difficulty else None,
+            labeled[0]["event_label"] if same_event else None,
+        )
         return {"decision": db.APPROVED, "detail": f"{len(written)} file(s) -> trimmed/"}
 
     if req.decision == db.REJECTED:
         removed = review.discard(clip)
-        db.set_decision(clip_id, db.REJECTED, req.difficulty, req.event_label)
+        db.set_decision(clip_id, db.REJECTED)
         return {"decision": db.REJECTED, "detail": f"removed {removed} file(s) from trimmed/"}
 
     if req.decision == db.FLAGGED:
+        for i, shot in enumerate(req.shots, 1):
+            if shot.get("difficulty") not in {"easy", "medium", "high"}:
+                raise HTTPException(422, f"shot {i}: choose a difficulty")
+            if shot.get("event_label") not in {"accident", "near-miss"}:
+                raise HTTPException(422, f"shot {i}: choose an event label")
         db.set_decision(clip_id, db.FLAGGED, req.difficulty, req.event_label)
         return {"decision": db.FLAGGED, "detail": "needs a second look"}
 

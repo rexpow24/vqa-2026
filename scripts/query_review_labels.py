@@ -1,4 +1,4 @@
-"""Query review labels for one video from pipeline.db."""
+"""Query clip decisions and independent output-shot labels for one video."""
 
 import argparse
 import sqlite3
@@ -22,7 +22,21 @@ def main() -> None:
         WHERE c.youtube_video_id = ?
     """
     if args.labeled_only:
-        query += " AND r.difficulty IS NOT NULL AND r.event_label IS NOT NULL"
+        query += """
+          AND (
+            (c.trim_segments IS NULL AND r.difficulty IS NOT NULL
+             AND r.event_label IS NOT NULL)
+            OR
+            (c.trim_segments IS NOT NULL
+             AND (SELECT COUNT(*) FROM review_segments rs
+                  WHERE rs.clip_id = c.clip_id) = json_array_length(c.trim_segments)
+             AND NOT EXISTS (
+               SELECT 1 FROM review_segments missing
+               WHERE missing.clip_id = c.clip_id
+                 AND (missing.difficulty IS NULL OR missing.event_label IS NULL)
+             ))
+          )
+        """
     query += " ORDER BY COALESCE(r.reviewed_at, '') DESC, c.start_ms LIMIT ?"
 
     with sqlite3.connect(args.db) as conn:
@@ -33,8 +47,17 @@ def main() -> None:
         print(f"No clips found for video_id={args.video_id}")
         return
 
-    for row in rows:
-        print(dict(row))
+    with sqlite3.connect(args.db) as conn:
+        conn.row_factory = sqlite3.Row
+        for row in rows:
+            segments = conn.execute(
+                "SELECT segment_index, start_ms, end_ms, difficulty, event_label, reviewed_at "
+                "FROM review_segments WHERE clip_id=? ORDER BY segment_index",
+                (row["clip_id"],),
+            ).fetchall()
+            result = dict(row)
+            result["segment_labels"] = [dict(segment) for segment in segments]
+            print(result)
 
 
 if __name__ == "__main__":
