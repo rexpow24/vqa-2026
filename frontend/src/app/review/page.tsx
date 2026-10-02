@@ -468,9 +468,26 @@ function ReviewClipEditor({
         <section className="rounded-md border border-border bg-surface p-4 text-sm" role="tabpanel">
           <h2 className="font-medium mb-3">Labeling guide</h2>
           <div className="flex flex-col gap-3 text-muted">
-            <p><strong className="text-foreground">Easy:</strong> thời tiết quang đãng, ánh sáng tốt, chất lượng camera rõ, và tình huống dễ quan sát, phân tích.</p>
-            <p><strong className="text-foreground">Medium:</strong> chất lượng hình ảnh ở mức trung bình, tình huống vẫn quan sát được nhưng cần chú ý, có che khuất nhẹ hoặc góc nhìn chưa tối ưu.</p>
-            <p><strong className="text-foreground">High:</strong> chất lượng hình ảnh thấp, ánh sáng kém, góc quay khó hoặc bị che khuất nhiều, khiến người review khó xác định chính xác diễn biến và loại sự kiện.</p>
+            <div>
+              <strong className="text-foreground">Easy:</strong>
+              <p>+ Chất lượng hình ảnh tốt, ánh sáng rõ và không bị chói.</p>
+              <p>+ Có thể quan sát sự việc rõ ràng từ đầu đến cuối.</p>
+              <p>+ Đối tượng chính không bị che khuất.</p>
+              <p>+ Góc quay trực tiếp và có đủ thông tin để phân tích.</p>
+            </div>
+            <div>
+              <strong className="text-foreground">Medium:</strong>
+              <p>+ Chất lượng hình ảnh bình thường nhưng vẫn đủ rõ để phân tích.</p>
+              <p>+ Có thể quan sát sự việc từ đầu đến cuối.</p>
+              <p>+ Hoặc sự việc xảy ra đột ngột, thường là xe lao lên từ bên hông, nên không nhìn được toàn bộ từ đầu đến cuối, nhưng hình ảnh vẫn đủ tốt để phân tích diễn biến chính.</p>
+              <p>+ Đối tượng chính có thể bị che khuất nhẹ trong thời gian ngắn nhưng không làm mất thông tin quan trọng.</p>
+            </div>
+            <div>
+              <strong className="text-foreground">High:</strong>
+              <p>+ Chất lượng hình ảnh quá thấp, quá tối, quá sáng hoặc bị chói mạnh.</p>
+              <p>+ Bất kỳ tình huống nào, dù nhìn được từ đầu đến cuối hay xảy ra đột ngột từ bên hông, nếu hình ảnh bị ảnh hưởng nghiêm trọng thì chọn High.</p>
+              <p>+ Tình huống chỉ được quan sát gián tiếp, ví dụ qua gương chiếu hậu.</p>
+            </div>
             <p><strong className="text-foreground">Accident:</strong> có va chạm thực tế giữa các phương tiện, người hoặc vật thể.</p>
             <p><strong className="text-foreground">Near-miss:</strong> không xảy ra va chạm, nhưng có tình huống suýt va chạm hoặc phải phanh, đánh lái, tránh gấp để tránh tai nạn.</p>
           </div>
@@ -529,9 +546,9 @@ function ReviewClipEditor({
       <div className="mt-4 rounded-md border border-border bg-surface p-3 text-xs text-muted">
         <h4 className="mb-2 text-sm font-medium text-foreground">Guidelines</h4>
         <div className="grid gap-2 sm:grid-cols-2">
-          <p><strong className="text-foreground">Easy:</strong> thời tiết quang đãng, ánh sáng tốt, camera rõ, tình huống dễ quan sát.</p>
-          <p><strong className="text-foreground">Medium:</strong> hình ảnh trung bình, vẫn quan sát được nhưng cần chú ý, che khuất nhẹ hoặc góc nhìn chưa tối ưu.</p>
-          <p><strong className="text-foreground">High:</strong> hình ảnh thấp, ánh sáng kém, góc quay khó hoặc che khuất nhiều, khó xác định chính xác diễn biến và loại sự kiện.</p>
+          <div><strong className="text-foreground">Easy:</strong><p>+ Chất lượng hình ảnh tốt, ánh sáng rõ và không bị chói.</p><p>+ Có thể quan sát sự việc rõ ràng từ đầu đến cuối.</p><p>+ Đối tượng chính không bị che khuất.</p><p>+ Góc quay trực tiếp và có đủ thông tin để phân tích.</p></div>
+          <div><strong className="text-foreground">Medium:</strong><p>+ Chất lượng hình ảnh bình thường nhưng vẫn đủ rõ để phân tích.</p><p>+ Có thể quan sát sự việc từ đầu đến cuối.</p><p>+ Hoặc sự việc xảy ra đột ngột, thường là xe lao lên từ bên hông, nên không nhìn được toàn bộ từ đầu đến cuối, nhưng hình ảnh vẫn đủ tốt để phân tích diễn biến chính.</p><p>+ Đối tượng chính có thể bị che khuất nhẹ trong thời gian ngắn nhưng không làm mất thông tin quan trọng.</p></div>
+          <div><strong className="text-foreground">High:</strong><p>+ Chất lượng hình ảnh quá thấp, quá tối, quá sáng hoặc bị chói mạnh.</p><p>+ Bất kỳ tình huống nào, dù nhìn được từ đầu đến cuối hay xảy ra đột ngột từ bên hông, nếu hình ảnh bị ảnh hưởng nghiêm trọng thì chọn High.</p><p>+ Tình huống chỉ được quan sát gián tiếp, ví dụ qua gương chiếu hậu.</p></div>
           <p><strong className="text-foreground">Accident:</strong> có va chạm thực tế giữa các phương tiện, người hoặc vật thể.</p>
           <p><strong className="text-foreground">Near-miss:</strong> không va chạm, nhưng suýt va chạm hoặc phải phanh, đánh lái, tránh gấp để tránh tai nạn.</p>
         </div>

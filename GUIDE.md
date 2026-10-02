@@ -210,9 +210,9 @@ Choose one difficulty label and one event label before pressing **Approve**,
 
 | Label | Guideline |
 |---|---|
-| **Easy** | Thời tiết quang đãng, ánh sáng tốt, chất lượng camera rõ, và tình huống dễ quan sát, phân tích. |
-| **Medium** | Chất lượng hình ảnh ở mức trung bình, tình huống vẫn quan sát được nhưng cần chú ý, có che khuất nhẹ hoặc góc nhìn chưa tối ưu. |
-| **High** | Chất lượng hình ảnh thấp, ánh sáng kém, góc quay khó hoặc bị che khuất nhiều, khiến người review khó xác định chính xác diễn biến và loại sự kiện. |
+| **Easy** | + Chất lượng hình ảnh tốt, ánh sáng rõ và không bị chói.<br>+ Có thể quan sát sự việc rõ ràng từ đầu đến cuối.<br>+ Đối tượng chính không bị che khuất.<br>+ Góc quay trực tiếp và có đủ thông tin để phân tích. |
+| **Medium** | + Chất lượng hình ảnh bình thường nhưng vẫn đủ rõ để phân tích.<br>+ Có thể quan sát sự việc từ đầu đến cuối.<br>+ Hoặc sự việc xảy ra đột ngột, thường là xe lao lên từ bên hông, nên không nhìn được toàn bộ từ đầu đến cuối, nhưng hình ảnh vẫn đủ tốt để phân tích diễn biến chính.<br>+ Đối tượng chính có thể bị che khuất nhẹ trong thời gian ngắn nhưng không làm mất thông tin quan trọng. |
+| **High** | + Chất lượng hình ảnh quá thấp, quá tối, quá sáng hoặc bị chói mạnh.<br>+ Bất kỳ tình huống nào, dù nhìn được từ đầu đến cuối hay xảy ra đột ngột từ bên hông, nếu hình ảnh bị ảnh hưởng nghiêm trọng thì chọn High.<br>+ Tình huống chỉ được quan sát gián tiếp, ví dụ qua gương chiếu hậu. |
 
 ### Event
 
