@@ -20,6 +20,9 @@ const ALLOWED_ROOTS = new Set(["work", "export"]);
 type Ctx = { params: Promise<{ path: string[] }> };
 
 export async function GET(req: NextRequest, ctx: Ctx) {
+  if (process.env.VERCEL === "1" || process.env.PLATFORM_MODE === "hosted") {
+    return new Response("Not found", { status: 404 });
+  }
   const { path: segs } = await ctx.params;
   if (!segs.length || !ALLOWED_ROOTS.has(segs[0])) {
     return new Response("forbidden", { status: 403 });

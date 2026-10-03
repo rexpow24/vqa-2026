@@ -10,6 +10,9 @@ import { NextRequest } from "next/server";
 import { SIDECAR_URL } from "@/lib/sidecar";
 
 async function proxy(req: NextRequest, path: string[]): Promise<Response> {
+  if (process.env.VERCEL === "1" || process.env.PLATFORM_MODE === "hosted") {
+    return new Response("Not found", { status: 404 });
+  }
   const target = `${SIDECAR_URL}/${path.join("/")}${req.nextUrl.search}`;
   const init: RequestInit = {
     method: req.method,

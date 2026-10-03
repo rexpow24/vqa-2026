@@ -8,6 +8,8 @@ logs/
 pipeline.db
 pipeline.db-wal
 pipeline.db-shm
+annotations.db-wal
+annotations.db-shm
 config.json
 cookies.txt
 .env

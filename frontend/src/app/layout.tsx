@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Nav } from "@/components/Nav";
+import { PlatformNav } from "@/components/PlatformNav";
+import { currentProfile } from "@/lib/supabase/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +20,9 @@ export const metadata: Metadata = {
   description: "Vietnamese traffic clip review pipeline",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const hosted = process.env.VERCEL === "1" || process.env.PLATFORM_MODE === "hosted";
+  const profile = hosted ? await currentProfile() : null;
   return (
     <html
       lang="en"
@@ -30,7 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             VQA Clip Pipeline
           </h1>
         </header>
-        <Nav />
+        {hosted ? <PlatformNav profile={profile} /> : <Nav />}
         <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-6">
           {children}
         </main>
