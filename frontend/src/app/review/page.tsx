@@ -487,6 +487,8 @@ function ReviewClipEditor({
               <p>+ Chất lượng hình ảnh quá thấp, quá tối, quá sáng hoặc bị chói mạnh.</p>
               <p>+ Bất kỳ tình huống nào, dù nhìn được từ đầu đến cuối hay xảy ra đột ngột từ bên hông, nếu hình ảnh bị ảnh hưởng nghiêm trọng thì chọn High.</p>
               <p>+ Tình huống chỉ được quan sát gián tiếp, ví dụ qua gương chiếu hậu.</p>
+              <p>+ Tình huống chỉ được quan sát che khuất nặng</p>
+              <p>+ Trời mưa vào ban đêm hoặc mưa + chất lượng thấp</p>
             </div>
             <p><strong className="text-foreground">Accident:</strong> có va chạm thực tế giữa các phương tiện, người hoặc vật thể.</p>
             <p><strong className="text-foreground">Near-miss:</strong> không xảy ra va chạm, nhưng có tình huống suýt va chạm hoặc phải phanh, đánh lái, tránh gấp để tránh tai nạn.</p>
