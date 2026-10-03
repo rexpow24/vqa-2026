@@ -133,6 +133,169 @@ export interface ValidateResponse {
   segments: [number, number][];
 }
 
+// ── Team B annotation over VLM drafts ──────────────────────────────────
+//
+// Three verdicts, not two. NOT_ANSWERABLE says the video holds no event the
+// question could be about -- a property of the clip, not a model failure.
+
+export type Verdict = "AGREE" | "NOT_ANSWERABLE" | "DISAGREE";
+
+export interface Annotator {
+  annotator_id: string;
+  name: string;
+  team: "A" | "B";
+}
+
+export interface ShotSummary {
+  clip_id: string;
+  shot: number;
+  n_drafts: number;
+  n_done: number;
+  available: boolean;
+}
+
+export interface AnnotateShotsResponse {
+  shots: ShotSummary[];
+}
+
+export interface DraftItem {
+  draft_id: string;
+  qgroup: string;
+  group_name: string;
+  question: string;
+  answer: string;
+  truncated: boolean;
+  completion_tokens: number | null;
+  latency_ms: number | null;
+  prompt_version: number;
+  /** null until this annotator has saved their own marks -- withheld on
+   *  purpose so the human evidence timestamps stay independent of the
+   *  prediction they are measured against. */
+  predicted_keyframes_s: number[] | null;
+  verdict: Verdict | null;
+  reason_code: string | null;
+  reason_note: string | null;
+  edited_question: string | null;
+  edited_answer: string | null;
+  human_keyframes_s: number[];
+  annotated_at: string | null;
+}
+
+export interface AnnotateShot {
+  clip_id: string;
+  shot: number;
+  video_path: string | null;
+  /** the trimmed/ file is gone -- rejected or re-cut after drafting */
+  stale: boolean;
+  duration_s: number | null;
+  frame_times_s: number[];
+  /** The earlier reviewer's label is intentionally absent: showing it on the
+   *  labelling screen would anchor this annotator to it. */
+  my_label: { difficulty: string; event_label: string } | null;
+  drafts: DraftItem[];
+  vocab: {
+    verdicts: Verdict[];
+    reasons: string[];
+    difficulties: string[];
+    event_labels: string[];
+  };
+}
+
+// Majority vote across annotators (DC.pdf steps 6-7). `tied` is reported
+// rather than broken: an arbitrary winner would hide the item from the
+// adjudication pass it is supposed to go to.
+export interface FieldConsensus {
+  counts: Record<string, number>;
+  majority: string | null;
+  votes: number;
+  total: number;
+  unanimous: boolean;
+  tied: boolean;
+}
+
+export interface LabelVote {
+  annotator_id: string;
+  name: string | null;
+  team: "A" | "B" | null;
+  difficulty: string | null;
+  event_label: string | null;
+  labeled_at: string | null;
+}
+
+export interface VerdictConsensus {
+  draft_id: string;
+  qgroup: string;
+  votes: { annotator_id: string; verdict: Verdict; reason_code: string | null }[];
+  counts: Record<string, number>;
+  majority: string | null;
+  n_votes: number;
+  total: number;
+  tied: boolean;
+}
+
+export interface ConsensusResponse {
+  labels: {
+    votes: LabelVote[];
+    n: number;
+    difficulty: FieldConsensus;
+    event_label: FieldConsensus;
+  };
+  verdicts: VerdictConsensus[];
+}
+
+export interface PromptGroup {
+  code: string;
+  name: string;
+  question: string;
+  max_tokens: number;
+}
+
+export interface PromptUsage {
+  prompt_name: string;
+  prompt_version: number;
+  qgroup: string;
+  n_drafts: number;
+  n_truncated: number | null;
+  avg_out_tokens: number | null;
+  avg_latency_ms: number | null;
+  first_used: string | null;
+  last_used: string | null;
+  agree?: number | null;
+  not_answerable?: number | null;
+  disagree?: number | null;
+}
+
+/** The prompt exactly as it was sent, recorded per version. vlm/prompts.py only
+ *  ever holds the latest wording, so this is the only way to read an older one. */
+export interface PromptVersion {
+  prompt_name: string;
+  prompt_version: number;
+  qgroup: string;
+  group_name: string | null;
+  question: string;
+  prompt_text: string;
+  max_tokens: number | null;
+  model: string | null;
+  first_seen: string | null;
+}
+
+export interface PromptRegistry {
+  draft: {
+    name: string;
+    version: number;
+    preamble: string;
+    repeat_penalty: number;
+    groups: PromptGroup[];
+  };
+  versions: PromptVersion[];
+  judge: {
+    name: string;
+    version: number;
+    rubrics: { key: string; groups: string[]; title: string; rubric: string }[];
+  };
+  usage: PromptUsage[];
+}
+
 export const SHOT_COLORS = ["#22C55E", "#3B82F6", "#F59E0B"];
 export const CONFLICT_COLOR = "#EF4444";
 export const AUTO_BORDER_COLOR = "#FACC15";

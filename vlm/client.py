@@ -49,8 +49,17 @@ def health(base: str = BASE, timeout: float = 5.0) -> bool:
 
 def ask(question: str, images: list[bytes], *, base: str = BASE,
         model: str = "qwen3-vl-2b", temperature: float = 0.0,
-        max_tokens: int = 300, timeout: float = 180.0) -> Answer:
-    """One chat completion. `images` may be empty -- that is the blind condition."""
+        max_tokens: int = 300, timeout: float = 180.0,
+        repeat_penalty: float | None = None) -> Answer:
+    """One chat completion. `images` may be empty -- that is the blind condition.
+
+    `repeat_penalty` is llama.cpp's own sampler knob, passed through rather than
+    left at the server default. At temperature 0 a 2B model answering about eight
+    near-identical night frames will restate the same clause until it runs out of
+    budget -- observed in the wild on group E, which emitted "Một phương tiện
+    khác, có thể là xe tải, đang di chuyển trên đường." seven times. Penalising
+    repetition is the sampler-level fix; the prompt asks for brevity separately.
+    """
     for i, b in enumerate(images, 1):
         if not b:
             raise VLMError(f"image {i} of {len(images)} is empty (0 bytes)")
@@ -63,11 +72,14 @@ def ask(question: str, images: list[bytes], *, base: str = BASE,
                for b in images]
     content.append({"type": "text", "text": question})
 
+    payload = {"model": model, "temperature": temperature,
+               "max_tokens": max_tokens,
+               "messages": [{"role": "user", "content": content}]}
+    if repeat_penalty is not None:
+        payload["repeat_penalty"] = repeat_penalty
+
     req = urllib.request.Request(
-        f"{base}/v1/chat/completions",
-        data=json.dumps({"model": model, "temperature": temperature,
-                         "max_tokens": max_tokens,
-                         "messages": [{"role": "user", "content": content}]}).encode(),
+        f"{base}/v1/chat/completions", data=json.dumps(payload).encode(),
         headers={"Content-Type": "application/json"})
 
     t0 = time.perf_counter()

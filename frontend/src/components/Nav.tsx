@@ -8,6 +8,8 @@ const TABS = [
   { href: "/run", label: "Run" },
   { href: "/review", label: "Review" },
   { href: "/relabel", label: "Relabel" },
+  { href: "/annotate", label: "Annotate" },
+  { href: "/prompts", label: "Prompts" },
   { href: "/export", label: "Export" },
 ];
 

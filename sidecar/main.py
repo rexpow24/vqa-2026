@@ -21,7 +21,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, FiniteFloat
 
-from vqa import config, db, media, review, trim, urls
+from vqa import annotations, config, db, media, review, trim, urls
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LOG_DIR = REPO_ROOT / "logs"
@@ -42,6 +42,7 @@ app.add_middleware(
 @app.on_event("startup")
 def _startup() -> None:
     db.init()
+    annotations.init()      # separate file; never touches pipeline.db
 
 
 def row_to_dict(row) -> dict:
@@ -530,4 +531,239 @@ def trim_validate(req: ValidateRequest):
         "errors": trim.errors(shots, req.duration),
         "conflicts": trim.conflicts(shots),
         "segments": trim.segments(shots),
+    }
+
+
+# ── Team B annotation over VLM drafts ────────────────────────────────────
+#
+# Reads pipeline.db for the video path only; every write goes to
+# annotations.db. The difficulty/event labels written here are a *second,
+# independent* ballot and deliberately do not touch reviews.difficulty --
+# see vqa/annotations.py and features/qa-draft-annotation/conflicts.md #3.
+
+
+def _shot_video_path(clip_id: str, shot: int) -> str | None:
+    """The trimmed/ file for one shot, as a forward-slash URL path segment."""
+    clip = db.get_clip(clip_id)
+    if clip is None:
+        return None
+    segs = json.loads(clip["trim_segments"] or "[]")
+    if not 1 <= shot <= len(segs):
+        return None
+    p = Path(segs[shot - 1]["path"])
+    return str(p).replace("\\", "/") if p.exists() else None
+
+
+@app.get("/annotate/annotators")
+def annotate_annotators():
+    return {"annotators": annotations.list_annotators()}
+
+
+class AnnotatorRequest(BaseModel):
+    annotator_id: str
+    name: str
+    team: str          # A or B
+
+
+@app.post("/annotate/annotators")
+def annotate_upsert_annotator(req: AnnotatorRequest):
+    try:
+        annotations.upsert_annotator(req.annotator_id.strip(), req.name.strip(),
+                                     req.team.strip().upper())
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    return {"ok": True}
+
+
+@app.get("/annotate/shots")
+def annotate_shots(annotator_id: str | None = None):
+    """Every shot that has drafts, with how many this annotator has judged."""
+    out = []
+    for s in annotations.shots_with_drafts():
+        done = len([d for d in annotations.drafts_for(
+            s["clip_id"], s["shot"], annotator_id) if d["verdict"]]) \
+            if annotator_id else 0
+        out.append({**s, "n_done": done,
+                    "available": _shot_video_path(s["clip_id"], s["shot"]) is not None})
+    return {"shots": out}
+
+
+@app.get("/annotate/shot")
+def annotate_shot(clip_id: str, shot: int, annotator_id: str | None = None):
+    """One shot: the video, its nine drafts, and this annotator's work so far."""
+    drafts = annotations.drafts_for(clip_id, shot, annotator_id)
+    if not drafts:
+        raise HTTPException(404, "no drafts for that shot")
+
+    path = _shot_video_path(clip_id, shot)
+    clip = db.get_clip(clip_id)
+    # A draft whose shot file has gone is a named state, not a crash: the
+    # reviewer is allowed to Reject after drafting, and review.discard()
+    # unlinks the trimmed/ file (conflicts.md #7).
+    stale = path is None
+
+    # The earlier reviewer's difficulty/event is deliberately NOT returned. An
+    # annotator who sees it anchors to it, and this endpoint feeds the screen
+    # where they choose their own -- the same reason predicted_keyframes_s stays
+    # hidden until they have saved. Comparing the two is a reporting job, done
+    # after the fact, not something to put in front of the person labelling.
+    mine = annotations.clip_label(clip_id, shot, annotator_id) if annotator_id else None
+
+    return {
+        "clip_id": clip_id,
+        "shot": shot,
+        "video_path": path,
+        "stale": stale,
+        "duration_s": (clip["duration_ms"] / 1000.0) if clip is not None else None,
+        "frame_times_s": drafts[0]["frame_times_s"],
+        "my_label": mine,
+        "drafts": [
+            {
+                "draft_id": d["draft_id"],
+                "qgroup": d["qgroup"],
+                "group_name": annotations.QGROUP_NAMES.get(d["qgroup"], d["qgroup"]),
+                "question": d["question"],
+                "answer": d["answer"],
+                "truncated": bool(d["truncated"]),
+                "completion_tokens": d["completion_tokens"],
+                "latency_ms": d["latency_ms"],
+                "prompt_version": d["prompt_version"],
+                # The model's own evidence timestamps are withheld until the
+                # annotator has saved their own, so Grounding Accuracy compares
+                # two independent columns instead of one anchored to the other.
+                "predicted_keyframes_s": (d["keyframes_s"] if d["revealed_at"] else None),
+                "verdict": d["verdict"],
+                "reason_code": d["reason_code"],
+                "reason_note": d["reason_note"],
+                "edited_question": d["edited_question"],
+                "edited_answer": d["edited_answer"],
+                "human_keyframes_s": d["human_keyframes_s"],
+                "annotated_at": d["annotated_at"],
+            }
+            for d in drafts
+        ],
+        "vocab": {
+            "verdicts": list(annotations.VERDICTS),
+            "reasons": list(annotations.REASONS),
+            "difficulties": list(annotations.DIFFICULTIES),
+            "event_labels": list(annotations.EVENT_LABELS),
+        },
+    }
+
+
+class AnnotationRequest(BaseModel):
+    annotator_id: str
+    verdict: str
+    reason_code: str | None = None
+    reason_note: str | None = None
+    question: str | None = None
+    answer: str | None = None
+    keyframes_s: list[FiniteFloat] = []
+
+
+@app.post("/annotate/draft/{draft_id}")
+def annotate_draft(draft_id: str, req: AnnotationRequest):
+    if not req.annotator_id.strip():
+        raise HTTPException(422, "chọn người gán nhãn trước")
+    if len(req.keyframes_s) > 3:
+        raise HTTPException(422, "tối đa 3 mốc bằng chứng mỗi câu (DC.pdf)")
+    try:
+        annotations.save_annotation(
+            draft_id, req.annotator_id.strip(), req.verdict,
+            reason_code=req.reason_code, reason_note=req.reason_note,
+            question=req.question, answer=req.answer,
+            keyframes_s=[round(x, 3) for x in req.keyframes_s],
+            revealed=True)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    return {"ok": True}
+
+
+class ShotLabelRequest(BaseModel):
+    annotator_id: str
+    clip_id: str
+    shot: int
+    difficulty: str
+    event_label: str
+
+
+@app.post("/annotate/label")
+def annotate_label(req: ShotLabelRequest):
+    if not req.annotator_id.strip():
+        raise HTTPException(422, "chọn người gán nhãn trước")
+    try:
+        annotations.save_clip_label(req.clip_id, req.shot, req.annotator_id.strip(),
+                                    req.difficulty, req.event_label)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    return {"ok": True}
+
+
+@app.get("/annotate/summary")
+def annotate_summary():
+    return {"by_group": annotations.verdict_summary(),
+            "by_reason": annotations.reason_summary()}
+
+
+@app.get("/annotate/consensus")
+def annotate_consensus(clip_id: str, shot: int):
+    """Majority vote across annotators for one shot (DC.pdf steps 6-7)."""
+    return {"labels": annotations.label_consensus(clip_id, shot),
+            "verdicts": annotations.verdict_consensus(clip_id, shot)}
+
+
+# ── prompt registry ──────────────────────────────────────────────────────
+#
+# vlm/prompts.py is the source of truth for prompt text; this exposes it
+# read-only alongside the usage counts from annotations.db, so "which prompt
+# wrote this draft" is answerable without reading the code.
+
+
+@app.get("/prompts")
+def prompts_registry():
+    from vlm import prompts as P
+
+    with annotations.tx() as c:
+        used = [dict(r) for r in c.execute(
+            "SELECT prompt_name, prompt_version, qgroup, count(*) AS n_drafts,"
+            " sum(truncated) AS n_truncated,"
+            " round(avg(completion_tokens), 1) AS avg_out_tokens,"
+            " round(avg(latency_ms)) AS avg_latency_ms,"
+            " min(created_at) AS first_used, max(created_at) AS last_used"
+            " FROM qa_drafts GROUP BY prompt_name, prompt_version, qgroup"
+            " ORDER BY prompt_version DESC, qgroup")]
+        verdicts = [dict(r) for r in c.execute(
+            "SELECT d.prompt_version, d.qgroup,"
+            " sum(a.verdict='AGREE') AS agree,"
+            " sum(a.verdict='NOT_ANSWERABLE') AS not_answerable,"
+            " sum(a.verdict='DISAGREE') AS disagree"
+            " FROM qa_drafts d JOIN qa_annotations a ON a.draft_id = d.draft_id"
+            " GROUP BY d.prompt_version, d.qgroup")]
+
+    score = {(v["prompt_version"], v["qgroup"]): v for v in verdicts}
+    for u in used:
+        u.update(score.get((u["prompt_version"], u["qgroup"]), {}))
+
+    # Recorded text wins over the module's current text. vlm/prompts.py holds
+    # only the latest wording, so reading it alone makes every older version
+    # unreadable -- which is exactly what stops two versions being compared.
+    recorded = annotations.prompt_versions()
+
+    return {
+        "draft": {
+            "name": P.PROMPT_NAME,
+            "version": P.PROMPT_VERSION,
+            "preamble": P.PREAMBLE,
+            "repeat_penalty": P.REPEAT_PENALTY,
+            "groups": [{"code": g.code, "name": g.name, "question": g.question,
+                        "max_tokens": g.max_tokens} for g in P.GROUPS],
+        },
+        "versions": recorded,
+        "judge": {
+            "name": P.JUDGE_NAME,
+            "version": P.JUDGE_VERSION,
+            "rubrics": [{"key": j.key, "groups": list(j.groups),
+                         "title": j.title, "rubric": j.rubric} for j in P.JUDGES],
+        },
+        "usage": used,
     }

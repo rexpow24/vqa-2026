@@ -66,6 +66,26 @@ def approved_clips() -> Sources:
 
     clips: list[ClipRef] = []
     missing: list[str] = []
+    return _build(rows, clips, missing)
+
+
+def labeled_clip_ids() -> set[str]:
+    """Approved clips that already carry a human difficulty and event label.
+
+    Read-only, like everything else here. Used to draft those shots first, so the
+    model's output can be held against a judgement a person already made rather
+    than against nothing.
+    """
+    conn = _ro()
+    try:
+        return {r[0] for r in conn.execute(
+            "SELECT clip_id FROM reviews WHERE decision = 'APPROVED'"
+            " AND difficulty IS NOT NULL AND event_label IS NOT NULL")}
+    finally:
+        conn.close()
+
+
+def _build(rows, clips: list[ClipRef], missing: list[str]) -> Sources:
     for r in rows:
         for i, seg in enumerate(json.loads(r["trim_segments"]), 1):
             p = Path(seg["path"])
