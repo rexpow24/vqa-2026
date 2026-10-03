@@ -387,17 +387,24 @@ def review_decision(clip_id: str, req: DecisionRequest):
 # ── relabel backlog: clips decided before difficulty/event_label existed ──
 
 
-def _trimmed_path(clip) -> str | None:
-    """First trim_segments path that still exists on disk, or None.
+def _relabel_video_path(clip) -> str | None:
+    """Best available copy of the first trim_segments entry, or None.
 
-    trim_segments can go stale (a clip re-cut or its trimmed/ file removed by
-    hand outside the normal Approve/Reject flow) without the DB row noticing,
-    so existence is checked here rather than trusted.
+    Prefers the anonymize sweep's `finished/` copy over `trimmed/` when it
+    exists -- a backlog clip may have already gone through
+    `/anonymize/start` (trimmed/ -> finished/, see architecture.md) by the
+    time it gets relabeled, and `finished/` is the more representative,
+    more final copy when both exist. trim_segments can also go stale (a
+    clip re-cut, or its trimmed/ file removed by hand outside the normal
+    Approve/Reject flow) without the DB row noticing, so existence is
+    checked here rather than trusted.
     """
     for seg in json.loads(clip["trim_segments"] or "[]"):
         p = Path(seg["path"])
-        if p.exists():
-            return str(p).replace("\\", "/")
+        if not p.exists():
+            continue
+        finished = p.parent.parent / "finished" / p.name
+        return str(finished if finished.exists() else p).replace("\\", "/")
     return None
 
 
@@ -406,7 +413,7 @@ def relabel_next():
     # trimmed_only=True: this backlog is scoped to clips whose output is
     # actually in trimmed/ -- the finished-product folder -- not every
     # decided clip, so a REJECTED clip (no trimmed/ output) never appears here.
-    backlog = [(c, _trimmed_path(c)) for c in db.list_missing_labels(trimmed_only=True)]
+    backlog = [(c, _relabel_video_path(c)) for c in db.list_missing_labels(trimmed_only=True)]
     backlog = [(c, p) for c, p in backlog if p is not None]
 
     if not backlog:
