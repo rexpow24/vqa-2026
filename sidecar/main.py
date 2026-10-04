@@ -388,23 +388,24 @@ def review_decision(clip_id: str, req: DecisionRequest):
 
 
 def _relabel_video_path(clip) -> str | None:
-    """Best available copy of the first trim_segments entry, or None.
+    """First trim_segments entry that still exists on disk, or None.
 
-    Prefers the anonymize sweep's `finished/` copy over `trimmed/` when it
-    exists -- a backlog clip may have already gone through
-    `/anonymize/start` (trimmed/ -> finished/, see architecture.md) by the
-    time it gets relabeled, and `finished/` is the more representative,
-    more final copy when both exist. trim_segments can also go stale (a
+    Deliberately NOT the anonymize sweep's `finished/` copy: `finished/` is
+    written by vqa/anonymize.py's process_video() via
+    cv2.VideoWriter_fourcc(*"mp4v") -- MPEG-4 Part 2, which no browser's
+    native <video> element decodes (confirmed via ffprobe: finished/ reports
+    codec_name=mpeg4, trimmed/ reports codec_name=h264). A <video src=...>
+    pointed at finished/ shows an empty, non-seekable player. trimmed/ is
+    always H.264 (vqa/media.py, ffmpeg) and is what the Review tab has always
+    played, so relabel uses the same source. trim_segments can go stale (a
     clip re-cut, or its trimmed/ file removed by hand outside the normal
     Approve/Reject flow) without the DB row noticing, so existence is
     checked here rather than trusted.
     """
     for seg in json.loads(clip["trim_segments"] or "[]"):
         p = Path(seg["path"])
-        if not p.exists():
-            continue
-        finished = p.parent.parent / "finished" / p.name
-        return str(finished if finished.exists() else p).replace("\\", "/")
+        if p.exists():
+            return str(p).replace("\\", "/")
     return None
 
 

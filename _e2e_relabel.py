@@ -31,16 +31,12 @@ def db_backlog_trimmed_only():
 
 
 def resolve_fs_path(trim_segments_json: str) -> str | None:
+    """trimmed/ only -- never finished/, which is mpeg4 (cv2.VideoWriter) and
+    not browser-playable; see the comment on sidecar.main._relabel_video_path."""
     for seg in json.loads(trim_segments_json or "[]"):
         p = seg["path"].replace("\\", "/")
-        if not os.path.exists(p):
-            continue
-        finished = p.rsplit("/trimmed/", 1)
-        if len(finished) == 2:
-            finished_p = f"{finished[0]}/finished/{finished[1]}"
-            if os.path.exists(finished_p):
-                return finished_p
-        return p
+        if os.path.exists(p):
+            return p
     return None
 
 
@@ -65,7 +61,7 @@ if clip:
         print(f" difficulty={row['difficulty']!r} event_label={row['event_label']!r}"
               f"  -> {'FAIL: da co nhan roi!' if already_labeled else 'dat: chua co nhan'}")
 
-print("\n=== doi chieu voi FILESYSTEM: video_path API tra ve co ton tai, dung uu tien finished/ ===")
+print("\n=== doi chieu voi FILESYSTEM: video_path API tra ve co ton tai, dung la trimmed/ ===")
 fail = 0
 for cid, row in db_rows.items():
     expected = resolve_fs_path(row["trim_segments"])
