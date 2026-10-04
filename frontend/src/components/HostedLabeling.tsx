@@ -1,12 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelGroup } from "@/components/LabelGroup";
 import type { Difficulty, EventLabel, Verdict } from "@/lib/types";
 
 type Video = { id: string; filename: string; duration_s: number };
 type Assignment = { id: string; status: string; completed_at: string | null };
+// /api/videos/[id]/complete also reports where to go next, so finishing a
+// video does not have to round-trip through the list page.
+type CompletedAssignment = Assignment & {
+  next_video_id: string | null; next_filename: string | null;
+};
 type Label = { difficulty: Difficulty; event_label: EventLabel };
 export type HostedDraft = {
   id: string; qgroup: string; group_name: string; question: string; answer: string;
@@ -34,8 +40,9 @@ async function requestJson<T>(url: string, body?: object): Promise<T> {
 export function HostedLabeling({ video, initialAssignment, initialLabel, initialDrafts }: {
   video: Video; initialAssignment: Assignment | null; initialLabel: Label | null; initialDrafts: HostedDraft[];
 }) {
+  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [assignment, setAssignment] = useState(initialAssignment);
+  const [assignment, setAssignment] = useState<Assignment | null>(initialAssignment);
   const [label, setLabel] = useState(initialLabel);
   const [difficulty, setDifficulty] = useState<Difficulty | null>(initialLabel?.difficulty ?? null);
   const [eventLabel, setEventLabel] = useState<EventLabel | null>(initialLabel?.event_label ?? null);
@@ -98,8 +105,19 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   async function complete() {
     setBusy(true); setError(""); setMessage("");
     try {
-      const saved = await requestJson<Assignment>(`/api/videos/${video.id}/complete`);
-      setAssignment(saved); setMessage("Đã hoàn thành video.");
+      const saved = await requestJson<CompletedAssignment>(`/api/videos/${video.id}/complete`);
+      setAssignment(saved);
+      // Go straight to the next video rather than back to the list: with
+      // hundreds of videos per annotator, returning to the grid to pick the
+      // next one is an extra decision on every single video. The list is
+      // still one click away in the header.
+      if (saved.next_video_id) {
+        setMessage(`Đã hoàn thành. Đang mở video kế tiếp: ${saved.next_filename ?? ""}`);
+        router.push(`/annotate/${saved.next_video_id}`);
+      } else {
+        setMessage("Đã hoàn thành video. Không còn video nào chờ bạn gán nhãn.");
+        router.refresh();
+      }
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Không thể hoàn thành video."); }
     finally { setBusy(false); }
   }

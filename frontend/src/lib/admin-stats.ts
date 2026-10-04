@@ -12,52 +12,57 @@ export type UserStats = {
   lastActivity: string | null;
 };
 
+// Shape of public.admin_stats(); the counting happens in Postgres so this page
+// costs one round trip rather than 4 + 4 per annotator. See the migration
+// 20261004_admin_stats.sql for why.
+type StatsRow = Profile & {
+  assigned: number;
+  completed: number;
+  annotations: number;
+  last_activity: string | null;
+};
+type StatsPayload = {
+  users: StatsRow[];
+  totalVideos: number;
+  completedVideos: number;
+  totalAnnotations: number;
+  completedAssignments: number;
+  totalAssignments: number;
+};
+
 export async function getAdminStats() {
   const supabase = await createClient();
-  const [profilesResult, videosResult, assignmentsResult, annotationCountResult] = await Promise.all([
-    supabase.from("user_profiles").select("id,email,name,role,enabled,created_at").order("created_at"),
-    supabase.from("videos").select("id,status").eq("status", "active"),
-    supabase.from("video_assignments").select("video_id,status"),
-    supabase.from("qa_annotations").select("draft_id", { count: "exact", head: true }),
-  ]);
-  const error = profilesResult.error ?? videosResult.error ?? assignmentsResult.error ?? annotationCountResult.error;
+  const { data, error } = await supabase.rpc("admin_stats");
   if (error) throw new Error(error.message);
-  const profiles = (profilesResult.data ?? []) as Profile[];
-  const videos = videosResult.data ?? [];
-  const assignments = assignmentsResult.data ?? [];
-  const users: UserStats[] = await Promise.all(profiles.filter((p) => p.role === "annotator").map(async (profile) => {
-    const [assignedResult, completedResult, annotationResult, lastResult] = await Promise.all([
-      supabase.from("video_assignments").select("id", { count: "exact", head: true }).eq("annotator_id", profile.id),
-      supabase.from("video_assignments").select("id", { count: "exact", head: true }).eq("annotator_id", profile.id).eq("status", "completed"),
-      supabase.from("qa_annotations").select("draft_id", { count: "exact", head: true }).eq("annotator_id", profile.id),
-      supabase.from("qa_annotations").select("annotated_at").eq("annotator_id", profile.id).order("annotated_at", { ascending: false }).limit(1),
-    ]);
-    const countsError = assignedResult.error ?? completedResult.error ?? annotationResult.error ?? lastResult.error;
-    if (countsError) throw new Error(countsError.message);
-    const assigned = assignedResult.count ?? 0;
-    const completed = completedResult.count ?? 0;
+  // The function returns nothing at all when the caller is not an admin.
+  if (!data) throw new Error("Admin access required");
+  const payload = data as StatsPayload;
+
+  const users: UserStats[] = (payload.users ?? []).map((row) => {
+    const assigned = Number(row.assigned);
+    const completed = Number(row.completed);
     return {
-      profile,
+      profile: {
+        id: row.id, email: row.email, name: row.name,
+        role: row.role, enabled: row.enabled, created_at: row.created_at,
+      },
       assigned,
       completed,
       remaining: Math.max(0, assigned - completed),
-      annotations: annotationResult.count ?? 0,
-      completionRate: assigned ? Math.round(completed / assigned * 100) : 0,
-      lastActivity: lastResult.data?.[0]?.annotated_at ?? null,
+      annotations: Number(row.annotations),
+      completionRate: assigned ? Math.round((completed / assigned) * 100) : 0,
+      lastActivity: row.last_activity,
     };
-  }));
-  const completedVideos = videos.filter((video) => {
-    const work = assignments.filter((assignment) => assignment.video_id === video.id);
-    return work.length > 0 && work.every((assignment) => assignment.status === "completed");
-  }).length;
+  });
+
   return {
     users,
     totalAnnotators: users.length,
-    totalVideos: videos.length,
-    completedVideos,
-    pendingVideos: videos.length - completedVideos,
-    totalAnnotations: annotationCountResult.count ?? 0,
-    completedAssignments: assignments.filter((assignment) => assignment.status === "completed").length,
-    totalAssignments: assignments.length,
+    totalVideos: Number(payload.totalVideos),
+    completedVideos: Number(payload.completedVideos),
+    pendingVideos: Number(payload.totalVideos) - Number(payload.completedVideos),
+    totalAnnotations: Number(payload.totalAnnotations),
+    completedAssignments: Number(payload.completedAssignments),
+    totalAssignments: Number(payload.totalAssignments),
   };
 }

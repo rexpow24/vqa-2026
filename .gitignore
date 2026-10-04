@@ -5,6 +5,7 @@ __pycache__/
 work/
 finished/
 export/
+videos.csv
 logs/
 pipeline.db
 pipeline.db-wal

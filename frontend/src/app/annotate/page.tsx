@@ -3,41 +3,99 @@ import LegacyAnnotate from "@/components/LegacyAnnotate";
 import { requireProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function AnnotatePage() {
+const PAGE_SIZE = 10;
+
+type QueueRow = {
+  video_id: string;
+  filename: string;
+  duration_s: number;
+  coverage: number;
+  answered: number;
+  assignment_status: string;
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  available: "Có thể nhận",
+  pending: "Đã nhận",
+  in_progress: "Đang gán nhãn",
+};
+
+export default async function AnnotatePage({ searchParams }: PageProps<"/annotate">) {
   if (process.env.VERCEL !== "1" && process.env.PLATFORM_MODE !== "hosted") {
     return <LegacyAnnotate />;
   }
-  const profile = await requireProfile();
+  await requireProfile();
+  const params = await searchParams;
+  const rawPage = Number(Array.isArray(params.page) ? params.page[0] : params.page);
+  const page = Number.isFinite(rawPage) && rawPage > 1 ? Math.floor(rawPage) : 1;
+
   const supabase = await createClient();
-  const [videosResult, assignmentsResult, draftsResult, answersResult] = await Promise.all([
-    supabase.from("videos").select("id,filename,duration_s,status,available").eq("status", "active").order("filename"),
-    supabase.from("video_assignments").select("video_id,status").eq("annotator_id", profile.id),
-    supabase.from("video_drafts").select("id,video_id"),
-    supabase.from("qa_annotations").select("draft_id").eq("annotator_id", profile.id),
+  // One bounded page plus two counters, instead of selecting every video,
+  // every draft and every answer and joining them in the browser. The queue
+  // already drops videos this annotator finished and orders what is left so
+  // the least-covered videos come first.
+  const [queueResult, progressResult] = await Promise.all([
+    supabase.rpc("annotator_queue", { page_size: PAGE_SIZE, page_offset: (page - 1) * PAGE_SIZE }),
+    supabase.rpc("annotator_progress"),
   ]);
-  const error = videosResult.error ?? assignmentsResult.error ?? draftsResult.error ?? answersResult.error;
+  const error = queueResult.error ?? progressResult.error;
   if (error) throw new Error(error.message);
-  const videos = videosResult.data ?? [];
-  const assignments = assignmentsResult.data ?? [];
-  const drafts = draftsResult.data ?? [];
-  const answered = new Set((answersResult.data ?? []).map((item) => item.draft_id));
-  const completed = assignments.filter((assignment) => assignment.status === "completed").length;
+
+  const queue = (queueResult.data ?? []) as QueueRow[];
+  const progress = (progressResult.data ?? [])[0] as { completed: number; total: number } | undefined;
+  const completed = Number(progress?.completed ?? 0);
+  const total = Number(progress?.total ?? 0);
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const remaining = Math.max(0, total - completed);
+
   return <div className="flex flex-col gap-5">
     <div className="flex flex-wrap items-end justify-between gap-3">
-      <div><h2 className="text-xl font-semibold">Video gán nhãn</h2>
-        <p className="mt-1 text-sm text-muted">{profile.name} · {completed}/{assignments.length} video đã hoàn thành</p></div>
-      {profile.role === "admin" && <Link href="/admin" className="text-sm text-accent">Bảng quản trị</Link>}
+      <h2 className="text-xl font-semibold">Video gán nhãn</h2>
+      <Link href="/admin" className="text-sm text-accent">Bảng quản trị</Link>
     </div>
-    {videos.length === 0 && <div className="rounded-md border border-border bg-surface p-4 text-sm text-muted">Chưa có video. Hãy liên hệ admin để thêm video từ Drive.</div>}
-    <div className="grid gap-3 sm:grid-cols-2">{videos.map((video) => {
-      const assignment = assignments.find((item) => item.video_id === video.id);
-      const videoDrafts = drafts.filter((draft) => draft.video_id === video.id);
-      const doneQuestions = videoDrafts.filter((draft) => answered.has(draft.id)).length;
-      return <Link key={video.id} href={`/annotate/${video.id}`} className="rounded-md border border-border bg-surface p-4 hover:border-accent">
-        <div className="truncate font-medium">{video.filename}</div>
-        <div className="mt-2 flex justify-between text-xs text-muted"><span>{Number(video.duration_s).toFixed(2)}s · {videoDrafts.length}/9 bản nháp · {doneQuestions} câu đã duyệt</span>
-          <span>{videoDrafts.length !== 9 ? "Chờ bản nháp" : assignment?.status === "completed" ? "Hoàn thành" : assignment ? "Đang gán nhãn" : "Có thể nhận"}</span></div>
-      </Link>;
-    })}</div>
+
+    <section aria-label="Tiến trình của bạn" className="flex flex-col gap-2 rounded-md border border-border bg-surface p-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
+        <span className="font-medium">
+          Bạn đã gán nhãn <span className="tabular-nums text-accent">{completed}</span>
+          {" / "}<span className="tabular-nums">{total}</span> video
+        </span>
+        <span className="tabular-nums text-muted">{percent}% · còn {remaining}</span>
+      </div>
+      <div role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={completed}
+        className="h-2 overflow-hidden rounded-full bg-background">
+        <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${percent}%` }} />
+      </div>
+    </section>
+
+    {queue.length === 0 ? <div className="rounded-md border border-border bg-surface p-4 text-sm text-muted">
+      {completed > 0 && completed >= total
+        ? "Bạn đã gán nhãn hết video hiện có. Cảm ơn bạn!"
+        : page > 1
+          ? "Trang này không còn video nào. Hãy quay lại trang trước."
+          : "Chưa có video nào sẵn sàng. Video cần đủ 9 bản nháp trước khi gán nhãn được."}
+    </div> : <div className="grid gap-3 sm:grid-cols-2">
+      {queue.map((row) => <Link key={row.video_id} href={`/annotate/${row.video_id}`}
+        className="rounded-md border border-border bg-surface p-4 hover:border-accent">
+        <div className="truncate font-medium">{row.filename}</div>
+        <div className="mt-2 flex justify-between gap-2 text-xs text-muted">
+          <span className="tabular-nums">
+            {Number(row.duration_s).toFixed(2)}s · {Number(row.answered)}/9 câu đã duyệt
+          </span>
+          <span>{STATUS_LABEL[row.assignment_status] ?? row.assignment_status}</span>
+        </div>
+        {Number(row.coverage) === 0 && <div className="mt-1 text-xs text-amber">Chưa ai gán nhãn</div>}
+      </Link>)}
+    </div>}
+
+    {(page > 1 || queue.length === PAGE_SIZE) && <nav aria-label="Phân trang" className="flex items-center gap-3 text-sm">
+      {page > 1
+        ? <Link href={`/annotate?page=${page - 1}`} className="rounded border border-border px-3 py-1.5">Trang trước</Link>
+        : <span className="rounded border border-border px-3 py-1.5 text-muted opacity-40">Trang trước</span>}
+      <span className="tabular-nums text-muted">Trang {page}</span>
+      {queue.length === PAGE_SIZE
+        ? <Link href={`/annotate?page=${page + 1}`} className="rounded border border-border px-3 py-1.5">Trang sau</Link>
+        : <span className="rounded border border-border px-3 py-1.5 text-muted opacity-40">Trang sau</span>}
+    </nav>}
   </div>;
 }
