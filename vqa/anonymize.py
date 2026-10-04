@@ -537,7 +537,9 @@ def anonymize_file(input_path: Path, output_path: Path | None = None) -> Path:
 
 def anonymize_folder(input_folder: Path, output_folder: Path | None = None,
                       force: bool = False,
-                      should_pause: Callable[[], bool] | None = None) -> list[Path]:
+                      should_pause: Callable[[], bool] | None = None,
+                      budget: list[int] | None = None,
+                      counter: dict[str, int] | None = None) -> list[Path]:
     """Anonymize every .mp4 in `input_folder`, writing copies to a sibling
     folder. `input_folder` is only ever read.
 
@@ -549,6 +551,17 @@ def anonymize_folder(input_folder: Path, output_folder: Path | None = None,
     outputs redone. Detector/session are loaded lazily, only once at least
     one file actually needs processing, so a folder that's fully done
     already pays no model-load cost at all.
+
+    `budget` caps how many files are actually processed, across however many
+    calls share the same list -- that is why it is a one-element list and not
+    an int: `anonymize_all_trimmed` sweeps one folder per video and the cap
+    has to be global, not per folder. Skipped files never spend from it, so
+    `--limit 5` means five clips encoded, not five clips looked at.
+
+    `counter` accumulates `{"encoded": n, "skipped": n}` across calls. The
+    returned list cannot carry that: it holds every output path including the
+    ones that were already there, so `len(outputs)` counts files present, not
+    work done, and reporting it as work done overstates a resumed run.
     """
     input_folder = Path(input_folder)
     if output_folder is None:
@@ -567,18 +580,29 @@ def anonymize_folder(input_folder: Path, output_folder: Path | None = None,
         dst = output_folder / src.name
         if dst.exists() and not force:
             outputs.append(dst)
+            if counter is not None:
+                counter["skipped"] = counter.get("skipped", 0) + 1
             continue
+        if budget is not None:
+            if budget[0] <= 0:
+                break
+            budget[0] -= 1
         if face_detector is None:
             face_detector = load_face_detector()
             plate_session = load_plate_session()
         process_video(src, dst, face_detector, plate_session)
+        if counter is not None:
+            counter["encoded"] = counter.get("encoded", 0) + 1
         outputs.append(dst)
     return outputs
 
 
 def anonymize_all_trimmed(work_root: Path, finished_root: Path = Path("finished"),
                           force: bool = False,
-                          should_pause: Callable[[], bool] | None = None) -> dict[str, list[Path]]:
+                          should_pause: Callable[[], bool] | None = None,
+                          video_ids: list[str] | None = None,
+                          limit: int | None = None,
+                          counter: dict[str, int] | None = None) -> dict[str, list[Path]]:
     """Sweep every `work/<video_id>/trimmed/` folder under `work_root`,
     writing anonymized copies straight into `finished_root` -- one flat
     folder alongside `work/`, not nested inside each video's own work dir
@@ -596,14 +620,34 @@ def anonymize_all_trimmed(work_root: Path, finished_root: Path = Path("finished"
     stale and will NOT be refreshed automatically -- this only checks
     existence, not freshness. Re-run with `force=True` for that video's
     folder if that ever matters in practice.
+
+    `video_ids` restricts the sweep to those video folders; `limit` caps how
+    many clips are actually encoded across the whole run. Both exist so a
+    detector change can be judged on a handful of clips before committing to
+    a sweep that takes hours. An unknown video_id raises rather than quietly
+    doing nothing: a typo that produces an empty but successful-looking run
+    is worse than a failure.
     """
     work_root = Path(work_root)
     finished_root = Path(finished_root)
+    dirs = sorted(work_root.glob("*/trimmed"))
+    if video_ids is not None:
+        wanted = set(video_ids)
+        unknown = sorted(wanted - {d.parent.name for d in dirs})
+        if unknown:
+            raise AnonymizeError(
+                f"no trimmed/ folder under {work_root} for: {', '.join(unknown)}")
+        dirs = [d for d in dirs if d.parent.name in wanted]
+
+    budget = None if limit is None else [limit]
     results: dict[str, list[Path]] = {}
-    for trimmed_dir in sorted(work_root.glob("*/trimmed")):
+    for trimmed_dir in dirs:
+        if budget is not None and budget[0] <= 0:
+            break
         video_id = trimmed_dir.parent.name
         results[video_id] = anonymize_folder(
-            trimmed_dir, finished_root, force=force, should_pause=should_pause)
+            trimmed_dir, finished_root, force=force, should_pause=should_pause,
+            budget=budget, counter=counter)
         if should_pause is not None and should_pause():
             break
     return results

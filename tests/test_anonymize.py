@@ -478,6 +478,109 @@ def test_process_video_does_not_blur_a_single_frame_false_positive(tmp_path, mon
 
 
 # ---------------------------------------------------------------------------
+# Selecting what to sweep: --video-id and --limit. A full sweep is a ~9-hour
+# job, so being able to run a handful of clips is what makes a detector
+# change reviewable at all.
+# ---------------------------------------------------------------------------
+
+def _work_tree(tmp_path, videos):
+    """work/<video_id>/trimmed/<n>.mp4 for each {video_id: n_clips}."""
+    for video_id, n in videos.items():
+        d = tmp_path / "work" / video_id / "trimmed"
+        d.mkdir(parents=True)
+        for i in range(n):
+            (d / f"{video_id}_{i}.mp4").write_bytes(b"clip")
+    return tmp_path / "work"
+
+
+def _record_processed(monkeypatch):
+    done = []
+    monkeypatch.setattr(anonymize, "load_face_detector", lambda *a, **kw: None)
+    monkeypatch.setattr(anonymize, "load_plate_session", lambda *a, **kw: None)
+    monkeypatch.setattr(anonymize, "process_video",
+                        lambda src, dst, *a, **kw: done.append(src.name))
+    return done
+
+
+def test_sweep_can_be_restricted_to_named_videos(tmp_path, monkeypatch):
+    work = _work_tree(tmp_path, {"vid_a": 2, "vid_b": 2, "vid_c": 1})
+    done = _record_processed(monkeypatch)
+
+    results = anonymize.anonymize_all_trimmed(
+        work, tmp_path / "finished", video_ids=["vid_a", "vid_c"])
+
+    assert set(results) == {"vid_a", "vid_c"}
+    assert all(not name.startswith("vid_b") for name in done), done
+
+
+def test_sweep_rejects_an_unknown_video_id(tmp_path, monkeypatch):
+    # A typo must fail loudly: an empty run that reports success looks
+    # identical to "everything was already done".
+    work = _work_tree(tmp_path, {"vid_a": 1})
+    _record_processed(monkeypatch)
+    with pytest.raises(anonymize.AnonymizeError, match="vid_typo"):
+        anonymize.anonymize_all_trimmed(
+            work, tmp_path / "finished", video_ids=["vid_typo"])
+
+
+def test_limit_caps_clips_across_the_whole_sweep_not_per_folder(tmp_path, monkeypatch):
+    work = _work_tree(tmp_path, {"vid_a": 3, "vid_b": 3})
+    done = _record_processed(monkeypatch)
+
+    anonymize.anonymize_all_trimmed(work, tmp_path / "finished", limit=4)
+
+    assert len(done) == 4, done
+
+
+def test_counter_separates_work_done_from_files_already_present(tmp_path, monkeypatch):
+    # The returned lists include skipped files, so len(outputs) counts files
+    # present, not work done. Adding the two together is what made a real run
+    # with --limit 10 print "anonymized 12".
+    work = _work_tree(tmp_path, {"vid_a": 5})
+    finished = tmp_path / "finished"
+    finished.mkdir()
+    for i in range(2):
+        (finished / f"vid_a_{i}.mp4").write_bytes(b"done")
+    _record_processed(monkeypatch)
+    counter: dict[str, int] = {"encoded": 0, "skipped": 0}
+
+    results = anonymize.anonymize_all_trimmed(work, finished, counter=counter)
+
+    assert counter == {"encoded": 3, "skipped": 2}
+    assert len(results["vid_a"]) == 5  # every output path, work or not
+
+
+def test_counter_counts_everything_as_work_under_force(tmp_path, monkeypatch):
+    work = _work_tree(tmp_path, {"vid_a": 3})
+    finished = tmp_path / "finished"
+    finished.mkdir()
+    for i in range(3):
+        (finished / f"vid_a_{i}.mp4").write_bytes(b"done")
+    _record_processed(monkeypatch)
+    counter: dict[str, int] = {"encoded": 0, "skipped": 0}
+
+    anonymize.anonymize_all_trimmed(work, finished, force=True, counter=counter)
+
+    assert counter == {"encoded": 3, "skipped": 0}
+
+
+def test_limit_is_not_spent_by_clips_that_were_skipped(tmp_path, monkeypatch):
+    # Without --force an already-finished clip is skipped. If a skip spent
+    # from the budget, `--limit 2` on a mostly-done folder would encode
+    # nothing at all.
+    work = _work_tree(tmp_path, {"vid_a": 5})
+    finished = tmp_path / "finished"
+    finished.mkdir()
+    for i in range(3):
+        (finished / f"vid_a_{i}.mp4").write_bytes(b"done")
+    done = _record_processed(monkeypatch)
+
+    anonymize.anonymize_all_trimmed(work, finished, limit=2)
+
+    assert done == ["vid_a_3.mp4", "vid_a_4.mp4"], done
+
+
+# ---------------------------------------------------------------------------
 # scan_faces: used by scripts/check_face_blur.py to verify blurring actually
 # removed a detectable face. Stub detector -- no real model weights.
 # ---------------------------------------------------------------------------

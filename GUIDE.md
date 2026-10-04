@@ -186,7 +186,22 @@ From the Next.js frontend: **Anonymize** → *Start*. From a terminal:
 
 # after a re-cut or a detector change: redo everything
 .\venv\Scripts\python.exe scripts\anonymize_all.py --force
+
+# just these videos
+.\venv\Scripts\python.exe scripts\anonymize_all.py --video-id 0aD5Bbh_GgU --video-id AeseZkBqBf0 --force
+
+# a small batch to look at before committing to the full sweep
+.\venv\Scripts\python.exe scripts\anonymize_all.py --limit 5 --force
 ```
+
+| Flag | |
+|---|---|
+| `--video-id ID` | one video's `trimmed/` folder. Repeat for several. A typo **fails** rather than running empty and reporting success. |
+| `--limit N` | stop after N clips are **encoded**. Clips skipped because `finished/` already has them do not count, so `--limit 5` always means five clips of real work. |
+| `--force` | redo clips that already have a `finished/` file. |
+
+The two compose: `--video-id X --limit 2 --force` redoes the first two clips
+of video X and nothing else.
 
 Budget about **2 minutes per clip** (measured 77–164 s), so a full 267-clip
 sweep is an overnight job. Detection dominates; the encode is noise.
