@@ -20,20 +20,12 @@ import http from "node:http";
 import crypto from "node:crypto";
 import { spawn } from "node:child_process";
 import { OAuth2Client } from "google-auth-library";
+import { FRONTEND_DIR, loadEnv } from "./lib/env.mjs";
 
 const SCOPE = "https://www.googleapis.com/auth/drive.file";
-const root = process.cwd();
-const tokenPath = path.join(root, ".drive-token.json");
+const tokenPath = path.join(FRONTEND_DIR, ".drive-token.json");
+const env = loadEnv();
 
-function readEnv(file) {
-  if (!fs.existsSync(file)) return {};
-  return Object.fromEntries(fs.readFileSync(file, "utf8")
-    .replace(/^﻿/, "").split(/\r?\n/)
-    .filter((line) => /^[A-Za-z_][A-Za-z0-9_]*=/.test(line))
-    .map((line) => { const i = line.indexOf("="); return [line.slice(0, i), line.slice(i + 1).trim()]; }));
-}
-
-const env = { ...readEnv(path.join(root, "..", ".env")), ...readEnv(path.join(root, ".env.local")) };
 const clientId = env.GOOGLE_CLIENT_ID;
 const clientSecret = env.GOOGLE_CLIENT_SECRET;
 if (!clientId || !clientSecret) {

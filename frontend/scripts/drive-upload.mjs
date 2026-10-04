@@ -16,9 +16,8 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { OAuth2Client } from "google-auth-library";
 import { drive_v3 } from "@googleapis/drive";
+import { FRONTEND_DIR, REPO_ROOT, loadEnv } from "./lib/env.mjs";
 
-const root = process.cwd();
-const repoRoot = path.resolve(root, "..");
 const args = process.argv.slice(2);
 // indexOf returns -1 when a flag is absent, and -1 + 1 indexes the first
 // argument -- so a bare `--limit 2` would silently be read as the --out value.
@@ -26,20 +25,13 @@ function flag(name, fallback) {
   const index = args.indexOf(name);
   return index === -1 ? fallback : args[index + 1];
 }
-const outPath = path.resolve(repoRoot, flag("--out", "videos.csv"));
+const outPath = path.resolve(REPO_ROOT, flag("--out", "videos.csv"));
 const limitRaw = flag("--limit", null);
 const limit = limitRaw === null ? Infinity : Number(limitRaw);
 if (!Number.isFinite(limit) || limit <= 0) throw new Error(`--limit needs a positive number, got ${limitRaw}`);
 
-function readEnv(file) {
-  if (!fs.existsSync(file)) return {};
-  return Object.fromEntries(fs.readFileSync(file, "utf8")
-    .replace(/^﻿/, "").split(/\r?\n/)
-    .filter((line) => /^[A-Za-z_][A-Za-z0-9_]*=/.test(line))
-    .map((line) => { const i = line.indexOf("="); return [line.slice(0, i), line.slice(i + 1).trim()]; }));
-}
-const env = { ...readEnv(path.join(repoRoot, ".env")), ...readEnv(path.join(root, ".env.local")) };
-const tokenPath = path.join(root, ".drive-token.json");
+const env = loadEnv();
+const tokenPath = path.join(FRONTEND_DIR, ".drive-token.json");
 if (!fs.existsSync(tokenPath)) throw new Error("No .drive-token.json -- run: node scripts/drive-auth.mjs");
 // Accept either a bare id or a pasted Drive URL. Copying the folder link out
 // of the browser is the obvious way to get this value, and a pasted URL would
@@ -63,7 +55,7 @@ const auth = new OAuth2Client({ clientId: env.GOOGLE_CLIENT_ID, clientSecret: en
 auth.setCredentials(JSON.parse(fs.readFileSync(tokenPath, "utf8")));
 const drive = new drive_v3.Drive({ auth });
 
-const finishedDir = path.join(repoRoot, "finished");
+const finishedDir = path.join(REPO_ROOT, "finished");
 if (!fs.existsSync(finishedDir)) throw new Error(`No such folder: ${finishedDir}`);
 const files = fs.readdirSync(finishedDir).filter((name) => name.toLowerCase().endsWith(".mp4")).sort();
 

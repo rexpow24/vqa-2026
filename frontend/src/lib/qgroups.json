@@ -1,0 +1,47 @@
+[
+  {
+    "code": "S",
+    "name": "Bối cảnh",
+    "question": "Bối cảnh của đoạn video ra sao? Nêu thời tiết, điều kiện ánh sáng, loại đường và tình trạng mặt đường."
+  },
+  {
+    "code": "E",
+    "name": "Thực thể",
+    "question": "Những phương tiện và người tham gia giao thông nào có liên quan? Nêu loại phương tiện và màu sắc của từng bên."
+  },
+  {
+    "code": "N",
+    "name": "Diễn biến",
+    "question": "Tóm tắt toàn bộ diễn biến sự kiện trong video theo đúng thứ tự thời gian, từ lúc bắt đầu đến lúc kết thúc."
+  },
+  {
+    "code": "C",
+    "name": "Nguyên nhân",
+    "question": "Nguyên nhân trực tiếp dẫn đến va chạm là gì, hoặc hành động nào xảy ra ngay trước va chạm?"
+  },
+  {
+    "code": "V",
+    "name": "Vi phạm",
+    "question": "Có hành vi vi phạm quy tắc giao thông nào quan sát được không? Nếu có, nêu rõ bên nào vi phạm và vi phạm điều gì."
+  },
+  {
+    "code": "O",
+    "name": "Hậu quả",
+    "question": "Hậu quả của va chạm là gì? Nêu mức độ hư hỏng phương tiện và tình trạng người liên quan, chỉ trong phạm vi quan sát được."
+  },
+  {
+    "code": "R",
+    "name": "Ứng xử",
+    "question": "Sau sự việc, các bên liên quan hành xử ra sao: dừng lại, bỏ chạy, hay hỗ trợ nhau?"
+  },
+  {
+    "code": "Attr",
+    "name": "Quy trách nhiệm",
+    "question": "Dựa trên bằng chứng thị giác trong các khung hình, bên nào đóng vai trò chính dẫn đến va chạm, và vì sao?"
+  },
+  {
+    "code": "Prev",
+    "name": "Phòng tránh",
+    "question": "Người điều khiển phương tiện lẽ ra nên làm gì để phòng tránh va chạm này?"
+  }
+]

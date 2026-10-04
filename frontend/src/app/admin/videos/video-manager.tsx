@@ -3,24 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { QGROUPS } from "@/lib/qgroups";
 
 type Video = { id: string; drive_file_id: string; filename: string; duration_s: number; status: string; available: boolean };
 type User = { id: string; name: string; email: string };
 type Assignment = { id: string; video_id: string; annotator_id: string; status: string };
 type Draft = { video_id: string; qgroup: string };
 type Reference = { video_id: string; difficulty: string; event_label: string };
-const GROUPS = ["S", "E", "N", "C", "V", "O", "R", "Attr", "Prev"];
-const QUESTIONS = [
-  "Bối cảnh của đoạn video ra sao? Nêu thời tiết, điều kiện ánh sáng, loại đường và tình trạng mặt đường.",
-  "Những phương tiện và người tham gia giao thông nào có liên quan? Nêu loại phương tiện và màu sắc của từng bên.",
-  "Tóm tắt toàn bộ diễn biến sự kiện trong video theo đúng thứ tự thời gian, từ lúc bắt đầu đến lúc kết thúc.",
-  "Nguyên nhân trực tiếp dẫn đến va chạm là gì, hoặc hành động nào xảy ra ngay trước va chạm?",
-  "Có hành vi vi phạm quy tắc giao thông nào quan sát được không? Nếu có, nêu rõ bên nào vi phạm và vi phạm điều gì.",
-  "Hậu quả của va chạm là gì? Nêu mức độ hư hỏng phương tiện và tình trạng người liên quan, chỉ trong phạm vi quan sát được.",
-  "Sau sự việc, các bên liên quan hành xử ra sao: dừng lại, bỏ chạy, hay hỗ trợ nhau?",
-  "Dựa trên bằng chứng thị giác trong các khung hình, bên nào đóng vai trò chính dẫn đến va chạm, và vì sao?",
-  "Người điều khiển phương tiện lẽ ra nên làm gì để phòng tránh va chạm này?",
-];
 const csvCell = (value: string) => `"${value.replaceAll('"', '""')}"`;
 
 export function VideoManager({ videos, users, assignments, drafts, references }: {
@@ -54,7 +43,7 @@ export function VideoManager({ videos, users, assignments, drafts, references }:
   function downloadTemplate() {
     if (!videoId) return;
     const lines = ["video_id,qgroup,question,answer,difficulty,event_label",
-      ...GROUPS.map((group, index) => [videoId, group, QUESTIONS[index], "", "", ""].map(csvCell).join(","))];
+      ...QGROUPS.map((group) => [videoId, group.code, group.question, "", "", ""].map(csvCell).join(","))];
     const blob = new Blob(["\uFEFF", lines.join("\r\n"), "\r\n"], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");

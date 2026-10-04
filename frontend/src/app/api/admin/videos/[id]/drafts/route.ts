@@ -2,13 +2,9 @@ import crypto from "node:crypto";
 import { parse } from "csv-parse/sync";
 import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
+import { GROUP_CODES as GROUPS, GROUP_NAMES as NAMES } from "@/lib/qgroups";
 
 type Context = { params: Promise<{ id: string }> };
-const GROUPS = ["S", "E", "N", "C", "V", "O", "R", "Attr", "Prev"];
-const NAMES: Record<string, string> = {
-  S: "Bối cảnh", E: "Thực thể", N: "Diễn biến", C: "Nguyên nhân",
-  V: "Vi phạm", O: "Hậu quả", R: "Ứng xử", Attr: "Quy trách nhiệm", Prev: "Phòng tránh",
-};
 const COLUMNS = ["video_id", "qgroup", "question", "answer", "difficulty", "event_label"];
 
 export async function POST(request: Request, context: Context) {

@@ -10,20 +10,12 @@
 // skipped and only the RPC half runs. Creates two temporary annotators and one
 // temporary video, and removes all three in the finally block.
 
-import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
-import { createServerClient } from "@supabase/ssr";
-import { createClient } from "@supabase/supabase-js";
+import { privilegedClient, signIn, request } from "./lib/session.mjs";
+import { GROUP_CODES } from "./lib/qgroups.mjs";
 
-const root = process.cwd();
-const env = Object.fromEntries(fs.readFileSync(path.join(root, ".env.local"), "utf8")
-  .replace(/^﻿/, "").split(/\r?\n/)
-  .filter((line) => /^[A-Za-z_][A-Za-z0-9_]*=/.test(line))
-  .map((line) => { const equal = line.indexOf("="); return [line.slice(0, equal), line.slice(equal + 1).trim()]; }));
-
-const privileged = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY,
-  { auth: { autoRefreshToken: false, persistSession: false } });
+const privileged = privilegedClient();
+const base = process.env.TEST_BASE_URL;
 
 function check(condition, name, detail) {
   if (!condition) throw new Error(`${name} failed: ${detail}`);
@@ -41,41 +33,11 @@ async function makeAnnotator(label) {
     id: data.user.id, email, name: label, role: "annotator", enabled: true,
   });
   if (profileError) throw profileError;
-  const client = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-    { auth: { autoRefreshToken: false, persistSession: false } });
-  const { error: signInError } = await client.auth.signInWithPassword({ email, password });
-  if (signInError) throw signInError;
-
-  // A second, cookie-backed session so the same account can also drive the
-  // Next.js routes the way a browser does.
-  const jar = new Map();
-  const browser = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
-      cookies: {
-        getAll: () => [...jar].map(([name, value]) => ({ name, value })),
-        setAll: (items) => items.forEach(({ name, value }) => jar.set(name, value)),
-      },
-    });
-  const { error: cookieSignInError } = await browser.auth.signInWithPassword({ email, password });
-  if (cookieSignInError) throw cookieSignInError;
-  const cookie = [...jar].map(([name, value]) => `${name}=${value}`).join("; ");
+  const { client, cookie } = await signIn(email, password);
   return { id: data.user.id, client, cookie };
 }
 
-const base = process.env.TEST_BASE_URL;
-async function request(pathname, cookie, method = "GET") {
-  const response = await fetch(base + pathname, {
-    method, cache: "no-store", redirect: "manual",
-    headers: { Cookie: cookie, Origin: base, "Content-Type": "application/json" },
-    body: method === "POST" ? "{}" : undefined,
-  });
-  const raw = await response.text();
-  let data;
-  try { data = JSON.parse(raw); } catch { data = raw; }
-  return { status: response.status, data };
-}
-
-const groups = ["S", "E", "N", "C", "V", "O", "R", "Attr", "Prev"];
+const groups = GROUP_CODES;
 let videoId;
 const users = [];
 
@@ -173,14 +135,14 @@ try {
     console.log("\nTEST_BASE_URL not set -- skipped the HTTP half (queue page, next-video handoff).");
   } else {
     console.log(`Through HTTP at ${base}:`);
-    const page = await request("/annotate", bob.cookie);
+    const page = await request(base, "/annotate", bob.cookie);
     check(page.status === 200, "queue page renders for an annotator", page.status);
     check(typeof page.data === "string" && page.data.includes("Bạn đã gán nhãn"),
       "queue page shows the annotator's own progress", "progress text missing");
 
     // Bob finishes the test video through the real endpoints, and the
     // completion response must point at something else to work on.
-    await request(`/api/videos/${videoId}/claim`, bob.cookie, "POST");
+    await request(base, `/api/videos/${videoId}/claim`, bob.cookie, "POST");
     const { error: bobLabelError } = await bob.client.from("video_labels")
       .insert({ video_id: videoId, annotator_id: bob.id, difficulty: "medium", event_label: "near-miss" });
     if (bobLabelError) throw bobLabelError;
@@ -191,7 +153,7 @@ try {
       })));
     if (bobAnswerError) throw bobAnswerError;
 
-    const completed = await request(`/api/videos/${videoId}/complete`, bob.cookie, "POST");
+    const completed = await request(base, `/api/videos/${videoId}/complete`, bob.cookie, "POST");
     check(completed.status === 200, "complete endpoint succeeds", completed.status);
     check(completed.data.status === "completed", "assignment is marked completed", completed.data.status);
     check(completed.data.next_video_id !== videoId,

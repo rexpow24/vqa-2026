@@ -1,50 +1,17 @@
-import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
-import { createServerClient } from "@supabase/ssr";
-import { createClient } from "@supabase/supabase-js";
+import { adminCredentials } from "./lib/env.mjs";
+import { privilegedClient, signIn, request as httpRequest } from "./lib/session.mjs";
+import { GROUP_CODES } from "./lib/qgroups.mjs";
 
-const root = process.cwd();
-const env = Object.fromEntries(fs.readFileSync(path.join(root, ".env.local"), "utf8")
-  .replace(/^\uFEFF/, "").split(/\r?\n/)
-  .filter((line) => /^[A-Za-z_][A-Za-z0-9_]*=/.test(line))
-  .map((line) => { const equal = line.indexOf("="); return [line.slice(0, equal), line.slice(equal + 1).trim()]; }));
-const credentials = fs.readFileSync(path.join(root, ".admin-credentials"), "utf8");
-const adminEmail = credentials.match(/^Email: (.+)$/m)?.[1];
-const adminPassword = credentials.match(/^Temporary password: (.+)$/m)?.[1];
-if (!adminEmail || !adminPassword) throw new Error("Admin credentials unavailable");
 const base = process.env.TEST_BASE_URL || "http://localhost:3000";
-const privileged = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY,
-  { auth: { autoRefreshToken: false, persistSession: false } });
-async function session(email, password) {
-  const jar = new Map();
-  const client = createServerClient(env.NEXT_PUBLIC_SUPABASE_URL,
-    env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
-      cookies: {
-        getAll: () => [...jar].map(([name, value]) => ({ name, value })),
-        setAll: (items) => items.forEach(({ name, value }) => jar.set(name, value)),
-      },
-    });
-  const { error } = await client.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return { client, cookie: [...jar].map(([name, value]) => `${name}=${value}`).join("; ") };
-}
-async function request(pathname, cookie, method = "GET", body) {
-  const headers = { Cookie: cookie, Origin: base };
-  if (body !== undefined && !(body instanceof FormData)) headers["Content-Type"] = "application/json";
-  const response = await fetch(base + pathname, {
-    method, headers, cache: "no-store", redirect: "manual",
-    body: body === undefined ? undefined : body instanceof FormData ? body : JSON.stringify(body),
-  });
-  const raw = await response.text();
-  let data;
-  try { data = JSON.parse(raw); } catch { data = raw; }
-  return { status: response.status, data, location: response.headers.get("location") };
-}
+const privileged = privilegedClient();
+const { email: adminEmail, password: adminPassword } = adminCredentials();
+const request = (pathname, cookie, method, body) => httpRequest(base, pathname, cookie, method, body);
+
 function expect(result, status, name) {
   if (result.status !== status) throw new Error(`${name}: expected ${status}, got ${result.status}: ${JSON.stringify(result.data).slice(0, 300)}`);
 }
-const admin = await session(adminEmail, adminPassword);
+const admin = await signIn(adminEmail, adminPassword);
 const tempEmail = `qa-test-${crypto.randomUUID()}@example.com`;
 const tempPassword = crypto.randomBytes(24).toString("base64url");
 let videoId;
@@ -55,7 +22,7 @@ try {
   }).select("id").single();
   if (videoError || !video) throw videoError ?? new Error("Test video creation failed");
   videoId = video.id;
-  const groups = ["S", "E", "N", "C", "V", "O", "R", "Attr", "Prev"];
+  const groups = GROUP_CODES;
   const header = "video_id,qgroup,question,answer,difficulty,event_label";
   const lines = groups.map((group) => `${videoId},${group},Question ${group},Answer ${group},medium,near-miss`);
   const form = new FormData();
@@ -71,7 +38,7 @@ try {
   });
   expect(created, 201, "User creation");
   testUserId = created.data.id;
-  const annotator = await session(tempEmail, tempPassword);
+  const annotator = await signIn(tempEmail, tempPassword);
   const { data: references, error: referenceError } = await annotator.client.from("video_reference_labels")
     .select("video_id").eq("video_id", videoId);
   if (!referenceError && references.length) throw new Error("Annotator can read hidden reference label");

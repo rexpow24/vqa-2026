@@ -1,27 +1,15 @@
-import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import fs from "node:fs";
 import { execFileSync } from "node:child_process";
 import { DatabaseSync } from "node:sqlite";
-import { createClient } from "@supabase/supabase-js";
+import { REPO_ROOT } from "./lib/env.mjs";
+import { privilegedClient } from "./lib/session.mjs";
+import { GROUP_CODES as groups, GROUP_NAMES as names } from "./lib/qgroups.mjs";
 
-const frontend = process.cwd();
-const root = path.resolve(frontend, "..");
-const env = Object.fromEntries(fs.readFileSync(path.join(frontend, ".env.local"), "utf8")
-  .replace(/^\uFEFF/, "").split(/\r?\n/)
-  .filter((line) => /^[A-Za-z_][A-Za-z0-9_]*=/.test(line))
-  .map((line) => {
-    const equal = line.indexOf("=");
-    return [line.slice(0, equal), line.slice(equal + 1).trim()];
-  }));
-const admin = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY,
-  { auth: { autoRefreshToken: false, persistSession: false } });
+const root = REPO_ROOT;
+const admin = privilegedClient();
 const db = new DatabaseSync(path.join(root, "annotations.db"), { readOnly: true });
-const groups = ["S", "E", "N", "C", "V", "O", "R", "Attr", "Prev"];
-const names = {
-  S: "Bối cảnh", E: "Thực thể", N: "Diễn biến", C: "Nguyên nhân",
-  V: "Vi phạm", O: "Hậu quả", R: "Ứng xử", Attr: "Quy trách nhiệm", Prev: "Phòng tránh",
-};
 const clips = [
   { clip: "0aD5Bbh_GgU_097200_166733", driveId: "1g9rg1kiw_35L4ibBrcj5r56YTu1pGM0u" },
   { clip: "0aD5Bbh_GgU_238100_278566", driveId: "1zkqvBqi6Xvm1pcvckDmpf_t3PvUIP7pC" },

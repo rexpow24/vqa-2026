@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requireProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import { HostedLabeling, type HostedDraft } from "@/components/HostedLabeling";
+import { groupOrder } from "@/lib/qgroups";
 
 type Context = { params: Promise<{ videoId: string }> };
 
@@ -26,7 +27,6 @@ export default async function VideoPage({ params }: Context) {
     .select("draft_id,verdict,reason_code,reason_note,edited_answer,human_keyframes_s")
     .eq("annotator_id", profile.id).in("draft_id", draftIds) : { data: [], error: null };
   if (annotationResult.error) throw new Error(annotationResult.error.message);
-  const order = ["S", "E", "N", "C", "V", "O", "R", "Attr", "Prev"];
   const initialDrafts = drafts.map((draft) => {
     const mine = annotationResult.data?.find((item) => item.draft_id === draft.id);
     return { ...draft, verdict: mine?.verdict ?? null, reason_code: mine?.reason_code ?? null,
@@ -34,7 +34,7 @@ export default async function VideoPage({ params }: Context) {
       human_keyframes_s: mine?.human_keyframes_s ?? [],
       predicted_keyframes_s: mine ? draft.predicted_keyframes_s : null,
     };
-  }).sort((a, b) => order.indexOf(a.qgroup) - order.indexOf(b.qgroup));
+  }).sort((a, b) => groupOrder(a.qgroup) - groupOrder(b.qgroup));
   return <HostedLabeling video={video} initialAssignment={assignmentResult.data}
     initialLabel={labelResult.data as { difficulty: "easy" | "medium" | "high"; event_label: "accident" | "near-miss" } | null}
     initialDrafts={initialDrafts as HostedDraft[]} />;
