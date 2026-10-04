@@ -74,12 +74,39 @@ BLUR_PIXELATE_DIVISOR = 8
 # face/plate, which would otherwise leave an unblurred sliver at the edge.
 BOX_MARGIN_FRAC = 0.25
 
+# A plate detection covering more of the frame than this is rejected before
+# anything else looks at it. At night the frame is nearly black, so each
+# 640x640 tile contains one bright patch and nothing else; the detector --
+# trained on daytime stills -- returns that patch with high confidence. A
+# measured example: a 448x310 pool of headlight on the road at conf 0.84,
+# which after the margin and the tracker below blurred out the whole centre
+# of the carriageway and made the clip useless.
+#
+# Confidence cannot be used to catch this (night false positives score HIGHER
+# than real daytime plates, 0.95 vs 0.25-0.90), and neither can width: the
+# largest real plate measured, 30H-954.78 on a car at close range, is 0.226 of
+# the frame width while that headlight pool is 0.233. Area is the only axis
+# with a gap. The ceiling moved three times while being measured
+# (0.0036 -> 0.0281 -> 0.0409) as wider samples were looked at, each earlier
+# value having come from too few clips, so 0.055 is deliberately set well
+# above the largest real plate seen (1.34x) rather than snugly above it.
+PLATE_MAX_AREA_FRAC = 0.055
+
 # Bridges a short detector flicker: a face/plate detected correctly, missed
 # for a frame or two purely because it moved (motion blur, angle change),
 # then detected again nearby. `persist_frames` is how long a track keeps
 # coasting its last known box after its last real match before it's dropped
 # -- long enough to cover a flicker, not so long it blurs empty road.
 PERSIST_FRAMES = 5
+
+# How many frames a track must be matched on -- really matched, not coasted --
+# before any of its boxes are blurred. A real plate rides a vehicle and is
+# re-detected frame after frame; a false positive on road texture, a guard
+# rail post or a patch of glare appears once or twice and is gone. Counting
+# matches rather than appearances matters: PERSIST_FRAMES already keeps a
+# one-frame flicker alive for six consecutive frames, so counting appearances
+# would certify every piece of noise as stable.
+TRACK_MIN_HITS = 3
 # Loose on purpose: a fast-moving box shifts a lot between consecutive
 # frames, so a strict IoU match would just start a new track on every
 # flicker instead of continuing the old one.
@@ -350,11 +377,77 @@ class PersistenceTracker:
         return [t["box"] for t in self._tracks]
 
 
+def plausible_plate(box: Box, frame_w: int, frame_h: int,
+                     max_area_frac: float = PLATE_MAX_AREA_FRAC) -> bool:
+    """Could `box` be a license plate at all, given how much of the frame it
+    covers? Rejects the large bright blobs the plate detector invents on
+    near-black night footage (see PLATE_MAX_AREA_FRAC). Applied to plates
+    only -- faces come from YuNet, which does not have this failure mode, and
+    a face in frame legitimately can be large.
+    """
+    _, _, w, h = box
+    if w <= 0 or h <= 0:
+        return False
+    return (w * h) / float(frame_w * frame_h) <= max_area_frac
+
+
+def confirmed_tracks(per_frame: list[list[Box]], persist_frames: int = PERSIST_FRAMES,
+                      iou_match: float = TRACK_IOU_MATCH,
+                      min_hits: int = TRACK_MIN_HITS) -> list[list[Box]]:
+    """Associate detections into tracks across the whole clip, then return the
+    boxes to blur per frame, keeping only tracks matched on `min_hits` frames.
+
+    Takes every frame's detections up front rather than one frame at a time,
+    unlike PersistenceTracker, and that is the point: a track is accepted or
+    rejected as a whole, so an accepted one is blurred from its very first
+    frame. Deciding online instead would mean waiting `min_hits` frames before
+    believing a plate is real, and those frames would go out unblurred -- the
+    exact leak this module exists to prevent.
+    """
+    tracks: list[dict] = []          # {"box", "misses", "id"}
+    live: list[list[tuple[Box, int]]] = []
+    hits: dict[int, int] = {}
+    next_id = 0
+
+    for detections in per_frame:
+        unmatched = list(detections)
+        for track in tracks:
+            best_iou, best_i = 0.0, -1
+            for i, det in enumerate(unmatched):
+                iou = _iou(track["box"], det)
+                if iou > best_iou:
+                    best_iou, best_i = iou, i
+            if best_iou >= iou_match:
+                track["box"] = unmatched.pop(best_i)
+                track["misses"] = 0
+                hits[track["id"]] += 1
+            else:
+                track["misses"] += 1
+
+        tracks = [t for t in tracks if t["misses"] <= persist_frames]
+        for det in unmatched:
+            tracks.append({"box": det, "misses": 0, "id": next_id})
+            hits[next_id] = 1
+            next_id += 1
+        live.append([(t["box"], t["id"]) for t in tracks])
+
+    keep = {tid for tid, n in hits.items() if n >= min_hits}
+    return [[box for box, tid in row if tid in keep] for row in live]
+
+
 def process_video(src: Path, dst: Path, face_detector: cv2.FaceDetectorYN,
                    plate_session: ort.InferenceSession,
                    persist_frames: int = PERSIST_FRAMES,
-                   margin_frac: float = BOX_MARGIN_FRAC) -> None:
+                   margin_frac: float = BOX_MARGIN_FRAC,
+                   max_area_frac: float = PLATE_MAX_AREA_FRAC,
+                   min_hits: int = TRACK_MIN_HITS) -> None:
     """Write an anonymized copy of `src` to `dst`. Never opens `src` for writing.
+
+    Two passes over `src`: the first detects, the second blurs and writes.
+    The split exists so `confirmed_tracks` can see a track's whole life before
+    deciding whether it is real -- see that function. Detection dominates the
+    cost (roughly 2.7 frames/s against hundreds for a bare decode), so the
+    extra decode is close to free.
 
     Output is silent by design (D5: "do not need audio"). Frames are blurred
     and written with cv2.VideoWriter to a raw temp file first -- "mp4v" is
@@ -373,25 +466,39 @@ def process_video(src: Path, dst: Path, face_detector: cv2.FaceDetectorYN,
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
+    # Pass 1: detect everything, keeping only boxes, never frames -- a clip's
+    # worth of pixels would be gigabytes, a clip's worth of boxes is nothing.
+    per_frame: list[list[Box]] = []
+    try:
+        while True:
+            ok, frame = cap.read()
+            if not ok:
+                break
+            plates = [b for b in detect_plates(frame, plate_session)
+                      if plausible_plate(b, width, height, max_area_frac)]
+            per_frame.append(detect_faces(frame, face_detector) + plates)
+    finally:
+        cap.release()
+
+    to_blur = confirmed_tracks(per_frame, persist_frames=persist_frames,
+                                min_hits=min_hits)
+
     dst.parent.mkdir(parents=True, exist_ok=True)
     raw_out = dst.with_name(dst.stem + ".raw.part" + dst.suffix)
     tmp_out = dst.with_name(dst.stem + ".part" + dst.suffix)
     writer = cv2.VideoWriter(str(raw_out), cv2.VideoWriter_fourcc(*"mp4v"),
                              fps, (width, height))
     if not writer.isOpened():
-        cap.release()
         raise AnonymizeError(f"cannot open video writer for {raw_out}")
 
-    tracker = PersistenceTracker(persist_frames=persist_frames)
+    # Pass 2: blur and write.
+    cap = cv2.VideoCapture(str(src))
     try:
-        while True:
+        for boxes in to_blur:
             ok, frame = cap.read()
             if not ok:
                 break
-            raw = detect_faces(frame, face_detector) + detect_plates(frame, plate_session)
-            tracked = tracker.update(raw)
-            boxes = [_expand_box(b, width, height, margin_frac) for b in tracked]
-            blur_boxes(frame, boxes)
+            blur_boxes(frame, [_expand_box(b, width, height, margin_frac) for b in boxes])
             writer.write(frame)
     finally:
         cap.release()

@@ -47,3 +47,7 @@ artifacts/
 
 
 anonymized_v2/
+
+# Side-by-side renders used to judge a detector change by eye. Throwaway:
+# regenerated from work/*/trimmed/ whenever a filter is being compared.
+review_night/

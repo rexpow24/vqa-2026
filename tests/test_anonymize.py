@@ -359,6 +359,125 @@ def test_tracker_handles_two_independent_objects_separately():
 
 
 # ---------------------------------------------------------------------------
+# plausible_plate: rejects the large bright blobs the plate detector invents
+# on near-black night footage. Numbers below are measured, not invented --
+# see the constants' comment in vqa/anonymize.py.
+# ---------------------------------------------------------------------------
+
+W, H = 1920, 1080
+
+
+def test_plausible_plate_rejects_the_measured_night_headlight_pool():
+    # conf 0.84 on a pool of headlight in the middle of the road; after the
+    # margin and the tracker this blurred out the whole carriageway.
+    assert not anonymize.plausible_plate((700, 530, 448, 310), W, H)
+
+
+def test_plausible_plate_keeps_the_largest_real_plate_measured():
+    # 30H-954.78 on a car at close range, and a looser box around the same
+    # plate that measured area_frac 0.0409 -- the value that set the ceiling.
+    assert anonymize.plausible_plate((500, 600, 433, 137), W, H)
+    assert anonymize.plausible_plate((480, 580, 530, 160), W, H)
+
+
+def test_plausible_plate_keeps_a_distant_plate_and_rejects_a_degenerate_box():
+    assert anonymize.plausible_plate((750, 586, 36, 22), W, H)
+    assert not anonymize.plausible_plate((10, 10, 0, 50), W, H)
+
+
+# ---------------------------------------------------------------------------
+# confirmed_tracks: keeps only tracks matched on enough frames, and blurs an
+# accepted track from its FIRST frame rather than from the frame it was
+# confirmed on.
+# ---------------------------------------------------------------------------
+
+def test_confirmed_tracks_drops_a_one_frame_flicker():
+    box = (10, 10, 20, 20)
+    out = anonymize.confirmed_tracks([[box], [], [], [], [], [], []], min_hits=3)
+    assert all(row == [] for row in out), out
+
+
+def test_confirmed_tracks_keeps_a_box_detected_on_enough_frames():
+    box = (10, 10, 20, 20)
+    out = anonymize.confirmed_tracks([[box], [box], [box]], min_hits=3)
+    assert out == [[box], [box], [box]]
+
+
+def test_confirmed_tracks_blurs_an_accepted_track_from_its_first_frame():
+    # The whole reason this runs over the clip instead of frame by frame: a
+    # plate confirmed on frame 3 must already be blurred on frame 1, or those
+    # two frames ship the plate in the clear.
+    box = (10, 10, 20, 20)
+    out = anonymize.confirmed_tracks([[box], [box], [box], [box]], min_hits=3)
+    assert out[0] == [box]
+
+
+def test_confirmed_tracks_counts_matches_not_appearances():
+    # PERSIST_FRAMES keeps a one-frame flicker visible for several frames. If
+    # confirmation counted appearances, that alone would certify it.
+    box = (10, 10, 20, 20)
+    frames = [[box]] + [[] for _ in range(anonymize.PERSIST_FRAMES + 1)]
+    out = anonymize.confirmed_tracks(frames, min_hits=3)
+    assert all(row == [] for row in out), out
+
+
+def test_confirmed_tracks_judges_each_object_on_its_own_record():
+    stable = (500, 500, 20, 20)
+    flicker = (10, 10, 20, 20)
+    out = anonymize.confirmed_tracks(
+        [[stable, flicker], [stable], [stable], [stable]], min_hits=3)
+    assert all(flicker not in row for row in out)
+    assert all(stable in row for row in out)
+
+
+# ---------------------------------------------------------------------------
+# process_video wiring: the two rules above must actually reach the output.
+# ---------------------------------------------------------------------------
+
+def _process_with(tmp_path, monkeypatch, plates_by_frame, n_frames=6, **kwargs):
+    """Run process_video over a fixture clip with scripted plate detections,
+    returning the boxes blurred on each frame."""
+    src = tmp_path / "in.mp4"
+    _make_fixture_video(src, n_frames=n_frames, w=W // 10, h=H // 10)
+    dst = tmp_path / "out.mp4"
+    seen = []
+    calls = {"i": 0}
+
+    def _plates(frame, sess, **kw):
+        i = calls["i"]
+        calls["i"] += 1
+        return plates_by_frame[i] if i < len(plates_by_frame) else []
+
+    monkeypatch.setattr(anonymize, "detect_faces", lambda frame, det: [])
+    monkeypatch.setattr(anonymize, "detect_plates", _plates)
+    monkeypatch.setattr(anonymize, "blur_boxes",
+                        lambda frame, boxes, **kw: (seen.append(list(boxes)), frame)[1])
+    monkeypatch.setattr(anonymize.media, "transcode_h264",
+                        lambda s, d: d.write_bytes(b"h264 stub"))
+    anonymize.process_video(src, dst, face_detector=None, plate_session=None, **kwargs)
+    return seen
+
+
+def test_process_video_never_blurs_an_implausibly_large_plate(tmp_path, monkeypatch):
+    # Frame is W//10 x H//10 here, so scale the measured blob to match.
+    blob = (70, 53, 44, 31)
+    seen = _process_with(tmp_path, monkeypatch, [[blob]] * 6)
+    assert all(row == [] for row in seen), seen
+
+
+def test_process_video_blurs_a_plate_sized_box_seen_across_frames(tmp_path, monkeypatch):
+    plate = (50, 60, 20, 6)
+    seen = _process_with(tmp_path, monkeypatch, [[plate]] * 6)
+    assert all(row for row in seen), seen
+
+
+def test_process_video_does_not_blur_a_single_frame_false_positive(tmp_path, monkeypatch):
+    noise = (50, 60, 20, 6)
+    seen = _process_with(tmp_path, monkeypatch, [[noise]] + [[] for _ in range(5)])
+    assert all(row == [] for row in seen), seen
+
+
+# ---------------------------------------------------------------------------
 # scan_faces: used by scripts/check_face_blur.py to verify blurring actually
 # removed a detectable face. Stub detector -- no real model weights.
 # ---------------------------------------------------------------------------
