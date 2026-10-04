@@ -12,6 +12,31 @@ Two audiences in one file:
 
 # Part 1 — Operator
 
+## 1.0 Order of operations — read this first
+
+Each stage reads what the stage above it wrote. Running one early does not
+fail; it quietly produces less than you expect, which is worse.
+
+| # | Stage | Reads | Writes |
+|---|---|---|---|
+| 1 | Queue → Run ([§1.3](#13-queue--run)) | YouTube | `clips/`, `delivered/` |
+| 2 | Review: Approve/Reject/Flag + labels ([Part 2](#part-2--reviewer)) | `delivered/` | `trimmed/` |
+| 3 | Relabel backlog ([§2.4.1](#backfilling-clips-decided-before-labels-existed)) | `trimmed/` | labels in `pipeline.db` |
+| 4 | Anonymize ([§1.6](#16-anonymize-trimmed--finished)) | `trimmed/` | `finished/` |
+
+**Anonymize is last.** It reads `trimmed/`, and `trimmed/` is written by
+**Approve** — so a clip you have not approved yet simply is not there to
+anonymize. Running it early is the common mistake: it succeeds, reports a
+count, and silently covers only the clips approved so far.
+
+**Relabel does not need anonymize.** It plays from `trimmed/`, never from
+`finished/`, so it works whether or not anonymize has ever run. If you are
+waiting for an anonymize sweep before relabelling, stop waiting.
+
+**Anonymize skips a clip whose output already exists** and does *not* check
+whether that output is stale. Re-cut a clip, or change the detector, and you
+must pass `--force` or the old file stays.
+
 ## 1.1 One-time setup
 
 ```bash
@@ -147,7 +172,38 @@ If a band is off-target, adjust its `x/y/w/h` in the sidebar, save, delete
 `work/<video_id>/delivered/`, and re-run. Masters are not re-cut and nothing is
 re-downloaded, so this costs minutes, not hours.
 
-## 1.6 Disk
+## 1.6 Anonymize: `trimmed/` → `finished/`
+
+Blurs faces and license plates with two CPU ONNX detectors, writing H.264
+copies into one flat `finished/` folder beside `work/`. Stage 4 — see
+[§1.0](#10-order-of-operations--read-this-first) for why it goes last.
+
+From the Next.js frontend: **Anonymize** → *Start*. From a terminal:
+
+```powershell
+# normal sweep: skips clips already in finished/
+.\venv\Scripts\python.exe scripts\anonymize_all.py
+
+# after a re-cut or a detector change: redo everything
+.\venv\Scripts\python.exe scripts\anonymize_all.py --force
+```
+
+Budget about **2 minutes per clip** (measured 77–164 s), so a full 267-clip
+sweep is an overnight job. Detection dominates; the encode is noise.
+
+### After changing anything about detection
+
+`--force` is required. **Everything in `finished/` written before
+2026-10-04 20:21 is stale** — that is when the night-time plate rule landed
+(Decision Log, `CLAUDE.md`). Those files were produced by a detector that, on
+dark footage, blurred large patches of empty road.
+
+Check a night clip before committing to a full sweep: pick the darkest file
+in `finished/` and confirm the **roadway is visible**, not covered by one big
+smear. That failure is obvious at a glance and is the only one worth
+re-running for.
+
+## 1.7 Disk
 
 About **1.4 GB per 12-minute video** (source + masters + delivered). Fifty videos
 is roughly **70 GB**.
@@ -157,7 +213,7 @@ can be changed without re-downloading. Once a channel's blur is settled and the
 batch is exported, deleting `clips/` roughly halves the footprint — at the cost
 of a re-download if you ever change blur again.
 
-## 1.7 Export
+## 1.8 Export
 
 **Export tab** → name the batch → **Export to disk**. Writes
 `export/<batch>/clips/<video_id>/` plus a `manifest.json` recording, per file:
