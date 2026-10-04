@@ -15,7 +15,7 @@ export const runtime = "nodejs";
 
 // frontend/ -> repo root
 const REPO_ROOT = path.resolve(process.cwd(), "..");
-const ALLOWED_ROOTS = new Set(["work", "export"]);
+const ALLOWED_ROOTS = new Set(["work", "export", "finished"]);
 
 type Ctx = { params: Promise<{ path: string[] }> };
 

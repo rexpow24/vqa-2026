@@ -30,6 +30,8 @@ import cv2
 import numpy as np
 import onnxruntime as ort
 
+from . import media
+
 MODELS_DIR = Path(__file__).resolve().parent.parent / "models"
 
 FACE_MODEL_URL = (
@@ -354,10 +356,14 @@ def process_video(src: Path, dst: Path, face_detector: cv2.FaceDetectorYN,
                    margin_frac: float = BOX_MARGIN_FRAC) -> None:
     """Write an anonymized copy of `src` to `dst`. Never opens `src` for writing.
 
-    Output is silent by design (D5: "do not need audio") -- cv2.VideoWriter
-    is the entire write path, no ffmpeg subprocess involved. Writes to a
-    temp path and renames on success, so an interrupted run never leaves a
-    half-written `dst`.
+    Output is silent by design (D5: "do not need audio"). Frames are blurred
+    and written with cv2.VideoWriter to a raw temp file first -- "mp4v" is
+    the one fourcc guaranteed to work without extra system codecs, but it's
+    MPEG-4 Part 2, which no browser decodes. That raw file is then
+    re-encoded to H.264 via ffmpeg (vqa.media.transcode_h264), so `dst` is
+    always browser-playable. See CLAUDE.md "finished/ codec fix". Writes to
+    temp paths throughout and renames `dst` only on full success, so an
+    interrupted run never leaves a half-written or non-H.264 `dst`.
     """
     cap = cv2.VideoCapture(str(src))
     if not cap.isOpened():
@@ -368,12 +374,13 @@ def process_video(src: Path, dst: Path, face_detector: cv2.FaceDetectorYN,
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
     dst.parent.mkdir(parents=True, exist_ok=True)
+    raw_out = dst.with_name(dst.stem + ".raw.part" + dst.suffix)
     tmp_out = dst.with_name(dst.stem + ".part" + dst.suffix)
-    writer = cv2.VideoWriter(str(tmp_out), cv2.VideoWriter_fourcc(*"mp4v"),
+    writer = cv2.VideoWriter(str(raw_out), cv2.VideoWriter_fourcc(*"mp4v"),
                              fps, (width, height))
     if not writer.isOpened():
         cap.release()
-        raise AnonymizeError(f"cannot open video writer for {tmp_out}")
+        raise AnonymizeError(f"cannot open video writer for {raw_out}")
 
     tracker = PersistenceTracker(persist_frames=persist_frames)
     try:
@@ -390,6 +397,10 @@ def process_video(src: Path, dst: Path, face_detector: cv2.FaceDetectorYN,
         cap.release()
         writer.release()
 
+    try:
+        media.transcode_h264(raw_out, tmp_out)
+    finally:
+        raw_out.unlink(missing_ok=True)
     tmp_out.replace(dst)
 
 
@@ -458,13 +469,19 @@ def anonymize_folder(input_folder: Path, output_folder: Path | None = None,
     return outputs
 
 
-def anonymize_all_trimmed(work_root: Path, force: bool = False,
+def anonymize_all_trimmed(work_root: Path, finished_root: Path = Path("finished"),
+                          force: bool = False,
                           should_pause: Callable[[], bool] | None = None) -> dict[str, list[Path]]:
     """Sweep every `work/<video_id>/trimmed/` folder under `work_root`,
-    writing anonymized copies to a sibling `work/<video_id>/finished/` --
-    never touching `trimmed/` itself. One `anonymize_folder` call per video,
-    so the existing skip-if-exists/`force` behaviour applies per file same as
-    it always did.
+    writing anonymized copies straight into `finished_root` -- one flat
+    folder alongside `work/`, not nested inside each video's own work dir
+    and not split into per-video subfolders. Clip filenames already start
+    with their video_id (`<video_id>_<start_ms>_<end_ms>...`), so they stay
+    globally unique with no subfolder needed. Never touches `trimmed/`
+    itself. One `anonymize_folder` call per video, so the existing
+    skip-if-exists/`force` behaviour applies per file same as it always did.
+    The returned dict is still keyed by video_id for reporting -- that
+    grouping comes from the `trimmed/` side, which always knows it exactly.
 
     Known limitation, accepted rather than solved here: if a clip's
     `trimmed/` file is later regenerated (e.g. `delivered/` gets re-encoded
@@ -474,12 +491,43 @@ def anonymize_all_trimmed(work_root: Path, force: bool = False,
     folder if that ever matters in practice.
     """
     work_root = Path(work_root)
+    finished_root = Path(finished_root)
     results: dict[str, list[Path]] = {}
     for trimmed_dir in sorted(work_root.glob("*/trimmed")):
         video_id = trimmed_dir.parent.name
-        finished_dir = trimmed_dir.parent / "finished"
         results[video_id] = anonymize_folder(
-            trimmed_dir, finished_dir, force=force, should_pause=should_pause)
+            trimmed_dir, finished_root, force=force, should_pause=should_pause)
         if should_pause is not None and should_pause():
             break
     return results
+
+
+def fix_finished_codec(finished_root: Path, force: bool = False,
+                       should_pause: Callable[[], bool] | None = None) -> list[Path]:
+    """Re-encode every `finished_root/*.mp4` that isn't H.264.
+
+    Historical cleanup: process_video() used to write mpeg4 directly (fixed
+    now -- it always produces H.264), so this exists for any file that was
+    anonymized before that fix. Re-encodes in place (write to a .part temp
+    file, then rename -- a crash mid-transcode never leaves a half-written
+    file), skipping anything already H.264 unless `force`. Flat list, not
+    grouped by video_id: `finished_root` has no per-video subfolders, and a
+    video_id can itself contain underscores, so splitting one back out of a
+    filename is not reliable enough to report on.
+    """
+    finished_root = Path(finished_root)
+    fixed: list[Path] = []
+    for f in sorted(finished_root.glob("*.mp4")):
+        if should_pause is not None and should_pause():
+            break
+        if not force:
+            try:
+                if media.probe(f)["codec"] == "h264":
+                    continue
+            except media.MediaError:
+                pass  # unreadable -- try to fix it anyway rather than skip silently
+        tmp_out = f.with_name(f.stem + ".part" + f.suffix)
+        media.transcode_h264(f, tmp_out)
+        tmp_out.replace(f)
+        fixed.append(f)
+    return fixed

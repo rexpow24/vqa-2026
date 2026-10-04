@@ -184,18 +184,19 @@ def _anon_busy() -> bool:
     return _anon_proc is not None and _anon_proc.poll() is None
 
 
-def _anonymize_progress(work_root: Path) -> dict:
+def _anonymize_progress(work_root: Path, finished_root: Path) -> dict:
     """Count only finished outputs corresponding to current trimmed clips."""
     sources = sorted(work_root.glob("*/trimmed/*.mp4"))
     completed_files = []
     for src in sources:
-        dst = src.parent.parent / "finished" / src.name
+        video_id = src.parent.parent.name
+        dst = finished_root / src.name
         try:
             finished_at = dst.stat().st_mtime
         except FileNotFoundError:
             continue
         completed_files.append({
-            "video_id": src.parent.parent.name,
+            "video_id": video_id,
             "file_name": src.name,
             "completed_at": finished_at,
         })
@@ -211,7 +212,7 @@ def _anonymize_progress(work_root: Path) -> dict:
 def anonymize_status():
     busy = _anon_busy()
     exit_code = _anon_proc.poll() if _anon_proc is not None else None
-    progress = _anonymize_progress(REPO_ROOT / "work")
+    progress = _anonymize_progress(REPO_ROOT / "work", REPO_ROOT / "finished")
     pause_requested = ANON_PAUSE_FILE.exists()
     return {
         "busy": busy,

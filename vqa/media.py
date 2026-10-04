@@ -312,6 +312,24 @@ def fmt_time(seconds: float) -> str:
     return f"{int(h):02d}:{int(m):02d}:{sec:04.1f}"
 
 
+def transcode_h264(src: Path, dst: Path) -> None:
+    """Re-encode src to H.264/AAC at dst, with a moov atom at the front.
+
+    For output that was never H.264 to begin with -- e.g. the anonymize
+    sweep's cv2.VideoWriter_fourcc(*"mp4v") output, MPEG-4 Part 2, which no
+    browser decodes natively. `-movflags +faststart` lets a browser start
+    playback before the whole file has downloaded.
+    """
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    cp = _run([
+        FFMPEG, "-v", "error", "-y", "-i", str(src),
+        "-c:v", "libx264", "-crf", "18", "-preset", "veryfast",
+        "-c:a", "aac", "-movflags", "+faststart", str(dst),
+    ])
+    if cp.returncode != 0:
+        raise MediaError(f"transcode failed: {cp.stderr.decode(errors='replace')[:300]}")
+
+
 def copy_stream(src: Path, dst: Path) -> None:
     """Container copy, no re-encode. Used when a segment is the whole clip."""
     dst.parent.mkdir(parents=True, exist_ok=True)

@@ -142,9 +142,9 @@ def test_ensure_model_redownloads_a_corrupt_cached_file(tmp_path, monkeypatch):
 
 # ---------------------------------------------------------------------------
 # process_video: file-safety (temp-write-then-rename), never opens src for
-# writing. Real cv2 codec (no system ffmpeg, no subprocess at all) for both
-# the fixture and the actual write path -- D5 dropped audio, so
-# cv2.VideoWriter is the entire write path now.
+# writing. Real cv2 codec for the fixture and the raw blur-write step; the
+# ffmpeg H.264 transcode step (media.transcode_h264) is stubbed so this file
+# stays ffmpeg-free, same as everywhere else in this module's tests.
 # ---------------------------------------------------------------------------
 
 def _make_fixture_video(path, n_frames=4, w=32, h=24, fps=5.0):
@@ -162,6 +162,10 @@ def test_process_video_never_opens_src_for_writing(tmp_path, monkeypatch):
 
     monkeypatch.setattr(anonymize, "detect_faces", lambda frame, det: [])
     monkeypatch.setattr(anonymize, "detect_plates", lambda frame, sess, **kw: [])
+    # No real ffmpeg in this test file -- stub the H.264 transcode step the
+    # same way process_video's own cv2 write is exercised for real.
+    monkeypatch.setattr(anonymize.media, "transcode_h264",
+                        lambda src_, dst_: dst_.write_bytes(b"h264 stub"))
 
     anonymize.process_video(src, dst, face_detector=None, plate_session=None)
 
@@ -463,3 +467,76 @@ def test_anonymize_folder_processes_only_the_not_yet_done_files(tmp_path, monkey
 
     anonymize.anonymize_folder(src_folder, out_folder)
     assert calls == ["pending.mp4"]
+
+
+# ---------------------------------------------------------------------------
+# fix_finished_codec: re-encode finished_root/*.mp4 (flat, no per-video
+# subfolder) that isn't H.264 -- historical cleanup for files written
+# before process_video transcoded directly. No real ffmpeg --
+# media.probe/transcode_h264 are stubbed, same spirit as process_video above.
+# ---------------------------------------------------------------------------
+
+def test_fix_finished_codec_skips_h264_files_by_default(tmp_path, monkeypatch):
+    (tmp_path / "a.mp4").write_bytes(b"already h264")
+
+    monkeypatch.setattr(anonymize.media, "probe", lambda p: {"codec": "h264"})
+
+    def _boom(*a, **kw):
+        raise AssertionError("must not transcode a file already reported as h264")
+
+    monkeypatch.setattr(anonymize.media, "transcode_h264", _boom)
+
+    fixed = anonymize.fix_finished_codec(tmp_path)
+    assert fixed == []
+
+
+def test_fix_finished_codec_transcodes_non_h264_files_in_place(tmp_path, monkeypatch):
+    target = tmp_path / "a.mp4"
+    target.write_bytes(b"mpeg4 bytes")
+
+    monkeypatch.setattr(anonymize.media, "probe", lambda p: {"codec": "mpeg4"})
+
+    def _fake_transcode(src, dst):
+        assert src == target
+        assert dst.name == "a.part.mp4"
+        dst.write_bytes(b"h264 bytes")
+
+    monkeypatch.setattr(anonymize.media, "transcode_h264", _fake_transcode)
+
+    fixed = anonymize.fix_finished_codec(tmp_path)
+
+    assert fixed == [target]
+    assert target.read_bytes() == b"h264 bytes"
+    assert not (tmp_path / "a.part.mp4").exists()
+
+
+def test_fix_finished_codec_force_reencodes_even_h264_files(tmp_path, monkeypatch):
+    target = tmp_path / "a.mp4"
+    target.write_bytes(b"already h264")
+
+    probe_calls = []
+    monkeypatch.setattr(anonymize.media, "probe", lambda p: probe_calls.append(p) or {"codec": "h264"})
+    monkeypatch.setattr(anonymize.media, "transcode_h264",
+                        lambda src, dst: dst.write_bytes(b"reencoded"))
+
+    fixed = anonymize.fix_finished_codec(tmp_path, force=True)
+
+    assert probe_calls == []  # force skips the probe entirely -- no need to check
+    assert fixed == [target]
+
+
+def test_fix_finished_codec_ignores_subfolders(tmp_path, monkeypatch):
+    (tmp_path / "a.mp4").write_bytes(b"h264")
+    nested = tmp_path / "stray_subfolder"
+    nested.mkdir()
+    (nested / "b.mp4").write_bytes(b"must not be touched, finished_root is flat")
+
+    monkeypatch.setattr(anonymize.media, "probe", lambda p: {"codec": "h264"})
+
+    def _boom(*a, **kw):
+        raise AssertionError("must not recurse into a subfolder -- finished_root is flat")
+
+    monkeypatch.setattr(anonymize.media, "transcode_h264", _boom)
+
+    fixed = anonymize.fix_finished_codec(tmp_path)
+    assert fixed == []

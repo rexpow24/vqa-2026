@@ -10,6 +10,7 @@ from vqa import anonymize
 
 def test_pause_between_clips_and_resume_across_video_folders(tmp_path, monkeypatch):
     work = tmp_path / "work"
+    finished = tmp_path / "finished"
     for video_id, names in (("video_a", ("a.mp4", "b.mp4")),
                             ("video_b", ("c.mp4",))):
         trimmed = work / video_id / "trimmed"
@@ -30,13 +31,13 @@ def test_pause_between_clips_and_resume_across_video_folders(tmp_path, monkeypat
     monkeypatch.setattr(anonymize, "load_plate_session", lambda: object())
     monkeypatch.setattr(anonymize, "process_video", process)
 
-    anonymize.anonymize_all_trimmed(work, should_pause=marker.exists)
+    anonymize.anonymize_all_trimmed(work, finished, should_pause=marker.exists)
     assert processed == ["a.mp4"]
-    assert not (work / "video_a" / "finished" / "b.mp4").exists()
-    assert not (work / "video_b" / "finished" / "c.mp4").exists()
+    assert not (finished / "b.mp4").exists()
+    assert not (finished / "c.mp4").exists()
 
     marker.unlink()
-    anonymize.anonymize_all_trimmed(work, should_pause=marker.exists)
+    anonymize.anonymize_all_trimmed(work, finished, should_pause=marker.exists)
     assert processed == ["a.mp4", "b.mp4", "c.mp4"]
 
 
@@ -71,6 +72,7 @@ def test_sidecar_pause_marker_is_cleared_on_resume(tmp_path, monkeypatch):
 
 def test_script_honors_existing_pause_marker_before_loading_models(tmp_path):
     work = tmp_path / "work"
+    finished = tmp_path / "finished"
     trimmed = work / "video_a" / "trimmed"
     trimmed.mkdir(parents=True)
     (trimmed / "clip.mp4").touch()
@@ -80,9 +82,9 @@ def test_script_honors_existing_pause_marker_before_loading_models(tmp_path):
 
     result = subprocess.run(
         [sys.executable, str(script), "--work-root", str(work),
-         "--pause-file", str(marker)],
+         "--finished-root", str(finished), "--pause-file", str(marker)],
         capture_output=True, text=True, timeout=15,
     )
 
     assert result.returncode == 0, result.stderr
-    assert not (work / "video_a" / "finished" / "clip.mp4").exists()
+    assert not (finished / "clip.mp4").exists()

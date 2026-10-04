@@ -1,8 +1,11 @@
-"""Anonymize every video's trimmed/ folder under work/, writing to a sibling
-finished/ per video. Skips clips already done unless --force. This is what
-the sidecar's /anonymize/start endpoint spawns as a subprocess.
+"""Anonymize every video's trimmed/ folder under work/, writing to finished/
+-- one flat, centralized folder alongside work/, not nested inside each
+video's own work dir and not split into per-video subfolders (clip
+filenames already start with their video_id, so they stay unique). Skips
+clips already done unless --force. This is what the sidecar's
+/anonymize/start endpoint spawns as a subprocess.
 
-    python scripts/anonymize_all.py [--work-root work] [--force]
+    python scripts/anonymize_all.py [--work-root work] [--finished-root finished] [--force]
 """
 
 from __future__ import annotations
@@ -22,6 +25,8 @@ def main(argv: list[str] | None = None) -> int:
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--work-root", type=Path, default=Path("work"),
                      help="folder containing per-video work dirs (default: work)")
+    ap.add_argument("--finished-root", type=Path, default=Path("finished"),
+                     help="centralized output folder, alongside work/ (default: finished)")
     ap.add_argument("--force", action="store_true",
                      help="reprocess even where a finished/ file already exists")
     ap.add_argument("--pause-file", type=Path,
@@ -34,11 +39,11 @@ def main(argv: list[str] | None = None) -> int:
 
     should_pause = (lambda: args.pause_file.exists()) if args.pause_file else None
     results = anonymize.anonymize_all_trimmed(
-        args.work_root, force=args.force, should_pause=should_pause)
+        args.work_root, args.finished_root, force=args.force, should_pause=should_pause)
     total = sum(len(v) for v in results.values())
     print(f"anonymized {total} file(s) across {len(results)} video folder(s)")
     for video_id, outputs in results.items():
-        print(f"  {video_id}: {len(outputs)} file(s) -> work/{video_id}/finished/")
+        print(f"  {video_id}: {len(outputs)} file(s) -> {args.finished_root}/")
     return 0
 
 
