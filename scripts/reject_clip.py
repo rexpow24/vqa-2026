@@ -74,6 +74,8 @@ def main() -> int:
         return 1
 
     print(f"clip_id: {args.clip_id}")
+    print(f"video_id: {clip['youtube_video_id']}")
+    print(f"source_range_ms: {clip['start_ms']}..{clip['end_ms']}")
     print(f"decision: {clip['decision']} -> {db.REJECTED}")
     print(f"trim_files: {len(paths)}")
     for path in paths:

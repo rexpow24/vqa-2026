@@ -103,6 +103,56 @@ def mark_stopped_route():
     return {"marked": db.mark_stopped()}
 
 
+class YoutubeAuthRequest(BaseModel):
+    cookies_file: str = ""
+    cookies_browser: str = ""
+
+
+YOUTUBE_COOKIE_BROWSERS = {"", "chrome", "edge", "firefox", "brave"}
+
+
+def _configured_cookie_path(value: str) -> Path:
+    path = Path(value)
+    return path if path.is_absolute() else REPO_ROOT / path
+
+
+@app.get("/settings/youtube-auth")
+def youtube_auth_settings():
+    cfg = config.load()
+    cookies_file = (cfg.get("cookies_file") or "").strip()
+    cookie_path = _configured_cookie_path(cookies_file) if cookies_file else None
+    return {
+        "cookies_file": cookies_file,
+        "cookies_browser": (cfg.get("cookies_browser") or "").strip(),
+        "cookies_file_exists": bool(cookie_path and cookie_path.is_file()),
+    }
+
+
+@app.put("/settings/youtube-auth")
+def save_youtube_auth_settings(req: YoutubeAuthRequest):
+    if _busy():
+        raise HTTPException(409, "YouTube access settings cannot change during a run")
+
+    cookies_file = req.cookies_file.strip()
+    cookies_browser = req.cookies_browser.strip().lower()
+    if cookies_browser not in YOUTUBE_COOKIE_BROWSERS:
+        raise HTTPException(422, "browser must be chrome, edge, firefox, or brave")
+    if cookies_file and cookies_browser:
+        raise HTTPException(422, "set either a cookie file or a browser, not both")
+    if cookies_file:
+        path = _configured_cookie_path(cookies_file)
+        if path.suffix.lower() not in {".txt", ".json"}:
+            raise HTTPException(422, "cookie file must have a .txt or .json extension")
+        if not path.is_file():
+            raise HTTPException(422, f"cookie file does not exist: {cookies_file}")
+
+    cfg = config.load()
+    cfg["cookies_file"] = cookies_file
+    cfg["cookies_browser"] = cookies_browser
+    config.save(cfg)
+    return youtube_auth_settings()
+
+
 # ── run control ──────────────────────────────────────────────────────────
 
 # Held as a module global because this process, unlike a Streamlit script

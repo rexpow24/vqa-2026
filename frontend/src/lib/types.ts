@@ -47,6 +47,12 @@ export interface RunStatus {
   log_tail: string;
 }
 
+export interface YoutubeAuthSettings {
+  cookies_file: string;
+  cookies_browser: string;
+  cookies_file_exists: boolean;
+}
+
 // Sweeps every work/<id>/trimmed/ into a sibling finished/ -- separate from
 // RunStatus because it's a different subprocess (sidecar's /anonymize/*),
 // tracked independently of the main pipeline run.

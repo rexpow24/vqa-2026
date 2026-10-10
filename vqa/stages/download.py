@@ -21,8 +21,17 @@ def _netscape_from_json(src: Path) -> Path:
     out = src.with_suffix(".netscape.txt")
     if out.exists() and out.stat().st_mtime >= src.stat().st_mtime:
         return out
+    try:
+        cookies = json.loads(src.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise DownloadError(f"cannot read cookie JSON {src.name}: {exc}") from exc
+    if not isinstance(cookies, list):
+        raise DownloadError("cookie JSON must contain a list of exported cookies")
+
     rows = ["# Netscape HTTP Cookie File"]
-    for c in json.loads(src.read_text(encoding="utf-8")):
+    for c in cookies:
+        if not isinstance(c, dict):
+            continue
         domain = c.get("domain", "")
         if not domain or not c.get("name"):
             continue
@@ -32,6 +41,8 @@ def _netscape_from_json(src: Path) -> Path:
         expiry = int(c.get("expirationDate") or 0)
         rows.append(chr(9).join([domain, sub, c.get("path", "/"), secure,
                                str(expiry), c["name"], c.get("value", "")]))
+    if len(rows) == 1:
+        raise DownloadError("cookie JSON contains no usable cookie entries")
     out.write_text(chr(10).join(rows) + chr(10), encoding="utf-8")
     return out
 
@@ -43,10 +54,27 @@ def _auth_opts(cfg: dict | None) -> dict:
     if not cfg:
         return {}
     path = (cfg.get("cookies_file") or "").strip()
-    if path and Path(path).exists():
+    if path:
         src = Path(path)
+        if not src.is_absolute():
+            src = Path.cwd() / src
+        if not src.is_file():
+            raise DownloadError(f"configured cookie file does not exist: {path}")
         if src.suffix.lower() == ".json":
             src = _netscape_from_json(src)
+        elif src.suffix.lower() == ".txt":
+            try:
+                with src.open(encoding="utf-8-sig") as cookies:
+                    header = cookies.readline().strip()
+            except OSError as exc:
+                raise DownloadError(f"cannot read cookie file {src.name}: {exc}") from exc
+            if header not in {"# HTTP Cookie File", "# Netscape HTTP Cookie File"}:
+                raise DownloadError(
+                    "cookie TXT must be in Netscape format; export it with yt-dlp "
+                    "or use a compatible cookie exporter"
+                )
+        else:
+            raise DownloadError("cookie file must have a .txt or .json extension")
         return {"cookiefile": str(src)}
     browser = (cfg.get("cookies_browser") or "").strip().lower()
     if browser:
@@ -85,13 +113,26 @@ def download(url: str, work: Path, max_height: int = 1080,
         "js_runtimes": {"deno": {}, "node": {}},  # API wants a dict, not the CLI list
         "remote_components": ["ejs:github"],
     }
-    opts.update(_auth_opts(cfg))
+    auth_opts = _auth_opts(cfg)
+    opts.update(auth_opts)
 
     try:
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=True)
     except yt_dlp.utils.DownloadError as exc:
-        raise DownloadError(str(exc)[:400]) from exc
+        message = str(exc)[:400]
+        if "Sign in to confirm" in message or "not a bot" in message:
+            if auth_opts:
+                message += (
+                    " Configured cookies were supplied but YouTube rejected them; "
+                    "export a fresh cookie file and update YouTube access settings."
+                )
+            else:
+                message += (
+                    " Set a fresh cookies.txt path or choose a browser in "
+                    "YouTube access settings."
+                )
+        raise DownloadError(message) from exc
 
     if info.get("is_live"):
         raise DownloadError("live stream — not a compilation")

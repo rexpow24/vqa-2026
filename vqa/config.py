@@ -1,6 +1,6 @@
 """Pipeline configuration.
 
-Config lives in config.json, written by the Streamlit sidebar. Nothing else edits it.
+Config lives in config.json. The Streamlit UI and local sidecar settings write it.
 """
 
 from __future__ import annotations
