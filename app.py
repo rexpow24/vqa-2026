@@ -27,6 +27,12 @@ db.init()
 APP_DIR = Path(__file__).resolve().parent
 LOG_DIR = Path("logs")
 
+# Below-normal priority: the runner is CPU-bound (scene detect, blur/detect
+# passes) and would otherwise starve the foreground app when a run is long.
+# Windows only, same defensive hasattr guard as vqa.media's CREATE_NO_WINDOW.
+_LOW_PRIORITY = (subprocess.BELOW_NORMAL_PRIORITY_CLASS
+                 if hasattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS") else 0)
+
 
 # ── run process helpers ───────────────────────────────────────────────────
 
@@ -45,6 +51,7 @@ def start_run() -> None:
         [str(python_exe), str(APP_DIR / "run_pipeline.py")],
         cwd=APP_DIR,
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+        creationflags=_LOW_PRIORITY,
     )
     st.session_state["proc"] = proc
 

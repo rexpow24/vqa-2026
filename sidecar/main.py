@@ -26,6 +26,13 @@ from vqa import annotations, config, db, media, review, trim, urls
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LOG_DIR = REPO_ROOT / "logs"
 
+# Below-normal priority: both subprocesses below are CPU-bound (scene detect,
+# blur/detect passes) and would otherwise starve the foreground app during a
+# long run. Windows only, same defensive hasattr guard as vqa.media's
+# CREATE_NO_WINDOW.
+_LOW_PRIORITY = (subprocess.BELOW_NORMAL_PRIORITY_CLASS
+                 if hasattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS") else 0)
+
 app = FastAPI(title="vqa-sidecar")
 
 # Calls are expected to come from Next.js server-side route handlers (no
@@ -147,6 +154,7 @@ def run_start():
         cwd=REPO_ROOT,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
+        creationflags=_LOW_PRIORITY,
     )
     return {"started": True, "pid": _proc.pid}
 
@@ -241,6 +249,7 @@ def anonymize_start():
         cwd=REPO_ROOT,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
+        creationflags=_LOW_PRIORITY,
     )
     return {"started": True, "pid": _anon_proc.pid}
 
