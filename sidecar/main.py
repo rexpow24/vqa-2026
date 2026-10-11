@@ -21,7 +21,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, FiniteFloat
 
-from vqa import annotations, config, db, media, review, trim, urls
+from vqa import annotations, config, db, dedup, media, review, trim, urls
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LOG_DIR = REPO_ROOT / "logs"
@@ -227,6 +227,85 @@ def run_stop():
     return {"stopped": True, "marked": marked}
 
 
+# ── dedup (trimmed/ -> reviewed index) ───────────────────────────────────
+
+_dedup_proc: subprocess.Popen | None = None
+DEDUP_LOG = LOG_DIR / "dedup.log"
+
+
+def _dedup_busy() -> bool:
+    return _dedup_proc is not None and _dedup_proc.poll() is None
+
+
+@app.get("/dedup/status")
+def dedup_status():
+    state = dedup.queue()
+    log_tail = ""
+    if DEDUP_LOG.exists():
+        log_tail = "\n".join(DEDUP_LOG.read_text(encoding="utf-8", errors="replace").splitlines()[-8:])
+    return {
+        **state,
+        "busy": _dedup_busy(),
+        "exit_code": _dedup_proc.poll() if _dedup_proc is not None else None,
+        "log_tail": log_tail,
+    }
+
+
+@app.post("/dedup/start")
+def dedup_start():
+    global _dedup_proc
+    if _dedup_busy():
+        raise HTTPException(409, "Phân tích Dedup đang chạy.")
+    if _anon_busy():
+        raise HTTPException(409, "Hãy chờ lượt anonymize hiện tại kết thúc trước khi phân tích Dedup.")
+    if not dedup.current_sources():
+        raise HTTPException(409, "Chưa có clip nào trong trimmed/.")
+    python_exe = REPO_ROOT / ".venv" / "Scripts" / "python.exe"
+    if not python_exe.exists():
+        raise HTTPException(503, "Chưa có môi trường .venv với DINOv2 và PyTorch CUDA.")
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    with DEDUP_LOG.open("w", encoding="utf-8") as log:
+        _dedup_proc = subprocess.Popen(
+            [str(python_exe), str(REPO_ROOT / "scripts" / "dedup_all.py")],
+            cwd=REPO_ROOT, stdout=log, stderr=subprocess.STDOUT,
+            creationflags=_LOW_PRIORITY,
+        )
+    return {"started": True, "pid": _dedup_proc.pid}
+
+
+class DedupThresholdRequest(BaseModel):
+    threshold: FiniteFloat
+
+
+@app.post("/dedup/threshold")
+def dedup_threshold(req: DedupThresholdRequest):
+    if _dedup_busy() or _anon_busy():
+        raise HTTPException(409, "Hãy chờ tác vụ đang chạy kết thúc rồi đổi ngưỡng Dedup.")
+    try:
+        dedup.set_threshold(float(req.threshold))
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from e
+    return dedup_status()
+
+
+class DedupDecisionRequest(BaseModel):
+    query_path: str
+    decision: str
+    duplicate_of: str | None = None
+
+
+@app.post("/dedup/decision")
+def dedup_decision(req: DedupDecisionRequest):
+    if _dedup_busy() or _anon_busy():
+        raise HTTPException(409, "Hãy chờ tác vụ đang chạy kết thúc rồi sửa quyết định Dedup.")
+    try:
+        return dedup.save_decision(req.query_path, req.decision, req.duplicate_of)
+    except ValueError as e:
+        raise HTTPException(409, str(e)) from e
+    except OSError as e:
+        raise HTTPException(409, f"Không lưu được bản finished/ cũ: {e.strerror or e}") from e
+
+
 # ── anonymize (trimmed/ -> finished/) ───────────────────────────────────
 #
 # Same subprocess pattern as /run/* above, held as its own module global so
@@ -242,9 +321,15 @@ def _anon_busy() -> bool:
     return _anon_proc is not None and _anon_proc.poll() is None
 
 
-def _anonymize_progress(work_root: Path, finished_root: Path) -> dict:
+def _anonymize_progress(work_root: Path, finished_root: Path,
+                        allowed: set[str] | None = None) -> dict:
     """Count only finished outputs corresponding to current trimmed clips."""
-    sources = sorted(work_root.glob("*/trimmed/*.mp4"))
+    sources = sorted(
+        src for src in work_root.glob("*/trimmed/*.mp4")
+        if dedup.TRIMMED_NAME.search(src.name)
+    )
+    if allowed is not None:
+        sources = [src for src in sources if src.relative_to(work_root.parent).as_posix() in allowed]
     completed_files = []
     for src in sources:
         video_id = src.parent.parent.name
@@ -270,7 +355,13 @@ def _anonymize_progress(work_root: Path, finished_root: Path) -> dict:
 def anonymize_status():
     busy = _anon_busy()
     exit_code = _anon_proc.poll() if _anon_proc is not None else None
-    progress = _anonymize_progress(REPO_ROOT / "work", REPO_ROOT / "finished")
+    try:
+        allowed = dedup.allowed_sources()
+        dedup_problem = None
+    except ValueError as e:
+        allowed = None
+        dedup_problem = str(e)
+    progress = _anonymize_progress(REPO_ROOT / "work", REPO_ROOT / "finished", allowed)
     pause_requested = ANON_PAUSE_FILE.exists()
     return {
         "busy": busy,
@@ -279,6 +370,7 @@ def anonymize_status():
         "paused": pause_requested and not busy and exit_code in (None, 0)
                   and progress["completed"] < progress["total"],
         "exit_code": exit_code,
+        "dedup_problem": dedup_problem,
         **progress,
     }
 
@@ -288,6 +380,12 @@ def anonymize_start():
     global _anon_proc
     if _anon_busy():
         raise HTTPException(409, "an anonymize sweep is already in progress")
+    if _dedup_busy():
+        raise HTTPException(409, "Hãy chờ phân tích Dedup kết thúc.")
+    try:
+        dedup.allowed_sources()
+    except ValueError as e:
+        raise HTTPException(409, str(e)) from e
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     ANON_PAUSE_FILE.unlink(missing_ok=True)
     python_exe = REPO_ROOT / "venv" / "Scripts" / "python.exe"
@@ -295,7 +393,7 @@ def anonymize_start():
         python_exe = Path(sys.executable)
     _anon_proc = subprocess.Popen(
         [str(python_exe), str(REPO_ROOT / "scripts" / "anonymize_all.py"),
-         "--pause-file", str(ANON_PAUSE_FILE)],
+         "--pause-file", str(ANON_PAUSE_FILE), "--require-dedup"],
         cwd=REPO_ROOT,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,

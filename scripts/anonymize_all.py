@@ -1,8 +1,9 @@
-"""Anonymize every video's trimmed/ folder under work/, writing to finished/
+"""Anonymize Dedup-allowed trimmed clips under work/, writing to finished/
 -- one flat, centralized folder alongside work/, not nested inside each
 video's own work dir and not split into per-video subfolders (clip
 filenames already start with their video_id, so they stay unique). Skips
-clips already done unless --force. This is what the sidecar's
+clips already done unless --force. The project work/ folder requires a fresh
+Dedup index by default. This is what the sidecar's
 /anonymize/start endpoint spawns as a subprocess.
 
     python scripts/anonymize_all.py [--work-root work] [--finished-root finished] [--force]
@@ -39,6 +40,10 @@ def main(argv: list[str] | None = None) -> int:
                           "because finished/ already has them do not count.")
     ap.add_argument("--pause-file", type=Path,
                     help="finish the current clip, then stop before the next one")
+    ap.add_argument("--require-dedup", action="store_true",
+                    help="only anonymize clips allowed by a fresh, fully reviewed dedup index")
+    ap.add_argument("--skip-dedup", action="store_true",
+                    help="explicit maintenance bypass for the project's work/ folder")
     args = ap.parse_args(argv)
 
     if not args.work_root.is_dir():
@@ -50,12 +55,43 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     should_pause = (lambda: args.pause_file.exists()) if args.pause_file else None
+    should_include = None
+    from vqa import db, dedup
+    project_work = args.work_root.resolve() == (dedup.ROOT / "work").resolve()
+    require_dedup = args.require_dedup or (project_work and not args.skip_dedup)
+    if args.require_dedup and args.skip_dedup:
+        print("FAIL: --require-dedup and --skip-dedup cannot be combined")
+        return 1
+    if require_dedup:
+        if not project_work:
+            print("FAIL: dedup gate requires the project's work/ folder")
+            return 1
+        db.init()
+        try:
+            allowed = dedup.allowed_sources()
+        except ValueError as e:
+            print(f"FAIL: {e}")
+            return 1
+        index, _ = dedup.read_index()
+        assert index is not None
+        signatures = {source["path"]: source["signature"] for source in index["sources"]}
+
+        def should_include(src: Path) -> bool:
+            absolute = src.resolve()
+            relative = absolute.relative_to(dedup.ROOT).as_posix()
+            if relative not in allowed:
+                return False
+            if dedup.source_signature(absolute) != signatures[relative]:
+                raise anonymize.AnonymizeError(
+                    f"trimmed clip changed during anonymize: {relative}; run Dedup again")
+            return True
+
     counter: dict[str, int] = {"encoded": 0, "skipped": 0}
     try:
         results = anonymize.anonymize_all_trimmed(
             args.work_root, args.finished_root, force=args.force,
             should_pause=should_pause, video_ids=args.video_ids, limit=args.limit,
-            counter=counter)
+            counter=counter, should_include=should_include)
     except anonymize.AnonymizeError as e:
         print(f"FAIL: {e}")
         return 1

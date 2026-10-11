@@ -7,6 +7,7 @@ const TABS = [
   { href: "/queue", label: "Queue" },
   { href: "/run", label: "Run" },
   { href: "/review", label: "Review" },
+  { href: "/dedup", label: "Dedup" },
   { href: "/relabel", label: "Relabel" },
   { href: "/annotate", label: "Annotate" },
   { href: "/prompts", label: "Prompts" },

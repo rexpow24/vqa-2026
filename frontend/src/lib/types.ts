@@ -53,7 +53,7 @@ export interface YoutubeAuthSettings {
   cookies_file_exists: boolean;
 }
 
-// Sweeps every work/<id>/trimmed/ into a sibling finished/ -- separate from
+// Sweeps Dedup-allowed work/<id>/trimmed/ into finished/ -- separate from
 // RunStatus because it's a different subprocess (sidecar's /anonymize/*),
 // tracked independently of the main pipeline run.
 export interface AnonymizeStatus {
@@ -62,6 +62,7 @@ export interface AnonymizeStatus {
   pause_requested: boolean;
   paused: boolean;
   exit_code: number | null;
+  dedup_problem?: string | null;
   total: number;
   completed: number;
   completed_files: {
@@ -69,6 +70,39 @@ export interface AnonymizeStatus {
     file_name: string;
     completed_at: number;
   }[];
+}
+
+export interface DedupMatch {
+  path: string;
+  duration_s: number;
+  score: number;
+  dino_score: number;
+  phash_score: number;
+}
+
+export interface DedupItem {
+  path: string;
+  duration_s: number;
+  top_score: number;
+  review_key: string;
+  matches: DedupMatch[];
+  decision: "keep" | "duplicate" | null;
+  duplicate_of: string | null;
+}
+
+export interface DedupStatus {
+  ready: boolean;
+  problem: string | null;
+  threshold: number;
+  total: number;
+  suggested: number;
+  pending: number;
+  duplicates: number;
+  max_score: number | null;
+  items: DedupItem[];
+  busy: boolean;
+  exit_code: number | null;
+  log_tail: string;
 }
 
 export interface Shot {

@@ -65,9 +65,10 @@ def test_sidecar_pause_marker_is_cleared_on_resume(tmp_path, monkeypatch):
         return Process()
 
     monkeypatch.setattr(sidecar.subprocess, "Popen", launch)
+    monkeypatch.setattr(sidecar.dedup, "allowed_sources", lambda: set())
     assert sidecar.anonymize_start()["started"] is True
     assert not marker.exists()
-    assert launches[0][0][-2:] == ["--pause-file", str(marker)]
+    assert launches[0][0][-3:] == ["--pause-file", str(marker), "--require-dedup"]
 
 
 def test_script_honors_existing_pause_marker_before_loading_models(tmp_path):

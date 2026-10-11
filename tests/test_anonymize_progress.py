@@ -9,15 +9,16 @@ def test_progress_counts_current_trimmed_files_and_logs_each_finished_clip(tmp_p
     work = tmp_path / "work"
     finished = tmp_path / "finished"
 
-    first = work / "video_a" / "trimmed" / "clip_1.mp4"
-    second = work / "video_a" / "trimmed" / "clip_2.mp4"
-    third = work / "video_b" / "trimmed" / "clip_3.mp4"
+    first = work / "video_a" / "trimmed" / "video_a_001_002_t01.mp4"
+    second = work / "video_a" / "trimmed" / "video_a_003_004_t01.mp4"
+    third = work / "video_b" / "trimmed" / "video_b_005_006_t01.mp4"
     for source in (first, second, third):
         source.parent.mkdir(parents=True, exist_ok=True)
         source.touch()
+    (first.parent / "video_a_001_002_t01_anonymized.mp4").touch()
 
-    first_output = finished / "clip_1.mp4"
-    third_output = finished / "clip_3.mp4"
+    first_output = finished / first.name
+    third_output = finished / third.name
     for output in (first_output, third_output):
         output.parent.mkdir(parents=True, exist_ok=True)
         output.touch()
@@ -32,7 +33,7 @@ def test_progress_counts_current_trimmed_files_and_logs_each_finished_clip(tmp_p
         "total": 3,
         "completed": 2,
         "completed_files": [
-            {"video_id": "video_a", "file_name": "clip_1.mp4", "completed_at": 100},
-            {"video_id": "video_b", "file_name": "clip_3.mp4", "completed_at": 200},
+            {"video_id": "video_a", "file_name": first.name, "completed_at": 100},
+            {"video_id": "video_b", "file_name": third.name, "completed_at": 200},
         ],
     }

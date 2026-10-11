@@ -73,6 +73,19 @@ CREATE TABLE IF NOT EXISTS review_segments (
     PRIMARY KEY (clip_id, segment_index)
 );
 
+CREATE TABLE IF NOT EXISTS dedup_settings (
+    key   TEXT PRIMARY KEY,
+    value REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS dedup_decisions (
+    query_path   TEXT PRIMARY KEY,
+    review_key   TEXT NOT NULL,
+    decision     TEXT NOT NULL CHECK(decision IN ('keep', 'duplicate')),
+    duplicate_of TEXT,
+    reviewed_at  TEXT NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS idx_clips_video ON clips(youtube_video_id);
 CREATE INDEX IF NOT EXISTS idx_videos_status ON videos(status);
 """
