@@ -100,9 +100,28 @@ export interface DedupStatus {
   duplicates: number;
   max_score: number | null;
   items: DedupItem[];
+  has_index: boolean;
+  source_changes: { added: number; changed: number; removed: number };
+  pairs_cached: number;
+  pairs_total: number;
+  pair_baseline_ready: boolean;
+  history: DedupRun[];
   busy: boolean;
   exit_code: number | null;
   log_tail: string;
+}
+
+export interface DedupRun {
+  run_id: string;
+  status: "running" | "completed" | "failed";
+  started_at: string;
+  completed_at: string | null;
+  source_count: number;
+  added_count: number;
+  changed_count: number;
+  removed_count: number;
+  pairs_computed: number;
+  error: string | null;
 }
 
 export interface Shot {

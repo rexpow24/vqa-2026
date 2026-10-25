@@ -7,7 +7,9 @@ packages, so the existing sidecar environment can inspect and gate the index.
 from __future__ import annotations
 
 import json
+import os
 import re
+from datetime import datetime, timezone
 from hashlib import sha256
 from pathlib import Path
 from uuid import uuid4
@@ -73,6 +75,172 @@ def review_key(signature: str, candidate_signatures: list[str]) -> str:
     return sha256(content.encode()).hexdigest()
 
 
+def pair_key(signature_a: str, signature_b: str) -> str:
+    """Stable identity for an unordered pair under the current score version."""
+    ordered = sorted((signature_a, signature_b))
+    content = json.dumps([SCORE_VERSION, *ordered], separators=(",", ":"))
+    return sha256(content.encode()).hexdigest()
+
+
+def pair_scores() -> dict[str, dict]:
+    with db.tx() as conn:
+        rows = conn.execute(
+            "SELECT * FROM dedup_pair_scores WHERE score_version=?", (SCORE_VERSION,)
+        ).fetchall()
+    return {row["pair_key"]: dict(row) for row in rows}
+
+
+def pair_score_count() -> int:
+    with db.tx() as conn:
+        row = conn.execute(
+            "SELECT COUNT(*) AS n FROM dedup_pair_scores WHERE score_version=?", (SCORE_VERSION,)
+        ).fetchone()
+    return int(row["n"])
+
+
+def save_pair_scores(sources: list[dict], scores: dict[str, dict]) -> None:
+    """Replace the cache with exactly the pairs valid for the published corpus."""
+    current = {source["signature"] for source in sources}
+    with db.tx() as conn:
+        rows = conn.execute("SELECT pair_key, signature_a, signature_b FROM dedup_pair_scores").fetchall()
+        for row in rows:
+            if row["signature_a"] not in current or row["signature_b"] not in current:
+                conn.execute("DELETE FROM dedup_pair_scores WHERE pair_key=?", (row["pair_key"],))
+        for key, score in scores.items():
+            conn.execute(
+                "INSERT INTO dedup_pair_scores"
+                " (pair_key, score_version, path_a, signature_a, path_b, signature_b,"
+                " score, dino_score, phash_score, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)"
+                " ON CONFLICT(pair_key) DO UPDATE SET score_version=excluded.score_version,"
+                " path_a=excluded.path_a, signature_a=excluded.signature_a,"
+                " path_b=excluded.path_b, signature_b=excluded.signature_b,"
+                " score=excluded.score, dino_score=excluded.dino_score,"
+                " phash_score=excluded.phash_score, updated_at=excluded.updated_at",
+                (key, SCORE_VERSION, score["path_a"], score["signature_a"],
+                 score["path_b"], score["signature_b"], score["score"],
+                 score["dino_score"], score["phash_score"], db.now()),
+            )
+
+
+def _pid_alive(pid: int | None) -> bool:
+    if not pid or pid == os.getpid():
+        return False
+    if os.name == "nt":
+        import ctypes
+        from ctypes import wintypes
+
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel32.OpenProcess.restype = wintypes.HANDLE
+        kernel32.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+        kernel32.GetExitCodeProcess.restype = wintypes.BOOL
+        kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+        kernel32.CloseHandle.restype = wintypes.BOOL
+        handle = kernel32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+        if not handle:
+            return False
+        try:
+            exit_code = wintypes.DWORD()
+            return bool(kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code))) and exit_code.value == 259
+        finally:
+            kernel32.CloseHandle(handle)
+    try:
+        os.kill(pid, 0)
+        return True
+    except (OSError, ProcessLookupError):
+        return False
+
+
+def recover_stale_runs() -> None:
+    """Turn abandoned run rows into retryable failures after a worker exits."""
+    with db.tx() as conn:
+        rows = conn.execute(
+            "SELECT run_id, worker_pid, started_at FROM dedup_runs WHERE status='running'"
+        ).fetchall()
+        for row in rows:
+            if row["worker_pid"] is None:
+                try:
+                    started = datetime.fromisoformat(row["started_at"])
+                    if (datetime.now(timezone.utc) - started).total_seconds() < 60:
+                        continue
+                except (ValueError, TypeError):
+                    pass
+            if not _pid_alive(row["worker_pid"]):
+                conn.execute(
+                    "UPDATE dedup_runs SET status='failed', completed_at=?, error=?"
+                    " WHERE run_id=? AND status='running'",
+                    (db.now(), "Worker stopped before publishing a result. Retry the comparison.", row["run_id"]),
+                )
+
+
+def create_run(source_count: int, added: int, changed: int, removed: int) -> str:
+    run_id = uuid4().hex
+    with db.tx() as conn:
+        conn.execute(
+            "INSERT INTO dedup_runs"
+            " (run_id,status,started_at,source_count,added_count,changed_count,removed_count)"
+            " VALUES(?,'running',?,?,?,?,?)",
+            (run_id, db.now(), source_count, added, changed, removed),
+        )
+    return run_id
+
+
+def set_run_pid(run_id: str, pid: int) -> None:
+    with db.tx() as conn:
+        conn.execute("UPDATE dedup_runs SET worker_pid=? WHERE run_id=?", (pid, run_id))
+
+
+def finish_run(run_id: str, pairs_computed: int) -> None:
+    with db.tx() as conn:
+        conn.execute(
+            "UPDATE dedup_runs SET status='completed', completed_at=?, pairs_computed=?, error=NULL"
+            " WHERE run_id=?",
+            (db.now(), pairs_computed, run_id),
+        )
+
+
+def fail_run(run_id: str, error: str, pairs_computed: int = 0) -> None:
+    with db.tx() as conn:
+        conn.execute(
+            "UPDATE dedup_runs SET status='failed', completed_at=?, pairs_computed=?, error=?"
+            " WHERE run_id=?",
+            (db.now(), pairs_computed, error[-4000:], run_id),
+        )
+
+
+def run_history(limit: int = 20) -> list[dict]:
+    recover_stale_runs()
+    with db.tx() as conn:
+        rows = conn.execute(
+            "SELECT * FROM dedup_runs ORDER BY started_at DESC LIMIT ?", (limit,)
+        ).fetchall()
+    return [dict(row) for row in rows]
+
+
+def active_run() -> dict | None:
+    recover_stale_runs()
+    with db.tx() as conn:
+        row = conn.execute(
+            "SELECT * FROM dedup_runs WHERE status='running' ORDER BY started_at DESC LIMIT 1"
+        ).fetchone()
+    return dict(row) if row else None
+
+
+def source_changes(sources: list[dict]) -> dict[str, int]:
+    """Count added, modified, and removed paths against the last published index."""
+    try:
+        previous = json.loads(INDEX_PATH.read_text(encoding="utf-8")).get("sources", [])
+        old = {source["path"]: source["signature"] for source in previous}
+    except (OSError, ValueError, TypeError, KeyError):
+        old = {}
+    current = {source["path"]: source["signature"] for source in sources}
+    return {
+        "added": len(current.keys() - old.keys()),
+        "changed": sum(current[path] != old[path] for path in current.keys() & old.keys()),
+        "removed": len(old.keys() - current.keys()),
+    }
+
+
 def _decisions() -> dict[str, dict]:
     with db.tx() as conn:
         rows = conn.execute(
@@ -84,11 +252,24 @@ def _decisions() -> dict[str, dict]:
 def queue() -> dict:
     index, problem = read_index()
     threshold = get_threshold()
+    sources = current_sources()
+    changes = source_changes(sources)
+    expected_pairs = len(sources) * (len(sources) - 1) // 2
+    cached_pairs = pair_score_count()
+    cache_current = not any(changes.values()) and cached_pairs == expected_pairs
+    run_info = {
+        "has_index": INDEX_PATH.exists(),
+        "source_changes": changes,
+        "pairs_cached": cached_pairs,
+        "pairs_total": expected_pairs,
+        "pair_baseline_ready": cache_current,
+    }
     if index is None:
         return {
             "ready": False, "problem": problem, "threshold": threshold,
-            "total": len(current_sources()), "suggested": 0, "pending": 0,
+            "total": len(sources), "suggested": 0, "pending": 0,
             "duplicates": 0, "max_score": None, "items": [],
+            **run_info,
         }
     decisions = _decisions()
     items = []
@@ -110,6 +291,7 @@ def queue() -> dict:
         "duplicates": duplicates,
         "max_score": max((query["top_score"] for query in index["queries"]), default=None),
         "items": items,
+        **run_info,
     }
 
 

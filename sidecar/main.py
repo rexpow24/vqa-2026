@@ -13,6 +13,7 @@ already accepted for the VLM llama.cpp server in architecture.md §15.
 from __future__ import annotations
 
 import json
+import sqlite3
 import subprocess
 import sys
 from pathlib import Path
@@ -240,21 +241,23 @@ def _dedup_busy() -> bool:
 @app.get("/dedup/status")
 def dedup_status():
     state = dedup.queue()
+    active = dedup.active_run()
     log_tail = ""
     if DEDUP_LOG.exists():
         log_tail = "\n".join(DEDUP_LOG.read_text(encoding="utf-8", errors="replace").splitlines()[-8:])
     return {
         **state,
-        "busy": _dedup_busy(),
+        "busy": _dedup_busy() or active is not None,
         "exit_code": _dedup_proc.poll() if _dedup_proc is not None else None,
         "log_tail": log_tail,
+        "history": dedup.run_history(),
     }
 
 
 @app.post("/dedup/start")
 def dedup_start():
     global _dedup_proc
-    if _dedup_busy():
+    if _dedup_busy() or dedup.active_run() is not None:
         raise HTTPException(409, "Phân tích Dedup đang chạy.")
     if _anon_busy():
         raise HTTPException(409, "Hãy chờ lượt anonymize hiện tại kết thúc trước khi phân tích Dedup.")
@@ -264,12 +267,25 @@ def dedup_start():
     if not python_exe.exists():
         raise HTTPException(503, "Chưa có môi trường .venv với DINOv2 và PyTorch CUDA.")
     LOG_DIR.mkdir(parents=True, exist_ok=True)
-    with DEDUP_LOG.open("w", encoding="utf-8") as log:
-        _dedup_proc = subprocess.Popen(
-            [str(python_exe), str(REPO_ROOT / "scripts" / "dedup_all.py")],
-            cwd=REPO_ROOT, stdout=log, stderr=subprocess.STDOUT,
-            creationflags=_LOW_PRIORITY,
+    sources = dedup.current_sources()
+    changes = dedup.source_changes(sources)
+    try:
+        run_id = dedup.create_run(
+            len(sources), changes["added"], changes["changed"], changes["removed"]
         )
+    except sqlite3.IntegrityError as e:
+        raise HTTPException(409, "Phân tích Dedup đang chạy.") from e
+    try:
+        with DEDUP_LOG.open("w", encoding="utf-8") as log:
+            _dedup_proc = subprocess.Popen(
+                [str(python_exe), str(REPO_ROOT / "scripts" / "dedup_all.py"), "--run-id", run_id],
+                cwd=REPO_ROOT, stdout=log, stderr=subprocess.STDOUT,
+                creationflags=_LOW_PRIORITY,
+            )
+        dedup.set_run_pid(run_id, _dedup_proc.pid)
+    except OSError as e:
+        dedup.fail_run(run_id, str(e))
+        raise HTTPException(503, f"Không khởi chạy được Dedup worker: {e}") from e
     return {"started": True, "pid": _dedup_proc.pid}
 
 
@@ -279,7 +295,7 @@ class DedupThresholdRequest(BaseModel):
 
 @app.post("/dedup/threshold")
 def dedup_threshold(req: DedupThresholdRequest):
-    if _dedup_busy() or _anon_busy():
+    if _dedup_busy() or dedup.active_run() is not None or _anon_busy():
         raise HTTPException(409, "Hãy chờ tác vụ đang chạy kết thúc rồi đổi ngưỡng Dedup.")
     try:
         dedup.set_threshold(float(req.threshold))
@@ -296,7 +312,7 @@ class DedupDecisionRequest(BaseModel):
 
 @app.post("/dedup/decision")
 def dedup_decision(req: DedupDecisionRequest):
-    if _dedup_busy() or _anon_busy():
+    if _dedup_busy() or dedup.active_run() is not None or _anon_busy():
         raise HTTPException(409, "Hãy chờ tác vụ đang chạy kết thúc rồi sửa quyết định Dedup.")
     try:
         return dedup.save_decision(req.query_path, req.decision, req.duplicate_of)
@@ -380,7 +396,7 @@ def anonymize_start():
     global _anon_proc
     if _anon_busy():
         raise HTTPException(409, "an anonymize sweep is already in progress")
-    if _dedup_busy():
+    if _dedup_busy() or dedup.active_run() is not None:
         raise HTTPException(409, "Hãy chờ phân tích Dedup kết thúc.")
     try:
         dedup.allowed_sources()

@@ -86,8 +86,40 @@ CREATE TABLE IF NOT EXISTS dedup_decisions (
     reviewed_at  TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS dedup_pair_scores (
+    pair_key          TEXT PRIMARY KEY,
+    score_version     TEXT NOT NULL,
+    path_a            TEXT NOT NULL,
+    signature_a       TEXT NOT NULL,
+    path_b            TEXT NOT NULL,
+    signature_b       TEXT NOT NULL,
+    score             REAL NOT NULL,
+    dino_score        REAL NOT NULL,
+    phash_score       REAL NOT NULL,
+    updated_at        TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS dedup_runs (
+    run_id            TEXT PRIMARY KEY,
+    status            TEXT NOT NULL CHECK(status IN ('running','completed','failed')),
+    started_at        TEXT NOT NULL,
+    completed_at      TEXT,
+    worker_pid        INTEGER,
+    source_count      INTEGER NOT NULL DEFAULT 0,
+    added_count       INTEGER NOT NULL DEFAULT 0,
+    changed_count     INTEGER NOT NULL DEFAULT 0,
+    removed_count     INTEGER NOT NULL DEFAULT 0,
+    pairs_computed    INTEGER NOT NULL DEFAULT 0,
+    error             TEXT
+);
+
 CREATE INDEX IF NOT EXISTS idx_clips_video ON clips(youtube_video_id);
 CREATE INDEX IF NOT EXISTS idx_videos_status ON videos(status);
+CREATE INDEX IF NOT EXISTS idx_dedup_pair_signatures
+    ON dedup_pair_scores(signature_a, signature_b);
+CREATE INDEX IF NOT EXISTS idx_dedup_runs_started ON dedup_runs(started_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_dedup_single_running_run
+    ON dedup_runs(status) WHERE status='running';
 """
 
 # Video states (architecture.md §9)

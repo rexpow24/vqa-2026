@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
-import type { AnonymizeStatus, DedupItem, DedupStatus } from "@/lib/types";
+import type { AnonymizeStatus, DedupItem, DedupRun, DedupStatus } from "@/lib/types";
 
 function mediaUrl(path: string): string {
   return `/api/media/${path.split("/").map(encodeURIComponent).join("/")}`;
@@ -99,11 +99,20 @@ export default function DedupPage() {
           <button
             className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
             disabled={pending || status?.busy || anon?.busy}
-            onClick={() => act(() => api("/dedup/start", { method: "POST" }), "Đã bắt đầu phân tích clip trimmed.")}
+            onClick={() => act(() => api("/dedup/start", { method: "POST" }), "Đã bắt đầu so sánh các clip trimmed.")}
           >
-            {status?.busy ? "Đang phân tích..." : status?.ready ? "Phân tích lại" : "Phân tích trimmed/"}
+            {status?.busy ? "Đang so sánh..." : !status?.has_index
+              ? "Phân tích trimmed/"
+              : !status.pair_baseline_ready ? "Tạo mốc so sánh"
+                : status.source_changes.added + status.source_changes.changed + status.source_changes.removed > 0
+                  ? "So sánh clip mới / cập nhật" : "Chạy lại so sánh Dedup"}
           </button>
         </div>
+        {status && <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 border-t border-border pt-3 text-xs text-muted">
+          <span>Thay đổi: {status.source_changes.added} mới · {status.source_changes.changed} sửa · {status.source_changes.removed} đã xóa</span>
+          <span>Cặp đã lưu: {status.pairs_cached} / {status.pairs_total}</span>
+          {!status.pair_baseline_ready && status.has_index && <span className="text-amber">Lượt này sẽ tạo baseline đầy đủ một lần</span>}
+        </div>}
         <div className="mt-5 flex flex-wrap items-end gap-4 border-t border-border pt-4">
           <label className="flex flex-col gap-1 text-xs text-muted">
             Ngưỡng top 1 sau fusion
@@ -139,11 +148,24 @@ export default function DedupPage() {
       {error && <p role="alert" className="rounded-md border border-red p-3 text-sm text-red">{error}</p>}
       {message && <p className="text-sm text-green">{message}</p>}
       {status?.problem && <p className="rounded-md border border-amber p-4 text-sm text-amber">{status.problem}</p>}
-      {status?.busy && <p className="text-sm text-accent">Đang phân tích toàn bộ trimmed clips trên GPU. Có thể đóng trang và quay lại.</p>}
+      {!status?.ready && status?.has_index && !status.busy && <p className="rounded-md border border-amber p-4 text-sm text-amber">
+        Danh sách trimmed/ đã thay đổi. Chạy so sánh để cập nhật kết quả trước khi anonymize.
+      </p>}
+      {status?.busy && <p className="text-sm text-accent">Đang so sánh các cặp còn thiếu trên GPU. Có thể đóng trang và quay lại.</p>}
       {status?.exit_code !== null && status?.exit_code !== undefined && status.exit_code !== 0 && !status.busy && (
         <p className="text-sm text-red">Phân tích dừng với mã {status.exit_code}. Kiểm tra log rồi bấm Phân tích lại.</p>
       )}
       {status?.log_tail && <pre className="max-h-32 overflow-auto rounded-md border border-border bg-surface p-3 text-xs text-muted">{status.log_tail}</pre>}
+
+      <section className="rounded-lg border border-border bg-surface p-5">
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 className="text-lg font-semibold">Lịch sử so sánh</h2>
+          <span className="text-xs text-muted">20 lượt gần nhất</span>
+        </div>
+        {status?.history.length ? <div className="mt-3 divide-y divide-border">
+          {status.history.map((run) => <RunRow key={run.run_id} run={run} />)}
+        </div> : <p className="mt-3 text-sm text-muted">Chưa có lượt so sánh nào.</p>}
+      </section>
 
       {status?.ready && !status.busy && (
         items.length === 0 ? (
@@ -239,6 +261,19 @@ export default function DedupPage() {
       </section>
     </div>
   );
+}
+
+function RunRow({ run }: { run: DedupRun }) {
+  const statusLabel = run.status === "running" ? "Đang chạy" : run.status === "completed" ? "Hoàn tất" : "Thất bại";
+  const color = run.status === "running" ? "text-accent" : run.status === "completed" ? "text-green" : "text-red";
+  return <article className="py-3 first:pt-1 last:pb-1">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+      <strong className={color}>{statusLabel}</strong>
+      <time className="text-muted">{new Date(run.started_at).toLocaleString()}</time>
+      <span className="text-muted">{run.source_count} clip · +{run.added_count} mới · {run.changed_count} sửa · {run.removed_count} xóa · {run.pairs_computed} cặp tính</span>
+    </div>
+    {run.error && <p className="mt-1 break-words text-xs text-red">{run.error}</p>}
+  </article>;
 }
 
 function Metric({ label, value }: { label: string; value: number | string }) {
