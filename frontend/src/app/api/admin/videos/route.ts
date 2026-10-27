@@ -1,5 +1,6 @@
 import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
+import { probeDriveVideo } from "@/lib/drive";
 
 export async function POST(request: Request) {
   const caller = await requireApiProfile("admin");
@@ -12,18 +13,9 @@ export async function POST(request: Request) {
   if (!/^[\w-]{10,}$/.test(driveFileId) || !filename || !Number.isFinite(duration) || duration <= 0) {
     return Response.json({ error: "Invalid Drive file ID, filename, or duration" }, { status: 422 });
   }
-  try {
-    const source = new URL("https://drive.google.com/uc");
-    source.searchParams.set("export", "download");
-    source.searchParams.set("id", driveFileId);
-    const probe = await fetch(source, { headers: { Range: "bytes=0-0" }, cache: "no-store" });
-    if (probe.status !== 206 || !(probe.headers.get("content-type") ?? "").startsWith("video/")) {
-      return Response.json({ error: "Drive file is not a seekable video" }, { status: 422 });
-    }
-    await probe.body?.cancel();
-  } catch {
-    return Response.json({ error: "Could not verify Drive video" }, { status: 502 });
-  }
+  const probe = await probeDriveVideo(driveFileId);
+  if (probe === "unreachable") return Response.json({ error: "Could not verify Drive video" }, { status: 502 });
+  if (probe === "not_video") return Response.json({ error: "Drive file is not a seekable video" }, { status: 422 });
   const supabase = await createClient();
   const { data, error } = await supabase.from("videos")
     .insert({ drive_file_id: driveFileId, filename, duration_s: duration, status: "active", available: true })

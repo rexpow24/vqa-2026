@@ -6,6 +6,9 @@ work/
 finished/
 export/
 videos.csv
+videos.smoke.csv
+labels.csv
+backups/
 logs/
 pipeline.db
 pipeline.db-wal

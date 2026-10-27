@@ -1,0 +1,25 @@
+%% States of one CSV row inside one import request.
+%% Every path ends in exactly one terminal state, and nothing goes back:
+%% a row is never probed after it was classified against existing data,
+%% and never inserted after a failed probe. That ordering is what makes a
+%% re-run cheap (existing rows cost no Drive probe) and what guarantees a
+%% row that failed a check is never written.
+%% There is no transition into "updated": an existing video is never changed.
+stateDiagram-v2
+  [*] --> Parsed
+  Parsed --> failed: invalid id / empty name / duration <= 0
+  Parsed --> skipped: filename seen earlier in chunk
+  Parsed --> Classified: fields ok
+  Classified --> skipped: same filename, same Drive id in DB
+  Classified --> conflict: same filename, other Drive id in DB
+  Classified --> failed: Drive id owned by another filename
+  Classified --> Probed: new
+  Probed --> failed: Drive unreachable / not a video
+  Probed --> Inserting: 206 video/*
+  Inserting --> inserted: ok
+  Inserting --> skipped: 23505 on filename (concurrent add)
+  Inserting --> failed: 23505 on drive_file_id / other DB error
+  inserted --> [*]
+  skipped --> [*]
+  conflict --> [*]
+  failed --> [*]

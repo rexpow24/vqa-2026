@@ -1,0 +1,37 @@
+sequenceDiagram
+  actor Admin
+  participant B as Browser (video-import.tsx)
+  participant R as POST /api/admin/videos/import
+  participant S as Supabase (videos, RLS)
+  participant D as Google Drive (uc?id=)
+
+  Admin->>B: choose videos.csv
+  B->>B: headerError(first line)
+  alt header wrong
+    B-->>Admin: error, nothing sent
+  else header ok
+    B->>B: chunkVideoCsv -> chunks of <= 100 rows
+    loop each chunk, in order
+      B->>R: { csv }
+      R->>S: requireApiProfile("admin")
+      alt not admin
+        R-->>B: 401 / 403 JSON
+        B-->>Admin: stop, show error + results so far
+      end
+      R->>R: parse, header, 1..100 rows
+      alt malformed
+        R-->>B: 422 (no probe, no write)
+        B-->>Admin: stop, show error + results so far
+      end
+      R->>R: per-row field checks, in-chunk duplicates
+      R->>S: select existing by filename / drive_file_id
+      R->>D: probe remaining ids, 10 at a time (Range 0-0)
+      D-->>R: 206 video/* | other | network error
+      R->>S: insert each probed-ok row
+      S-->>R: ok | 23505 filename | 23505 drive_file_id
+      R-->>B: 200 { results }
+      B-->>Admin: progress n / total
+    end
+    B->>B: router.refresh()
+    B-->>Admin: counts + non-imported rows with file line numbers
+  end

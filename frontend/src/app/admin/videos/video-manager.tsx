@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { QGROUPS } from "@/lib/qgroups";
+import { VideoImport } from "./video-import";
 
 type Video = { id: string; drive_file_id: string; filename: string; duration_s: number; status: string; available: boolean };
 type User = { id: string; name: string; email: string };
@@ -68,6 +69,7 @@ export function VideoManager({ videos, users, assignments, drafts, references }:
   }
 
   return <>
+    <VideoImport />
     <section className="rounded-md border border-border bg-surface p-4">
       <h3 className="mb-3 font-medium">Thêm video từ Drive</h3>
       <div className="grid gap-3 sm:grid-cols-3">
