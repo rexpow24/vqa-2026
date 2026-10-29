@@ -1,0 +1,7 @@
+# `vercel deploy` uploads this folder from disk, so local secrets must be
+# excluded here explicitly; production reads its env from the Vercel project.
+.env*
+.admin-credentials
+.drive-token.json
+node_modules
+.next

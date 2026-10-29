@@ -76,6 +76,25 @@ access over the user's entire Drive.
 **`GOOGLE_DRIVE_FOLDER_ID` is an id, not a URL** — but people copy the link,
 so `drive-upload.mjs` accepts either and extracts the part after `/folders/`.
 
+## Changing the Drive folder or OAuth client (hit 2026-10-27)
+
+- **New `GOOGLE_CLIENT_ID`/`SECRET` → the old token dies.** `drive-upload.mjs`
+  fails with `invalid_grant`. Re-run `node scripts/drive-auth.mjs`; it waits
+  only 5 minutes for the consent click, so start it when the folder owner is
+  at the browser.
+- **New folder → start a new ledger.** The old `videos.csv` lists ids in the
+  *old* folder, and the resume logic would skip those filenames, so they would
+  never reach the new folder. Write to a new file with `--out`, or move the old
+  CSV aside first.
+- **`--out` resolves from the repo root, not from `frontend/`.**
+  `--out ../videos.smoke.csv` lands *outside* the repo. Use
+  `--out videos.smoke.csv`.
+- An old folder that is still shared keeps answering `206`, so the app cannot
+  tell old ids from new ones. The ledger is the only record of which folder a
+  row belongs to.
+- After uploading, import the CSV on `/admin/videos` → "Nhập video từ CSV",
+  then deploy/verify per the CLAUDE.md "Deploying the hosted frontend" row.
+
 ## Resume behaviour
 
 `videos.csv` is both the output and the ledger: each row is appended the
