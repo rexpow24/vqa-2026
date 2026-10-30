@@ -27,12 +27,14 @@ export const RETRYABLE: VideoStatus[] = ["DOWNLOAD_FAILED", "FAILED", "STOPPED"]
 // videos) -- this is a straight row shape, not a view model.
 export interface Video {
   youtube_video_id: string;
+  source: "youtube" | "facebook";
   url: string;
   title: string | null;
   channel_name: string | null;
   status: VideoStatus;
   stage: string | null;
   error_code: string | null;
+  error_detail?: string | null;
   duration_s: number | null;
   n_boundaries: number | null;
   n_clips: number | null;
@@ -136,6 +138,7 @@ export interface Shot {
 export interface ReviewClip {
   clip_id: string;
   youtube_video_id: string;
+  source: "youtube" | "facebook";
   duration_s: number;
   duration_rounded: number;
   flags: string[];
@@ -143,7 +146,6 @@ export interface ReviewClip {
   video_path: string;
   already_materialized: number;
   pad_default: number;
-  max_shots: number;
 }
 
 export type Difficulty = "easy" | "medium" | "high";

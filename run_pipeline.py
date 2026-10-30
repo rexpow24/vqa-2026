@@ -48,7 +48,7 @@ def main() -> int:
 
     processed = 0
     while True:
-        row = db.next_queued()
+        row = db.next_queued(source="youtube")
         if row is None:
             break
         video_id = row["youtube_video_id"]

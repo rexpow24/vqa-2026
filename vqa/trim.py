@@ -18,7 +18,6 @@ PAD_DEFAULT = 5.0     # "impact ± 5s" — GUIDE.md 2.4
 PAD_MIN = 1.0         # give up below this rather than emit a 1-frame clip
 PAD_STEP = 1.0
 OVERLAP_TOL = 0.1     # under this is rounding noise, not a real overlap
-MAX_SHOTS = 3         # UI limit; three colours, three rows
 
 COLORS = ["#22C55E", "#3B82F6", "#F59E0B"]
 CONFLICT_COLOR = "#EF4444"
@@ -107,11 +106,9 @@ def apply_mark(shots: list[dict], duration: float, x: float,
 
     The first Mark cut replaces the whole-clip default rather than colliding
     with it; after that it extends the list. Returns None if even PAD_MIN
-    can't fit, or if the clip is already at MAX_SHOTS.
+    can't fit.
     """
     base = [] if is_untouched(shots, duration) else list(shots)
-    if len(base) >= MAX_SHOTS:
-        return None
     made = mark_cut(x, duration, base, pad)
     if made is None:
         return None
@@ -131,15 +128,12 @@ def reshape(old: dict, start: float, end: float) -> dict:
 
 
 def append_shot(shots: list[dict], duration: float,
-                 pad: float = PAD_DEFAULT) -> list[dict] | None:
+                 pad: float = PAD_DEFAULT) -> list[dict]:
     """Add shot: a new shot starting where the last one ends (or at 0).
 
-    Replaces an untouched default like `apply_mark` does. Returns None at
-    MAX_SHOTS.
+    Replaces an untouched default like `apply_mark` does.
     """
     base = [] if is_untouched(shots, duration) else list(shots)
-    if len(base) >= MAX_SHOTS:
-        return None
     last = base[-1]["end"] if base else 0.0
     return base + [shot(last, min(last + 2 * pad, duration))]
 

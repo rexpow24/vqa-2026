@@ -9,10 +9,14 @@ disagree, the constitution wins.
 
 ## 1. Objective & scope
 
-Turn YouTube compilations from Vietnamese traffic channels into short, clean,
-single-incident clips on local disk, ready for later VQA annotation.
+Turn YouTube compilations and direct Facebook traffic videos into reviewable
+clips on local disk, ready for later VQA annotation.
 
-**In scope:** download → segment → redact overlays → human review → export.
+**YouTube:** download → scene detection → redact overlays → human review → export.
+
+**Facebook:** download → one full-video clip → human review → export. This
+branch deliberately performs no scene detection, blank filtering, pre-review
+blur, or deduplication.
 
 **Phase 2, added 2026-09-05:** VLM-assisted QA annotation — `vlm/` and `docker/`. See §15.
 
@@ -115,7 +119,7 @@ Settings are **locked during a run**, so one batch cannot span two configs.
 
 | # | Stage | Cache file | Notes |
 |---|---|---|---|
-| S1 | enqueue | `videos` row | video ID is the dedup key |
+| S1 | enqueue | `videos` row | source-scoped internal ID |
 | S2 | download | `source.mp4`, `metadata.json` | yt-dlp + cookies + JS runtime |
 | S3 | probe | `probe.json` | rejects anything under 30s |
 | S4 | calibrate | `channels` row | **per channel**, not per video |
@@ -124,6 +128,13 @@ Settings are **locked during a run**, so one batch cannot span two configs.
 | S7 | cut masters | `clips/*.mp4` | lossless `-c copy` |
 | S8 | blur + encode | `delivered/*.mp4` | NVENC, libx264 fallback |
 | S9 | **reviewer approve** | `trimmed/*.mp4` | **not** part of the automated run |
+
+Facebook uses a separate worker (`run_facebook_pipeline.py`): yt-dlp downloads
+one video to `work/facebook/<id>/source/original.mp4`, ffprobe reads its
+duration, and the worker inserts one full-length clip into the shared review
+queue. It never imports or calls calibration, shot detection, fusion, blank
+filtering, or blur stages. Facebook anonymize, when requested after approval,
+uses `work/facebook/` → `finished/facebook/` with an explicit dedup bypass.
 
 ### S2 — Download
 
@@ -248,7 +259,8 @@ removes the brand colour signature.
 
 ```sql
 channels(channel_id PK, name, overlay_regions, calibrated_at)
-videos(youtube_video_id PK, canonical_url, title, channel_id, duration_s,
+videos(youtube_video_id PK, canonical_url, source DEFAULT 'youtube',
+       title, channel_id, duration_s,
        status, stage, error_code, error_detail, retry_count,
        config_snapshot, n_clips, n_boundaries, created_at, updated_at)
 clips(clip_id PK, youtube_video_id, seq, start_ms, end_ms, duration_ms,
@@ -259,6 +271,13 @@ review_segments(clip_id, segment_index, start_ms, end_ms,
                 difficulty, event_label, reviewed_at,
                 PRIMARY KEY (clip_id, segment_index))
 ```
+
+`youtube_video_id` is the legacy key column name and stores the internal
+source-scoped ID for both branches. YouTube IDs retain their existing values;
+Facebook IDs are generated as `fb_<uuid>`. The additive `source` migration
+marks every existing row `youtube`. Facebook source files and approved clips
+live under `work/facebook/<id>/`; this is intentionally a deeper directory
+than the YouTube `work/<id>/` layout.
 
 ### Clip ID is content-derived
 
@@ -282,6 +301,21 @@ the same source clip can have different difficulty and event labels.
 when the reviewer approves again.
 Reject clears both the materialized segments and their per-shot labels, while
 the source and delivered files remain recoverable.
+
+Both sources share `clips`, `reviews`, `review_segments`, and the Review tab.
+For Facebook, `master_path` and `delivered_path` both point at
+`work/facebook/<id>/source/original.mp4`; there is no pre-review anonymized
+copy.
+
+### Source isolation
+
+The YouTube worker, status, retry, and stop operations filter to
+`source='youtube'`; the Facebook worker has a separate runner and filters to
+`source='facebook'`. The Dedup scanner remains scoped to
+`work/*/trimmed/*.mp4`, while Facebook is stored under
+`work/facebook/<id>/trimmed/`, so it is neither compared to YouTube nor included
+in the YouTube anonymize gate. Facebook anonymize writes to
+`finished/facebook/` via its own API and never calls `dedup.allowed_sources()`.
 
 One clip can produce several output files, so a fixed set of trim columns does
 not fit. `insert_clip` is an **UPSERT**, not `INSERT OR REPLACE` — a replace
@@ -388,14 +422,14 @@ There is no Skip. A decision is required to advance.
 
 ### Trim geometry (`vqa/trim.py`)
 
-The reviewer defines up to **3 shots** per clip, each becoming one file. The
-geometry rules live in `trim.py` rather than `app.py` so they can be exercised
-without starting Streamlit:
+The reviewer can define any number of non-overlapping shots per clip, each
+becoming one file. The geometry rules live in `trim.py` rather than `app.py`
+so they can be exercised without starting Streamlit:
 
 | Function | Rule |
 |---|---|
-| `apply_mark(shots, dur, x, pad)` | Mark cut end-to-end: replaces an untouched default, calls `mark_cut`, refuses past `MAX_SHOTS`. Returns the new shot list, or `None`. |
-| `append_shot(shots, dur, pad)` | Add shot end-to-end: replaces an untouched default, places the new shot at the previous one's end (or 0), refuses past `MAX_SHOTS`. Returns the new shot list, or `None`. |
+| `apply_mark(shots, dur, x, pad)` | Mark cut end-to-end: replaces an untouched default and calls `mark_cut`. Returns the new shot list, or `None` when the cut cannot fit. |
+| `append_shot(shots, dur, pad)` | Add shot end-to-end: replaces an untouched default and places the new shot at the previous one's end (or 0). Returns the new shot list. |
 | `mark_cut(x, dur, others, pad)` | `x ± pad`, shrinking `pad → pad-1 → … → 1s` until it clears the clip edges and every other shot. `None` when even ±1s cannot fit. The geometry `apply_mark` builds on. |
 | `resolve(shots, i, dur)` | same ladder applied to one existing shot, around its own centre. Returns the new shot list, or `None` when it is buried inside another. Does not mutate `shots`. |
 | `reshape(shot, start, end)` | rebuilds one shot at new Start/End, clearing `auto`/`default` if the numbers actually moved — a manual edit is a manual decision. |
@@ -405,7 +439,7 @@ without starting Streamlit:
 
 `apply_mark`/`append_shot`/`resolve`/`reshape` are the only functions `app.py`
 calls from the Review tab; every mutation decision (replace-vs-extend,
-auto-shrink, MAX_SHOTS, clearing `auto`/`default` on a manual edit) lives here,
+auto-shrink, clearing `auto`/`default` on a manual edit) lives here,
 not in the button handlers. `app.py` calls one function per handler and either
 `_set()`s the result or shows the error — no shot-list rule is inlined in
 `app.py` itself. This is what makes the module deep: a small interface (four

@@ -20,9 +20,11 @@ fail; it quietly produces less than you expect, which is worse.
 | # | Stage | Reads | Writes |
 |---|---|---|---|
 | 1 | Queue → Run ([§1.3](#13-queue--run)) | YouTube | `clips/`, `delivered/` |
-| 2 | Review: Approve/Reject/Flag + labels ([Part 2](#part-2--reviewer)) | `delivered/` | `trimmed/` |
+| 1b | Facebook direct run | Facebook URL | `work/facebook/<id>/source/original.mp4` |
+| 2 | Review: Approve/Reject/Flag + labels ([Part 2](#part-2--reviewer)) | `delivered/` or Facebook original | `trimmed/` |
 | 3 | Relabel backlog ([§2.4.1](#backfilling-clips-decided-before-labels-existed)) | `trimmed/` | labels in `pipeline.db` |
-| 4 | Anonymize ([§1.6](#16-anonymize-trimmed--finished)) | `trimmed/` | `finished/` |
+| 4 | YouTube anonymize ([§1.6](#16-anonymize-trimmed--finished)) | YouTube `trimmed/` | `finished/` |
+| 4b | Facebook anonymize ([§1.6](#16-anonymize-trimmed--finished)) | Facebook `trimmed/` | `finished/facebook/` |
 
 **Anonymize is last.** It reads `trimmed/`, and `trimmed/` is written by
 **Approve** — so a clip you have not approved yet simply is not there to
@@ -130,6 +132,15 @@ once inside `frontend/`.
    browser tab — the Queue tab offers **Mark them STOPPED** to free it. Only
    press that when you are sure no run is going, including in another tab.
 
+For Facebook, use the separate **Add Facebook videos** box on Queue, one
+Facebook URL per line. Start it from the Facebook direct-download section of
+Run. Each download becomes exactly one full-length clip; there is no scene
+detection, blank filtering, or pre-review blur. It enters the same Review tab.
+Facebook files are isolated under `work/facebook/<id>/`; after approval,
+Facebook anonymize writes to `finished/facebook/` and does not run Dedup or
+compare against YouTube. Keep the YouTube queue, worker, and anonymize flow
+unchanged.
+
 You do **not** have to wait for the queue to drain before reviewing. Clips are
 written to the database one at a time as each is encoded, so the Review tab
 fills up during the run — open it and work while the pipeline keeps going.
@@ -193,6 +204,10 @@ From the Next.js frontend: **Anonymize** → *Start*. From a terminal:
 # a small batch to look at before committing to the full sweep
 .\venv\Scripts\python.exe scripts\anonymize_all.py --limit 5 --force
 ```
+
+Facebook has a separate **Anonymize Facebook** action on the same page. It reads
+only `work/facebook/*/trimmed/`, writes to `finished/facebook/`, and explicitly
+skips Dedup. It never compares Facebook clips to the YouTube dataset.
 
 | Flag | |
 |---|---|
@@ -425,8 +440,9 @@ Under the player is a bar showing the whole clip, with one block per shot:
 | 🟦 Shot 2 | blue |
 | 🟧 Shot 3 | orange |
 
-Each block is labelled with its shot number and its start and end in seconds.
-Hover for the exact range and duration. **Maximum 3 shots per clip.**
+The colors repeat as needed. Each block is labelled with its shot number and
+its start and end in seconds. Hover for the exact range and duration. Add as
+many non-overlapping shots as needed; each approved shot becomes one file.
 
 ### Conflicts
 
@@ -478,7 +494,7 @@ written to `work/<video_id>/trimmed/` as `{clip_id}_t01.mp4`, `_t02.mp4`, …
 
 - The master and the blurred clip are **never** modified.
 - Approving the same clip again **replaces** its previous shots — going from
-  3 shots to 2 does not leave a stray third file behind.
+  more shots to fewer does not leave stale files behind.
 - Approve is refused while any conflict or out-of-range shot remains, so a
   broken trim cannot reach `trimmed/`.
 - A confirmation banner shows the clip ID and how many files were written.

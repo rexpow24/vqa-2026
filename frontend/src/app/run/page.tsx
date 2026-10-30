@@ -6,6 +6,7 @@ import type { RunStatus, YoutubeAuthSettings } from "@/lib/types";
 
 export default function RunPage() {
   const [status, setStatus] = useState<RunStatus | null>(null);
+  const [facebookStatus, setFacebookStatus] = useState<RunStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [auth, setAuth] = useState<YoutubeAuthSettings | null>(null);
@@ -17,7 +18,12 @@ export default function RunPage() {
 
   const load = useCallback(async () => {
     try {
-      setStatus(await api<RunStatus>("/run/status"));
+      const [youtube, facebook] = await Promise.all([
+        api<RunStatus>("/run/status"),
+        api<RunStatus>("/facebook/run/status"),
+      ]);
+      setStatus(youtube);
+      setFacebookStatus(facebook);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     }
@@ -88,6 +94,32 @@ export default function RunPage() {
     setError(null);
     try {
       await api("/run/stop", { method: "POST" });
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function startFacebook() {
+    setPending(true);
+    setError(null);
+    try {
+      await api("/facebook/run/start", { method: "POST" });
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function stopFacebook() {
+    setPending(true);
+    setError(null);
+    try {
+      await api("/facebook/run/stop", { method: "POST" });
       await load();
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -174,7 +206,7 @@ export default function RunPage() {
       <section className="flex items-center gap-3">
         <button
           className="px-4 py-2 text-sm rounded-md bg-accent text-white disabled:opacity-40"
-          disabled={pending || status.busy || status.queued === 0}
+          disabled={pending || status.busy || facebookStatus?.busy || status.queued === 0}
           onClick={start}
         >
           Start run
@@ -205,6 +237,41 @@ export default function RunPage() {
           />
         </div>
       </section>
+
+      {facebookStatus && <section className="rounded-md border border-border bg-surface p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-medium">Facebook direct download</h2>
+            <p className="mt-1 text-xs text-muted">
+              Downloads the submitted video and sends one full-length clip to Review.
+              No scene detection, blur, or deduplication.
+            </p>
+            <p className={`mt-2 text-sm ${facebookStatus.busy ? "text-green" : "text-muted"}`}>
+              {facebookStatus.busy ? "Running" : "Idle"} · {facebookStatus.queued} queued ·
+              {" "}{facebookStatus.done}/{facebookStatus.total} ready/done
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              className="rounded-md bg-accent px-4 py-2 text-sm text-white disabled:opacity-40"
+              disabled={pending || facebookStatus.busy || status.busy || facebookStatus.queued === 0}
+              onClick={startFacebook}
+            >
+              Start Facebook run
+            </button>
+            <button
+              className="rounded-md border border-border px-4 py-2 text-sm disabled:opacity-40"
+              disabled={pending || !facebookStatus.busy}
+              onClick={stopFacebook}
+            >
+              Stop Facebook run
+            </button>
+          </div>
+        </div>
+        <pre className="mt-4 max-h-48 overflow-auto whitespace-pre-wrap rounded-md border border-border bg-background p-3 text-xs text-muted">
+          {facebookStatus.log_tail}
+        </pre>
+      </section>}
 
       <section>
         <h2 className="text-sm font-medium text-muted mb-2">Log tail</h2>

@@ -19,6 +19,7 @@ function score(value: number): string {
 export default function DedupPage() {
   const [status, setStatus] = useState<DedupStatus | null>(null);
   const [anon, setAnon] = useState<AnonymizeStatus | null>(null);
+  const [facebookAnon, setFacebookAnon] = useState<AnonymizeStatus | null>(null);
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [thresholdDraft, setThresholdDraft] = useState("0.80");
   const thresholdLoaded = useRef(false);
@@ -28,12 +29,14 @@ export default function DedupPage() {
 
   const load = useCallback(async () => {
     try {
-      const [next, nextAnon] = await Promise.all([
+      const [next, nextAnon, nextFacebookAnon] = await Promise.all([
         api<DedupStatus>("/dedup/status"),
         api<AnonymizeStatus>("/anonymize/status"),
+        api<AnonymizeStatus>("/facebook/anonymize/status"),
       ]);
       setStatus(next);
       setAnon(nextAnon);
+      setFacebookAnon(nextFacebookAnon);
       if (!thresholdLoaded.current) {
         setThresholdDraft(next.threshold.toFixed(2));
         thresholdLoaded.current = true;
@@ -258,6 +261,62 @@ export default function DedupPage() {
         {anon?.exit_code !== null && anon?.exit_code !== undefined && anon.exit_code !== 0 && (
           <p className="mt-2 text-sm text-red">Anonymize dừng với mã {anon.exit_code}. Có thể chạy lại sau khi xử lý lỗi.</p>
         )}
+      </section>
+
+      <section className="rounded-lg border border-border bg-surface p-5">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.18em] text-accent">Facebook only</p>
+            <h2 className="mt-2 text-lg font-semibold">Anonymize Facebook clips</h2>
+            <p className="mt-1 max-w-2xl text-sm text-muted">
+              Processes approved Facebook clips separately into finished/facebook/.
+              This path does not run or wait for Dedup and never compares against YouTube.
+            </p>
+            {facebookAnon && <p className="mt-2 text-sm text-muted">
+              {facebookAnon.completed} / {facebookAnon.total} approved Facebook clip(s) anonymized.
+            </p>}
+          </div>
+          <div className="flex gap-2">
+            <button
+              className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+              disabled={pending || !facebookAnon || facebookAnon.busy || facebookAnon.total === 0}
+              onClick={() => act(
+                () => api("/facebook/anonymize/start", { method: "POST" }),
+                "Đã bắt đầu anonymize Facebook.",
+              )}
+            >
+              {facebookAnon?.busy ? "Đang anonymize Facebook..." : "Anonymize Facebook"}
+            </button>
+            {facebookAnon?.pause_supported && <button
+              className="rounded-md border border-border px-3 py-2 text-sm disabled:opacity-40"
+              disabled={pending || !facebookAnon.busy || facebookAnon.pause_requested}
+              onClick={() => act(
+                () => api("/facebook/anonymize/pause", { method: "POST" }),
+                "Sẽ tạm dừng anonymize Facebook sau clip hiện tại.",
+              )}
+            >
+              {facebookAnon.pause_requested ? "Đang tạm dừng..." : "Tạm dừng"}
+            </button>}
+          </div>
+        </div>
+        {facebookAnon && facebookAnon.total > 0 && <div
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={facebookAnon.total}
+          aria-valuenow={facebookAnon.completed}
+          className="mt-4 h-2 overflow-hidden rounded-full bg-surface-2"
+        >
+          <div
+            className="h-full bg-accent"
+            style={{ width: `${Math.min(100, facebookAnon.completed / facebookAnon.total * 100)}%` }}
+          />
+        </div>}
+        {facebookAnon?.exit_code !== null && facebookAnon?.exit_code !== undefined
+          && facebookAnon.exit_code !== 0 && (
+            <p className="mt-2 text-sm text-red">
+              Facebook anonymize dừng với mã {facebookAnon.exit_code}.
+            </p>
+          )}
       </section>
     </div>
   );

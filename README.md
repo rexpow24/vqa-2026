@@ -1,7 +1,9 @@
 # VQA-VN-Traffic-2026 — clip pipeline
 
-Turns YouTube Vietnamese traffic compilations into clean, segmented short clips
-for later VQA annotation.
+Turns YouTube Vietnamese traffic compilations and Facebook traffic videos into
+reviewable clips for later VQA annotation. YouTube runs scene detection and
+pre-review overlay blur; Facebook downloads one full-length clip without
+preprocessing or deduplication.
 
 **Docs:** [`CLAUDE.md`](./CLAUDE.md) (constitution) ·
 [`GUIDE.md`](./GUIDE.md) (how to run it + reviewer guideline) ·
@@ -29,25 +31,36 @@ YouTube bot-gates most IPs, so downloading also needs:
 
 ## Run
 
-```bash
-venv/Scripts/streamlit run app.py
+Start the local sidecar and Next.js frontend in separate terminals from the
+project root:
+
+```powershell
+# Terminal 1
+.\venv\Scripts\python.exe -m uvicorn sidecar.main:app --port 8787
+
+# Terminal 2
+Set-Location frontend
+npm run dev
 ```
 
-That is the entire interface — configuration, queueing, running, review,
-export. There are no command-line flags.
+Open [http://localhost:3000/queue](http://localhost:3000/queue).
 
-1. **Queue** — paste URLs or upload a `.txt` (one per line)
-2. **Settings** (sidebar) — toggles and parameters, then Save
-3. **Run** — Start; progress and the log update inline
-4. **Review** — longest clips first (>15s = TOP priority). Define the output
+1. **Queue** — paste YouTube URLs or Facebook URLs, one per line
+2. **Run** — start the matching source-specific worker
+3. **Review** — longest clips first (>15s = TOP priority). Define the output
    segments, then Approve or Reject. A decision is required to advance —
    there is no Skip.
+4. **Dedup / Anonymize** — YouTube goes through Dedup; Facebook has a separate
+   anonymize action and is never compared with YouTube
 5. **Export** — writes `export/<batch>/` plus `manifest.json`
+
+The Facebook branch downloads each URL directly into one full-length clip.
+It does not run scene detection, pre-review blur, or deduplication.
 
 Step-by-step instructions and the rule for *where* to cut are in
 [`GUIDE.md`](./GUIDE.md).
 
-## How segmentation works
+## YouTube segmentation
 
 **PySceneDetect** `ContentDetector` at defaults. One signal, so every boundary
 is `MEDIUM`.
@@ -81,12 +94,15 @@ equal-sized control patch of roadway was unchanged (17.71 → 17.68).
 ## Layout
 
 ```
-app.py               Streamlit UI — the whole interface
-run_pipeline.py      subprocess entrypoint (Streamlit spawns this)
+frontend/            Next.js UI
+sidecar/main.py      local API and subprocess controls
+run_pipeline.py      YouTube worker entrypoint
+run_facebook_pipeline.py  Facebook worker entrypoint
 vqa/
   config.py          config.json load/save + config_hash
-  db.py              SQLite: channels, videos, clips, reviews
-  urls.py            YouTube URL -> video_id (the dedup key)
+  db.py              SQLite: channels, source-tagged videos, clips, reviews
+  urls.py            YouTube URL -> video_id
+  facebook.py        Facebook URL parsing, yt-dlp download, full-video clip
   media.py           ffmpeg/ffprobe: probe, sample, cut, blur, encode, trim
   pipeline.py        per-video orchestration with resume
   review.py          materialise approved segments / discard rejected ones
@@ -100,11 +116,15 @@ work/<video_id>/
   *.json             stage caches (probe, shots, boundaries)
   clips/             masters — lossless cuts, never modified
   delivered/         blurred derivatives — what the reviewer watches
-  trimmed/           FINISHED PRODUCT — written on Approve, deleted on Reject
+  trimmed/           reviewed output — written on Approve, deleted on Reject
+work/facebook/<id>/
+  source/original.mp4  downloaded video
+  trimmed/             reviewed output; no intermediate clips or blur
+finished/facebook/   anonymized Facebook outputs (flat, separate from YouTube)
 export/<batch>/      exported clips + manifest.json
 ```
 
-## Three tiers of clip
+## YouTube clip tiers
 
 | Folder | What it is | Written by | Ever modified? |
 |---|---|---|---|
@@ -115,6 +135,8 @@ export/<batch>/      exported clips + manifest.json
 Changing blur settings is a re-derive from local masters: no re-download, no
 re-detection. Existing approved segments are re-cut from the new `delivered`
 automatically, so a settings change can never leave stale output in `trimmed/`.
+Facebook uses only `source/` and `trimmed/`; it has no `clips/` or `delivered/`
+intermediate stage.
 
 ## Review outputs
 
@@ -123,7 +145,7 @@ approves.
 
 - **Approve** cuts the marked shots out of the *delivered* clip (the blurred
   video they actually watched) into `trimmed/{clip_id}_tNN.mp4`. Untrimmed, that
-  is one file, stream-copied; otherwise one file per shot, up to 3. The reviewer
+  is one file, stream-copied; otherwise one file per shot, with no fixed maximum. The reviewer
   marks a shot by parking the playhead on the impact and pressing **Mark cut**,
   which builds `impact ± 5s` and shrinks it automatically if it would run off
   the clip or into another shot. Overlaps show red on the timeline and block

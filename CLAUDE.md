@@ -50,14 +50,15 @@ covered, default to "ship it" and move on.**
 | `app.py` (Streamlit), 2026-09-22 later same day | **Frozen legacy.** User: "bỏ legacy cũ streamlit... frozen legacy" — reverses the note above ("`app.py` remains the real interface until migration ships"). No new features go into `app.py` from here on, including ones already in flight (e.g. the anonymize-trimmed-clips trigger went into the Next.js/sidecar side instead, never added to `app.py`). Existing 66 `AppTest` tests keep running as a regression net for what's already there, but `app.py` itself is not a target for further work. All new UI work targets the Next.js frontend + `sidecar/`. |
 | Review mode | Triage — Approve / Reject / Flag. **No Skip**: a decision is required to advance. |
 | Segmentation | **PySceneDetect only**, defaults. Counter/OCR fusion removed 2026-08-29: the real counter is transient, and a mis-detected one made the two signals correlated. All boundaries are `MEDIUM`. |
+| Facebook source, 2026-10-30 | Separate yt-dlp worker; one full-video clip for Review, no scene detection, blank filtering, pre-review blur, or dedup. `videos.source='facebook'`, files under `work/facebook/<id>/`, outputs under `finished/facebook/`. Never compare Facebook with YouTube; existing rows default to `youtube`. |
 | Overlay removal | Blur + desaturate + darken (toggleable), over **calibrated regions + always-on fixed bands** |
 | Headless mode | Yes, clips marked `UNREVIEWED` |
 | Config | Streamlit sidebar widgets (no separate config file editing) |
 | Output | Local disk only (no Drive upload) |
 | Review order | Clip duration: `>15s` = TOP priority, drains before LOW |
-| Reviewer output | `trimmed/` is the finished product. Approve writes it (one file per shot, up to 3); Reject deletes only from there. |
+| Reviewer output | `trimmed/` is the finished product. Approve writes one file per shot; Reject deletes only from there. |
 | Cut rule | Impact → impact + 5s (`GUIDE.md` §2.4). Dataset policy, not architecture. |
-| Trim UI | **Mark cut** (playhead → `impact ± pad`) + visual timeline. Max 3 shots. Overlaps auto-shrink ±5s→±1s, then refuse; a conflict blocks Approve. |
+| Trim UI | **Mark cut** (playhead → `impact ± pad`) + visual timeline. Any number of shots; overlaps auto-shrink ±5s→±1s, then refuse; a conflict blocks Approve. |
 | Queue removal | Removable = the states the runner is done with: `QUEUED` / `DOWNLOAD_FAILED` / `FAILED` / `STOPPED`. Status checked inside the `DELETE`, since the runner is another process. Go through `review.purge_video()` — a `STOPPED` video can own clips *and* approved files in `trimmed/`. The download itself is never deleted. |
 | Stop | Marks in-flight rows `STOPPED`, after `proc.wait()` — a dying runner overwrites the status otherwise. `STOPPED` is both resumable and removable. Rows stranded by a crash get a separate manual button; never reconcile automatically, since `busy` is per-session and another tab may be running. |
 | Run monitoring | `st.fragment(run_every=2)`. Never poll at app scope: Streamlit runs every tab's body, so it restarts the reviewer's video player. |

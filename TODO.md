@@ -116,7 +116,7 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
       shot; adjusted shots marked yellow, refusal is explicit
 - [x] **Visual timeline** — one colour per shot, hover tooltips, overlap in red
 - [x] **Resolve conflict** — shrinks the newer shot, or says it cannot
-- [x] Up to 3 shots, N shots → N files; per-shot ±0.1s Start/End boxes
+- [x] Unlimited shots, N shots → N files; per-shot ±0.1s Start/End boxes
 - [x] Time input accepts `HH:MM:SS`, `MM:SS` and plain seconds
 - [x] Approve materialises into `trimmed/`; re-approve replaces, no orphans
 - [x] Approve blocked while any conflict or out-of-range shot remains

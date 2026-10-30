@@ -16,10 +16,6 @@ import {
   type ValidateResponse,
 } from "@/lib/types";
 
-function isUntouched(shots: Shot[]): boolean {
-  return shots.length === 1 && shots[0].default;
-}
-
 function preserveShotLabels(next: Shot[], previous: Shot[]): Shot[] {
   return next.map((shot, i) => ({
     ...shot,
@@ -195,7 +191,6 @@ function ReviewClipEditor({
 }: EditorProps) {
   const [view, setView] = useState<"review" | "guide">("review");
   const dmax = clip.duration_rounded;
-  const full = shots.length >= clip.max_shots && !isUntouched(shots);
   const errors = validation?.errors ?? [];
   const conflicts = validation?.conflicts ?? [];
   const segments = validation?.segments ?? [];
@@ -222,12 +217,16 @@ function ReviewClipEditor({
   }
 
   async function addShot() {
+    setMarkError(null);
     try {
       const res = await api<{ shots: Shot[] | null; error: string | null }>("/trim/add", {
         method: "POST",
         body: JSON.stringify({ shots, duration: dmax, pad: clip.pad_default }),
       });
-      if (res.shots) setShots(preserveShotLabels(res.shots, shots));
+      if (res.shots === null) {
+        throw new Error(res.error ?? "Could not add a shot.");
+      }
+      setShots(preserveShotLabels(res.shots, shots));
     } catch (e) {
       setMarkError(e instanceof Error ? e.message : String(e));
     }
@@ -364,6 +363,7 @@ function ReviewClipEditor({
           <span className={clip.band === "TOP" ? "text-amber" : "text-muted"}>
             {clip.band === "TOP" ? "TOP PRIORITY" : "Low priority"}
           </span>{" "}
+          <span className="text-accent">{clip.source === "facebook" ? "Facebook" : "YouTube"}</span>{" "}
           <code className="text-foreground">{clip.clip_id}</code>{" "}
           <span className="text-muted">{clip.duration_s.toFixed(1)}s</span>
           {clip.flags.length > 0 && (
@@ -413,7 +413,7 @@ function ReviewClipEditor({
         <p className="text-xs text-muted mb-3">
           Park the playhead on the impact and press Mark cut: that becomes impact +/-
           {clip.pad_default}s, shrunk automatically if it runs off the clip or into another
-          shot. Up to {clip.max_shots} shots, one output file each.
+          shot. Add as many non-overlapping shots as needed; each becomes one output file.
         </p>
 
         <div className="flex items-center gap-3 mb-3">
@@ -438,14 +438,12 @@ function ReviewClipEditor({
           </button>
           <button
             className="px-3 py-1.5 text-sm rounded-md bg-accent text-white disabled:opacity-40"
-            disabled={full}
             onClick={markCut}
           >
             Mark cut
           </button>
           <button
             className="px-3 py-1.5 text-sm rounded-md border border-border disabled:opacity-40"
-            disabled={full}
             onClick={addShot}
           >
             Add shot

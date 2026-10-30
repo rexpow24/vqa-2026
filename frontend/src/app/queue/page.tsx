@@ -8,6 +8,7 @@ export default function QueuePage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [pasteText, setPasteText] = useState("");
+  const [facebookPasteText, setFacebookPasteText] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -19,12 +20,13 @@ export default function QueuePage() {
 
   const load = useCallback(async () => {
     try {
-      const [data, status] = await Promise.all([
+      const [data, status, facebookStatus] = await Promise.all([
         api<{ videos: Video[] }>("/videos"),
         api<RunStatus>("/run/status"),
+        api<RunStatus>("/facebook/run/status"),
       ]);
       setVideos(data.videos);
-      setRunBusy(status.busy);
+      setRunBusy(status.busy || facebookStatus.busy);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -74,7 +76,7 @@ export default function QueuePage() {
   return (
     <div className="flex flex-col gap-8">
       <section>
-        <h2 className="text-sm font-medium text-muted mb-2">Add videos</h2>
+        <h2 className="text-sm font-medium text-muted mb-2">Add YouTube videos</h2>
         <textarea
           className="w-full h-28 rounded-md bg-surface border border-border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-accent"
           placeholder="Paste one YouTube URL per line"
@@ -106,26 +108,67 @@ export default function QueuePage() {
       </section>
 
       <section>
+        <h2 className="text-sm font-medium text-muted mb-2">Add Facebook videos</h2>
+        <p className="mb-2 text-xs text-muted">
+          One Facebook video URL per line. Each URL is queued independently.
+        </p>
+        <textarea
+          className="w-full h-28 rounded-md bg-surface border border-border px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-accent"
+          placeholder={"https://www.facebook.com/...\nhttps://fb.watch/..."}
+          value={facebookPasteText}
+          onChange={(e) => setFacebookPasteText(e.target.value)}
+        />
+        <div className="mt-2 flex gap-2">
+          <button
+            className="px-3 py-1.5 text-sm rounded-md bg-accent text-white disabled:opacity-40"
+            disabled={pending || !facebookPasteText.trim()}
+            onClick={() =>
+              run("Added Facebook links to queue.", async () => {
+                const res = await api<{ added: string[]; bad: [number, string][] }>(
+                  "/facebook/videos/enqueue",
+                  { method: "POST", body: JSON.stringify({ text: facebookPasteText }) },
+                );
+                setFacebookPasteText("");
+                setMessage(
+                  `Added ${res.added.length} Facebook video(s)${
+                    res.bad.length
+                      ? `; invalid Facebook URL(s) on line(s) ${res.bad.map(([line]) => line).join(", ")}`
+                      : ""
+                  }.`,
+                );
+              })
+            }
+          >
+            Add Facebook URLs
+          </button>
+        </div>
+      </section>
+
+      <section>
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-medium text-muted">Videos ({videos.length})</h2>
           <div className="flex gap-2">
-            {RETRYABLE.map((status) => (
+            {RETRYABLE.flatMap((status) => ([
+              { source: "youtube" as const, label: "YouTube" },
+              { source: "facebook" as const, label: "Facebook" },
+            ]).map(({ source, label }) => (
               <button
-                key={status}
+                key={`${source}-${status}`}
                 className="px-3 py-1.5 text-xs rounded-md border border-border text-muted hover:text-foreground disabled:opacity-40"
                 disabled={locked}
                 onClick={() =>
-                  run(`Requeued ${status}.`, async () => {
-                    const res = await api<{ requeued: number }>(`/videos/retry/${status}`, {
-                      method: "POST",
-                    });
-                    setMessage(`Requeued ${res.requeued} video(s) that were ${status}.`);
+                  run(`Requeued ${label} ${status}.`, async () => {
+                    const endpoint = source === "facebook"
+                      ? `/facebook/videos/retry/${status}`
+                      : `/videos/retry/${status}`;
+                    const scoped = await api<{ requeued: number }>(endpoint, { method: "POST" });
+                    setMessage(`Requeued ${scoped.requeued} ${label} video(s) that were ${status}.`);
                   })
                 }
               >
-                Retry {status}
+                Retry {label} {status}
               </button>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -140,10 +183,13 @@ export default function QueuePage() {
               disabled={pending}
               onClick={() =>
                 run("Marked stranded rows STOPPED.", async () => {
-                  const res = await api<{ marked: number }>("/videos/mark-stopped", {
+                  const youtubeRes = await api<{ marked: number }>("/videos/mark-stopped", {
                     method: "POST",
                   });
-                  setMessage(`Marked ${res.marked} row(s) STOPPED -- now resumable and removable.`);
+                  const facebookRes = await api<{ marked: number }>("/facebook/videos/mark-stopped", {
+                    method: "POST",
+                  });
+                  setMessage(`Marked ${youtubeRes.marked + facebookRes.marked} row(s) STOPPED -- now resumable and removable.`);
                 })
               }
             >
@@ -162,6 +208,7 @@ export default function QueuePage() {
               <thead>
                 <tr className="border-b border-border text-left text-muted">
                   <th className="w-8 px-3 py-2"></th>
+                  <th className="px-3 py-2">Source</th>
                   <th className="px-3 py-2">Title</th>
                   <th className="px-3 py-2">Channel</th>
                   <th className="px-3 py-2">Status</th>
@@ -184,6 +231,7 @@ export default function QueuePage() {
                         />
                       )}
                     </td>
+                    <td className="px-3 py-2 text-muted">{v.source === "facebook" ? "Facebook" : "YouTube"}</td>
                     <td className="px-3 py-2 max-w-xs truncate">
                       {v.title ?? v.youtube_video_id}
                     </td>
@@ -199,8 +247,8 @@ export default function QueuePage() {
                     </td>
                     <td className="px-3 py-2 text-muted">{v.n_boundaries ?? 0}</td>
                     <td className="px-3 py-2 text-muted">{v.n_clips ?? 0}</td>
-                    <td className="px-3 py-2 max-w-xs truncate text-red">
-                      {v.error_code ?? ""}
+                    <td className="px-3 py-2 max-w-xs truncate text-red" title={v.error_detail ?? ""}>
+                      {v.error_detail ?? v.error_code ?? ""}
                     </td>
                   </tr>
                 ))}

@@ -22,10 +22,20 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, FiniteFloat
 
-from vqa import annotations, config, db, dedup, media, review, trim, urls
+from vqa import annotations, config, db, dedup, facebook, media, review, trim, urls
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LOG_DIR = REPO_ROOT / "logs"
+
+
+def _configured_work_root() -> Path:
+    root = Path(config.load().get("work_dir", "work"))
+    return root if root.is_absolute() else REPO_ROOT / root
+
+
+def _facebook_work_root() -> Path:
+    return _configured_work_root() / "facebook"
+
 
 # Below-normal priority: both subprocesses below are CPU-bound (scene detect,
 # blur/detect passes) and would otherwise starve the foreground app during a
@@ -83,6 +93,14 @@ def enqueue_videos(req: EnqueueRequest):
     return {"added": added, "dupes": dupes, "bad": bad}
 
 
+@app.post("/facebook/videos/enqueue")
+def enqueue_facebook_videos(req: EnqueueRequest):
+    pairs, bad = facebook.parse_lines(req.text)
+    added = [video_id for video_id, url in pairs
+             if db.enqueue(video_id, url, source="facebook")]
+    return {"added": added, "bad": bad}
+
+
 @app.post("/videos/{video_id}/remove")
 def remove_video(video_id: str):
     # review.purge_video, not db.remove_video: a STOPPED video can already own
@@ -96,12 +114,24 @@ def remove_video(video_id: str):
 def retry_videos(status: str):
     if status not in db.RETRYABLE:
         raise HTTPException(400, f"status must be one of {list(db.RETRYABLE)}")
-    return {"requeued": db.retry_status(status)}
+    return {"requeued": db.retry_status(status, source="youtube")}
+
+
+@app.post("/facebook/videos/retry/{status}")
+def retry_facebook_videos(status: str):
+    if status not in db.RETRYABLE:
+        raise HTTPException(400, f"status must be one of {list(db.RETRYABLE)}")
+    return {"requeued": db.retry_status(status, source="facebook")}
 
 
 @app.post("/videos/mark-stopped")
 def mark_stopped_route():
-    return {"marked": db.mark_stopped()}
+    return {"marked": db.mark_stopped(source="youtube")}
+
+
+@app.post("/facebook/videos/mark-stopped")
+def mark_facebook_stopped_route():
+    return {"marked": db.mark_stopped(source="facebook")}
 
 
 class YoutubeAuthRequest(BaseModel):
@@ -179,11 +209,11 @@ def _log_tail(n: int = 200) -> str:
 
 @app.get("/run/status")
 def run_status():
-    rows = db.list_videos()
+    rows = db.list_videos(source="youtube")
     done = sum(1 for r in rows if r["status"] in (db.READY_FOR_REVIEW, db.DONE))
     return {
         "busy": _busy(),
-        "queued": len(db.list_videos(db.QUEUED)),
+        "queued": len(db.list_videos(db.QUEUED, source="youtube")),
         "done": done,
         "total": len(rows),
         "log_tail": _log_tail(),
@@ -193,9 +223,9 @@ def run_status():
 @app.post("/run/start")
 def run_start():
     global _proc
-    if _busy():
+    if _busy() or _facebook_busy():
         raise HTTPException(409, "a run is already in progress")
-    if len(db.list_videos(db.QUEUED)) == 0:
+    if len(db.list_videos(db.QUEUED, source="youtube")) == 0:
         raise HTTPException(400, "queue is empty")
     python_exe = REPO_ROOT / "venv" / "Scripts" / "python.exe"
     if not python_exe.exists():
@@ -224,7 +254,79 @@ def run_stop():
     except subprocess.TimeoutExpired:
         _proc.kill()
         _proc.wait(timeout=5)
-    marked = db.mark_stopped()
+    marked = db.mark_stopped(source="youtube")
+    return {"stopped": True, "marked": marked}
+
+
+_facebook_proc: subprocess.Popen | None = None
+FACEBOOK_LOG = LOG_DIR / "facebook-latest.log"
+
+
+def _facebook_busy() -> bool:
+    return _facebook_proc is not None and _facebook_proc.poll() is None
+
+
+def _facebook_log_tail(n: int = 200) -> str:
+    if not FACEBOOK_LOG.exists():
+        return "(no Facebook runs yet)"
+    try:
+        return "\n".join(
+            FACEBOOK_LOG.read_text(encoding="utf-8").splitlines()[-n:]
+        ) or "(empty)"
+    except OSError:
+        return "(Facebook log unavailable)"
+
+
+@app.get("/facebook/run/status")
+def facebook_run_status():
+    rows = db.list_videos(source="facebook")
+    done = sum(1 for row in rows
+               if row["status"] in (db.READY_FOR_REVIEW, db.DONE))
+    return {
+        "busy": _facebook_busy(),
+        "queued": len(db.list_videos(db.QUEUED, source="facebook")),
+        "done": done,
+        "total": len(rows),
+        "log_tail": _facebook_log_tail(),
+    }
+
+
+@app.post("/facebook/run/start")
+def facebook_run_start():
+    global _facebook_proc
+    if _facebook_busy() or _busy():
+        raise HTTPException(409, "another video pipeline run is already in progress")
+    if not db.list_videos(db.QUEUED, source="facebook"):
+        raise HTTPException(400, "Facebook queue is empty")
+    if _facebook_anonymize_busy():
+        raise HTTPException(409, "wait for Facebook anonymize to finish")
+    python_exe = REPO_ROOT / "venv" / "Scripts" / "python.exe"
+    if not python_exe.exists():
+        python_exe = Path(sys.executable)
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        _facebook_proc = subprocess.Popen(
+            [str(python_exe), str(REPO_ROOT / "run_facebook_pipeline.py")],
+            cwd=REPO_ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            creationflags=_LOW_PRIORITY,
+        )
+    except OSError as exc:
+        raise HTTPException(503, f"could not start Facebook worker: {exc}") from exc
+    return {"started": True, "pid": _facebook_proc.pid}
+
+
+@app.post("/facebook/run/stop")
+def facebook_run_stop():
+    global _facebook_proc
+    if not _facebook_busy():
+        return {"stopped": False, "message": "nothing running here"}
+    _facebook_proc.terminate()
+    try:
+        _facebook_proc.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        _facebook_proc.kill()
+        _facebook_proc.wait(timeout=5)
+    marked = db.mark_stopped(source="facebook")
     return {"stopped": True, "marked": marked}
 
 
@@ -331,10 +433,17 @@ def dedup_decision(req: DedupDecisionRequest):
 
 _anon_proc: subprocess.Popen | None = None
 ANON_PAUSE_FILE = LOG_DIR / "anonymize.pause"
+_facebook_anon_proc: subprocess.Popen | None = None
+FACEBOOK_ANON_PAUSE_FILE = LOG_DIR / "facebook-anonymize.pause"
 
 
 def _anon_busy() -> bool:
     return _anon_proc is not None and _anon_proc.poll() is None
+
+
+def _facebook_anonymize_busy() -> bool:
+    return (_facebook_anon_proc is not None
+            and _facebook_anon_proc.poll() is None)
 
 
 def _anonymize_progress(work_root: Path, finished_root: Path,
@@ -427,6 +536,74 @@ def anonymize_pause():
     return {"pause_requested": True, "message": "finishing the current clip before pausing"}
 
 
+@app.get("/facebook/anonymize/status")
+def facebook_anonymize_status():
+    busy = _facebook_anonymize_busy()
+    exit_code = (_facebook_anon_proc.poll()
+                 if _facebook_anon_proc is not None else None)
+    progress = _anonymize_progress(
+        _facebook_work_root(),
+        REPO_ROOT / "finished" / "facebook",
+    )
+    pause_requested = FACEBOOK_ANON_PAUSE_FILE.exists()
+    return {
+        "busy": busy,
+        "pause_supported": True,
+        "pause_requested": busy and pause_requested,
+        "paused": pause_requested and not busy and exit_code in (None, 0)
+                  and progress["completed"] < progress["total"],
+        "exit_code": exit_code,
+        "dedup_problem": None,
+        **progress,
+    }
+
+
+@app.post("/facebook/anonymize/start")
+def facebook_anonymize_start():
+    global _facebook_anon_proc
+    if _facebook_anonymize_busy():
+        raise HTTPException(409, "Facebook anonymize is already in progress")
+    if _facebook_busy():
+        raise HTTPException(409, "wait for Facebook download to finish")
+    work_root = _facebook_work_root()
+    if not any(work_root.glob("*/trimmed/*.mp4")):
+        raise HTTPException(400, "no approved Facebook clips to anonymize")
+
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    FACEBOOK_ANON_PAUSE_FILE.unlink(missing_ok=True)
+    FACEBOOK_LOG.write_text("", encoding="utf-8")
+    python_exe = REPO_ROOT / "venv" / "Scripts" / "python.exe"
+    if not python_exe.exists():
+        python_exe = Path(sys.executable)
+    try:
+        _facebook_anon_proc = subprocess.Popen(
+            [
+                str(python_exe),
+                str(REPO_ROOT / "scripts" / "anonymize_all.py"),
+                "--work-root", str(work_root),
+                "--finished-root", str(REPO_ROOT / "finished" / "facebook"),
+                "--pause-file", str(FACEBOOK_ANON_PAUSE_FILE),
+                "--skip-dedup",
+            ],
+            cwd=REPO_ROOT,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            creationflags=_LOW_PRIORITY,
+        )
+    except OSError as exc:
+        raise HTTPException(503, f"could not start Facebook anonymize: {exc}") from exc
+    return {"started": True, "pid": _facebook_anon_proc.pid}
+
+
+@app.post("/facebook/anonymize/pause")
+def facebook_anonymize_pause():
+    if not _facebook_anonymize_busy():
+        return {"pause_requested": False, "message": "no Facebook anonymize is running"}
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    FACEBOOK_ANON_PAUSE_FILE.touch()
+    return {"pause_requested": True, "message": "finishing the current clip before pausing"}
+
+
 # ── review ───────────────────────────────────────────────────────────────
 
 
@@ -482,6 +659,7 @@ def review_next():
         "clip": {
             "clip_id": clip["clip_id"],
             "youtube_video_id": clip["youtube_video_id"],
+            "source": clip["source"],
             "duration_s": dur,
             "duration_rounded": dmax,
             "flags": json.loads(clip["flags"] or "[]"),
@@ -489,7 +667,6 @@ def review_next():
             "video_path": path,
             "already_materialized": len(existing),
             "pad_default": pad_default,
-            "max_shots": trim.MAX_SHOTS,
         },
         "initial_shots": initial_shots,
         "summary": summary,
@@ -648,8 +825,6 @@ def trim_mark(req: MarkRequest):
     new_shots = trim.apply_mark(req.shots, req.duration, req.x, req.pad)
     if new_shots is None:
         base = [] if trim.is_untouched(req.shots, req.duration) else req.shots
-        if len(base) >= trim.MAX_SHOTS:
-            return {"shots": None, "error": f"Already at the {trim.MAX_SHOTS}-shot limit."}
         reason = trim.why_no_room(req.x, req.duration, base, req.pad)
         return {"shots": None, "error": f"Cannot auto-adjust - {reason}."}
     return {"shots": new_shots, "error": None}
@@ -664,8 +839,6 @@ class AddRequest(BaseModel):
 @app.post("/trim/add")
 def trim_add(req: AddRequest):
     new_shots = trim.append_shot(req.shots, req.duration, req.pad)
-    if new_shots is None:
-        return {"shots": None, "error": f"Already at the {trim.MAX_SHOTS}-shot limit."}
     return {"shots": new_shots, "error": None}
 
 

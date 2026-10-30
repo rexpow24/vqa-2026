@@ -224,7 +224,7 @@ with tab_queue:
 
     st.divider()
     st.subheader("Queue")
-    rows = db.list_videos()
+    rows = db.list_videos(source="youtube")
     if rows:
         frame = pd.DataFrame([{
             "video_id": r["youtube_video_id"],
@@ -241,13 +241,13 @@ with tab_queue:
 
         c1, c2, c3 = st.columns(3)
         if c1.button("🔁 Retry DOWNLOAD_FAILED", key="retry_dl", disabled=busy):
-            st.info(f"Requeued {db.retry_status(db.DOWNLOAD_FAILED)}")
+            st.info(f"Requeued {db.retry_status(db.DOWNLOAD_FAILED, source='youtube')}")
         if c2.button("🔁 Retry FAILED", key="retry_failed", disabled=busy):
-            st.info(f"Requeued {db.retry_status(db.FAILED)}")
+            st.info(f"Requeued {db.retry_status(db.FAILED, source='youtube')}")
         # Resuming a stopped video is cheap: the download and every completed
         # stage are already on disk, so it picks up where it was killed.
         if c3.button("▶️ Resume STOPPED", key="retry_stopped", disabled=busy):
-            st.info(f"Requeued {db.retry_status(db.STOPPED)}")
+            st.info(f"Requeued {db.retry_status(db.STOPPED, source='youtube')}")
 
         # A crash, a reboot or a closed browser tab leaves rows at DOWNLOADING
         # or PROCESSING with no runner behind them. Stop cannot reach those --
@@ -263,7 +263,7 @@ with tab_queue:
                 "from another browser tab.")
             if st.button("🔓 Mark them STOPPED", key="unstick",
                          help="Only do this if nothing is actually running."):
-                st.info(f"Marked {db.mark_stopped()} — now resumable "
+                st.info(f"Marked {db.mark_stopped(source='youtube')} — now resumable "
                         "and removable.")
                 st.rerun()
 
@@ -316,7 +316,7 @@ with tab_queue:
 
 
 with tab_run:
-    queued = len(db.list_videos(db.QUEUED))
+    queued = len(db.list_videos(db.QUEUED, source="youtube"))
     st.subheader("Pipeline")
 
     c1, c2, c3 = st.columns([1, 1, 3])
@@ -336,7 +336,7 @@ with tab_run:
                 proc.kill()
                 proc.wait(timeout=5)
         st.session_state["stop_said"] = (
-            f"Stopped. {db.mark_stopped()} video(s) marked STOPPED — "
+            f"Stopped. {db.mark_stopped(source='youtube')} video(s) marked STOPPED — "
             "retry to resume from what is already downloaded, or remove them.")
         st.rerun()
     c3.metric("Queued", queued)
@@ -354,7 +354,7 @@ with tab_run:
         `st.video` element every two seconds — you could not watch a clip while
         the pipeline ran. A fragment reruns only itself.
         """
-        rows = db.list_videos()
+        rows = db.list_videos(source="youtube")
         if rows:
             done = sum(1 for r in rows
                        if r["status"] in (db.READY_FOR_REVIEW, db.DONE))
@@ -475,16 +475,15 @@ with tab_review:
         st.caption(
             f"Park the playhead on the impact and press **Mark cut**: that "
             f"becomes impact ±{pad:g}s, shrunk automatically if it runs off the "
-            f"clip or into another shot. Up to {trim.MAX_SHOTS} shots, one "
-            "output file each. Cut only — no crop, rotate or effects."
+            "clip or into another shot. Add as many non-overlapping shots as "
+            "needed; each becomes one output file. Cut only — no crop, rotate "
+            "or effects."
         )
 
         mc1, mc2, mc3 = st.columns([5, 1.4, 1.4])
         x = mc1.slider("Playhead (s)", 0.0, dmax, round(dmax / 2, 1), 0.1,
                        key=f"play_{cid}")
-        full = len(shots) >= trim.MAX_SHOTS and not trim.is_untouched(shots, dmax)
-        if mc2.button("📍 Mark cut", key=f"mark_{cid}", disabled=full,
-                      width='stretch'):
+        if mc2.button("📍 Mark cut", key=f"mark_{cid}", width='stretch'):
             new_shots = trim.apply_mark(shots, dmax, x, pad)
             if new_shots is None:
                 base = [] if trim.is_untouched(shots, dmax) else shots
@@ -500,8 +499,7 @@ with tab_review:
                     f"Shot at {made['start']:.1f}–{made['end']:.1f}s"
                     + (" (auto-adjusted)" if made["auto"] else ""))
             st.rerun()
-        if mc3.button("➕ Add shot", key=f"add_{cid}", disabled=full,
-                      width='stretch'):
+        if mc3.button("➕ Add shot", key=f"add_{cid}", width='stretch'):
             new_shots = trim.append_shot(shots, dmax, pad)
             if new_shots is not None:
                 _set(new_shots)

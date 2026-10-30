@@ -128,13 +128,14 @@ def test_apply_mark_extends_an_already_touched_list():
     assert result[1]["start"] == 5.0 and result[1]["end"] == 15.0
 
 
-def test_apply_mark_refuses_past_max_shots():
+def test_apply_mark_adds_shots_after_three_existing_shots():
     shots = [trim.shot(0.0, 2.0), trim.shot(4.0, 6.0), trim.shot(8.0, 10.0)]
-    assert len(shots) == trim.MAX_SHOTS
 
     result = trim.apply_mark(shots, duration=20.0, x=15.0, pad=1.0)
 
-    assert result is None
+    assert result is not None
+    assert len(result) == 4
+    assert result[-1]["start"] == 14.0 and result[-1]["end"] == 16.0
 
 
 def test_apply_mark_returns_none_when_no_room_fits():
@@ -166,12 +167,14 @@ def test_append_shot_starts_where_the_last_shot_ends():
     assert result[1]["start"] == 5.0 and result[1]["end"] == 15.0
 
 
-def test_append_shot_refuses_past_max_shots():
+def test_append_shot_adds_shots_after_three_existing_shots():
     shots = [trim.shot(0.0, 2.0), trim.shot(4.0, 6.0), trim.shot(8.0, 10.0)]
 
     result = trim.append_shot(shots, duration=20.0, pad=1.0)
 
-    assert result is None
+    assert result is not None
+    assert len(result) == 4
+    assert result[-1]["start"] == 10.0 and result[-1]["end"] == 12.0
 
 
 def test_reshape_clears_auto_when_the_reviewer_moves_an_auto_shot():

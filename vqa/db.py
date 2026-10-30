@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS channels (
 CREATE TABLE IF NOT EXISTS videos (
     youtube_video_id TEXT PRIMARY KEY,
     canonical_url    TEXT NOT NULL,
+    source           TEXT NOT NULL DEFAULT 'youtube',
     title            TEXT,
     channel_id       TEXT,
     channel_name     TEXT,
@@ -178,6 +179,13 @@ def tx():
 def init() -> None:
     with tx() as conn:
         conn.executescript(SCHEMA)
+        video_columns = {r["name"] for r in conn.execute("PRAGMA table_info(videos)")}
+        if "source" not in video_columns:
+            conn.execute(
+                "ALTER TABLE videos ADD COLUMN source TEXT NOT NULL DEFAULT 'youtube'")
+        conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_videos_source_status "
+            "ON videos(source, status)")
         # Additive migration for databases created before trimming existed.
         have = {r["name"] for r in conn.execute("PRAGMA table_info(clips)")}
         if "trim_segments" not in have:
@@ -203,8 +211,10 @@ def init() -> None:
 # ── videos ────────────────────────────────────────────────────────────────
 
 
-def enqueue(video_id: str, url: str) -> bool:
+def enqueue(video_id: str, url: str, source: str = "youtube") -> bool:
     """Insert a video as QUEUED. Returns False if it already exists."""
+    if source not in {"youtube", "facebook"}:
+        raise ValueError(f"unsupported video source: {source}")
     with tx() as conn:
         cur = conn.execute(
             "SELECT 1 FROM videos WHERE youtube_video_id = ?", (video_id,)
@@ -212,9 +222,9 @@ def enqueue(video_id: str, url: str) -> bool:
         if cur.fetchone():
             return False
         conn.execute(
-            "INSERT INTO videos (youtube_video_id, canonical_url, status,"
-            " created_at, updated_at) VALUES (?,?,?,?,?)",
-            (video_id, url, QUEUED, now(), now()),
+            "INSERT INTO videos (youtube_video_id, canonical_url, source, status,"
+            " created_at, updated_at) VALUES (?,?,?,?,?,?)",
+            (video_id, url, source, QUEUED, now(), now()),
         )
     return True
 
@@ -300,25 +310,35 @@ def get_video(video_id: str) -> sqlite3.Row | None:
         ).fetchone()
 
 
-def list_videos(status: str | None = None) -> list[sqlite3.Row]:
+def list_videos(status: str | None = None,
+                source: str | None = None) -> list[sqlite3.Row]:
     q = "SELECT * FROM videos"
-    args: tuple = ()
+    clauses, args = [], []
     if status:
-        q += " WHERE status=?"
-        args = (status,)
+        clauses.append("status=?")
+        args.append(status)
+    if source:
+        clauses.append("source=?")
+        args.append(source)
+    if clauses:
+        q += " WHERE " + " AND ".join(clauses)
     q += " ORDER BY created_at"
     with tx() as conn:
-        return conn.execute(q, args).fetchall()
+        return conn.execute(q, tuple(args)).fetchall()
 
 
-def next_queued() -> sqlite3.Row | None:
+def next_queued(source: str | None = None) -> sqlite3.Row | None:
+    query = "SELECT * FROM videos WHERE status=?"
+    args: list[str] = [QUEUED]
+    if source:
+        query += " AND source=?"
+        args.append(source)
+    query += " ORDER BY created_at LIMIT 1"
     with tx() as conn:
-        return conn.execute(
-            "SELECT * FROM videos WHERE status=? ORDER BY created_at LIMIT 1", (QUEUED,)
-        ).fetchone()
+        return conn.execute(query, tuple(args)).fetchone()
 
 
-def mark_stopped() -> int:
+def mark_stopped(source: str | None = None) -> int:
     """Whatever the killed runner was working on becomes STOPPED. Returns rows.
 
     Only in-flight rows are touched. Videos it had already finished keep their
@@ -329,21 +349,26 @@ def mark_stopped() -> int:
     STOPPED with the stage it was in.
     """
     with tx() as conn:
-        cur = conn.execute(
-            "UPDATE videos SET status=?, updated_at=? WHERE status IN (?,?)",
-            (STOPPED, now(), DOWNLOADING, PROCESSING),
-        )
+        query = ("UPDATE videos SET status=?, updated_at=? "
+                 "WHERE status IN (?,?)")
+        args: list[str] = [STOPPED, now(), DOWNLOADING, PROCESSING]
+        if source:
+            query += " AND source=?"
+            args.append(source)
+        cur = conn.execute(query, tuple(args))
         return cur.rowcount
 
 
-def retry_status(status: str) -> int:
+def retry_status(status: str, source: str | None = None) -> int:
     """Reset a whole failure class back to QUEUED."""
     with tx() as conn:
-        cur = conn.execute(
-            "UPDATE videos SET status=?, error_code=NULL, error_detail=NULL,"
-            " retry_count=retry_count+1, updated_at=? WHERE status=?",
-            (QUEUED, now(), status),
-        )
+        query = ("UPDATE videos SET status=?, error_code=NULL, error_detail=NULL,"
+                 " retry_count=retry_count+1, updated_at=? WHERE status=?")
+        args: list[str] = [QUEUED, now(), status]
+        if source:
+            query += " AND source=?"
+            args.append(source)
+        cur = conn.execute(query, tuple(args))
         return cur.rowcount
 
 
@@ -401,7 +426,9 @@ def insert_clip(clip: dict) -> None:
 
 def list_clips(video_id: str | None = None, decision: str | None = None,
                confidence: str | None = None) -> list[sqlite3.Row]:
-    q = ("SELECT c.*, r.decision, r.difficulty, r.event_label, r.reviewed_at FROM clips c"
+    q = ("SELECT c.*, COALESCE((SELECT v.source FROM videos v"
+         " WHERE v.youtube_video_id=c.youtube_video_id), 'youtube') AS source,"
+         " r.decision, r.difficulty, r.event_label, r.reviewed_at FROM clips c"
          " JOIN reviews r ON r.clip_id = c.clip_id WHERE 1=1")
     args: list = []
     if video_id:

@@ -3,7 +3,26 @@
 import pytest
 from pydantic import ValidationError
 
-from sidecar.main import ValidateRequest, trim_validate
+from sidecar.main import AddRequest, ValidateRequest, trim_add, trim_validate
+
+
+def test_add_shot_endpoint_accepts_a_fourth_shot():
+    request = AddRequest.model_validate({
+        "shots": [
+            {"start": 0.0, "end": 10.0},
+            {"start": 10.0, "end": 20.0},
+            {"start": 20.0, "end": 30.0},
+        ],
+        "duration": 48.3,
+        "pad": 5.0,
+    })
+
+    response = trim_add(request)
+
+    assert response["error"] is None
+    assert len(response["shots"]) == 4
+    assert response["shots"][-1]["start"] == 30.0
+    assert response["shots"][-1]["end"] == 40.0
 
 
 def test_remaining_shot_validates_after_second_shot_is_removed():
