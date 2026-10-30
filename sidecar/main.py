@@ -608,18 +608,21 @@ def facebook_anonymize_pause():
 
 
 @app.get("/review/next")
-def review_next():
+def review_next(source: str = "all"):
+    if source not in {"all", "youtube", "facebook"}:
+        raise HTTPException(400, "source must be all, youtube, or facebook")
     # Same source app.py's sidebar reads/writes (cfg["trim_pad_s"]): the
     # operator can change the mark-cut padding there, and the frontend must
     # see that value too, not the trim.py module constant.
     cfg = config.load()
     pad_default = float(cfg.get("trim_pad_s", trim.PAD_DEFAULT))
 
-    pending = db.list_clips(decision=db.UNREVIEWED)
+    source_filter = None if source == "all" else source
+    pending = db.list_clips(decision=db.UNREVIEWED, source=source_filter)
     top = [c for c in pending if db.priority(c["duration_ms"]) == db.TOP]
     low = [c for c in pending if db.priority(c["duration_ms"]) == db.LOW_PRIORITY]
 
-    counts = db.clip_counts()
+    counts = db.clip_counts(source=source_filter)
     total = sum(counts["by_decision"].values()) or 1
     approved = counts["by_decision"].get(db.APPROVED, 0)
     reviewed = total - counts["by_decision"].get(db.UNREVIEWED, 0)

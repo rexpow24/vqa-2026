@@ -16,6 +16,8 @@ import {
   type ValidateResponse,
 } from "@/lib/types";
 
+type ReviewSourceFilter = "all" | "youtube" | "facebook";
+
 function preserveShotLabels(next: Shot[], previous: Shot[]): Shot[] {
   return next.map((shot, i) => ({
     ...shot,
@@ -25,6 +27,7 @@ function preserveShotLabels(next: Shot[], previous: Shot[]): Shot[] {
 }
 
 export default function ReviewPage() {
+  const [sourceFilter, setSourceFilter] = useState<ReviewSourceFilter>("all");
   const [clip, setClip] = useState<ReviewClip | null>(null);
   const [shots, setShots] = useState<Shot[]>([]);
   const [summary, setSummary] = useState<ReviewSummary | null>(null);
@@ -47,7 +50,9 @@ export default function ReviewPage() {
     setError(null);
     setMarkError(null);
     try {
-      const data = await api<ReviewNextResponse>("/review/next");
+      const data = await api<ReviewNextResponse>(
+        `/review/next?source=${sourceFilter}`,
+      );
       setValidation(null);
       setClip(data.clip);
       setShots(data.initial_shots);
@@ -60,7 +65,7 @@ export default function ReviewPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [sourceFilter]);
 
   useEffect(() => {
     // Reused after every decision (Approve/Reject/Flag), not just on mount --
@@ -111,18 +116,44 @@ export default function ReviewPage() {
   return (
     <div className="flex flex-col gap-6">
       {summary && (
+        <>
+        <div className="flex items-center justify-between gap-4">
+          <label htmlFor="review-source" className="text-sm text-muted">
+            Review source
+          </label>
+          <select
+            id="review-source"
+            className="rounded-md border border-border bg-surface px-3 py-2 text-sm"
+            value={sourceFilter}
+            onChange={(event) => {
+              setLastDecision(null);
+              const value = event.target.value;
+              if (value === "all" || value === "youtube" || value === "facebook") {
+                setClip(null);
+                setSourceFilter(value);
+              }
+            }}
+          >
+            <option value="all">All sources</option>
+            <option value="youtube">YouTube</option>
+            <option value="facebook">Facebook</option>
+          </select>
+        </div>
         <div className="grid grid-cols-4 gap-3 text-sm">
           <Metric label="Top priority left" value={summary.top_left} />
           <Metric label="Low priority left" value={summary.low_left} />
           <Metric label="Reviewed" value={summary.reviewed} />
           <Metric label="Approved" value={summary.approved} />
         </div>
+        </>
       )}
 
       {lastDecision && <p className="text-sm text-green">{lastDecision}</p>}
 
       <Link href="/dedup" className="rounded-lg border border-border bg-surface p-4 text-sm text-muted hover:border-accent">
-        Sau khi duyệt và trim, vào <span className="font-semibold text-accent">Dedup</span> để kiểm tra clip gần trùng trước khi anonymize.
+        {sourceFilter === "facebook"
+          ? <>Facebook không qua Dedup. Sau khi duyệt và trim, vào <span className="font-semibold text-accent">Anonymize</span> để xử lý video.</>
+          : <>Sau khi duyệt và trim, vào <span className="font-semibold text-accent">Dedup</span> để kiểm tra clip gần trùng trước khi anonymize.</>}
       </Link>
 
       {!clip ? (

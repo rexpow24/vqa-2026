@@ -275,7 +275,9 @@ database read-only.
 
 ## 2.1 What you are deciding
 
-Each clip is one candidate incident, already cut and blurred. Your job is:
+Each clip is one candidate incident. YouTube clips are cut and blurred before
+review; Facebook clips are full-length originals with no preprocessing. Your
+job is:
 
 1. Is there a real, usable traffic event here? → **Approve** / **Reject**
 2. If yes, **which seconds** of it belong in the dataset? → set the trim
@@ -286,6 +288,8 @@ Nothing reaches the finished-product folder until you approve it.
 
 Open the **Review** tab. It shows one clip at a time.
 
+- Use **Review source** to show **All sources**, **YouTube**, or **Facebook**.
+  The priority counts and next clip follow the selected source.
 - **🔺 TOP PRIORITY** — the clip is longer than 15s. These are reviewed first.
 - **▪️ Low priority** — 15s or shorter.
 - The video autoplays and loops.

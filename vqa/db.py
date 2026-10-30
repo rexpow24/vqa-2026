@@ -425,7 +425,8 @@ def insert_clip(clip: dict) -> None:
 
 
 def list_clips(video_id: str | None = None, decision: str | None = None,
-               confidence: str | None = None) -> list[sqlite3.Row]:
+               confidence: str | None = None,
+               source: str | None = None) -> list[sqlite3.Row]:
     q = ("SELECT c.*, COALESCE((SELECT v.source FROM videos v"
          " WHERE v.youtube_video_id=c.youtube_video_id), 'youtube') AS source,"
          " r.decision, r.difficulty, r.event_label, r.reviewed_at FROM clips c"
@@ -440,6 +441,10 @@ def list_clips(video_id: str | None = None, decision: str | None = None,
     if confidence:
         q += " AND c.confidence=?"
         args.append(confidence)
+    if source:
+        q += (" AND COALESCE((SELECT v.source FROM videos v"
+              " WHERE v.youtube_video_id=c.youtube_video_id), 'youtube')=?")
+        args.append(source)
     # TOP priority first, then longest within a band. Priority comes from the
     # ORIGINAL duration and never changes when a reviewer trims a clip.
     q += (f" ORDER BY CASE WHEN c.duration_ms > {PRIORITY_SECONDS * 1000}"
@@ -555,13 +560,28 @@ def set_labels(clip_id: str, difficulty: str, event_label: str) -> None:
         )
 
 
-def clip_counts() -> dict:
+def clip_counts(source: str | None = None) -> dict:
     with tx() as conn:
+        review_query = "SELECT r.decision, COUNT(*) n FROM reviews r"
+        confidence_query = "SELECT c.confidence, COUNT(*) n FROM clips c"
+        args: list[str] = []
+        if source:
+            source_expr = (
+                "COALESCE((SELECT v.source FROM videos v"
+                " WHERE v.youtube_video_id=c.youtube_video_id), 'youtube')=?"
+            )
+            review_query += (
+                " JOIN clips c ON c.clip_id=r.clip_id WHERE " + source_expr
+            )
+            confidence_query += " WHERE " + source_expr
+            args.append(source)
+        review_query += " GROUP BY r.decision"
+        confidence_query += " GROUP BY c.confidence"
         rows = conn.execute(
-            "SELECT r.decision, COUNT(*) n FROM reviews r GROUP BY r.decision"
+            review_query, args,
         ).fetchall()
         conf = conn.execute(
-            "SELECT confidence, COUNT(*) n FROM clips GROUP BY confidence"
+            confidence_query, args,
         ).fetchall()
     return {
         "by_decision": {r["decision"]: r["n"] for r in rows},
