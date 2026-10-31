@@ -410,6 +410,12 @@ function ReviewClipEditor({
         controls
         autoPlay
         loop
+        muted={clip.source === "facebook"}
+        onVolumeChange={(event) => {
+          if (clip.source === "facebook" && !event.currentTarget.muted) {
+            event.currentTarget.muted = true;
+          }
+        }}
         className="w-full rounded-md border border-border bg-black max-h-[480px]"
       />
 

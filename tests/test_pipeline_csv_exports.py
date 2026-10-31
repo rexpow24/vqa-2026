@@ -11,7 +11,8 @@ def _create_db(path):
             """
             CREATE TABLE videos (
                 youtube_video_id TEXT PRIMARY KEY,
-                title TEXT
+                title TEXT,
+                source TEXT NOT NULL DEFAULT 'youtube'
             );
             CREATE TABLE clips (
                 clip_id TEXT PRIMARY KEY,
@@ -24,13 +25,15 @@ def _create_db(path):
                 difficulty TEXT,
                 event_label TEXT
             );
-            INSERT INTO videos VALUES ('video-1', 'Traffic, morning');
-            INSERT INTO videos VALUES ('video-2', 'Traffic [P100]');
-            INSERT INTO videos VALUES ('video-3', 'Traffic [P9]');
-            INSERT INTO videos VALUES ('video-4', 'Traffic - P20');
-            INSERT INTO videos VALUES ('video-5', NULL);
+            INSERT INTO videos (youtube_video_id, title) VALUES ('video-1', 'Traffic, morning');
+            INSERT INTO videos (youtube_video_id, title) VALUES ('video-2', 'Traffic [P100]');
+            INSERT INTO videos (youtube_video_id, title) VALUES ('video-3', 'Traffic [P9]');
+            INSERT INTO videos (youtube_video_id, title) VALUES ('video-4', 'Traffic - P20');
+            INSERT INTO videos (youtube_video_id, title) VALUES ('video-5', NULL);
+            INSERT INTO videos VALUES ('fb_video', 'Facebook traffic', 'facebook');
             INSERT INTO clips VALUES ('chunk-1', 'video-1', 1, 1000);
             INSERT INTO clips VALUES ('chunk-2', 'video-1', 2, 2000);
+            INSERT INTO clips VALUES ('fb_chunk', 'fb_video', 1, 0);
             INSERT INTO reviews VALUES ('chunk-1', 'easy', 'accident');
             """
         )
@@ -53,6 +56,7 @@ def test_export_pipeline_videos_includes_all_videos_and_titles(tmp_path):
         ["Traffic [P9]", "video-3"],
         ["Traffic - P20", "video-4"],
         ["Traffic [P100]", "video-2"],
+        ["Facebook traffic", "fb_video"],
         ["Traffic, morning", "video-1"],
         ["", "video-5"],
     ]
@@ -66,7 +70,8 @@ def test_export_pipeline_chunks_includes_labels_and_unlabeled_chunks(tmp_path):
     assert export_chunks(["--db", str(db_path), "--out", str(output)]) == 0
 
     assert _read_csv(output) == [
-        ["video_title", "video_id", "chunk_id", "difficulty", "event_label"],
-        ["Traffic, morning", "video-1", "chunk-1", "easy", "accident"],
-        ["Traffic, morning", "video-1", "chunk-2", "", ""],
+        ["video_title", "video_id", "source", "chunk_id", "difficulty", "event_label"],
+        ["Facebook traffic", "fb_video", "facebook", "fb_chunk", "", ""],
+        ["Traffic, morning", "video-1", "youtube", "chunk-1", "easy", "accident"],
+        ["Traffic, morning", "video-1", "youtube", "chunk-2", "", ""],
     ]

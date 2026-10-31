@@ -70,7 +70,7 @@ export default function DedupPage() {
     }
   }
 
-  async function decide(item: DedupItem, decision: "keep" | "duplicate" | "pending", duplicateOf?: string) {
+  async function decide(item: DedupItem, decision: "keep" | "duplicate" | "duplicate_keep" | "pending", duplicateOf?: string) {
     await act(async () => {
       const next = await api<DedupStatus>("/dedup/decision", {
         method: "POST",
@@ -79,7 +79,7 @@ export default function DedupPage() {
       setStatus((previous) => previous ? { ...previous, ...next } : previous);
       const nextPending = next.items.find((candidate) => candidate.path !== item.path && !candidate.decision);
       if (decision !== "pending" && nextPending) setSelectedPath(nextPending.path);
-    });
+    }, decision === "duplicate_keep" ? "Đã đánh dấu clip bên trái là bản trùng và giữ clip này." : undefined);
   }
 
   const items = status?.items ?? [];
@@ -184,7 +184,7 @@ export default function DedupPage() {
                 <p className="text-xs text-muted">ĐỀ XUẤT {position + 1} / {items.length}</p>
                 <h2 className="mt-1 text-lg font-semibold">{name(item.path)}</h2>
                 <p className="text-sm text-accent">Top 1 fusion {score(item.top_score)} · {item.decision === "duplicate"
-                  ? "Đã đánh dấu trùng" : item.decision === "keep" ? "Đã giữ" : "Cần quyết định"}</p>
+                    ? "Clip bên trái đã đánh dấu trùng" : item.decision === "keep" ? "Đã giữ" : "Cần quyết định"}</p>
               </div>
               <div className="flex gap-2">
                 <button className="rounded-md border border-border px-3 py-2 text-sm disabled:opacity-40"
@@ -217,8 +217,8 @@ export default function DedupPage() {
                     <video controls preload="metadata" src={mediaUrl(match.path)} className="mt-2 w-full rounded-md bg-black" />
                     <p className="mt-1 break-all text-xs text-muted">{name(match.path)}</p>
                     <button className={`mt-3 rounded-md border px-3 py-2 text-xs disabled:opacity-40 ${item.duplicate_of === match.path ? "border-accent text-accent" : "border-border"}`}
-                      disabled={pending} onClick={() => decide(item, "duplicate", match.path)}>
-                      {item.duplicate_of === match.path ? "Đã chọn là bản trùng" : "Trùng với clip này"}
+                      disabled={pending} onClick={() => decide(item, "duplicate_keep", match.path)}>
+                      {item.duplicate_of === match.path ? "Đánh dấu trùng · giữ clip này" : "Trùng — giữ clip này"}
                     </button>
                   </article>
                 ))}

@@ -334,6 +334,49 @@ def save_decision(query_path: str, decision: str, duplicate_of: str | None) -> d
     return queue()
 
 
+def save_duplicate_and_keep(query_path: str, keep_path: str) -> dict:
+    state = queue()
+    if not state["ready"]:
+        raise ValueError(state["problem"])
+    query = next((item for item in state["items"] if item["path"] == query_path), None)
+    if query is None:
+        raise ValueError("Clip này không nằm trong hàng chờ theo ngưỡng hiện tại.")
+    if keep_path not in {match["path"] for match in query["matches"]}:
+        raise ValueError("Hãy chọn một video trong top kết quả làm bản giữ.")
+
+    index, _ = read_index()
+    assert index is not None
+    keep_query = next((item for item in index["queries"] if item["path"] == keep_path), None)
+    if keep_query is None:
+        raise ValueError("Không tìm thấy clip được chọn để giữ trong kết quả Dedup hiện tại.")
+
+    finished = ROOT / "finished" / Path(query_path).name
+    archived = None
+    if finished.exists():
+        archive_dir = INDEX_PATH.parent / "excluded_finished"
+        archive_dir.mkdir(parents=True, exist_ok=True)
+        archived = archive_dir / f"{finished.stem}.{uuid4().hex[:8]}{finished.suffix}"
+        finished.replace(archived)
+    try:
+        with db.tx() as conn:
+            for path, review_key, decision, duplicate_of in (
+                (query_path, query["review_key"], "duplicate", keep_path),
+                (keep_path, keep_query["review_key"], "keep", None),
+            ):
+                conn.execute(
+                    "INSERT INTO dedup_decisions(query_path, review_key, decision, duplicate_of, reviewed_at) "
+                    "VALUES(?,?,?,?,?) ON CONFLICT(query_path) DO UPDATE SET "
+                    "review_key=excluded.review_key, decision=excluded.decision, "
+                    "duplicate_of=excluded.duplicate_of, reviewed_at=excluded.reviewed_at",
+                    (path, review_key, decision, duplicate_of, db.now()),
+                )
+    except Exception:
+        if archived is not None:
+            archived.replace(finished)
+        raise
+    return queue()
+
+
 def allowed_sources() -> set[str]:
     state = queue()
     if not state["ready"]:

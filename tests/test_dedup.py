@@ -58,7 +58,10 @@ def test_review_gate_archives_existing_finished_and_detects_changed_trim(tmp_pat
     dedup.save_decision(b, "duplicate", a)
     with pytest.raises(ValueError, match="vòng trùng"):
         dedup.allowed_sources()
-    dedup.save_decision(b, "keep", None)
+    dedup.save_duplicate_and_keep(a, b)
+    decisions = {item["path"]: item["decision"] for item in dedup.queue()["items"]}
+    assert decisions[a] == "duplicate"
+    assert decisions[b] == "keep"
     assert dedup.allowed_sources() == {b}
 
     paths[1].write_bytes(b"changed source")

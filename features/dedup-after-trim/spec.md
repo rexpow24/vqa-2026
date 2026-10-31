@@ -74,7 +74,7 @@ The gate rejects a cycle of duplicate-of decisions, so at least one clip remains
 ## Acceptance criteria
 
 - At 0.80, the queue contains only queries with fused top 1 strictly greater than 0.80.
-- The query page shows top five videos and can save keep or duplicate-of-candidate decisions across reloads.
+- The query page shows top five videos and can save keep or duplicate-of-candidate decisions across reloads. A candidate action can atomically mark the current query as a duplicate and the selected candidate as the clip to keep.
 - An anonymize start fails with an actionable reason until analysis is fresh and all above-threshold queries are decided.
 - A re-trimmed file invalidates analysis and cannot inherit a previous decision.
 - After adding one trimmed file, a run scores it against all current clips and does not recompute unchanged pairs.

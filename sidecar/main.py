@@ -417,6 +417,10 @@ def dedup_decision(req: DedupDecisionRequest):
     if _dedup_busy() or dedup.active_run() is not None or _anon_busy():
         raise HTTPException(409, "Hãy chờ tác vụ đang chạy kết thúc rồi sửa quyết định Dedup.")
     try:
+        if req.decision == "duplicate_keep":
+            if req.duplicate_of is None:
+                raise ValueError("Hãy chọn một video trong top kết quả làm bản giữ.")
+            return dedup.save_duplicate_and_keep(req.query_path, req.duplicate_of)
         return dedup.save_decision(req.query_path, req.decision, req.duplicate_of)
     except ValueError as e:
         raise HTTPException(409, str(e)) from e

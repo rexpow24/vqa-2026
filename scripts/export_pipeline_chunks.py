@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 QUERY = """
-    SELECT v.title, c.youtube_video_id, c.clip_id, r.difficulty, r.event_label
+    SELECT v.title, c.youtube_video_id, v.source, c.clip_id, r.difficulty, r.event_label
     FROM clips AS c
     LEFT JOIN videos AS v ON v.youtube_video_id = c.youtube_video_id
     LEFT JOIN reviews AS r ON r.clip_id = c.clip_id
@@ -19,7 +19,7 @@ QUERY = """
 
 def export_rows(
     conn: sqlite3.Connection,
-) -> list[tuple[str | None, str, str, str | None, str | None]]:
+) -> list[tuple[str | None, str, str | None, str, str | None, str | None]]:
     return [tuple(row) for row in conn.execute(QUERY)]
 
 
@@ -37,10 +37,10 @@ def main(argv: list[str] | None = None) -> int:
 
     with args.out.open("w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
-        writer.writerow(["video_title", "video_id", "chunk_id", "difficulty", "event_label"])
+        writer.writerow(["video_title", "video_id", "source", "chunk_id", "difficulty", "event_label"])
         writer.writerows(
-            (title or "", video_id, chunk_id, difficulty or "", event_label or "")
-            for title, video_id, chunk_id, difficulty, event_label in rows
+            (title or "", video_id, source or "", chunk_id, difficulty or "", event_label or "")
+            for title, video_id, source, chunk_id, difficulty, event_label in rows
         )
 
     print(f"{len(rows)} chunks -> {args.out}")

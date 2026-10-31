@@ -261,8 +261,9 @@ python scripts\export_pipeline_chunks.py
 ```
 
 These create `pipeline_videos.csv` (`video_title, video_id`) and
-`pipeline_chunks.csv` (`video_title, video_id, chunk_id, difficulty,
-event_label`) in the repository root. Here `chunk_id` is the pipeline's
+`pipeline_chunks.csv` (`video_title, video_id, source, chunk_id, difficulty,
+event_label`) in the repository root. The chunks CSV's `source` column comes
+from `videos.source` (`youtube` or `facebook`). Here `chunk_id` is the pipeline's
 `clip_id`; labels are the clip-level values in `reviews` and are blank when
 not yet assigned. The videos CSV is sorted by the numeric `P` code in the
 title, with titles without a code last. Use `--db PATH` to select another
