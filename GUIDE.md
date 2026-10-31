@@ -141,6 +141,14 @@ Facebook anonymize writes to `finished/facebook/` and does not run Dedup or
 compare against YouTube. Keep the YouTube queue, worker, and anonymize flow
 unchanged.
 
+To summarize the scores of manually reviewed YouTube Dedup suggestions, run
+`.\venv\Scripts\python.exe scripts\dedup_stats.py` from the repository root.
+It reports the mean selected-pair score for `duplicate` decisions, the top
+score for `keep` decisions, and whether the reviewed examples suggest a
+separating threshold. The report requires a fresh Dedup index and does not
+change the index or database. Add `--out PATH` to write per-query details as
+CSV.
+
 You do **not** have to wait for the queue to drain before reviewing. Clips are
 written to the database one at a time as each is encoded, so the Review tab
 fills up during the run — open it and work while the pipeline keeps going.
