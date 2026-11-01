@@ -1,7 +1,8 @@
-// Uploads every finished/*.mp4 into the configured Drive folder and writes
-// videos.csv -- the metadata CSV the bulk importer consumes.
+// Uploads finished/*.mp4 into the configured Drive folder and writes videos.csv
+// -- the metadata CSV the bulk importer consumes. Facebook clips in
+// finished/facebook/ can be included with --include-facebook.
 //
-//   cd frontend && node scripts/drive-upload.mjs [--out ../videos.csv] [--limit N]
+//   cd frontend && node scripts/drive-upload.mjs [--include-facebook] [--out ../videos.csv] [--limit N]
 //
 // Run scripts/drive-auth.mjs once first.
 //
@@ -28,7 +29,10 @@ function flag(name, fallback) {
 const outPath = path.resolve(REPO_ROOT, flag("--out", "videos.csv"));
 const limitRaw = flag("--limit", null);
 const limit = limitRaw === null ? Infinity : Number(limitRaw);
-if (!Number.isFinite(limit) || limit <= 0) throw new Error(`--limit needs a positive number, got ${limitRaw}`);
+if (limitRaw !== null && (!Number.isFinite(limit) || limit <= 0)) {
+  throw new Error(`--limit needs a positive number, got ${limitRaw}`);
+}
+const includeFacebook = args.includes("--include-facebook");
 
 const env = loadEnv();
 const tokenPath = path.join(FRONTEND_DIR, ".drive-token.json");
@@ -57,7 +61,18 @@ const drive = new drive_v3.Drive({ auth });
 
 const finishedDir = path.join(REPO_ROOT, "finished");
 if (!fs.existsSync(finishedDir)) throw new Error(`No such folder: ${finishedDir}`);
-const files = fs.readdirSync(finishedDir).filter((name) => name.toLowerCase().endsWith(".mp4")).sort();
+const files = fs.readdirSync(finishedDir, { withFileTypes: true })
+  .filter((entry) => entry.isFile() && entry.name.toLowerCase().endsWith(".mp4"))
+  .map((entry) => ({ name: entry.name, full: path.join(finishedDir, entry.name) }));
+if (includeFacebook) {
+  const facebookDir = path.join(finishedDir, "facebook");
+  if (fs.existsSync(facebookDir)) {
+    files.push(...fs.readdirSync(facebookDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && entry.name.toLowerCase().endsWith(".mp4"))
+      .map((entry) => ({ name: entry.name, full: path.join(facebookDir, entry.name) })));
+  }
+}
+files.sort((a, b) => a.name.localeCompare(b.name));
 
 // Existing rows are the resume ledger; keep them verbatim so a partial CSV is
 // never rewritten or reordered under the user.
@@ -105,14 +120,14 @@ Enable it at APIs & Services > Library > Google Drive API, in that same project,
   if (!/not found|File not found/i.test(message)) throw cause;
 }
 console.log(`Uploading into Drive folder: ${destination}`);
-console.log(`Source: ${finishedDir} -- ${files.length} file(s)\n`);
+console.log(`Source: ${finishedDir} -- ${files.length} file(s)${includeFacebook ? " (including Facebook)" : ""}\n`);
 
 let uploaded = 0;
 let skipped = 0;
-for (const name of files) {
+for (const file of files) {
   if (uploaded >= limit) break;
+  const { name, full } = file;
   if (existing.has(name)) { skipped += 1; continue; }
-  const full = path.join(finishedDir, name);
   const duration = probeDuration(full);
   const { data } = await drive.files.create({
     requestBody: { name, parents: [folderId] },
