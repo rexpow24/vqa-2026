@@ -49,7 +49,7 @@ Local historical judgments were not imported because their free-form annotator I
 ## Verification
 
 From `frontend/`, run `npm run lint`, `npx tsc --noEmit`, and `npm run build`.
-Run `node scripts/verify-annotator-queue.mjs` for the work queue: completed videos leaving the annotator's own queue, progress counts, coverage ordering, and the next-video handoff.
+Run `node scripts/verify-annotator-queue.mjs` for the work queue: completed videos leaving the annotator's own queue, progress counts, agreement-sample ordering, and the next-video handoff.
 That script's HTTP half needs a hosted-mode server, which locally means `PLATFORM_MODE=hosted npm run dev -- -p 3001` and `TEST_BASE_URL=http://localhost:3001`; without `TEST_BASE_URL` only the database half runs.
 Run `node scripts/verify-deployment.mjs` for production session, page, and Drive byte-range checks.
 Run `TEST_BASE_URL=https://vqa-vn-traffic-labeling.vercel.app node scripts/verify-labeling.mjs` from a shell that supports that variable syntax for the full labeling and admin lifecycle check.

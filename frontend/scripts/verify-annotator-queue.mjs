@@ -7,8 +7,8 @@
 //   TEST_BASE_URL=http://localhost:3001 node scripts/verify-annotator-queue.mjs
 //
 // The HTTP half needs a server running in hosted mode; without one it is
-// skipped and only the RPC half runs. Creates two temporary annotators and one
-// temporary video, and removes all three in the finally block.
+// skipped and only the RPC half runs. Creates temporary annotators and videos,
+// and removes them in the finally block.
 
 import crypto from "node:crypto";
 import { privilegedClient, signIn, request } from "./lib/session.mjs";
@@ -38,35 +38,75 @@ async function makeAnnotator(label) {
 }
 
 const groups = GROUP_CODES;
-let videoId;
+const videoIds = [];
 const users = [];
 
-try {
-  // A ready video: nine drafts, so it is labelable and the queue will show it.
+// A ready video: nine drafts, so it is labelable and the queue will show it.
+async function makeVideo(agreementSample) {
   const { data: video, error: videoError } = await privileged.from("videos").insert({
     drive_file_id: `queue-test-${crypto.randomUUID()}`,
     filename: `zzz-queue-test-${crypto.randomUUID()}.mp4`,
     duration_s: 10,
+    agreement_sample: agreementSample,
   }).select("id").single();
   if (videoError) throw videoError;
-  videoId = video.id;
+  videoIds.push(video.id);
   const { error: draftError } = await privileged.from("video_drafts").insert(
     groups.map((group) => ({
-      video_id: videoId, qgroup: group, group_name: group,
+      video_id: video.id, qgroup: group, group_name: group,
       question: `Q ${group}`, answer: `A ${group}`,
       source_sha256: "0".repeat(64), source_kind: "admin_csv", prompt_version: 0,
     })));
   if (draftError) throw draftError;
+  return video.id;
+}
+
+// Claim, own label, nine verdicts, complete.
+async function finish(user, id) {
+  const { error: claimError } = await user.client.from("video_assignments")
+    .insert({ video_id: id, annotator_id: user.id, status: "pending" });
+  if (claimError) throw claimError;
+  const { error: labelError } = await user.client.from("video_labels")
+    .insert({ video_id: id, annotator_id: user.id, difficulty: "easy", event_label: "accident" });
+  if (labelError) throw labelError;
+  const { data: drafts, error: draftReadError } = await user.client.from("video_drafts")
+    .select("id").eq("video_id", id);
+  if (draftReadError) throw draftReadError;
+  const { error: answerError } = await user.client.from("qa_annotations").insert(
+    drafts.map((draft) => ({
+      draft_id: draft.id, annotator_id: user.id, verdict: "AGREE", human_keyframes_s: [1.0],
+    })));
+  if (answerError) throw answerError;
+  const { error: completeError } = await user.client.from("video_assignments")
+    .update({ status: "completed", completed_at: new Date().toISOString() })
+    .eq("video_id", id).eq("annotator_id", user.id);
+  if (completeError) throw completeError;
+}
+
+try {
+  const videoId = await makeVideo(true);
+  const untouchedSample = await makeVideo(true);
+  const soloDone = await makeVideo(false);
+  const soloClaimed = await makeVideo(false);
+  const soloFree = await makeVideo(false);
+  const httpVideo = await makeVideo(false);
 
   const alice = await makeAnnotator("Queue Test Alice");
   users.push(alice);
   const bob = await makeAnnotator("Queue Test Bob");
   users.push(bob);
+  const carol = await makeAnnotator("Queue Test Carol");
+  users.push(carol);
 
+  // The whole queue, not one page: the test videos sort after ~1500 real ones.
   const queueOf = async (user) => {
-    const { data, error } = await user.client.rpc("annotator_queue", { page_size: 100, page_offset: 0 });
-    if (error) throw error;
-    return data;
+    const rows = [];
+    for (let offset = 0; ; offset += 100) {
+      const { data, error } = await user.client.rpc("annotator_queue", { page_size: 100, page_offset: offset });
+      if (error) throw error;
+      rows.push(...data);
+      if (data.length < 100) return rows;
+    }
   };
   const progressOf = async (user) => {
     const { data, error } = await user.client.rpc("annotator_progress");
@@ -87,25 +127,7 @@ try {
   check(Number(beforeProgress.total) >= 1,
     "progress total counts ready videos", beforeProgress.total);
 
-  // Alice does the whole video: claim, own label, nine verdicts, complete.
-  const { error: claimError } = await alice.client.from("video_assignments")
-    .insert({ video_id: videoId, annotator_id: alice.id, status: "pending" });
-  if (claimError) throw claimError;
-  const { error: labelError } = await alice.client.from("video_labels")
-    .insert({ video_id: videoId, annotator_id: alice.id, difficulty: "easy", event_label: "accident" });
-  if (labelError) throw labelError;
-  const { data: drafts, error: draftReadError } = await alice.client.from("video_drafts")
-    .select("id").eq("video_id", videoId);
-  if (draftReadError) throw draftReadError;
-  const { error: answerError } = await alice.client.from("qa_annotations").insert(
-    drafts.map((draft) => ({
-      draft_id: draft.id, annotator_id: alice.id, verdict: "AGREE", human_keyframes_s: [1.0],
-    })));
-  if (answerError) throw answerError;
-  const { error: completeError } = await alice.client.from("video_assignments")
-    .update({ status: "completed", completed_at: new Date().toISOString() })
-    .eq("video_id", videoId).eq("annotator_id", alice.id);
-  if (completeError) throw completeError;
+  await finish(alice, videoId);
 
   console.log("After Alice completes it:");
   const afterQueue = await queueOf(alice);
@@ -125,11 +147,44 @@ try {
   check(Number(bobRow.coverage) === 1,
     "coverage reflects the one finished annotator", bobRow.coverage);
 
-  // Coverage ordering is what stops every annotator from piling onto the same
-  // first page while the tail of the dataset never gets labelled.
-  const coverages = bobQueue.map((row) => Number(row.coverage));
-  check(coverages.every((value, index) => index === 0 || coverages[index - 1] <= value),
-    "queue is ordered by coverage ascending", coverages.join(","));
+  const { data: sampleRows, error: sampleError } = await privileged.from("videos")
+    .select("id").eq("agreement_sample", true);
+  if (sampleError) throw sampleError;
+  const sample = new Set(sampleRows.map((row) => row.id));
+  const position = (queue, id) => queue.findIndex((row) => row.video_id === id);
+
+  console.log("Agreement ordering:");
+  check(position(bobQueue, videoId) < position(bobQueue, untouchedSample),
+    "an open pair comes before an untouched sample video",
+    `${position(bobQueue, videoId)} vs ${position(bobQueue, untouchedSample)}`);
+  const firstSolo = bobQueue.findIndex((row) => !sample.has(row.video_id));
+  check(bobQueue.slice(firstSolo).every((row) => !sample.has(row.video_id)),
+    "every sample video needing a label comes before every other video", `first other at ${firstSolo}`);
+
+  await finish(bob, videoId);
+  await finish(alice, soloDone);
+  await bob.client.from("video_assignments")
+    .insert({ video_id: soloClaimed, annotator_id: bob.id, status: "pending" });
+
+  const carolQueue = await queueOf(carol);
+  check(position(carolQueue, videoId) > position(carolQueue, soloFree),
+    "a sample video with its pair drops behind unlabelled videos",
+    `${position(carolQueue, videoId)} vs ${position(carolQueue, soloFree)}`);
+  check(position(carolQueue, soloDone) > position(carolQueue, soloFree),
+    "a single-label video someone finished drops behind unlabelled ones",
+    `${position(carolQueue, soloDone)} vs ${position(carolQueue, soloFree)}`);
+  check(position(carolQueue, soloClaimed) > position(carolQueue, soloFree),
+    "a single-label video someone claimed drops behind unlabelled ones",
+    `${position(carolQueue, soloClaimed)} vs ${position(carolQueue, soloFree)}`);
+  check(position(carolQueue, videoId) >= 0,
+    "a video past its target is still reachable", "missing");
+  const bobAfter = await queueOf(bob);
+  check(bobAfter[0].video_id === soloClaimed,
+    "the caller's own open claim comes first", bobAfter[0].video_id);
+
+  const started = performance.now();
+  await carol.client.rpc("annotator_queue", { page_size: 12, page_offset: 0 });
+  console.log(`      one queue page took ${Math.round(performance.now() - started)} ms`);
 
   if (!base) {
     console.log("\nTEST_BASE_URL not set -- skipped the HTTP half (queue page, next-video handoff).");
@@ -140,23 +195,23 @@ try {
     check(typeof page.data === "string" && page.data.includes("Bạn đã gán nhãn"),
       "queue page shows the annotator's own progress", "progress text missing");
 
-    // Bob finishes the test video through the real endpoints, and the
-    // completion response must point at something else to work on.
-    await request(base, `/api/videos/${videoId}/claim`, bob.cookie, "POST");
+    // Bob finishes a video through the real endpoints, and the completion
+    // response must point at something else to work on.
+    await request(base, `/api/videos/${httpVideo}/claim`, bob.cookie, "POST");
     const { error: bobLabelError } = await bob.client.from("video_labels")
-      .insert({ video_id: videoId, annotator_id: bob.id, difficulty: "medium", event_label: "near-miss" });
+      .insert({ video_id: httpVideo, annotator_id: bob.id, difficulty: "medium", event_label: "near-miss" });
     if (bobLabelError) throw bobLabelError;
-    const { data: bobDrafts } = await bob.client.from("video_drafts").select("id").eq("video_id", videoId);
+    const { data: bobDrafts } = await bob.client.from("video_drafts").select("id").eq("video_id", httpVideo);
     const { error: bobAnswerError } = await bob.client.from("qa_annotations").insert(
       bobDrafts.map((draft) => ({
         draft_id: draft.id, annotator_id: bob.id, verdict: "AGREE", human_keyframes_s: [2.0],
       })));
     if (bobAnswerError) throw bobAnswerError;
 
-    const completed = await request(base, `/api/videos/${videoId}/complete`, bob.cookie, "POST");
+    const completed = await request(base, `/api/videos/${httpVideo}/complete`, bob.cookie, "POST");
     check(completed.status === 200, "complete endpoint succeeds", completed.status);
     check(completed.data.status === "completed", "assignment is marked completed", completed.data.status);
-    check(completed.data.next_video_id !== videoId,
+    check(completed.data.next_video_id !== httpVideo,
       "the next video is never the one just finished", completed.data.next_video_id);
     check("next_video_id" in completed.data,
       "complete reports where to go next so the list is not needed", "field missing");
@@ -165,8 +220,8 @@ try {
 
   console.log("\nAll annotator queue checks passed.");
 } finally {
-  if (videoId) {
-    const { error } = await privileged.from("videos").delete().eq("id", videoId);
+  if (videoIds.length) {
+    const { error } = await privileged.from("videos").delete().in("id", videoIds);
     if (error) throw new Error(`Test video cleanup failed: ${error.message}`);
   }
   for (const user of users) {
