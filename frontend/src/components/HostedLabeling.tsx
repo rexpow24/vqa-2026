@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelGroup } from "@/components/LabelGroup";
 import { needsKeyframes } from "@/lib/qgroups";
-import type { Difficulty, EventLabel, Verdict } from "@/lib/types";
+import type { EventLabel, Verdict } from "@/lib/types";
 
 type Video = { id: string; filename: string; duration_s: number };
 type Assignment = { id: string; status: string; completed_at: string | null };
@@ -14,7 +14,7 @@ type Assignment = { id: string; status: string; completed_at: string | null };
 type CompletedAssignment = Assignment & {
   next_video_id: string | null; next_filename: string | null;
 };
-type Label = { difficulty: Difficulty; event_label: EventLabel };
+type Label = { event_label: EventLabel };
 export type HostedDraft = {
   id: string; qgroup: string; group_name: string; question: string; answer: string;
   truncated: boolean; completion_tokens: number | null; latency_ms: number | null;
@@ -45,7 +45,6 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [assignment, setAssignment] = useState<Assignment | null>(initialAssignment);
   const [label, setLabel] = useState(initialLabel);
-  const [difficulty, setDifficulty] = useState<Difficulty | null>(initialLabel?.difficulty ?? null);
   const [eventLabel, setEventLabel] = useState<EventLabel | null>(initialLabel?.event_label ?? null);
   const [drafts, setDrafts] = useState(initialDrafts);
   const [playhead, setPlayhead] = useState(0);
@@ -94,11 +93,11 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
     finally { setBusy(false); }
   }
   async function saveLabel() {
-    if (!difficulty || !eventLabel) return;
+    if (!eventLabel) return;
     setBusy(true); setError(""); setMessage("");
     try {
       const saved = await requestJson<Label>(`/api/videos/${video.id}/label`,
-        { difficulty, event_label: eventLabel });
+        { event_label: eventLabel });
       setLabel(saved); setMessage("Đã lưu nhãn video.");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Không thể lưu nhãn."); }
     finally { setBusy(false); }
@@ -163,12 +162,9 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
             {drafts[0].frame_times_s.map((time) => Number(time).toFixed(1)).join(" · ")}</span></div>}
         </div>
         {ready && <div className="flex flex-col gap-3 rounded-md border border-border bg-surface p-3">
-          <div className="text-xs text-muted">Nhãn của video (1 cặp cho cả 9 câu)</div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <LabelGroup legend="Difficulty" value={difficulty} options={["easy", "medium", "high"] as Difficulty[]} onChange={setDifficulty} />
-            <LabelGroup legend="Event" value={eventLabel} options={["accident", "near-miss"] as EventLabel[]} onChange={setEventLabel} />
-          </div>
-          <button type="button" disabled={!assignment || !difficulty || !eventLabel || busy} onClick={saveLabel}
+          <div className="text-xs text-muted">Nhãn của video (1 nhãn cho cả 9 câu)</div>
+          <LabelGroup legend="Event" value={eventLabel} options={["accident", "near-miss"] as EventLabel[]} onChange={setEventLabel} />
+          <button type="button" disabled={!assignment || !eventLabel || busy} onClick={saveLabel}
             className="self-start rounded-md bg-accent px-3 py-1.5 text-sm text-white disabled:opacity-40">
             {label ? "Cập nhật nhãn video" : "Lưu nhãn video"}
           </button>

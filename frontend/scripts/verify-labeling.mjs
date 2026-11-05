@@ -45,7 +45,7 @@ try {
   expect(await request(`/annotate/${videoId}`, annotator.cookie), 200, "Labeling page");
   expect(await request(`/api/videos/${videoId}/claim`, annotator.cookie, "POST", {}), 201, "Claim video");
   expect(await request(`/api/videos/${videoId}/label`, annotator.cookie, "POST",
-    { difficulty: "easy", event_label: "accident" }), 200, "Independent video label");
+    { event_label: "accident" }), 200, "Independent video label");
   // Evidence frames only where the answer rests on one moment: C, V, Attr.
   const groupDraft = (code) => drafts.find((draft) => draft.qgroup === code);
   for (const code of KEYFRAME_GROUPS) {
@@ -70,9 +70,9 @@ try {
     if (marks.length !== expected) throw new Error(`${draft.qgroup} stored ${marks.length} evidence frames, expected ${expected}`);
   }
   expect(await request(`/api/videos/${videoId}/complete`, annotator.cookie, "POST", {}), 200, "Complete nine drafts");
-  const { data: ownLabel } = await annotator.client.from("video_labels").select("difficulty,event_label")
+  const { data: ownLabel } = await annotator.client.from("video_labels").select("event_label")
     .eq("video_id", videoId).single();
-  if (ownLabel?.difficulty !== "easy" || ownLabel?.event_label !== "accident") {
+  if (ownLabel?.event_label !== "accident") {
     throw new Error("Independent annotation label was altered by reference CSV");
   }
   const secondForm = new FormData();

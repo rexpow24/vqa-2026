@@ -15,7 +15,7 @@ export default async function VideoPage({ params }: Context) {
   if (!video || video.status !== "active") notFound();
   const [assignmentResult, labelResult, draftsResult] = await Promise.all([
     supabase.from("video_assignments").select("id,status,completed_at").eq("video_id", videoId).eq("annotator_id", profile.id).maybeSingle(),
-    supabase.from("video_labels").select("difficulty,event_label").eq("video_id", videoId).eq("annotator_id", profile.id).maybeSingle(),
+    supabase.from("video_labels").select("event_label").eq("video_id", videoId).eq("annotator_id", profile.id).maybeSingle(),
     supabase.from("video_drafts").select("id,qgroup,group_name,question,answer,source_kind,truncated,completion_tokens,latency_ms,prompt_version,frame_times_s,predicted_keyframes_s")
       .eq("video_id", videoId),
   ]);
@@ -36,6 +36,6 @@ export default async function VideoPage({ params }: Context) {
     };
   }).sort((a, b) => groupOrder(a.qgroup) - groupOrder(b.qgroup));
   return <HostedLabeling video={video} initialAssignment={assignmentResult.data}
-    initialLabel={labelResult.data as { difficulty: "easy" | "medium" | "high"; event_label: "accident" | "near-miss" } | null}
+    initialLabel={labelResult.data as { event_label: "accident" | "near-miss" } | null}
     initialDrafts={initialDrafts as HostedDraft[]} />;
 }
