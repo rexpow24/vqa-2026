@@ -7,3 +7,4 @@ import QGROUPS from "../../src/lib/qgroups.json" with { type: "json" };
 export { QGROUPS };
 export const GROUP_CODES = QGROUPS.map((group) => group.code);
 export const GROUP_NAMES = Object.fromEntries(QGROUPS.map((group) => [group.code, group.name]));
+export const KEYFRAME_GROUPS = QGROUPS.filter((group) => group.keyframes).map((group) => group.code);

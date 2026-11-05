@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelGroup } from "@/components/LabelGroup";
+import { needsKeyframes } from "@/lib/qgroups";
 import type { Difficulty, EventLabel, Verdict } from "@/lib/types";
 
 type Video = { id: string; filename: string; duration_s: number };
@@ -205,7 +206,8 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
   const dirty = verdict !== draft.verdict || reason !== draft.reason_code ||
     note !== (draft.reason_note ?? "") || answer !== (draft.edited_answer ?? draft.answer) ||
     JSON.stringify(marks) !== JSON.stringify(draft.human_keyframes_s.map(Number));
-  const blocked = !canSave || !verdict || marks.length < 1 || marks.length > 3 ||
+  const needsMarks = needsKeyframes(draft.qgroup);
+  const blocked = !canSave || !verdict || (needsMarks && (marks.length < 1 || marks.length > 3)) ||
     (verdict === "DISAGREE" && (!reason || (reason === "khác" && !note.trim())));
 
   function addMark(time: number) {
@@ -224,7 +226,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
         verdict, reason_code: verdict === "DISAGREE" ? reason : null,
         reason_note: verdict === "DISAGREE" ? note : null,
         edited_answer: answer !== draft.answer ? answer : null,
-        human_keyframes_s: marks,
+        human_keyframes_s: needsMarks ? marks : [],
       });
       onSaved(saved);
     } catch (cause) { onError(cause instanceof Error ? cause.message : "Không thể lưu câu trả lời."); }
@@ -248,7 +250,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
           `${draft.completion_tokens} token · ${draft.latency_ms} ms · prompt v${draft.prompt_version}`}</span>
       </div>
     </div>
-    <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-2.5 text-xs">
+    {needsMarks && <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-2.5 text-xs">
       <span className="text-muted">Keyframe bằng chứng (1-3):</span>
       {marks.map((time) => <span key={time} className="flex items-center rounded border border-accent bg-accent/20">
         <button type="button" onClick={() => onSeek(time)} className="px-2 py-1 tabular-nums">{time.toFixed(2)}s</button>
@@ -269,7 +271,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
       {draft.predicted_keyframes_s && draft.predicted_keyframes_s.length > 0 && <span className="text-muted">
         · Model đoán: {draft.predicted_keyframes_s.map((time) => Number(time).toFixed(2)).join(", ")}
       </span>}
-    </div>
+    </div>}
     <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-2.5">
       {(Object.keys(VERDICT_LABEL) as Verdict[]).map((value) => <button key={value} type="button" aria-pressed={verdict === value}
         onClick={() => setVerdict(value)} className={`rounded-md border px-3 py-1.5 text-sm ${verdict === value ?

@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import { adminCredentials } from "./lib/env.mjs";
 import { privilegedClient, signIn, request as httpRequest } from "./lib/session.mjs";
-import { GROUP_CODES } from "./lib/qgroups.mjs";
+import { GROUP_CODES, KEYFRAME_GROUPS } from "./lib/qgroups.mjs";
 
 const base = process.env.TEST_BASE_URL || "http://localhost:3000";
 const privileged = privilegedClient();
@@ -46,11 +46,28 @@ try {
   expect(await request(`/api/videos/${videoId}/claim`, annotator.cookie, "POST", {}), 201, "Claim video");
   expect(await request(`/api/videos/${videoId}/label`, annotator.cookie, "POST",
     { difficulty: "easy", event_label: "accident" }), 200, "Independent video label");
-  expect(await request(`/api/drafts/${drafts[0].id}/annotation`, annotator.cookie, "POST",
-    { verdict: "AGREE", human_keyframes_s: [] }), 422, "Reject missing evidence");
-  for (const draft of drafts) {
+  // Evidence frames only where the answer rests on one moment: C, V, Attr.
+  const groupDraft = (code) => drafts.find((draft) => draft.qgroup === code);
+  for (const code of KEYFRAME_GROUPS) {
+    expect(await request(`/api/drafts/${groupDraft(code).id}/annotation`, annotator.cookie, "POST",
+      { verdict: "AGREE", human_keyframes_s: [] }), 422, `Reject ${code} without evidence`);
+  }
+  const { error: triggerError } = await annotator.client.from("qa_annotations").insert({
+    draft_id: groupDraft("C").id, annotator_id: testUserId, verdict: "AGREE", human_keyframes_s: [],
+  });
+  if (!triggerError) throw new Error("Database accepted C without evidence");
+  expect(await request(`/api/drafts/${groupDraft("S").id}/annotation`, annotator.cookie, "POST",
+    { verdict: "AGREE", human_keyframes_s: [] }), 200, "Save S without evidence");
+  for (const draft of drafts.filter((item) => item.qgroup !== "S")) {
     expect(await request(`/api/drafts/${draft.id}/annotation`, annotator.cookie, "POST",
       { verdict: "AGREE", human_keyframes_s: [0.5] }), 200, `Save ${draft.qgroup}`);
+  }
+  const { data: savedMarks } = await annotator.client.from("qa_annotations")
+    .select("draft_id,human_keyframes_s").eq("annotator_id", testUserId);
+  for (const draft of drafts) {
+    const marks = savedMarks.find((row) => row.draft_id === draft.id)?.human_keyframes_s ?? [];
+    const expected = KEYFRAME_GROUPS.includes(draft.qgroup) ? 1 : 0;
+    if (marks.length !== expected) throw new Error(`${draft.qgroup} stored ${marks.length} evidence frames, expected ${expected}`);
   }
   expect(await request(`/api/videos/${videoId}/complete`, annotator.cookie, "POST", {}), 200, "Complete nine drafts");
   const { data: ownLabel } = await annotator.client.from("video_labels").select("difficulty,event_label")
@@ -66,7 +83,7 @@ try {
   expect(await request(`/api/admin/users/${testUserId}`, annotator.cookie, "DELETE"), 403, "Delete denied");
   expect(await request(`/api/admin/users/${testUserId}`, admin.cookie, "DELETE"), 200, "Admin user delete");
   testUserId = undefined;
-  console.log("Annotator labeling, 1-3 evidence, hidden reference, completion, role guard, and admin delete: OK");
+  console.log("Annotator labeling, evidence only for C/V/Attr, hidden reference, completion, role guard, and admin delete: OK");
 } finally {
   if (testUserId) {
     const { error } = await privileged.auth.admin.deleteUser(testUserId);

@@ -13,12 +13,20 @@
 
 import data from "./qgroups.json";
 
-export type QGroup = { code: string; name: string; question: string };
+// `keyframes` marks the groups whose answer rests on one moment (C, V, Attr).
+// The others describe the whole clip, where 1-3 frames carry no evidence.
+// The database trigger keeps its own copy of this list; change both together.
+export type QGroup = { code: string; name: string; question: string; keyframes: boolean };
 
 export const QGROUPS: readonly QGroup[] = data;
 export const GROUP_CODES: readonly string[] = QGROUPS.map((group) => group.code);
 export const GROUP_NAMES: Readonly<Record<string, string>> =
   Object.fromEntries(QGROUPS.map((group) => [group.code, group.name]));
+
+/** Whether annotators must mark 1-3 evidence frames for this group. */
+export function needsKeyframes(code: string): boolean {
+  return QGROUPS.some((group) => group.code === code && group.keyframes);
+}
 
 /** Position of a group in the canonical order; -1 when the code is unknown. */
 export function groupOrder(code: string): number {

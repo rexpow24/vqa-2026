@@ -1,5 +1,6 @@
 import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
+import { needsKeyframes } from "@/lib/qgroups";
 
 type Context = { params: Promise<{ id: string }> };
 const VERDICTS = ["AGREE", "NOT_ANSWERABLE", "DISAGREE"];
@@ -16,18 +17,22 @@ export async function POST(request: Request, context: Context) {
   const reason = typeof body.reason_code === "string" ? body.reason_code : null;
   const note = typeof body.reason_note === "string" ? body.reason_note.trim() : null;
   const answer = typeof body.edited_answer === "string" ? body.edited_answer.trim() : null;
-  const marks = body.human_keyframes_s;
-  if (!VERDICTS.includes(verdict) || !Array.isArray(marks) || marks.length < 1 || marks.length > 3 ||
+  const supabase = await createClient();
+  const { data: draft, error: draftError } = await supabase.from("video_drafts")
+    .select("video_id,qgroup,predicted_keyframes_s").eq("id", id).single();
+  if (draftError || !draft) return Response.json({ error: "Không tìm thấy bản nháp." }, { status: 404 });
+  // Groups without evidence frames store none, even from a client that still sends some.
+  const required = needsKeyframes(draft.qgroup);
+  const marks = required ? body.human_keyframes_s : [];
+  if (!VERDICTS.includes(verdict) || !Array.isArray(marks) ||
+      (required && (marks.length < 1 || marks.length > 3)) ||
       !marks.every((value) => typeof value === "number" && Number.isFinite(value) && value >= 0) ||
       (verdict === "DISAGREE" && (!reason || !REASONS.includes(reason))) ||
       (verdict === "DISAGREE" && reason === "khác" && !note) ||
       (note?.length ?? 0) > 2000 || (answer?.length ?? 0) > 5000) {
-    return Response.json({ error: "Chọn nhận xét và 1-3 mốc bằng chứng hợp lệ." }, { status: 422 });
+    return Response.json({ error: required ? "Chọn nhận xét và 1-3 mốc bằng chứng hợp lệ." : "Chọn nhận xét hợp lệ." },
+      { status: 422 });
   }
-  const supabase = await createClient();
-  const { data: draft, error: draftError } = await supabase.from("video_drafts")
-    .select("video_id,predicted_keyframes_s").eq("id", id).single();
-  if (draftError || !draft) return Response.json({ error: "Không tìm thấy bản nháp." }, { status: 404 });
   const { data, error } = await supabase.from("qa_annotations").upsert({
     draft_id: id, annotator_id: profile.id, verdict,
     reason_code: verdict === "DISAGREE" ? reason : null,

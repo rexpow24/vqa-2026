@@ -150,7 +150,15 @@ try {
   const { data: sampleRows, error: sampleError } = await privileged.from("videos")
     .select("id").eq("agreement_sample", true);
   if (sampleError) throw sampleError;
-  const sample = new Set(sampleRows.map((row) => row.id));
+  // Real annotators work on this database too, so a sample video they already
+  // took twice is past its target and rightly sorts last.
+  const { data: taken, error: takenError } = await privileged.from("video_assignments")
+    .select("video_id").neq("annotator_id", bob.id);
+  if (takenError) throw takenError;
+  const takenCount = new Map();
+  for (const row of taken) takenCount.set(row.video_id, (takenCount.get(row.video_id) ?? 0) + 1);
+  const sample = new Set(sampleRows.map((row) => row.id)
+    .filter((id) => (takenCount.get(id) ?? 0) < 2));
   const position = (queue, id) => queue.findIndex((row) => row.video_id === id);
 
   console.log("Agreement ordering:");
