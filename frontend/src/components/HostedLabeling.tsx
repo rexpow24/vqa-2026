@@ -89,15 +89,18 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
     try {
       const saved = await requestJson<Assignment>(`/api/videos/${video.id}/claim`);
       setAssignment(saved); setMessage("Đã nhận video.");
+      // An event picked before claiming had nowhere to go; send it now.
+      if (eventLabel && eventLabel !== label?.event_label) await saveLabel(eventLabel, true);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Không thể nhận video."); }
     finally { setBusy(false); }
   }
-  async function saveLabel() {
-    if (!eventLabel) return;
+  // Saved on click: a separate save button was one more step per video.
+  async function saveLabel(value: EventLabel, claimed = false) {
+    setEventLabel(value);
+    if (!assignment && !claimed) return;
     setBusy(true); setError(""); setMessage("");
     try {
-      const saved = await requestJson<Label>(`/api/videos/${video.id}/label`,
-        { event_label: eventLabel });
+      const saved = await requestJson<Label>(`/api/videos/${video.id}/label`, { event_label: value });
       setLabel(saved); setMessage("Đã lưu nhãn video.");
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Không thể lưu nhãn."); }
     finally { setBusy(false); }
@@ -163,11 +166,10 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
         </div>
         {ready && <div className="flex flex-col gap-3 rounded-md border border-border bg-surface p-3">
           <div className="text-xs text-muted">Nhãn của video (1 nhãn cho cả 9 câu)</div>
-          <LabelGroup legend="Event" value={eventLabel} options={["accident", "near-miss"] as EventLabel[]} onChange={setEventLabel} />
-          <button type="button" disabled={!assignment || !eventLabel || busy} onClick={saveLabel}
-            className="self-start rounded-md bg-accent px-3 py-1.5 text-sm text-white disabled:opacity-40">
-            {label ? "Cập nhật nhãn video" : "Lưu nhãn video"}
-          </button>
+          <LabelGroup legend="Event" value={eventLabel} options={["accident", "near-miss"] as EventLabel[]}
+            onChange={(value) => { if (!busy) void saveLabel(value); }} />
+          <span className="text-xs text-muted">{!assignment ? "Nhận video để lưu nhãn."
+            : label?.event_label === eventLabel ? "✓ Đã lưu" : busy ? "Đang lưu…" : "Chọn để lưu"}</span>
         </div>}
       </div>
       <div className="flex flex-col gap-3">
@@ -199,6 +201,8 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
   const [typed, setTyped] = useState("");
   const [markError, setMarkError] = useState("");
   const [saving, setSaving] = useState(false);
+  // The exact payload that last failed, so a failure is not retried in a loop.
+  const [failed, setFailed] = useState<string | null>(null);
   const dirty = verdict !== draft.verdict || reason !== draft.reason_code ||
     note !== (draft.reason_note ?? "") || answer !== (draft.edited_answer ?? draft.answer) ||
     JSON.stringify(marks) !== JSON.stringify(draft.human_keyframes_s.map(Number));
@@ -214,20 +218,45 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
     if (marks.some((mark) => Math.abs(mark - rounded) < 0.001)) return setMarkError("Mốc này đã có.");
     setMarks([...marks, rounded].sort((a, b) => a - b));
   }
-  async function save() {
-    if (blocked) return;
+  const payload = JSON.stringify({
+    verdict, reason_code: verdict === "DISAGREE" ? reason : null,
+    reason_note: verdict === "DISAGREE" ? note : null,
+    edited_answer: answer !== draft.answer ? answer : null,
+    human_keyframes_s: needsMarks ? marks : [],
+  });
+  // The parent passes fresh callbacks on every render (several a second while
+  // the video plays); through refs they cannot keep restarting the save timer.
+  const callbacks = useRef({ onSaved, onError });
+  useEffect(() => { callbacks.current = { onSaved, onError }; });
+  const save = useCallback(async () => {
     setSaving(true);
     try {
-      const saved = await requestJson<Partial<HostedDraft>>(`/api/drafts/${draft.id}/annotation`, {
-        verdict, reason_code: verdict === "DISAGREE" ? reason : null,
-        reason_note: verdict === "DISAGREE" ? note : null,
-        edited_answer: answer !== draft.answer ? answer : null,
-        human_keyframes_s: needsMarks ? marks : [],
-      });
-      onSaved(saved);
-    } catch (cause) { onError(cause instanceof Error ? cause.message : "Không thể lưu câu trả lời."); }
-    finally { setSaving(false); }
-  }
+      callbacks.current.onSaved(await requestJson<Partial<HostedDraft>>(`/api/drafts/${draft.id}/annotation`, JSON.parse(payload)));
+      setFailed(null);
+    } catch (cause) {
+      setFailed(payload);
+      callbacks.current.onError(cause instanceof Error ? cause.message : "Không thể lưu câu trả lời.");
+    } finally { setSaving(false); }
+  }, [draft.id, payload]);
+  // Auto-save once the answer is complete. The delay lets a typed note settle
+  // and lets a verdict change be followed by its reason before anything is sent;
+  // an answer being edited waits for "Xong".
+  const ready = dirty && !blocked && !editing && !saving && failed !== payload;
+  useEffect(() => {
+    if (!ready) return;
+    const timer = setTimeout(() => { void save(); }, 600);
+    return () => clearTimeout(timer);
+  }, [ready, save]);
+  const status = saving ? "Đang lưu…"
+    : failed === payload ? null
+    : !dirty ? (draft.verdict ? "✓ Đã lưu" : "")
+    : !canSave ? "Nhận video để lưu"
+    : !verdict ? ""
+    : needsMarks && marks.length < 1 ? "Thêm 1-3 keyframe để lưu"
+    : verdict === "DISAGREE" && !reason ? "Chọn lý do để lưu"
+    : verdict === "DISAGREE" && reason === "khác" && !note.trim() ? "Ghi lý do để lưu"
+    : editing ? "Bấm Xong để lưu đáp án"
+    : "Đang lưu…";
 
   return <article className="rounded-md border border-border bg-surface">
     <header className="flex items-start gap-3 border-b border-border px-4 py-2.5">
@@ -273,10 +302,9 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
         onClick={() => setVerdict(value)} className={`rounded-md border px-3 py-1.5 text-sm ${verdict === value ?
           value === "AGREE" ? "border-green bg-green/20" : value === "DISAGREE" ? "border-red bg-red/20" : "border-amber bg-amber/20"
           : "border-border text-muted"}`}>{VERDICT_LABEL[value]}</button>)}
-      <button type="button" disabled={blocked || saving || (!dirty && !!draft.verdict)} onClick={save}
-        className="ml-auto rounded-md bg-accent px-3 py-1.5 text-sm text-white disabled:opacity-40">
-        {saving ? "Đang lưu…" : draft.verdict ? "Cập nhật" : "Lưu"}
-      </button>
+      <span className={`ml-auto text-xs ${status?.startsWith("✓") ? "text-green" : "text-muted"}`}>{status}</span>
+      {failed === payload && <button type="button" onClick={() => { void save(); }}
+        className="ml-auto rounded-md border border-red px-3 py-1.5 text-sm text-red">Lưu lỗi · Thử lại</button>}
     </div>
     {verdict === "DISAGREE" && <div className="flex flex-col gap-2 border-t border-border px-4 py-2.5">
       <div className="flex flex-wrap gap-2">{REASONS.map((value) => <button key={value} type="button" aria-pressed={reason === value}
