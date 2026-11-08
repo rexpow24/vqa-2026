@@ -59,6 +59,7 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
 | Annotators could download the original dataset | any annotator read every `drive_file_id` via REST; anonymous Drive fetch returned the file | `videos_read` exposed all columns of every `available` video; fixed by a column privilege and assignment-only reads (`features/assigned-labeling/`) |
 | Migration rolled back on a backfill `update` | `An edited answer needs the verdict Sai…` while setting `batch = 'legacy'` | `validate_assignment` re-ran completion checks on every update of a completed row; now only on the transition to completed |
 | Creating the agreement group failed in production | `UPDATE requires a WHERE clause` on "Tạo nhóm" | Supabase loads `pg_safeupdate` for API sessions; `create_agreement_group` renumbered with `update videos set seq = -seq` and no WHERE. Tests only called the read-only plan, since creating renumbers production; the SQL now has a WHERE and the plan's round order is tested |
+| `verify-assignments` failed once on an unrelated check | `another annotator's list holds only their own videos failed: []` | the random 8-hex test tag can be all digits (~2%), and `my_assignments` reads an all-digit search as a video number; the tag now starts with a letter |
 
 ---
 

@@ -50,6 +50,7 @@ export function AssignmentPanel({ overview, strata }: { overview: Overview; stra
   const [groupPeople, setGroupPeople] = useState<string[]>([]);
   const [roundSize, setRoundSize] = useState("20");
   const [round, setRound] = useState(0);
+  const [deleteWork, setDeleteWork] = useState(false);
   // Trained annotators (not admins) share the videos nobody holds yet.
   const candidates = people.filter((person) => person.role !== "admin");
   const [splitPeople, setSplitPeople] = useState<string[]>(() => candidates.filter((person) => person.trained).map((person) => person.id));
@@ -155,7 +156,7 @@ export function AssignmentPanel({ overview, strata }: { overview: Overview; stra
             void run(() => post<{ group_size: number }>("create-group", { size: Number(size) }),
               (result) => `Đã tạo nhóm ${result.group_size} video; nhóm là số 1-${result.group_size}.`);
           }}>Tạo nhóm</button>
-        {overview.handed_out && <span className="text-xs text-amber">Đã có video giao theo khoảng nên không đổi nhóm được nữa.</span>}
+        {overview.handed_out && <span className="text-xs text-amber">Đã giao video (vòng agreement hoặc theo khoảng) nên không đổi nhóm được nữa.</span>}
       </div>
       {plan && <div className="overflow-x-auto"><table className="text-sm tabular-nums">
         <thead className="text-xs text-muted"><tr><th className="pr-6 text-left font-normal">Sẽ chọn</th>
@@ -189,6 +190,20 @@ export function AssignmentPanel({ overview, strata }: { overview: Overview; stra
           () => post<{ assigned: number; videos: number }>("assign-group", { annotator_ids: groupPeople, from: current.from, to: current.to }),
           (result) => `Vòng ${current.number}: đã giao thêm ${result.assigned} lượt (${result.videos} video).`)}>
           {`Giao vòng ${current.number} (#${current.from}-${current.to}) cho ${groupPeople.length} người`}</button>}
+        {current && <div className="flex flex-wrap items-center gap-3">
+          <button type="button" className={button} disabled={busy || !groupPeople.length} onClick={() => {
+            const names = people.filter((person) => groupPeople.includes(person.id)).map((person) => person.name).join(", ");
+            if (deleteWork && !window.confirm(`Xóa vòng ${current.number} của ${names}, KÈM mọi câu trả lời và nhãn sự kiện họ đã làm ở #${current.from}-${current.to}? Không hoàn tác được.`)) return;
+            void run(() => post<{ removed: number; kept_started: number; deleted_answers: number; deleted_labels: number }>("unassign-group",
+              { annotator_ids: groupPeople, from: current.from, to: current.to, delete_work: deleteWork }),
+            (result) => `Vòng ${current.number}: đã gỡ ${result.removed} lượt` + (deleteWork
+              ? `, xóa ${result.deleted_answers} câu trả lời và ${result.deleted_labels} nhãn sự kiện.`
+              : `; giữ ${result.kept_started} lượt đã bắt đầu làm (tick "xóa cả câu đã làm" để gỡ luôn).`));
+          }}>{`Gỡ vòng ${current.number} của ${groupPeople.length} người`}</button>
+          <label className="flex items-center gap-1.5 text-sm text-red">
+            <input type="checkbox" checked={deleteWork} onChange={(event) => setDeleteWork(event.target.checked)} />
+            Xóa cả câu đã làm</label>
+        </div>}
       </fieldset>}
     </section>
 
@@ -209,8 +224,9 @@ export function AssignmentPanel({ overview, strata }: { overview: Overview; stra
           (result) => `Đã giao ${result.assigned} video. Bỏ qua: ${result.skipped_agreement} agreement, ${result.skipped_taken} đã giao người khác, ${result.skipped_not_ready} chưa sẵn sàng, ${result.already_mine} đã có.`)}>
           Giao</button>
         <button type="button" className={button} disabled={busy || !annotator} onClick={() => run(
-          () => post<{ removed: number; kept_started: number }>("unassign", { annotator_id: annotator, from: Number(from), to: Number(to) }),
-          (result) => `Đã gỡ ${result.removed} video; giữ lại ${result.kept_started} video đã bắt đầu làm.`)}>Gỡ</button>
+          () => post<{ removed: number; kept_started: number; skipped_agreement: number }>("unassign", { annotator_id: annotator, from: Number(from), to: Number(to) }),
+          (result) => `Đã gỡ ${result.removed} video; giữ lại ${result.kept_started} video đã bắt đầu làm.` +
+            (result.skipped_agreement ? ` ${result.skipped_agreement} video agreement không gỡ ở đây: dùng "Gỡ vòng" ở mục 2.` : ""))}>Gỡ</button>
       </div>
       <fieldset className="flex flex-col gap-2 border-t border-border pt-3">
         <legend className="sr-only">Chia đều cho người đã training</legend>

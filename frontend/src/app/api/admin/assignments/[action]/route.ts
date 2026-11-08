@@ -40,7 +40,7 @@ export async function POST(request: Request, context: Context) {
       ? await supabase.rpc("plan_agreement_group", { group_size: size })
       : await supabase.rpc("create_agreement_group", { group_size: size }));
   }
-  if (action === "assign-group") {
+  if (action === "assign-group" || action === "unassign-group") {
     const ids = Array.isArray(body.annotator_ids) ? body.annotator_ids.map(uuid) : [];
     const from = int(body.from);
     const to = int(body.to);
@@ -48,7 +48,9 @@ export async function POST(request: Request, context: Context) {
     if (from === null || to === null || from < 1 || from > to) {
       return Response.json({ error: "Chọn vòng hợp lệ (từ ≤ đến)." }, { status: 422 });
     }
-    return respond(await supabase.rpc("assign_agreement_group", { annotators: ids, seq_from: from, seq_to: to }));
+    return respond(action === "assign-group"
+      ? await supabase.rpc("assign_agreement_group", { annotators: ids, seq_from: from, seq_to: to })
+      : await supabase.rpc("unassign_agreement_group", { annotators: ids, seq_from: from, seq_to: to, delete_work: body.delete_work === true }));
   }
   if (action === "split") {
     const parts = int(body.parts);

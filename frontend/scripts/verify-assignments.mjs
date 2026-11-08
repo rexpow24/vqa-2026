@@ -19,7 +19,8 @@ import { GROUP_CODES, KEYFRAME_GROUPS } from "./lib/qgroups.mjs";
 
 const privileged = privilegedClient();
 const base = process.env.TEST_BASE_URL;
-const tag = crypto.randomUUID().slice(0, 8);
+// A tag of digits only would read as a video number in my_assignments search.
+const tag = `t${crypto.randomUUID().slice(0, 7)}`;
 
 function check(condition, name, detail) {
   if (!condition) throw new Error(`${name} failed: ${typeof detail === "string" ? detail : JSON.stringify(detail)}`);
@@ -121,7 +122,7 @@ try {
   check(bySeq.length === 1 && bySeq[0].video_id === regular[4].id && Number(bySeq[0].total) === 1, "search by number finds one video", bySeq);
   const byName = must(await alice.client.rpc("my_assignments", { page_size: 10, page_offset: 0, search: `${tag}-07` }));
   check(byName.length === 1 && byName[0].video_id === regular[6].id, "search by filename part finds it", byName);
-  const bobs = must(await bob.client.rpc("my_assignments", { page_size: 50, page_offset: 0, search: tag }));
+  const bobs = must(await bob.client.rpc("my_assignments", { page_size: 50, page_offset: 0, search: `assign-${tag}` }));
   check(bobs.length === 1 && bobs[0].video_id === shared.id, "another annotator's list holds only their own videos", bobs);
 
   console.log("Next video and progress:");
@@ -195,6 +196,23 @@ try {
   check(Boolean(noGroup.error), "a range without agreement videos is refused", noGroup);
   const notAdmin = await alice.client.rpc("assign_agreement_group", { annotators: [alice.id], seq_from: roundFrom, seq_to: roundTo });
   check(Boolean(notAdmin.error), "an annotator cannot assign a round", notAdmin);
+
+  console.log("Unassigning a round:");
+  const viaRange = must(await admin.client.rpc("unassign_range", { annotator: bob.id, seq_from: roundFrom, seq_to: roundTo }));
+  check(viaRange.removed === 0 && viaRange.skipped_agreement === 2, "the range unassign leaves a round alone and says so", viaRange);
+  const roundDraft = must(await privileged.from("video_drafts").select("id").eq("video_id", round[0].id).eq("qgroup", "S").single());
+  must(await carol.client.from("qa_annotations").insert({ draft_id: roundDraft.id, annotator_id: carol.id, verdict: "AGREE", human_keyframes_s: [] }));
+  result = must(await admin.client.rpc("unassign_agreement_group", { annotators: [bob.id, carol.id], seq_from: roundFrom, seq_to: roundTo, delete_work: false }));
+  check(result.removed === 3 && result.kept_started === 1 && result.deleted_answers === 0, "a round unassign keeps started work by default", result);
+  result = must(await admin.client.rpc("unassign_agreement_group", { annotators: [carol.id], seq_from: roundFrom, seq_to: roundTo, delete_work: true }));
+  const carolLeft = must(await privileged.from("qa_annotations").select("draft_id").eq("annotator_id", carol.id).eq("draft_id", roundDraft.id));
+  check(result.removed === 1 && result.deleted_answers === 1 && carolLeft.length === 0, "deleting work removes the answers with the assignment", result);
+  const sharedKept = must(await privileged.from("video_assignments").select("annotator_id").eq("video_id", shared.id));
+  check(sharedKept.length === 3, "a round unassign touches only its own numbers", sharedKept.length);
+  const unassignDenied = await alice.client.rpc("unassign_agreement_group", { annotators: [alice.id], seq_from: roundFrom, seq_to: roundTo, delete_work: true });
+  check(Boolean(unassignDenied.error), "an annotator cannot unassign a round", unassignDenied);
+  result = must(await admin.client.rpc("assign_agreement_group", { annotators: [bob.id, carol.id], seq_from: roundFrom, seq_to: roundTo }));
+  check(result.assigned === 4, "the round can be assigned again", result);
 
   console.log("Suggested split:");
   const before = must(await admin.client.rpc("assignment_overview"));
@@ -278,6 +296,12 @@ try {
     const groupRound = await request(base, "/api/admin/assignments/assign-group", admin.cookie, "POST",
       { annotator_ids: [dave.id], from: roundFrom, to: roundTo });
     check(groupRound.status === 200 && groupRound.data.assigned === 2, "the assign-group route assigns one round", groupRound.data);
+    const ungrouped = await request(base, "/api/admin/assignments/unassign-group", admin.cookie, "POST",
+      { annotator_ids: [dave.id], from: roundFrom, to: roundTo, delete_work: true });
+    const regrouped = await request(base, "/api/admin/assignments/assign-group", admin.cookie, "POST",
+      { annotator_ids: [dave.id], from: roundFrom, to: roundTo });
+    check(ungrouped.status === 200 && ungrouped.data.removed === 2 && regrouped.data?.assigned === 2,
+      "the unassign-group route takes a round back", { ungrouped: ungrouped.data, regrouped: regrouped.data });
     const split = await request(base, "/api/admin/assignments/split", admin.cookie, "POST", { parts: 2 });
     check(split.status === 200 && split.data.length === 2, "the split route suggests ranges", split.status);
     const csv = await request(base, `/api/admin/answers/export?scope=agreement&from=${from}&to=${roundTo}`, admin.cookie);
