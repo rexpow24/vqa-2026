@@ -2,6 +2,7 @@ import Link from "next/link";
 import LegacyAnnotate from "@/components/LegacyAnnotate";
 import { requireProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
+import { Pagination, readPage } from "@/components/Pagination";
 
 const PAGE_SIZE = 10;
 
@@ -19,21 +20,6 @@ const STATUS_CLASS: Record<string, string> = {
   pending: "text-muted", in_progress: "text-amber", completed: "text-green",
 };
 
-function href(page: number, query: string) {
-  const params = new URLSearchParams();
-  if (page > 1) params.set("page", String(page));
-  if (query) params.set("q", query);
-  const text = params.toString();
-  return text ? `/annotate?${text}` : "/annotate";
-}
-
-/** 1 … 4 5 [6] 7 8 … 20: first, last and two either side of the current page. */
-function pageList(current: number, last: number): (number | "gap")[] {
-  const pages = new Set([1, last, current - 2, current - 1, current, current + 1, current + 2]);
-  const sorted = [...pages].filter((page) => page >= 1 && page <= last).sort((a, b) => a - b);
-  return sorted.flatMap((page, index) => index > 0 && page - sorted[index - 1] > 1 ? ["gap" as const, page] : [page]);
-}
-
 // The annotator's own assigned videos, by number: numbered pages and a search
 // by number or filename (my_assignments). Admins hand videos out on
 // /admin/assignments; nobody claims videos here.
@@ -45,8 +31,7 @@ export default async function AnnotatePage({ searchParams }: PageProps<"/annotat
   const params = await searchParams;
   const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value) ?? "";
   const query = first(params.q).trim().slice(0, 100);
-  const rawPage = Number(first(params.page));
-  const requested = Number.isFinite(rawPage) && rawPage > 1 ? Math.floor(rawPage) : 1;
+  const requested = readPage(params.page);
 
   const supabase = await createClient();
   const [listResult, progressResult] = await Promise.all([
@@ -96,13 +81,13 @@ export default async function AnnotatePage({ searchParams }: PageProps<"/annotat
 
     {rows.length === 0 ? <div className="rounded-md border border-border bg-surface p-4 text-sm text-muted">
       {query ? `Không có video nào được giao cho bạn khớp với "${query}".`
-        : requested > 1 ? <>Trang này không có video. <Link href={href(1, query)} className="text-accent">Về trang 1</Link></>
+        : requested > 1 ? <>Trang này không có video. <Link href="/annotate" className="text-accent">Về trang 1</Link></>
           : assigned === 0 ? "Bạn chưa được giao video nào. Hãy liên hệ admin."
             : "Không còn video nào."}
     </div> : <ol className="overflow-hidden rounded-md border border-border bg-surface">
       {rows.map((row) => <li key={row.video_id} className="border-b border-border last:border-0">
         <Link href={`/annotate/${row.video_id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 hover:bg-background">
-          <span className="w-14 shrink-0 font-semibold tabular-nums text-accent">#{row.seq}</span>
+          <span className="w-14 shrink-0 font-semibold tabular-nums text-accent">{`#${row.seq}`}</span>
           <span className="min-w-0 flex-1 truncate">{row.filename}</span>
           {row.agreement && <span className="rounded border border-accent/50 px-1.5 text-xs text-accent">Agreement</span>}
           <span className="tabular-nums text-xs text-muted">{Number(row.duration_s).toFixed(1)}s · {Number(row.answered)}/9 câu</span>
@@ -111,24 +96,6 @@ export default async function AnnotatePage({ searchParams }: PageProps<"/annotat
       </li>)}
     </ol>}
 
-    {total > PAGE_SIZE && <nav aria-label="Phân trang" className="flex flex-wrap items-center gap-1.5 text-sm">
-      {requested > 1 ? <Link href={href(requested - 1, query)} className="rounded border border-border px-2.5 py-1">‹ Trước</Link>
-        : <span className="rounded border border-border px-2.5 py-1 opacity-40">‹ Trước</span>}
-      {pageList(requested, lastPage).map((item, index) => item === "gap"
-        ? <span key={`gap-${index}`} className="px-1 text-muted">…</span>
-        : item === requested
-          ? <span key={item} aria-current="page" className="rounded border border-accent bg-accent/20 px-2.5 py-1 tabular-nums">{`Trang ${item}`}</span>
-          : <Link key={item} href={href(item, query)} className="rounded border border-border px-2.5 py-1 tabular-nums">{item}</Link>)}
-      {requested < lastPage ? <Link href={href(requested + 1, query)} className="rounded border border-border px-2.5 py-1">Sau ›</Link>
-        : <span className="rounded border border-border px-2.5 py-1 opacity-40">Sau ›</span>}
-      <form action="/annotate" className="ml-2 flex items-center gap-1.5">
-        {query && <input type="hidden" name="q" value={query} />}
-        <label htmlFor="annotate-page" className="text-muted">Đến trang</label>
-        <input id="annotate-page" name="page" type="number" min={1} max={lastPage} defaultValue={requested}
-          className="w-16 rounded border border-border bg-background px-2 py-1 tabular-nums" />
-        <span className="text-muted">/ {lastPage}</span>
-        <button type="submit" className="rounded border border-border px-2.5 py-1">Đi</button>
-      </form>
-    </nav>}
+    <Pagination path="/annotate" page={requested} lastPage={lastPage} query={query} />
   </div>;
 }

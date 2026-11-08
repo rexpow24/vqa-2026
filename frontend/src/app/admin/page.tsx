@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { requireProfile } from "@/lib/supabase/auth";
 import { getAdminStats } from "@/lib/admin-stats";
 import { createClient } from "@/lib/supabase/server";
@@ -19,9 +18,6 @@ export default async function AdminPage() {
   return <div className="flex flex-col gap-6">
     <div className="flex flex-wrap items-center gap-4">
       <h2 className="text-xl font-semibold">Dashboard tiến độ</h2>
-      <Link href="/admin/users" className="ml-auto text-sm text-accent">Quản lý người dùng</Link>
-      <Link href="/admin/videos" className="text-sm text-accent">Quản lý video</Link>
-      <Link href="/admin/assignments" className="text-sm text-accent">Phân công</Link>
     </div>
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
       {cards.map(([label, value]) => <div key={label} className="rounded-md border border-border bg-surface p-4">

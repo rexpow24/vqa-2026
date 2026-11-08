@@ -126,7 +126,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   return <div className="flex flex-col gap-5">
     <div className="flex flex-wrap items-center gap-3">
       <Link href="/annotate" className="text-sm text-accent">← Danh sách video</Link>
-      <h2 className="text-lg font-semibold"><span className="tabular-nums text-accent">#{video.seq}</span> {video.filename}</h2>
+      <h2 className="text-lg font-semibold"><span className="tabular-nums text-accent">{`#${video.seq}`}</span> {video.filename}</h2>
       <span className="ml-auto text-sm text-muted">{done}/{drafts.length} câu đã duyệt</span>
     </div>
     {error && <p role="alert" className="rounded border border-red/40 bg-red/10 p-3 text-sm text-red">{error}</p>}

@@ -187,6 +187,13 @@ try {
     const deniedRange = await request(base, "/api/admin/assignments/range", alice.cookie, "POST",
       { annotator_id: alice.id, from, to });
     check(deniedRange.status === 403, "an annotator cannot use the range route", deniedRange.status);
+    const target = regular[9].seq;
+    const removedHttp = await request(base, "/api/admin/assignments/unassign", admin.cookie, "POST",
+      { annotator_id: alice.id, from: target, to: target });
+    const reassigned = await request(base, "/api/admin/assignments/range", admin.cookie, "POST",
+      { annotator_id: alice.id, from: target, to: target, batch: `Batch ${tag}` });
+    check(removedHttp.data?.removed === 1 && reassigned.data?.assigned === 1,
+      "the unassign route removes an untouched video and the range route gives it back", { removedHttp: removedHttp.data, reassigned: reassigned.data });
     const planned = await request(base, "/api/admin/assignments/plan", admin.cookie, "POST", { size: 6 });
     check(planned.status === 200 && planned.data.length === 6, "the plan route previews the group", planned.status);
     const second = regular[1];

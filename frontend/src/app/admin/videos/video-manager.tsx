@@ -6,22 +6,20 @@ import Link from "next/link";
 import { QGROUPS } from "@/lib/qgroups";
 import { VideoImport } from "./video-import";
 
-type Video = { id: string; drive_file_id: string; filename: string; duration_s: number; status: string; available: boolean };
-type User = { id: string; name: string; email: string };
-type Assignment = { id: string; video_id: string; annotator_id: string; status: string };
-type Draft = { video_id: string; qgroup: string };
-type Reference = { video_id: string; difficulty: string; event_label: string };
+export type VideoRow = {
+  id: string; seq: number; drive_file_id: string; filename: string; duration_s: number; status: string;
+  available: boolean; agreement_sample: boolean; drafts: number; reference: string | null; assignees: string[];
+};
 const csvCell = (value: string) => `"${value.replaceAll('"', '""')}"`;
 
-export function VideoManager({ videos, users, assignments, drafts, references }: {
-  videos: Video[]; users: User[]; assignments: Assignment[]; drafts: Draft[]; references: Reference[];
-}) {
+// Video intake (CSV import, single add, draft upload) and one page of the
+// video list. Assigning videos lives on /admin/assignments.
+export function VideoManager({ rows: videos, total, query }: { rows: VideoRow[]; total: number; query: string }) {
   const router = useRouter();
   const [fileId, setFileId] = useState("");
   const [filename, setFilename] = useState("");
   const [duration, setDuration] = useState("");
   const [videoId, setVideoId] = useState(videos[0]?.id ?? "");
-  const [userId, setUserId] = useState(users[0]?.id ?? "");
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -87,8 +85,8 @@ export function VideoManager({ videos, users, assignments, drafts, references }:
       <h3 className="mb-2 font-medium">Tải lên 9 câu hỏi và trả lời</h3>
       <p className="mb-3 text-xs text-muted">CSV UTF-8 gồm video_id,qgroup,question,answer,difficulty,event_label. Nhãn tham chiếu chỉ admin xem. Không thể thay bản nháp khi đã có người gán nhãn.</p>
       <div className="flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1 text-sm">Video<select value={videoId} onChange={(event) => setVideoId(event.target.value)} className="max-w-72 rounded border border-border bg-background px-2 py-1.5">
-          {videos.map((video) => <option key={video.id} value={video.id}>{video.filename}</option>)}
+        <label className="flex flex-col gap-1 text-sm">Video (trong trang đang xem)<select value={videoId} onChange={(event) => setVideoId(event.target.value)} className="max-w-72 rounded border border-border bg-background px-2 py-1.5">
+          {videos.map((video) => <option key={video.id} value={video.id}>{`#${video.seq} ${video.filename}`}</option>)}
         </select></label>
         <button type="button" disabled={!videoId} onClick={downloadTemplate} className="rounded border border-border px-3 py-1.5 text-sm disabled:opacity-40">Tải mẫu CSV</button>
         <label className="flex flex-col gap-1 text-sm">File CSV<input type="file" accept=".csv,text/csv" onChange={(event) => setCsvFile(event.target.files?.[0] ?? null)} className="max-w-64 text-xs" /></label>
@@ -97,26 +95,29 @@ export function VideoManager({ videos, users, assignments, drafts, references }:
       {message && <p role="status" className="mt-2 text-sm text-green">{message}</p>}
       {error && <p role="alert" className="mt-2 text-sm text-red">{error}</p>}
     </section>
-    <section className="rounded-md border border-border bg-surface p-4">
-      <h3 className="mb-3 font-medium">Phân công</h3>
-      <div className="flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1 text-sm">Video<select value={videoId} onChange={(event) => setVideoId(event.target.value)} className="max-w-64 rounded border border-border bg-background px-2 py-1.5">{videos.map((video) => <option key={video.id} value={video.id}>{video.filename}</option>)}</select></label>
-        <label className="flex flex-col gap-1 text-sm">Người gán nhãn<select value={userId} onChange={(event) => setUserId(event.target.value)} className="rounded border border-border bg-background px-2 py-1.5">{users.map((user) => <option key={user.id} value={user.id}>{user.name}</option>)}</select></label>
-        <button type="button" disabled={busy || !videoId || !userId} onClick={() => void post("/api/admin/assignments", { video_id: videoId, annotator_id: userId })} className="rounded border border-border px-3 py-1.5 text-sm disabled:opacity-40">Giao video</button>
-      </div>
-      {error && <p role="alert" className="mt-3 text-sm text-red">{error}</p>}
-    </section>
+    <form action="/admin/videos" role="search" className="flex flex-wrap items-center gap-2">
+      <label htmlFor="videos-search" className="sr-only">Tìm video</label>
+      <input id="videos-search" name="q" defaultValue={query} placeholder="Số thứ tự hoặc tên file"
+        className="min-w-0 flex-1 rounded border border-border bg-background px-3 py-1.5 text-sm sm:max-w-sm" />
+      <button type="submit" className="rounded bg-accent px-3 py-1.5 text-sm text-white">Tìm</button>
+      {query && <Link href="/admin/videos" className="text-sm text-muted">Xóa tìm kiếm</Link>}
+      <span className="ml-auto text-sm text-muted tabular-nums">{total} video</span>
+    </form>
+    {videos.length === 0 && <p className="rounded-md border border-border bg-surface p-4 text-sm text-muted">Không có video nào khớp.</p>}
     <div className="flex flex-col gap-2">{videos.map((video) => <div key={video.id} className="rounded-md border border-border bg-surface p-3 text-sm">
-      <div className="flex flex-wrap items-center gap-2"><span className="font-medium">{video.filename}</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-semibold tabular-nums text-accent">{`#${video.seq}`}</span>
+        <span className="min-w-0 break-all font-medium">{video.filename}</span>
         <span className="text-muted">{Number(video.duration_s).toFixed(2)}s</span>
-        <Link href={`/annotate/${video.id}`} className="ml-auto text-accent">Xem video và gán nhãn</Link></div>
+        {video.agreement_sample && <span className="rounded border border-accent/50 px-1.5 text-xs text-accent">Agreement</span>}
+        {!video.available && <span className="rounded border border-amber/50 px-1.5 text-xs text-amber">Không giao được</span>}
+        <Link href={`/annotate/${video.id}`} className="ml-auto text-accent">Xem video</Link></div>
       <div className="mt-1 break-all text-xs text-muted">Video ID: <code>{video.id}</code> · Drive ID: {video.drive_file_id}</div>
-      <div className="mt-1 text-xs text-muted">Bản nháp: {drafts.filter((draft) => draft.video_id === video.id).length}/9
-        {references.find((item) => item.video_id === video.id) && <span className="ml-2">· Nhãn tham chiếu: {references.find((item) => item.video_id === video.id)?.difficulty} / {references.find((item) => item.video_id === video.id)?.event_label}</span>}</div>
-      <div className="mt-2 text-xs text-muted">{assignments.filter((assignment) => assignment.video_id === video.id).map((assignment) => {
-        const user = users.find((item) => item.id === assignment.annotator_id);
-        return `${user?.name ?? assignment.annotator_id}: ${assignment.status}`;
-      }).join(" · ") || "Chưa phân công"}</div>
+      <div className="mt-1 text-xs text-muted">
+        <span className={video.drafts === 9 ? "" : "text-amber"}>Bản nháp: {video.drafts}/9</span>
+        {video.reference && <span className="ml-2">· Nhãn tham chiếu: {video.reference}</span>}
+      </div>
+      <div className="mt-1 text-xs text-muted">{video.assignees.join(" · ") || "Chưa phân công"}</div>
     </div>)}</div>
   </>;
 }
