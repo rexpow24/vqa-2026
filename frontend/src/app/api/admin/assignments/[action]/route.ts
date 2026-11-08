@@ -42,8 +42,18 @@ export async function POST(request: Request, context: Context) {
   }
   if (action === "assign-group") {
     const ids = Array.isArray(body.annotator_ids) ? body.annotator_ids.map(uuid) : [];
+    const from = int(body.from);
+    const to = int(body.to);
     if (!ids.length || ids.some((id) => !id)) return Response.json({ error: "Chọn ít nhất một người." }, { status: 422 });
-    return respond(await supabase.rpc("assign_agreement_group", { annotators: ids }));
+    if (from === null || to === null || from < 1 || from > to) {
+      return Response.json({ error: "Chọn vòng hợp lệ (từ ≤ đến)." }, { status: 422 });
+    }
+    return respond(await supabase.rpc("assign_agreement_group", { annotators: ids, seq_from: from, seq_to: to }));
+  }
+  if (action === "split") {
+    const parts = int(body.parts);
+    if (!parts || parts < 1) return Response.json({ error: "Chọn ít nhất một người để chia." }, { status: 422 });
+    return respond(await supabase.rpc("split_free_videos", { parts }));
   }
   if (action === "reference-labels") {
     // CSV from scripts/export_labels_csv.py: video_id (shot stem), or filename / clip_id; difficulty; event_label.

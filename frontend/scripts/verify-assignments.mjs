@@ -1,6 +1,7 @@
 // Verifies admin-driven assignment: Drive ids hidden, assignment-only access,
 // exclusive regular videos, range assignment, the annotator's paged list,
-// the stratified agreement-group plan and the reference label import.
+// the stratified agreement-group plan and its round order, assigning a round,
+// "trained", the suggested split, the answers export and the reference label import.
 //
 //   cd frontend && node scripts/verify-assignments.mjs
 //   TEST_BASE_URL=http://localhost:3006 node scripts/verify-assignments.mjs   (hosted-mode server)
@@ -8,6 +9,8 @@
 // Creates temporary annotators and videos (numbered after the real ones) and
 // removes them in the finally block. Never creates or renumbers the real
 // agreement group: that is checked through the read-only plan function.
+// The group's own videos here are temporary ones flagged agreement_sample,
+// numbered after the real ones, so a round range never touches real videos.
 
 import crypto from "node:crypto";
 import { privilegedClient, signIn, request } from "./lib/session.mjs";
@@ -54,9 +57,11 @@ try {
   for (let index = 1; index <= 12; index += 1) regular.push(await makeVideo(index));
   const noDrafts = await makeVideo(13, { drafts: false });
   const shared = await makeVideo(14, { agreement: true });
-  videoIds.push(...regular.map((video) => video.id), noDrafts.id, shared.id);
-  const [alice, bob, carol] = [await makeAnnotator("Assign A"), await makeAnnotator("Assign B"), await makeAnnotator("Assign C")];
-  userIds.push(alice.id, bob.id, carol.id);
+  const round = [await makeVideo(15, { agreement: true }), await makeVideo(16, { agreement: true })];
+  videoIds.push(...regular.map((video) => video.id), noDrafts.id, shared.id, ...round.map((video) => video.id));
+  const [alice, bob, carol, dave] = [await makeAnnotator("Assign A"), await makeAnnotator("Assign B"),
+    await makeAnnotator("Assign C"), await makeAnnotator("Assign D")];
+  userIds.push(alice.id, bob.id, carol.id, dave.id);
   const from = Math.min(...regular.map((video) => video.seq));
   const to = shared.seq;
 
@@ -153,8 +158,79 @@ try {
     .slice(0, 6 - quotas.reduce((sum, row) => sum + row.n, 0)).forEach((row) => { row.n += 1; });
   const picked = Object.fromEntries(quotas.map((row) => [row.key, plan.filter((item) => `${item.event_label}/${item.difficulty}` === row.key).length]));
   check(plan.length === 6 && quotas.every((row) => picked[row.key] === row.n), "the plan follows the proportional allocation", { quotas, picked });
+  // Rounds are consecutive blocks of the group, of a size chosen later, so the
+  // order must keep every prefix in proportion: after m videos a stratum of k
+  // holds m*k/60 of them, off by less than one. A round is the difference of
+  // two prefixes, so it is off by less than two (60 as 3 x 20 here: within 1.34).
+  const sixty = must(await admin.client.rpc("plan_agreement_group", { group_size: 60 }));
+  const again = must(await admin.client.rpc("plan_agreement_group", { group_size: 60 }));
+  check(JSON.stringify(sixty.map((item) => item.video_id)) === JSON.stringify(again.map((item) => item.video_id)),
+    "the plan is deterministic, order included", "");
+  const stratumOf = (item) => `${item.event_label}/${item.difficulty}`;
+  const totals = {};
+  sixty.forEach((item) => { totals[stratumOf(item)] = (totals[stratumOf(item)] ?? 0) + 1; });
+  const seen = {};
+  let worst = 0;
+  sixty.forEach((item, index) => {
+    seen[stratumOf(item)] = (seen[stratumOf(item)] ?? 0) + 1;
+    for (const [key, total] of Object.entries(totals)) worst = Math.max(worst, Math.abs((seen[key] ?? 0) - (index + 1) * total / 60));
+  });
+  const blocks = [0, 20, 40].map((start) => {
+    const counts = {};
+    sixty.slice(start, start + 20).forEach((item) => { counts[stratumOf(item)] = (counts[stratumOf(item)] ?? 0) + 1; });
+    return counts;
+  });
+  check(worst < 1, "every prefix of the group order holds each stratum in proportion, off by less than one", { worst, totals, blocks });
+  console.log(`      rounds of 20: ${JSON.stringify(blocks)}`);
   const denied = await alice.client.rpc("plan_agreement_group", { group_size: 6 });
   check(Boolean(denied.error) || (denied.data ?? []).length === 0, "an annotator cannot plan the group", denied);
+
+  console.log("Training rounds:");
+  const roundFrom = round[0].seq, roundTo = round[1].seq;
+  result = must(await admin.client.rpc("assign_agreement_group", { annotators: [bob.id, carol.id], seq_from: roundFrom, seq_to: roundTo }));
+  check(result.assigned === 4 && result.videos === 2, "a round assigns its agreement videos to every chosen annotator", result);
+  result = must(await admin.client.rpc("assign_agreement_group", { annotators: [bob.id, carol.id], seq_from: roundFrom, seq_to: roundTo }));
+  check(result.assigned === 0, "assigning a round twice adds nothing", result);
+  const noGroup = await admin.client.rpc("assign_agreement_group", { annotators: [bob.id], seq_from: regular[0].seq, seq_to: regular[2].seq });
+  check(Boolean(noGroup.error), "a range without agreement videos is refused", noGroup);
+  const notAdmin = await alice.client.rpc("assign_agreement_group", { annotators: [alice.id], seq_from: roundFrom, seq_to: roundTo });
+  check(Boolean(notAdmin.error), "an annotator cannot assign a round", notAdmin);
+
+  console.log("Suggested split:");
+  const before = must(await admin.client.rpc("assignment_overview"));
+  const parts = must(await admin.client.rpc("split_free_videos", { parts: 3 }));
+  check(parts.length === 3 && parts.reduce((sum, part) => sum + part.videos, 0) === before.unassigned,
+    "three parts cover every unassigned video", { parts, unassigned: before.unassigned });
+  check(Math.max(...parts.map((part) => part.videos)) - Math.min(...parts.map((part) => part.videos)) <= 1 &&
+    parts.every((part, index) => part.seq_from <= part.seq_to && (index === 0 || part.seq_from > parts[index - 1].seq_to)),
+    "parts are equal to within one and do not overlap", parts);
+  const splitDenied = await alice.client.rpc("split_free_videos", { parts: 3 });
+  check(Boolean(splitDenied.error), "an annotator cannot split", splitDenied);
+  const after = must(await admin.client.rpc("assignment_overview"));
+  check(after.unassigned === before.unassigned, "suggesting assigns nothing", { before: before.unassigned, after: after.unassigned });
+
+  console.log("Answers export:");
+  const sharedS = must(await privileged.from("video_drafts").select("id,answer").eq("video_id", shared.id).eq("qgroup", "S").single());
+  must(await bob.client.from("qa_annotations").insert({ draft_id: sharedS.id, annotator_id: bob.id, verdict: "DISAGREE",
+    reason_code: "sai thực thể", edited_answer: `  Bob ${tag}  edit `, human_keyframes_s: [] }));
+  must(await carol.client.from("qa_annotations").insert({ draft_id: sharedS.id, annotator_id: carol.id, verdict: "NOT_ANSWERABLE", human_keyframes_s: [] }));
+  const stray = await bob.client.from("qa_annotations").update({ verdict: "AGREE" }).eq("draft_id", sharedS.id).eq("annotator_id", bob.id).select();
+  check(Boolean(stray.error), "an edited answer cannot stay under AGREE", stray);
+  const exported = must(await admin.client.rpc("answers_export", { only_agreement: false, seq_from: from, seq_to: roundTo }));
+  const aliceRows = exported.filter((item) => item.annotator_id === alice.id);
+  check(aliceRows.length === 10 && aliceRows.every((item) => item.verdict === "AGREE" && item.effective_answer === item.draft_answer),
+    "the export holds every saved answer, AGREE resolving to the draft", aliceRows.length);
+  const bobRow = exported.find((item) => item.annotator_id === bob.id && item.draft_id === sharedS.id);
+  const carolRow = exported.find((item) => item.annotator_id === carol.id && item.draft_id === sharedS.id);
+  check(String(bobRow?.edited_answer).includes(`Bob ${tag}`),
+    "a DISAGREE row carries the edited answer", bobRow);
+  check(bobRow?.effective_answer === `Bob ${tag} edit` && carolRow?.effective_answer === "Không trả lời được" &&
+    bobRow.agreement === true && bobRow.seq === shared.seq && bobRow.qgroup === "S",
+    "effective answers are normalized and the row says which video and group", { bobRow, carolRow });
+  const groupOnly = must(await admin.client.rpc("answers_export", { only_agreement: true, seq_from: from, seq_to: roundTo }));
+  check(groupOnly.length === 2 && groupOnly.every((item) => item.agreement), "the agreement scope keeps only group videos", groupOnly.length);
+  const exportDenied = await alice.client.rpc("answers_export", { only_agreement: false, seq_from: null, seq_to: null });
+  check(Boolean(exportDenied.error), "an annotator cannot export", exportDenied);
 
   console.log("Labels and overview:");
   must(await privileged.from("user_profiles").update({ label: `Range ${tag}` }).eq("id", alice.id));
@@ -162,6 +238,11 @@ try {
   const row = overview.annotators.find((item) => item.id === alice.id);
   check(row?.label === `Range ${tag}` && row.total === 13 && row.completed === 1 && row.ranges.includes(`${from}-${regular[11].seq}`),
     "the overview shows label, ranges and totals", row);
+  const bobRowOverview = overview.annotators.find((item) => item.id === bob.id);
+  const daveRow = overview.annotators.find((item) => item.id === dave.id);
+  check(bobRowOverview?.trained === true && bobRowOverview.agreement === 3 && bobRowOverview.agreement_ranges === `${shared.seq}-${roundTo}` &&
+    bobRowOverview.ranges === "" && daveRow?.trained === false,
+    "anyone holding agreement videos is trained, with the group range apart from regular ranges", { bobRowOverview, daveRow });
 
   if (base) {
     console.log(`Through HTTP at ${base}:`);
@@ -194,6 +275,17 @@ try {
       { annotator_id: alice.id, from: target, to: target, batch: `Batch ${tag}` });
     check(removedHttp.data?.removed === 1 && reassigned.data?.assigned === 1,
       "the unassign route removes an untouched video and the range route gives it back", { removedHttp: removedHttp.data, reassigned: reassigned.data });
+    const groupRound = await request(base, "/api/admin/assignments/assign-group", admin.cookie, "POST",
+      { annotator_ids: [dave.id], from: roundFrom, to: roundTo });
+    check(groupRound.status === 200 && groupRound.data.assigned === 2, "the assign-group route assigns one round", groupRound.data);
+    const split = await request(base, "/api/admin/assignments/split", admin.cookie, "POST", { parts: 2 });
+    check(split.status === 200 && split.data.length === 2, "the split route suggests ranges", split.status);
+    const csv = await request(base, `/api/admin/answers/export?scope=agreement&from=${from}&to=${roundTo}`, admin.cookie);
+    const lines = String(csv.data).trim().split(/\r\n/);
+    check(csv.status === 200 && lines[0].includes("edited_answer") && lines.length === 3 && String(csv.data).includes(`Bob ${tag} edit`),
+      "the export route downloads the answers as CSV", { status: csv.status, lines: lines.length });
+    const csvDenied = await request(base, "/api/admin/answers/export", alice.cookie);
+    check(csvDenied.status === 403, "an annotator cannot download the export", csvDenied.status);
     const planned = await request(base, "/api/admin/assignments/plan", admin.cookie, "POST", { size: 6 });
     check(planned.status === 200 && planned.data.length === 6, "the plan route previews the group", planned.status);
     const second = regular[1];
