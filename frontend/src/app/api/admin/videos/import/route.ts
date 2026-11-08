@@ -1,6 +1,6 @@
 import { parse } from "csv-parse/sync";
 import { requireApiProfile } from "@/lib/supabase/auth";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { probeDriveVideo } from "@/lib/drive";
 import { headerError, VIDEO_CSV_MAX_ROWS } from "@/lib/video-csv";
 
@@ -57,7 +57,8 @@ export async function POST(request: Request) {
 
   // Classify against what is already stored before spending a Drive probe,
   // so a re-run of the same file costs one query instead of a probe per row.
-  const supabase = await createClient();
+  // Privileged: drive_file_id is readable by no session client (caller checked above).
+  const supabase = createAdminClient();
   const [byName, byId] = await Promise.all([
     supabase.from("videos").select("filename,drive_file_id").in("filename", pending.map((row) => row.filename)),
     supabase.from("videos").select("filename,drive_file_id").in("drive_file_id", pending.map((row) => row.driveFileId)),

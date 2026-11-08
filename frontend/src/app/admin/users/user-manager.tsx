@@ -60,12 +60,13 @@ function UserRow({ user, currentAdminId }: { user: Profile; currentAdminId: stri
   const [name, setName] = useState(user.name);
   const [role, setRole] = useState<Role>(user.role);
   const [enabled, setEnabled] = useState(user.enabled);
+  const [label, setLabel] = useState(user.label ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   async function save() {
     setBusy(true); setError("");
     try {
-      await send(`/api/admin/users/${user.id}`, "PATCH", { name, role, enabled });
+      await send(`/api/admin/users/${user.id}`, "PATCH", { name, role, enabled, label });
       router.refresh();
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Không thể lưu."); }
     finally { setBusy(false); }
@@ -84,6 +85,8 @@ function UserRow({ user, currentAdminId }: { user: Profile; currentAdminId: stri
     <div className="flex flex-wrap items-end gap-3">
       <label className="flex flex-col gap-1 text-sm">Tên<input value={name} onChange={(event) => setName(event.target.value)} className="rounded border border-border bg-background px-2 py-1.5" /></label>
       <label className="flex flex-col gap-1 text-sm">Vai trò<select value={role} onChange={(event) => setRole(event.target.value as Role)} className="rounded border border-border bg-background px-2 py-1.5"><option value="annotator">Người gán nhãn</option><option value="admin">Admin</option></select></label>
+      <label className="flex flex-col gap-1 text-sm">Nhãn<input value={label} placeholder="vd. Agreement, 101-200" maxLength={100}
+        onChange={(event) => setLabel(event.target.value)} className="rounded border border-border bg-background px-2 py-1.5" /></label>
       <label className="flex items-center gap-2 pb-2 text-sm"><input type="checkbox" checked={enabled} onChange={(event) => setEnabled(event.target.checked)} />Được truy cập</label>
       <button type="button" disabled={busy || !name.trim()} onClick={save} className="rounded border border-border px-3 py-1.5 text-sm disabled:opacity-40">Lưu</button>
       {user.id !== currentAdminId && <button type="button" disabled={busy} onClick={remove} className="rounded border border-red/40 px-3 py-1.5 text-sm text-red disabled:opacity-40">Xóa người dùng</button>}

@@ -5,97 +5,130 @@ import { createClient } from "@/lib/supabase/server";
 
 const PAGE_SIZE = 10;
 
-type QueueRow = {
-  video_id: string;
-  filename: string;
-  duration_s: number;
-  coverage: number;
-  answered: number;
-  assignment_status: string;
+type Row = {
+  video_id: string; seq: number; filename: string; duration_s: number; status: string;
+  answered: number; agreement: boolean; total: number;
 };
 
 const STATUS_LABEL: Record<string, string> = {
-  available: "Có thể nhận",
-  pending: "Đã nhận",
+  pending: "Chưa làm",
   in_progress: "Đang gán nhãn",
+  completed: "Đã hoàn thành",
+};
+const STATUS_CLASS: Record<string, string> = {
+  pending: "text-muted", in_progress: "text-amber", completed: "text-green",
 };
 
+function href(page: number, query: string) {
+  const params = new URLSearchParams();
+  if (page > 1) params.set("page", String(page));
+  if (query) params.set("q", query);
+  const text = params.toString();
+  return text ? `/annotate?${text}` : "/annotate";
+}
+
+/** 1 … 4 5 [6] 7 8 … 20: first, last and two either side of the current page. */
+function pageList(current: number, last: number): (number | "gap")[] {
+  const pages = new Set([1, last, current - 2, current - 1, current, current + 1, current + 2]);
+  const sorted = [...pages].filter((page) => page >= 1 && page <= last).sort((a, b) => a - b);
+  return sorted.flatMap((page, index) => index > 0 && page - sorted[index - 1] > 1 ? ["gap" as const, page] : [page]);
+}
+
+// The annotator's own assigned videos, by number: numbered pages and a search
+// by number or filename (my_assignments). Admins hand videos out on
+// /admin/assignments; nobody claims videos here.
 export default async function AnnotatePage({ searchParams }: PageProps<"/annotate">) {
   if (process.env.VERCEL !== "1" && process.env.PLATFORM_MODE !== "hosted") {
     return <LegacyAnnotate />;
   }
-  await requireProfile();
+  const profile = await requireProfile();
   const params = await searchParams;
-  const rawPage = Number(Array.isArray(params.page) ? params.page[0] : params.page);
-  const page = Number.isFinite(rawPage) && rawPage > 1 ? Math.floor(rawPage) : 1;
+  const first = (value: string | string[] | undefined) => (Array.isArray(value) ? value[0] : value) ?? "";
+  const query = first(params.q).trim().slice(0, 100);
+  const rawPage = Number(first(params.page));
+  const requested = Number.isFinite(rawPage) && rawPage > 1 ? Math.floor(rawPage) : 1;
 
   const supabase = await createClient();
-  // One bounded page plus two counters, instead of selecting every video,
-  // every draft and every answer and joining them in the browser. The queue
-  // already drops videos this annotator finished and orders what is left so
-  // the least-covered videos come first.
-  const [queueResult, progressResult] = await Promise.all([
-    supabase.rpc("annotator_queue", { page_size: PAGE_SIZE, page_offset: (page - 1) * PAGE_SIZE }),
+  const [listResult, progressResult] = await Promise.all([
+    supabase.rpc("my_assignments", { page_size: PAGE_SIZE, page_offset: (requested - 1) * PAGE_SIZE, search: query || null }),
     supabase.rpc("annotator_progress"),
   ]);
-  const error = queueResult.error ?? progressResult.error;
+  const error = listResult.error ?? progressResult.error;
   if (error) throw new Error(error.message);
 
-  const queue = (queueResult.data ?? []) as QueueRow[];
-  const progress = (progressResult.data ?? [])[0] as { completed: number; total: number } | undefined;
+  const rows = (listResult.data ?? []) as Row[];
+  const progress = (progressResult.data ?? [])[0] as { assigned: number; completed: number } | undefined;
+  const assigned = Number(progress?.assigned ?? 0);
   const completed = Number(progress?.completed ?? 0);
-  const total = Number(progress?.total ?? 0);
-  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-  const remaining = Math.max(0, total - completed);
+  const percent = assigned > 0 ? Math.round((completed / assigned) * 100) : 0;
+  // An out-of-range page returns no rows, so its total is unknown; send the
+  // reader back to page 1 rather than showing an empty list with no pages.
+  const total = Number(rows[0]?.total ?? 0);
+  const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return <div className="flex flex-col gap-5">
     <div className="flex flex-wrap items-end justify-between gap-3">
-      <h2 className="text-xl font-semibold">Video gán nhãn</h2>
-      <Link href="/admin" className="text-sm text-accent">Bảng quản trị</Link>
+      <h2 className="text-xl font-semibold">Video được giao</h2>
+      {profile.role === "admin" && <Link href="/admin" className="text-sm text-accent">Bảng quản trị</Link>}
     </div>
 
     <section aria-label="Tiến trình của bạn" className="flex flex-col gap-2 rounded-md border border-border bg-surface p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2 text-sm">
         <span className="font-medium">
           Bạn đã gán nhãn <span className="tabular-nums text-accent">{completed}</span>
-          {" / "}<span className="tabular-nums">{total}</span> video
+          {" / "}<span className="tabular-nums">{assigned}</span> video được giao
         </span>
-        <span className="tabular-nums text-muted">{percent}% · còn {remaining}</span>
+        <span className="tabular-nums text-muted">{percent}% · còn {Math.max(0, assigned - completed)}</span>
       </div>
-      <div role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={completed}
+      <div role="progressbar" aria-valuemin={0} aria-valuemax={assigned} aria-valuenow={completed}
         className="h-2 overflow-hidden rounded-full bg-background">
         <div className="h-full rounded-full bg-accent transition-[width]" style={{ width: `${percent}%` }} />
       </div>
     </section>
 
-    {queue.length === 0 ? <div className="rounded-md border border-border bg-surface p-4 text-sm text-muted">
-      {completed > 0 && completed >= total
-        ? "Bạn đã gán nhãn hết video hiện có. Cảm ơn bạn!"
-        : page > 1
-          ? "Trang này không còn video nào. Hãy quay lại trang trước."
-          : "Chưa có video nào sẵn sàng. Video cần đủ 9 bản nháp trước khi gán nhãn được."}
-    </div> : <div className="grid gap-3 sm:grid-cols-2">
-      {queue.map((row) => <Link key={row.video_id} href={`/annotate/${row.video_id}`}
-        className="rounded-md border border-border bg-surface p-4 hover:border-accent">
-        <div className="truncate font-medium">{row.filename}</div>
-        <div className="mt-2 flex justify-between gap-2 text-xs text-muted">
-          <span className="tabular-nums">
-            {Number(row.duration_s).toFixed(2)}s · {Number(row.answered)}/9 câu đã duyệt
-          </span>
-          <span>{STATUS_LABEL[row.assignment_status] ?? row.assignment_status}</span>
-        </div>
-        {Number(row.coverage) === 0 && <div className="mt-1 text-xs text-amber">Chưa ai gán nhãn</div>}
-      </Link>)}
-    </div>}
+    <form action="/annotate" className="flex flex-wrap items-center gap-2" role="search">
+      <label htmlFor="annotate-search" className="sr-only">Tìm video</label>
+      <input id="annotate-search" name="q" defaultValue={query} placeholder="Số thứ tự (vd. 125) hoặc tên file"
+        className="min-w-0 flex-1 rounded border border-border bg-background px-3 py-1.5 text-sm sm:max-w-sm" />
+      <button type="submit" className="rounded bg-accent px-3 py-1.5 text-sm text-white">Tìm</button>
+      {query && <Link href="/annotate" className="text-sm text-muted">Xóa tìm kiếm</Link>}
+    </form>
 
-    {(page > 1 || queue.length === PAGE_SIZE) && <nav aria-label="Phân trang" className="flex items-center gap-3 text-sm">
-      {page > 1
-        ? <Link href={`/annotate?page=${page - 1}`} className="rounded border border-border px-3 py-1.5">Trang trước</Link>
-        : <span className="rounded border border-border px-3 py-1.5 text-muted opacity-40">Trang trước</span>}
-      <span className="tabular-nums text-muted">Trang {page}</span>
-      {queue.length === PAGE_SIZE
-        ? <Link href={`/annotate?page=${page + 1}`} className="rounded border border-border px-3 py-1.5">Trang sau</Link>
-        : <span className="rounded border border-border px-3 py-1.5 text-muted opacity-40">Trang sau</span>}
+    {rows.length === 0 ? <div className="rounded-md border border-border bg-surface p-4 text-sm text-muted">
+      {query ? `Không có video nào được giao cho bạn khớp với "${query}".`
+        : requested > 1 ? <>Trang này không có video. <Link href={href(1, query)} className="text-accent">Về trang 1</Link></>
+          : assigned === 0 ? "Bạn chưa được giao video nào. Hãy liên hệ admin."
+            : "Không còn video nào."}
+    </div> : <ol className="overflow-hidden rounded-md border border-border bg-surface">
+      {rows.map((row) => <li key={row.video_id} className="border-b border-border last:border-0">
+        <Link href={`/annotate/${row.video_id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 hover:bg-background">
+          <span className="w-14 shrink-0 font-semibold tabular-nums text-accent">#{row.seq}</span>
+          <span className="min-w-0 flex-1 truncate">{row.filename}</span>
+          {row.agreement && <span className="rounded border border-accent/50 px-1.5 text-xs text-accent">Agreement</span>}
+          <span className="tabular-nums text-xs text-muted">{Number(row.duration_s).toFixed(1)}s · {Number(row.answered)}/9 câu</span>
+          <span className={`w-28 text-right text-xs ${STATUS_CLASS[row.status] ?? "text-muted"}`}>{STATUS_LABEL[row.status] ?? row.status}</span>
+        </Link>
+      </li>)}
+    </ol>}
+
+    {total > PAGE_SIZE && <nav aria-label="Phân trang" className="flex flex-wrap items-center gap-1.5 text-sm">
+      {requested > 1 ? <Link href={href(requested - 1, query)} className="rounded border border-border px-2.5 py-1">‹ Trước</Link>
+        : <span className="rounded border border-border px-2.5 py-1 opacity-40">‹ Trước</span>}
+      {pageList(requested, lastPage).map((item, index) => item === "gap"
+        ? <span key={`gap-${index}`} className="px-1 text-muted">…</span>
+        : item === requested
+          ? <span key={item} aria-current="page" className="rounded border border-accent bg-accent/20 px-2.5 py-1 tabular-nums">{`Trang ${item}`}</span>
+          : <Link key={item} href={href(item, query)} className="rounded border border-border px-2.5 py-1 tabular-nums">{item}</Link>)}
+      {requested < lastPage ? <Link href={href(requested + 1, query)} className="rounded border border-border px-2.5 py-1">Sau ›</Link>
+        : <span className="rounded border border-border px-2.5 py-1 opacity-40">Sau ›</span>}
+      <form action="/annotate" className="ml-2 flex items-center gap-1.5">
+        {query && <input type="hidden" name="q" value={query} />}
+        <label htmlFor="annotate-page" className="text-muted">Đến trang</label>
+        <input id="annotate-page" name="page" type="number" min={1} max={lastPage} defaultValue={requested}
+          className="w-16 rounded border border-border bg-background px-2 py-1 tabular-nums" />
+        <span className="text-muted">/ {lastPage}</span>
+        <button type="submit" className="rounded border border-border px-2.5 py-1">Đi</button>
+      </form>
     </nav>}
   </div>;
 }

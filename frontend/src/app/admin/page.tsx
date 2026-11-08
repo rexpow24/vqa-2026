@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { requireProfile } from "@/lib/supabase/auth";
 import { getAdminStats } from "@/lib/admin-stats";
+import { createClient } from "@/lib/supabase/server";
+import { AdjudicationPanel, type AdjudicationSummary } from "./adjudication-panel";
 
 export default async function AdminPage() {
   await requireProfile("admin");
-  const stats = await getAdminStats();
+  const supabase = await createClient();
+  const [stats, summary] = await Promise.all([getAdminStats(), supabase.rpc("adjudication_summary")]);
+  if (summary.error) throw new Error(summary.error.message);
   const cards = [
     ["Người gán nhãn", stats.totalAnnotators],
     ["Video", stats.totalVideos],
@@ -17,6 +21,7 @@ export default async function AdminPage() {
       <h2 className="text-xl font-semibold">Dashboard tiến độ</h2>
       <Link href="/admin/users" className="ml-auto text-sm text-accent">Quản lý người dùng</Link>
       <Link href="/admin/videos" className="text-sm text-accent">Quản lý video</Link>
+      <Link href="/admin/assignments" className="text-sm text-accent">Phân công</Link>
     </div>
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
       {cards.map(([label, value]) => <div key={label} className="rounded-md border border-border bg-surface p-4">
@@ -24,6 +29,7 @@ export default async function AdminPage() {
         <div className="mt-2 text-2xl font-semibold tabular-nums">{value}</div>
       </div>)}
     </div>
+    <AdjudicationPanel summary={(summary.data ?? { answers: {}, labels: {} }) as AdjudicationSummary} />
     <p className="text-sm text-muted">Lượt gán nhãn đã hoàn thành: {stats.completedAssignments}/{stats.totalAssignments}</p>
     <div className="overflow-x-auto rounded-md border border-border bg-surface">
       <table className="w-full text-left text-sm">

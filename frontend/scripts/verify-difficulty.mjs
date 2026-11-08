@@ -45,7 +45,7 @@ const users = [];
 try {
   const { data: video, error: videoError } = await privileged.from("videos").insert({
     drive_file_id: `difficulty-test-${crypto.randomUUID()}`,
-    filename: `zzz-difficulty-test-${crypto.randomUUID()}.mp4`, duration_s: 10,
+    filename: `zzz-difficulty-test-${crypto.randomUUID()}.mp4`, duration_s: 10, agreement_sample: true,
   }).select("id").single();
   if (videoError) throw videoError;
   videoId = video.id;
@@ -59,7 +59,7 @@ try {
   for (const name of ["A", "B"]) {
     const user = await makeAnnotator(`Difficulty Test ${name}`);
     users.push(user);
-    const { error: claimError } = await user.client.from("video_assignments")
+    const { error: claimError } = await privileged.from("video_assignments")
       .insert({ video_id: videoId, annotator_id: user.id, status: "pending" });
     if (claimError) throw claimError;
     const { error: labelError } = await user.client.from("video_labels")
@@ -70,6 +70,7 @@ try {
       return {
         draft_id: draft.id, annotator_id: user.id, verdict,
         reason_code: verdict === "DISAGREE" ? "sai nhân quả" : null,
+        edited_answer: verdict === "DISAGREE" ? `Corrected ${draft.qgroup}` : null,
         human_keyframes_s: KEYFRAME_GROUPS.includes(draft.qgroup) ? [1] : [],
       };
     }));

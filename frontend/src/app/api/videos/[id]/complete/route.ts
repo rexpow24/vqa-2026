@@ -15,10 +15,9 @@ export async function POST(_request: Request, context: Context) {
   if (error) return Response.json({ error: error.message }, { status: 422 });
   if (!data) return Response.json({ error: "Assignment not found" }, { status: 404 });
 
-  // Hand back the next video so the client can go straight there instead of
-  // bouncing through the list. The just-completed video is already excluded
-  // from annotator_queue, so asking for one row after the update is enough.
-  const { data: queue } = await supabase.rpc("annotator_queue", { page_size: 1, page_offset: 0 });
+  // Hand back the next unfinished assigned video (by number) so the client
+  // can go straight there instead of bouncing through the list.
+  const { data: queue } = await supabase.rpc("next_assigned_video");
   const next = Array.isArray(queue) && queue.length ? queue[0] : null;
   return Response.json({
     ...data,

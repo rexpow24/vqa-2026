@@ -6,6 +6,7 @@ export type Profile = {
   id: string;
   email: string;
   name: string;
+  label?: string | null;
   role: Role;
   enabled: boolean;
   created_at: string;

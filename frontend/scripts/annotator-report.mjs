@@ -24,11 +24,14 @@ if (!assignments.length) { console.log("No videos opened yet."); process.exit(0)
 const videoIds = assignments.map((row) => row.video_id);
 const drafts = must(await admin.from("video_drafts").select("id,video_id,qgroup").in("video_id", videoIds));
 const answers = must(await admin.from("qa_annotations")
-  .select("draft_id,verdict,reason_code,reason_note,human_keyframes_s").eq("annotator_id", profile.id)
+  .select("draft_id,verdict,reason_code,reason_note,edited_answer,human_keyframes_s").eq("annotator_id", profile.id)
   .in("draft_id", drafts.map((draft) => draft.id)));
 const labels = must(await admin.from("video_labels").select("video_id,event_label").eq("annotator_id", profile.id));
 const derived = must(await admin.from("annotator_difficulty")
   .select("video_id,disagree_count,not_answerable_count,model_errors,difficulty").eq("annotator_id", profile.id));
+const revisions = must(await admin.from("qa_annotation_revisions").select("draft_id")
+  .eq("annotator_id", profile.id).in("draft_id", drafts.map((draft) => draft.id)));
+const finals = must(await admin.from("final_answers").select("video_id,source").in("video_id", videoIds));
 const pooled = must(await admin.from("video_difficulty").select("video_id,annotators,model_errors,difficulty").in("video_id", videoIds));
 
 const SHORT = { AGREE: "✓", DISAGREE: "✗", NOT_ANSWERABLE: "?" };
@@ -56,6 +59,9 @@ for (const assignment of assignments) {
     if (KEYFRAME_GROUPS.includes(group) && (marks.length < 1 || marks.length > 3)) problems.push(`${group}: ${marks.length} keyframes`);
     if (!KEYFRAME_GROUPS.includes(group) && marks.length) problems.push(`${group}: keyframes on a group without evidence`);
     if (answer.verdict === "DISAGREE" && !answer.reason_code) problems.push(`${group}: DISAGREE without a reason`);
+    // Only a disagreement carries an edited answer, and it must carry one (20261107_answer_adjudication.sql).
+    if (answer.verdict !== "DISAGREE" && answer.edited_answer) problems.push(`${group}: answer rewritten under ${answer.verdict}, choose Không đồng ý or restore the draft`);
+    if (answer.verdict === "DISAGREE" && !answer.edited_answer) problems.push(`${group}: DISAGREE without a corrected answer`);
   }
   if (mine) {
     const counted = [...byGroup.values()].filter((answer) => answer && answer.verdict !== "AGREE").length;
@@ -70,6 +76,12 @@ for (const assignment of assignments) {
     ? `errors ${mine.model_errors} (✗${mine.disagree_count} ?${mine.not_answerable_count}) → ${mine.difficulty}`
     : "difficulty after completion"}${video && Number(video.annotators) > 1
     ? ` · video mean ${video.model_errors} over ${video.annotators} → ${video.difficulty}` : ""}`);
+  const edited = drafts.filter((draft) => draft.video_id === assignment.video_id)
+    .map((draft) => [draft.qgroup, revisions.filter((revision) => revision.draft_id === draft.id).length])
+    .filter(([, count]) => count > 1);
+  const sources = finals.filter((row) => row.video_id === assignment.video_id).reduce((acc, row) => ({ ...acc, [row.source]: (acc[row.source] ?? 0) + 1 }), {});
+  if (Object.keys(sources).length) console.log(`     final answers: ${Object.entries(sources).map(([source, n]) => `${n} ${source}`).join(", ")}`);
+  if (edited.length) console.log(`     changed after first save: ${edited.map(([group, count]) => `${group} ${count} versions`).join(", ")}`);
   for (const problem of problems) console.log(`     ! ${problem}`);
 }
 console.log(`\n${assignments.length} videos, ${assignments.filter((row) => row.status === "completed").length} completed, ${broken} with problems.`);

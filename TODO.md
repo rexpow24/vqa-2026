@@ -54,6 +54,10 @@ design. All three are fixed; the details are in `architecture.md` §2, §6, §7.
 | `temperature=0` is not byte-reproducible | a second run diverged mid-sentence at char 92, text-only condition only | llama.cpp prompt cache: the second run hits the cache the first left behind, changing float reduction order on CUDA. Long free-form generations amplify it; short ones stop before it shows |
 | Any script printing model output crashes on Windows | `UnicodeEncodeError: 'charmap' codec can't encode 'ả'` *after* a correct answer came back | console is cp1252, the model answers in Vietnamese → `sys.stdout.reconfigure(encoding="utf-8")` |
 | `WinError 10054` traceback on every reload | looked cosmetic; actually leaked a socket + left the transport attached to the server | CPython's unguarded `sock.shutdown()` skips its own teardown → `vqa/winasyncio.py` completes it |
+| Auto-save looped ~40 saves per answer | after switching Không đồng ý → Đồng ý, one answer was POSTed every 600 ms | `dirty` compared the reason/note inputs, which the payload drops for non-DISAGREE verdicts, so every save still looked unsaved; now `dirty` compares the payload with the stored row (`features/answer-adjudication/`) |
+| AGREE rows carrying a rewritten answer | 5 production answers marked Đồng ý but rewritten, one with the opposite cause; difficulty counted 0 errors | "Sửa đáp án" was offered under every verdict and nothing checked it; now only Không đồng ý carries an edited answer, and it must |
+| Annotators could download the original dataset | any annotator read every `drive_file_id` via REST; anonymous Drive fetch returned the file | `videos_read` exposed all columns of every `available` video; fixed by a column privilege and assignment-only reads (`features/assigned-labeling/`) |
+| Migration rolled back on a backfill `update` | `An edited answer needs the verdict Sai…` while setting `batch = 'legacy'` | `validate_assignment` re-ran completion checks on every update of a completed row; now only on the transition to completed |
 
 ---
 

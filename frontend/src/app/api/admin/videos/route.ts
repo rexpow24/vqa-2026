@@ -1,5 +1,5 @@
 import { requireApiProfile } from "@/lib/supabase/auth";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { probeDriveVideo } from "@/lib/drive";
 
 export async function POST(request: Request) {
@@ -16,8 +16,8 @@ export async function POST(request: Request) {
   const probe = await probeDriveVideo(driveFileId);
   if (probe === "unreachable") return Response.json({ error: "Could not verify Drive video" }, { status: 502 });
   if (probe === "not_video") return Response.json({ error: "Drive file is not a seekable video" }, { status: 422 });
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("videos")
+  // Privileged: drive_file_id is readable by no session client (caller checked above).
+  const { data, error } = await createAdminClient().from("videos")
     .insert({ drive_file_id: driveFileId, filename, duration_s: duration, status: "active", available: true })
     .select("id,drive_file_id,filename,duration_s,available,status").single();
   if (error) return Response.json({ error: error.message }, { status: 422 });

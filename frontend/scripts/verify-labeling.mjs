@@ -42,8 +42,15 @@ try {
   const { data: references, error: referenceError } = await annotator.client.from("video_reference_labels")
     .select("video_id").eq("video_id", videoId);
   if (!referenceError && references.length) throw new Error("Annotator can read hidden reference label");
+  // Videos are assigned by an admin; the page is not found until then, and nobody claims.
+  // A streamed loading.tsx sends 200 before notFound(), so check the body.
+  const unassigned = await request(`/annotate/${videoId}`, annotator.cookie);
+  if (!/NEXT_HTTP_ERROR_FALLBACK;404|could not be found/.test(String(unassigned.data)) ||
+      String(unassigned.data).includes("temporary-labeling-test.mp4")) throw new Error("Unassigned labeling page rendered the video");
+  expect(await request("/api/admin/assignments", admin.cookie, "POST", { video_id: videoId, annotator_id: testUserId }),
+    201, "Admin assigns video");
   expect(await request(`/annotate/${videoId}`, annotator.cookie), 200, "Labeling page");
-  expect(await request(`/api/videos/${videoId}/claim`, annotator.cookie, "POST", {}), 201, "Claim video");
+  expect(await request(`/api/videos/${videoId}/claim`, annotator.cookie, "POST", {}), 403, "Claim refused");
   expect(await request(`/api/videos/${videoId}/label`, annotator.cookie, "POST",
     { event_label: "accident" }), 200, "Independent video label");
   // Evidence frames only where the answer rests on one moment: C, V, Attr.

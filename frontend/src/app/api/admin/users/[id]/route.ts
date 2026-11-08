@@ -12,6 +12,8 @@ export async function PATCH(request: Request, context: Context) {
   const name = typeof body.name === "string" ? body.name.trim() : "";
   const role = body.role as Role;
   const enabled = body.enabled;
+  // Free text the admin uses to group people, e.g. "Agreement" or "101-200".
+  const label = typeof body.label === "string" ? body.label.trim().slice(0, 100) || null : null;
   if (!name || name.length > 100 || !["admin", "annotator"].includes(role) || typeof enabled !== "boolean") {
     return Response.json({ error: "Invalid profile" }, { status: 422 });
   }
@@ -20,8 +22,8 @@ export async function PATCH(request: Request, context: Context) {
   }
   const admin = createAdminClient();
   const { data, error } = await admin.from("user_profiles")
-    .update({ name, role, enabled }).eq("id", id)
-    .select("id,email,name,role,enabled,created_at").maybeSingle();
+    .update({ name, role, enabled, label }).eq("id", id)
+    .select("id,email,name,label,role,enabled,created_at").maybeSingle();
   if (error) return Response.json({ error: error.message }, { status: 422 });
   if (!data) return Response.json({ error: "User not found" }, { status: 404 });
   return Response.json(data);

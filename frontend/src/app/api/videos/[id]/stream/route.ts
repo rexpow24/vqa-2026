@@ -1,5 +1,6 @@
 import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 
@@ -9,11 +10,13 @@ async function stream(request: Request, context: Context, head = false) {
   const profile = await requireApiProfile();
   if (profile instanceof Response) return profile;
   const { id } = await context.params;
+  // RLS shows a video only to its assignees (and admins); drive_file_id is
+  // readable by no session, so it is looked up privileged after that check.
   const supabase = await createClient();
-  const { data: video } = await supabase.from("videos")
-    .select("drive_file_id,status")
-    .eq("id", id).single();
-  if (!video || video.status !== "active") return new Response("Not found", { status: 404 });
+  const { data: visible } = await supabase.from("videos").select("id,status").eq("id", id).maybeSingle();
+  if (!visible || visible.status !== "active") return new Response("Not found", { status: 404 });
+  const { data: video } = await createAdminClient().from("videos").select("drive_file_id").eq("id", id).single();
+  if (!video) return new Response("Not found", { status: 404 });
 
   const range = request.headers.get("range");
   if (range && !/^bytes=\d*-\d*$/.test(range)) {

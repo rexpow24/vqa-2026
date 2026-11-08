@@ -4,7 +4,7 @@ __pycache__/
 *.pyc
 work/
 finished/
-export/
+/export/
 videos.csv
 videos.smoke.csv
 labels.csv
