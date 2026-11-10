@@ -223,10 +223,17 @@ export function AssignmentPanel({ overview, strata }: { overview: Overview; stra
             "range", { annotator_id: annotator, from: Number(from), to: Number(to), batch: batch || `${from}-${to}` }),
           (result) => `Đã giao ${result.assigned} video. Bỏ qua: ${result.skipped_agreement} agreement, ${result.skipped_taken} đã giao người khác, ${result.skipped_not_ready} chưa sẵn sàng, ${result.already_mine} đã có.`)}>
           Giao</button>
-        <button type="button" className={button} disabled={busy || !annotator} onClick={() => run(
-          () => post<{ removed: number; kept_started: number; skipped_agreement: number }>("unassign", { annotator_id: annotator, from: Number(from), to: Number(to) }),
-          (result) => `Đã gỡ ${result.removed} video; giữ lại ${result.kept_started} video đã bắt đầu làm.` +
-            (result.skipped_agreement ? ` ${result.skipped_agreement} video agreement không gỡ ở đây: dùng "Gỡ vòng" ở mục 2.` : ""))}>Gỡ</button>
+        {([false, true] as const).map((deleteAll) => <button key={String(deleteAll)} type="button"
+          className={deleteAll ? `${button} border-red/50 text-red` : button} disabled={busy || !annotator} onClick={() => {
+            const name = people.find((person) => person.id === annotator)?.name ?? "";
+            if (deleteAll && !window.confirm(`Gỡ hết video #${from}-${to} của ${name}, KÈM mọi câu trả lời và nhãn sự kiện đã làm (kể cả video đã hoàn thành)? Không hoàn tác được.`)) return;
+            void run(() => post<{ removed: number; kept_started: number; skipped_agreement: number; deleted_answers: number; deleted_labels: number }>(
+              "unassign", { annotator_id: annotator, from: Number(from), to: Number(to), delete_work: deleteAll }),
+            (result) => `Đã gỡ ${result.removed} video` + (deleteAll
+              ? `, xóa ${result.deleted_answers} câu trả lời và ${result.deleted_labels} nhãn sự kiện.`
+              : `; giữ lại ${result.kept_started} video đã bắt đầu làm (dùng "Gỡ hết" để gỡ luôn).`) +
+              (result.skipped_agreement ? ` ${result.skipped_agreement} video agreement không gỡ ở đây: dùng "Gỡ vòng" ở mục 2.` : ""));
+          }}>{deleteAll ? "Gỡ hết (xóa cả câu đã làm)" : "Gỡ video chưa đánh"}</button>)}
       </div>
       <fieldset className="flex flex-col gap-2 border-t border-border pt-3">
         <legend className="sr-only">Chia đều cho người đã training</legend>

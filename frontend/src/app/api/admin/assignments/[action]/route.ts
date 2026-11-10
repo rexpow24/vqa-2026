@@ -31,7 +31,7 @@ export async function POST(request: Request, context: Context) {
     return respond(action === "range"
       ? await supabase.rpc("assign_range", { annotator, seq_from: from, seq_to: to,
           batch_label: typeof body.batch === "string" ? body.batch.slice(0, 100) : null })
-      : await supabase.rpc("unassign_range", { annotator, seq_from: from, seq_to: to }));
+      : await supabase.rpc("unassign_range", { annotator, seq_from: from, seq_to: to, delete_work: body.delete_work === true }));
   }
   if (action === "plan" || action === "create-group") {
     const size = int(body.size);

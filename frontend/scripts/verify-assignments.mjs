@@ -109,6 +109,10 @@ try {
     .eq("video_id", regular[11].id).eq("qgroup", "S").single())).id, annotator_id: alice.id, verdict: "AGREE", human_keyframes_s: [] }));
   result = must(await admin.client.rpc("unassign_range", { annotator: alice.id, seq_from: regular[10].seq, seq_to: regular[11].seq }));
   check(result.removed === 1 && result.kept_started === 1, "unassigning keeps a started video", result);
+  result = must(await admin.client.rpc("unassign_range", { annotator: alice.id, seq_from: regular[11].seq, seq_to: regular[11].seq, delete_work: true }));
+  const aliceLeft = must(await privileged.from("qa_annotations").select("draft_id").eq("annotator_id", alice.id));
+  check(result.removed === 1 && result.deleted_answers === 1 && aliceLeft.length === 0, "removing all deletes a started video with its answers", result);
+  must(await admin.client.rpc("assign_range", { annotator: alice.id, seq_from: regular[11].seq, seq_to: regular[11].seq, batch_label: `Batch ${tag}` }));
   must(await admin.client.rpc("assign_range", { annotator: alice.id, seq_from: regular[10].seq, seq_to: regular[10].seq, batch_label: `Batch ${tag}` }));
 
   console.log("Annotator list:");
@@ -200,6 +204,8 @@ try {
   console.log("Unassigning a round:");
   const viaRange = must(await admin.client.rpc("unassign_range", { annotator: bob.id, seq_from: roundFrom, seq_to: roundTo }));
   check(viaRange.removed === 0 && viaRange.skipped_agreement === 2, "the range unassign leaves a round alone and says so", viaRange);
+  const viaRangeAll = must(await admin.client.rpc("unassign_range", { annotator: bob.id, seq_from: roundFrom, seq_to: roundTo, delete_work: true }));
+  check(viaRangeAll.removed === 0 && viaRangeAll.skipped_agreement === 2, "removing all still leaves agreement videos to Gỡ vòng", viaRangeAll);
   const roundDraft = must(await privileged.from("video_drafts").select("id").eq("video_id", round[0].id).eq("qgroup", "S").single());
   must(await carol.client.from("qa_annotations").insert({ draft_id: roundDraft.id, annotator_id: carol.id, verdict: "AGREE", human_keyframes_s: [] }));
   result = must(await admin.client.rpc("unassign_agreement_group", { annotators: [bob.id, carol.id], seq_from: roundFrom, seq_to: roundTo, delete_work: false }));
@@ -236,7 +242,7 @@ try {
   check(Boolean(stray.error), "an edited answer cannot stay under AGREE", stray);
   const exported = must(await admin.client.rpc("answers_export", { only_agreement: false, seq_from: from, seq_to: roundTo }));
   const aliceRows = exported.filter((item) => item.annotator_id === alice.id);
-  check(aliceRows.length === 10 && aliceRows.every((item) => item.verdict === "AGREE" && item.effective_answer === item.draft_answer),
+  check(aliceRows.length === 9 && aliceRows.every((item) => item.verdict === "AGREE" && item.effective_answer === item.draft_answer),
     "the export holds every saved answer, AGREE resolving to the draft", aliceRows.length);
   const bobRow = exported.find((item) => item.annotator_id === bob.id && item.draft_id === sharedS.id);
   const carolRow = exported.find((item) => item.annotator_id === carol.id && item.draft_id === sharedS.id);
@@ -291,6 +297,12 @@ try {
       { annotator_id: alice.id, from: target, to: target });
     const reassigned = await request(base, "/api/admin/assignments/range", admin.cookie, "POST",
       { annotator_id: alice.id, from: target, to: target, batch: `Batch ${tag}` });
+    const removedAll = await request(base, "/api/admin/assignments/unassign", admin.cookie, "POST",
+      { annotator_id: alice.id, from: regular[0].seq, to: regular[0].seq, delete_work: true });
+    check(removedAll.status === 200 && removedAll.data.removed === 1 && removedAll.data.deleted_answers === 9 && removedAll.data.deleted_labels === 1,
+      "the unassign route removes a completed video with its work when asked", removedAll.data);
+    // Given back untouched, so it is now the first unfinished video by number.
+    must(await admin.client.rpc("assign_range", { annotator: alice.id, seq_from: regular[0].seq, seq_to: regular[0].seq, batch_label: `Batch ${tag}` }));
     check(removedHttp.data?.removed === 1 && reassigned.data?.assigned === 1,
       "the unassign route removes an untouched video and the range route gives it back", { removedHttp: removedHttp.data, reassigned: reassigned.data });
     const groupRound = await request(base, "/api/admin/assignments/assign-group", admin.cookie, "POST",
@@ -318,7 +330,7 @@ try {
     must(await alice.client.from("qa_annotations").insert(secondDrafts.map((draft) => ({ draft_id: draft.id, annotator_id: alice.id,
       verdict: "AGREE", human_keyframes_s: KEYFRAME_GROUPS.includes(draft.qgroup) ? [1] : [] }))));
     const completed = await request(base, `/api/videos/${second.id}/complete`, alice.cookie, "POST", {});
-    check(completed.status === 200 && completed.data.next_video_id === regular[2].id,
+    check(completed.status === 200 && completed.data.next_video_id === regular[0].id,
       "completing hands back the next assigned video by number", completed.data);
   } else {
     console.log("\nTEST_BASE_URL not set -- skipped the HTTP half.");
