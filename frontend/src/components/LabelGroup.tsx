@@ -14,15 +14,17 @@ export function LabelGroup<T extends string>({
 }) {
   return (
     <fieldset>
-      <legend className="text-xs text-muted mb-1">{legend}</legend>
+      <legend className="text-xs text-foreground/80 mb-1">{legend}</legend>
       <div className="flex flex-wrap gap-2">
         {options.map((option) => (
           <button
             key={option}
             type="button"
             aria-pressed={value === option}
-            className={`px-3 py-1.5 rounded-md border text-sm ${value === option
-              ? "border-accent bg-accent/20 text-foreground" : "border-border text-muted"}`}
+            className={`px-3 py-1.5 rounded-md border text-sm transition-colors
+              focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${value === option
+              ? "border-accent bg-accent/30 font-semibold text-foreground hover:bg-accent/40"
+              : "border-border-strong bg-surface-2 text-foreground hover:border-muted hover:bg-surface-3"}`}
             onClick={() => onChange(option)}
           >
             {option}

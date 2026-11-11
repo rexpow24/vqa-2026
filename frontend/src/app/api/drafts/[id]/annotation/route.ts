@@ -23,15 +23,17 @@ export async function POST(request: Request, context: Context) {
     .select("video_id,qgroup,answer,predicted_keyframes_s").eq("id", id).single();
   if (draftError || !draft) return Response.json({ error: "Không tìm thấy bản nháp." }, { status: 404 });
   // Groups without evidence frames store none, even from a client that still sends some.
+  // Groups that take them store exactly two: [start, end] of the event, start
+  // before end (same rule as validate_qa_annotation, 20261112_keyframes_start_end.sql).
   const required = needsKeyframes(draft.qgroup);
   const marks = required ? body.human_keyframes_s : [];
   if (!VERDICTS.includes(verdict) || !Array.isArray(marks) ||
-      (required && (marks.length < 1 || marks.length > 3)) ||
       !marks.every((value) => typeof value === "number" && Number.isFinite(value) && value >= 0) ||
+      (required && (marks.length !== 2 || Number(marks[0].toFixed(3)) >= Number(marks[1].toFixed(3)))) ||
       (verdict === "DISAGREE" && (!reason || !REASONS.includes(reason))) ||
       (verdict === "DISAGREE" && reason === "khác" && !note) ||
       (note?.length ?? 0) > 2000 || (answer?.length ?? 0) > 5000) {
-    return Response.json({ error: required ? "Chọn nhận xét và 1-3 mốc bằng chứng hợp lệ." : "Chọn nhận xét hợp lệ." },
+    return Response.json({ error: required ? "Chọn nhận xét và đặt đủ 2 keyframe: start trước end." : "Chọn nhận xét hợp lệ." },
       { status: 422 });
   }
   // AGREE means the draft is the answer, so only a disagreement carries an

@@ -13,8 +13,9 @@
 
 import data from "./qgroups.json";
 
-// `keyframes` marks the groups whose answer rests on one moment (C, V, Attr).
-// The others describe the whole clip, where 1-3 frames carry no evidence.
+// `keyframes` marks the groups whose answer rests on one event (C, V, Attr):
+// annotators mark exactly two frames there, the event's start and end.
+// The others describe the whole clip, where frames carry no evidence.
 // The database trigger keeps its own copy of this list; change both together.
 export type QGroup = { code: string; name: string; question: string; keyframes: boolean };
 
@@ -23,7 +24,7 @@ export const GROUP_CODES: readonly string[] = QGROUPS.map((group) => group.code)
 export const GROUP_NAMES: Readonly<Record<string, string>> =
   Object.fromEntries(QGROUPS.map((group) => [group.code, group.name]));
 
-/** Whether annotators must mark 1-3 evidence frames for this group. */
+/** Whether annotators must mark the start and end frames for this group. */
 export function needsKeyframes(code: string): boolean {
   return QGROUPS.some((group) => group.code === code && group.keyframes);
 }

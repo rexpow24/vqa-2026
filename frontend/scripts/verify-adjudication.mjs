@@ -52,7 +52,7 @@ async function label(user, video, answers, eventLabel) {
   must(await privileged.from("video_assignments").insert({ video_id: video.id, annotator_id: user.id, status: "pending" }));
   must(await user.client.from("video_labels").insert({ video_id: video.id, annotator_id: user.id, event_label: eventLabel }));
   must(await user.client.from("qa_annotations").insert(GROUP_CODES.map((group) => {
-    const { verdict = "AGREE", edited = null, marks = [1] } = answers[group] ?? {};
+    const { verdict = "AGREE", edited = null, marks = [1, 2] } = answers[group] ?? {};
     return {
       draft_id: video.draft[group].id, annotator_id: user.id, verdict, edited_answer: edited,
       reason_code: verdict === "DISAGREE" ? "sai nhân quả" : null,
@@ -120,11 +120,11 @@ try {
   check((await finalLabel(single))?.source === "single", "one event label is single", "");
 
   await label(alice, pair, {
-    E: {}, N: { verdict: "DISAGREE", edited: "N fixed" }, C: { marks: [1] },
+    E: {}, N: { verdict: "DISAGREE", edited: "N fixed" }, C: { marks: [1, 2] },
     V: { verdict: "DISAGREE", edited: "V one" }, O: { verdict: "NOT_ANSWERABLE" },
   }, "accident");
   await label(bob, pair, {
-    E: { verdict: "DISAGREE", edited: "E fixed" }, N: { verdict: "DISAGREE", edited: "  N   fixed " }, C: { marks: [2] },
+    E: { verdict: "DISAGREE", edited: "E fixed" }, N: { verdict: "DISAGREE", edited: "  N   fixed " }, C: { marks: [2, 3] },
     V: { verdict: "DISAGREE", edited: "V two" }, O: { verdict: "NOT_ANSWERABLE" },
   }, "near-miss");
   rows = await finals(pair);
@@ -132,7 +132,7 @@ try {
     "two AGREE are consensus on the draft answer", JSON.stringify(rows.S));
   check(rows.N.source === "consensus" && rows.N.final_answer === "N fixed",
     "two edits equal up to whitespace are consensus", JSON.stringify(rows.N));
-  check(rows.C.source === "consensus" && rows.C.final_keyframes_s.map(Number).join() === "1,2",
+  check(rows.C.source === "consensus" && rows.C.final_keyframes_s.map(Number).join() === "1,2,3",
     "keyframes never conflict and are merged", JSON.stringify(rows.C));
   check(rows.O.source === "consensus" && rows.O.final_answer === NOT_ANSWERABLE,
     "two NOT_ANSWERABLE are consensus", JSON.stringify(rows.O));

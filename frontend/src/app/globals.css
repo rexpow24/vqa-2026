@@ -8,7 +8,9 @@
   --background: #0a0b0d;
   --surface: #14161a;
   --surface-2: #1a1d22;
+  --surface-3: #242830;
   --border: #262a30;
+  --border-strong: #3d434d;
   --foreground: #e7e9ec;
   --muted: #8a909b;
   --accent: #3b82f6;
@@ -21,7 +23,9 @@
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-accent: var(--accent);

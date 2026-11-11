@@ -53,11 +53,15 @@ try {
   expect(await request(`/api/videos/${videoId}/claim`, annotator.cookie, "POST", {}), 403, "Claim refused");
   expect(await request(`/api/videos/${videoId}/label`, annotator.cookie, "POST",
     { event_label: "accident" }), 200, "Independent video label");
-  // Evidence frames only where the answer rests on one moment: C, V, Attr.
+  // Evidence frames only where the answer rests on one event: C, V, Attr,
+  // and there exactly two, [start, end] with start before end.
   const groupDraft = (code) => drafts.find((draft) => draft.qgroup === code);
   for (const code of KEYFRAME_GROUPS) {
-    expect(await request(`/api/drafts/${groupDraft(code).id}/annotation`, annotator.cookie, "POST",
-      { verdict: "AGREE", human_keyframes_s: [] }), 422, `Reject ${code} without evidence`);
+    for (const [marks, why] of [[[], "without evidence"], [[0.5], "with only a start"],
+      [[0.5, 1, 1.5], "with three frames"], [[1.5, 0.5], "with end before start"], [[1, 1], "with start equal to end"]]) {
+      expect(await request(`/api/drafts/${groupDraft(code).id}/annotation`, annotator.cookie, "POST",
+        { verdict: "AGREE", human_keyframes_s: marks }), 422, `Reject ${code} ${why}`);
+    }
   }
   const { error: triggerError } = await annotator.client.from("qa_annotations").insert({
     draft_id: groupDraft("C").id, annotator_id: testUserId, verdict: "AGREE", human_keyframes_s: [],
@@ -67,13 +71,13 @@ try {
     { verdict: "AGREE", human_keyframes_s: [] }), 200, "Save S without evidence");
   for (const draft of drafts.filter((item) => item.qgroup !== "S")) {
     expect(await request(`/api/drafts/${draft.id}/annotation`, annotator.cookie, "POST",
-      { verdict: "AGREE", human_keyframes_s: [0.5] }), 200, `Save ${draft.qgroup}`);
+      { verdict: "AGREE", human_keyframes_s: [0.5, 1.5] }), 200, `Save ${draft.qgroup}`);
   }
   const { data: savedMarks } = await annotator.client.from("qa_annotations")
     .select("draft_id,human_keyframes_s").eq("annotator_id", testUserId);
   for (const draft of drafts) {
     const marks = savedMarks.find((row) => row.draft_id === draft.id)?.human_keyframes_s ?? [];
-    const expected = KEYFRAME_GROUPS.includes(draft.qgroup) ? 1 : 0;
+    const expected = KEYFRAME_GROUPS.includes(draft.qgroup) ? 2 : 0;
     if (marks.length !== expected) throw new Error(`${draft.qgroup} stored ${marks.length} evidence frames, expected ${expected}`);
   }
   expect(await request(`/api/videos/${videoId}/complete`, annotator.cookie, "POST", {}), 200, "Complete nine drafts");

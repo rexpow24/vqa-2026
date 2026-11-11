@@ -33,6 +33,19 @@ const VERDICT_LABEL: Record<Verdict, string> = {
 };
 const REASONS = ["thiếu thực thể", "sai thực thể", "sai nhân quả", "sai mốc thời gian",
   "bịa chi tiết", "sai diễn đạt", "khác"];
+// Shared button looks. Annotators found the page washed out: unselected
+// buttons were muted text on a near-invisible border. Every button now has a
+// fill, a border that reads against the card, a hover and a keyboard focus ring.
+const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+const BTN_BASE = `rounded-md border transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
+const NEUTRAL = "border-border-strong bg-surface-2 text-foreground";
+const BTN = `${BTN_BASE} ${NEUTRAL} hover:border-muted hover:bg-surface-3
+  disabled:hover:border-border-strong disabled:hover:bg-surface-2`;
+const VERDICT_STYLE: Record<Verdict, { on: string; off: string }> = {
+  AGREE: { on: "border-green bg-green text-black hover:brightness-110", off: "hover:border-green hover:bg-green/15" },
+  NOT_ANSWERABLE: { on: "border-amber bg-amber text-black hover:brightness-110", off: "hover:border-amber hover:bg-amber/15" },
+  DISAGREE: { on: "border-red bg-red text-white hover:brightness-110", off: "hover:border-red hover:bg-red/15" },
+};
 
 async function requestJson<T>(url: string, body?: object): Promise<T> {
   const response = await fetch(url, { method: "POST", cache: "no-store",
@@ -123,11 +136,11 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
     if (videoRef.current) videoRef.current.currentTime = time;
   }
 
-  return <div className="flex flex-col gap-5">
+  return <div data-wide className="flex flex-col gap-5">
     <div className="flex flex-wrap items-center gap-3">
       <Link href="/annotate" className="text-sm text-accent">← Danh sách video</Link>
       <h2 className="text-lg font-semibold"><span className="tabular-nums text-accent">{`#${video.seq}`}</span> {video.filename}</h2>
-      <span className="ml-auto text-sm text-muted">{done}/{drafts.length} câu đã duyệt</span>
+      <span className="ml-auto text-sm text-foreground/80">{done}/{drafts.length} câu đã duyệt</span>
     </div>
     {error && <p role="alert" className="rounded border border-red/40 bg-red/10 p-3 text-sm text-red">{error}</p>}
     {message && <p role="status" className="text-sm text-green">{message}</p>}
@@ -138,21 +151,21 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
     {ready && !assignment && <p className="rounded border border-amber bg-surface p-3 text-sm text-amber">
       Video này chưa được giao cho bạn nên chỉ xem được. Giao video ở trang Phân công.
     </p>}
-    <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
+    <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,600px)_minmax(0,1fr)]">
       <div className="flex flex-col gap-4 lg:sticky lg:top-4">
         <video ref={videoRef} src={`/api/videos/${video.id}/stream`} controls loop playsInline preload="metadata"
           onTimeUpdate={(event) => setPlayhead(event.currentTarget.currentTime)}
           onError={() => setError("Không thể tải hoặc giải mã video. Hãy thử tải lại trang.")}
-          className="w-full rounded-md border border-border bg-black" />
+          className="w-full rounded-md border border-border-strong bg-black" />
         <div className="flex flex-wrap items-center gap-2 text-sm">
-          <button type="button" onClick={() => stepVideo(-1)} className="rounded border border-border px-3 py-1.5">-{step.toFixed(2)}s</button>
-          <button type="button" onClick={togglePlay} className="rounded border border-border px-3 py-1.5">Play / Pause</button>
-          <button type="button" onClick={() => stepVideo(1)} className="rounded border border-border px-3 py-1.5">+{step.toFixed(2)}s</button>
-          <label className="ml-auto flex items-center gap-2 text-xs text-muted">Step
-            <select value={step} onChange={(event) => setStep(Number(event.target.value))} className="rounded border border-border bg-background px-2 py-1.5 text-foreground">
+          <button type="button" onClick={() => stepVideo(-1)} className={`${BTN} px-3 py-1.5 tabular-nums`}>-{step.toFixed(2)}s</button>
+          <button type="button" onClick={togglePlay} className={`${BTN} px-3 py-1.5`}>Play / Pause</button>
+          <button type="button" onClick={() => stepVideo(1)} className={`${BTN} px-3 py-1.5 tabular-nums`}>+{step.toFixed(2)}s</button>
+          <label className="ml-auto flex items-center gap-2 text-xs text-foreground/80">Step
+            <select value={step} onChange={(event) => setStep(Number(event.target.value))} className={`${BTN} px-2 py-1.5`}>
               {STEP_OPTIONS.map((value) => <option key={value} value={value}>{value.toFixed(2)}s</option>)}
             </select></label>
-          <span className="w-full text-xs text-muted">Space: play/pause · ← / →: tua từng bước</span>
+          <span className="w-full text-xs text-foreground/70">Space: play/pause · ← / →: tua từng bước</span>
         </div>
         <div className="rounded-md border border-border bg-surface p-3 text-xs text-muted">
           <div className="flex justify-between"><span>Vị trí hiện tại</span><span className="tabular-nums text-foreground">{playhead.toFixed(2)}s</span></div>
@@ -180,7 +193,9 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
             setMessage(`Đã lưu câu ${draft.qgroup}.`); setError("");
           }} onError={setError} />)}
         {ready && <button type="button" disabled={busy || !label || done !== 9 || !assignment || assignment.status === "completed"}
-          onClick={complete} className="self-end rounded border border-green px-3 py-2 text-sm text-green disabled:opacity-40">
+          onClick={complete} className={`self-end rounded-md border border-green bg-green px-5 py-2.5 text-sm font-semibold text-black
+            transition-colors hover:bg-green/85 disabled:cursor-not-allowed disabled:border-border-strong disabled:bg-surface-2
+            disabled:text-foreground/60 max-sm:self-stretch ${FOCUS}`}>
           {assignment?.status === "completed" ? "Video đã hoàn thành" : "Hoàn thành video"}
         </button>}
       </div>
@@ -197,8 +212,15 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
   const [note, setNote] = useState(draft.reason_note ?? "");
   const [answer, setAnswer] = useState(draft.edited_answer ?? draft.answer);
   const [editing, setEditing] = useState(false);
-  const [marks, setMarks] = useState<number[]>(draft.human_keyframes_s.map(Number));
-  const [typed, setTyped] = useState("");
+  // Evidence is exactly two frames, [start, end] of the event, start < end.
+  // A row saved under the earlier 1-3 rule is shown as `legacy` and leaves
+  // both slots empty: it stays valid as stored, and saving it again here
+  // needs a start and an end (the API refuses anything else).
+  const savedMarks = draft.human_keyframes_s.map(Number);
+  const savedPair = savedMarks.length === 2 && savedMarks[0] < savedMarks[1];
+  const legacy = savedPair ? [] : savedMarks;
+  const [start, setStart] = useState<number | null>(savedPair ? savedMarks[0] : null);
+  const [end, setEnd] = useState<number | null>(savedPair ? savedMarks[1] : null);
   const [markError, setMarkError] = useState("");
   const [saving, setSaving] = useState(false);
   // The exact payload that last failed, so a failure is not retried in a loop.
@@ -209,7 +231,8 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
   // before that rule, rewritten under AGREE.
   const answerChanged = normalize(answer) !== normalize(draft.answer);
   const strayEdit = !!verdict && verdict !== "DISAGREE" && answerChanged;
-  const blocked = !canSave || !verdict || (needsMarks && (marks.length < 1 || marks.length > 3)) ||
+  const marksDone = start !== null && end !== null && start < end;
+  const blocked = !canSave || !verdict || (needsMarks && !marksDone) ||
     (verdict === "DISAGREE" && (!reason || (reason === "khác" && !note.trim()) || !answerChanged)) || strayEdit;
   function chooseVerdict(value: Verdict) {
     setVerdict(value);
@@ -217,13 +240,13 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
     else { setAnswer(draft.answer); setEditing(false); }
   }
 
-  function addMark(time: number) {
+  function setMark(which: "start" | "end", time: number) {
     setMarkError("");
-    if (marks.length >= 3) return setMarkError("Tối đa 3 mốc.");
     if (!Number.isFinite(time) || time < 0 || time > duration) return setMarkError("Mốc nằm ngoài video.");
     const rounded = Number(time.toFixed(3));
-    if (marks.some((mark) => Math.abs(mark - rounded) < 0.001)) return setMarkError("Mốc này đã có.");
-    setMarks([...marks, rounded].sort((a, b) => a - b));
+    if (which === "start" && end !== null && rounded >= end) return setMarkError("Start phải trước end.");
+    if (which === "end" && start !== null && rounded <= start) return setMarkError("End phải sau start.");
+    if (which === "start") setStart(rounded); else setEnd(rounded);
   }
   // Trimmed the way the API stores it, so after a save the stored row equals
   // the payload exactly. `dirty` compares the two rather than the raw inputs:
@@ -233,7 +256,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
     verdict, reason_code: verdict === "DISAGREE" ? reason : null,
     reason_note: verdict === "DISAGREE" ? note.trim() : null,
     edited_answer: verdict === "DISAGREE" && answerChanged ? answer.trim() : null,
-    human_keyframes_s: needsMarks ? marks : [],
+    human_keyframes_s: needsMarks && start !== null && end !== null ? [start, end] : [],
   });
   const stored = JSON.stringify({
     verdict: draft.verdict, reason_code: draft.reason_code, reason_note: draft.reason_note,
@@ -268,7 +291,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
     : !dirty ? (draft.verdict ? "✓ Đã lưu" : "")
     : !canSave ? "Chỉ xem"
     : !verdict ? ""
-    : needsMarks && marks.length < 1 ? "Thêm 1-3 keyframe để lưu"
+    : needsMarks && !marksDone ? "Đặt start và end để lưu"
     : verdict === "DISAGREE" && !reason ? "Chọn lý do để lưu"
     : verdict === "DISAGREE" && reason === "khác" && !note.trim() ? "Ghi lý do để lưu"
     : verdict === "DISAGREE" && !answerChanged ? "Sửa đáp án cho đúng để lưu"
@@ -276,66 +299,86 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
     : editing ? "Bấm Xong để lưu đáp án"
     : "Đang lưu…";
 
-  return <article className="rounded-md border border-border bg-surface">
-    <header className="flex items-start gap-3 border-b border-border px-4 py-2.5">
-      <span className="shrink-0 rounded border border-border bg-background px-2 py-0.5 text-xs font-semibold text-accent">{draft.qgroup}</span>
-      <div className="min-w-0"><div className="text-sm font-medium">{draft.group_name}</div><div className="text-xs text-muted">{draft.question}</div></div>
-      {draft.verdict && <span className="ml-auto shrink-0 text-xs text-green">✓ {VERDICT_LABEL[draft.verdict]}</span>}
+  return <article className="rounded-lg border border-border-strong bg-surface">
+    <header className="flex items-start gap-3 border-b border-border px-4 py-3">
+      <span className="shrink-0 rounded border border-accent/60 bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">{draft.qgroup}</span>
+      <div className="min-w-0"><div className="text-base font-semibold text-foreground">{draft.group_name}</div>
+        <div className="mt-0.5 text-xs leading-relaxed text-muted">{draft.question}</div></div>
+      {draft.verdict && <span className="ml-auto shrink-0 text-xs font-medium text-green">✓ {VERDICT_LABEL[draft.verdict]}</span>}
     </header>
     <div className="px-4 py-3">
       {editing ? <textarea rows={5} value={answer} onChange={(event) => setAnswer(event.target.value)}
-        className="w-full rounded-md border border-border bg-background p-2 text-sm" />
-        : <p className="whitespace-pre-wrap text-sm">{answer}</p>}
-      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted">
+        className={`w-full rounded-md border border-border-strong bg-background p-2 text-[15px] leading-relaxed text-foreground ${FOCUS}`} />
+        : <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-foreground">{answer}</p>}
+      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-foreground/60">
         {verdict === "DISAGREE" && <button type="button" onClick={() => setEditing((value) => !value)}
-          className="rounded border border-border px-2 py-1">{editing ? "Xong" : "Sửa đáp án"}</button>}
+          className={`${BTN} px-2.5 py-1 text-xs`}>{editing ? "Xong" : "Sửa đáp án"}</button>}
         {draft.truncated && <span className="text-amber">Bản nháp bị cắt vì chạm trần token</span>}
         <span>{draft.source_kind === "admin_csv" ? "Câu hỏi và trả lời do admin tải lên" :
           `${draft.completion_tokens} token · ${draft.latency_ms} ms · prompt v${draft.prompt_version}`}</span>
       </div>
     </div>
-    {needsMarks && <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-2.5 text-xs">
-      <span className="text-muted">Keyframe bằng chứng (1-3):</span>
-      {marks.map((time) => <span key={time} className="flex items-center rounded border border-accent bg-accent/20">
-        <button type="button" onClick={() => onSeek(time)} className="px-2 py-1 tabular-nums">{time.toFixed(2)}s</button>
-        <button type="button" aria-label={`Xóa mốc ${time.toFixed(2)} giây`} onClick={() => setMarks(marks.filter((mark) => mark !== time))}
-          className="px-2 py-1 text-muted hover:text-red">✕</button>
-      </span>)}
-      <button type="button" disabled={marks.length >= 3} onClick={() => addMark(playhead)}
-        className="rounded border border-border px-2 py-1 disabled:opacity-40">+ tại {playhead.toFixed(2)}s</button>
-      <span className="text-muted">hoặc</span>
-      <input type="number" step="0.05" min={0} max={duration} placeholder="giây" value={typed}
-        onChange={(event) => setTyped(event.target.value)} disabled={marks.length >= 3}
-        className="w-20 rounded border border-border bg-background px-2 py-1 tabular-nums" />
-      <button type="button" disabled={marks.length >= 3 || !typed.trim()} onClick={() => {
-        if (!typed.trim()) return;
-        addMark(Number(typed.replace(",", "."))); setTyped("");
-      }} className="rounded border border-border px-2 py-1 disabled:opacity-40">Thêm</button>
+    {needsMarks && <div className="flex flex-col gap-2 border-t border-border px-4 py-3 text-xs">
+      <span className="text-foreground/80">hãy đánh 2 key frames (start end) start là frame bắt đầu end là frame kết thúc sự kiện</span>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {(["start", "end"] as const).map((which) => <KeyframeSlot key={which} label={which === "start" ? "Start" : "End"}
+          value={which === "start" ? start : end} playhead={playhead} duration={duration} onSeek={onSeek}
+          onSet={(time) => setMark(which, time)}
+          onClear={() => { setMarkError(""); if (which === "start") setStart(null); else setEnd(null); }} />)}
+      </div>
       {markError && <span className="text-red">{markError}</span>}
-      {draft.predicted_keyframes_s && draft.predicted_keyframes_s.length > 0 && <span className="text-muted">
-        · Model đoán: {draft.predicted_keyframes_s.map((time) => Number(time).toFixed(2)).join(", ")}
+      {legacy.length > 0 && <span className="text-amber">
+        Mốc đã lưu theo quy tắc cũ: {legacy.map((time) => time.toFixed(2)).join(", ")}s. Đặt lại start và end để lưu lần sau.
+      </span>}
+      {draft.predicted_keyframes_s && draft.predicted_keyframes_s.length > 0 && <span className="text-foreground/60">
+        Model đoán: {draft.predicted_keyframes_s.map((time) => Number(time).toFixed(2)).join(", ")}
       </span>}
     </div>}
-    <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-2.5">
+    <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-3">
       {(Object.keys(VERDICT_LABEL) as Verdict[]).map((value) => <button key={value} type="button" aria-pressed={verdict === value}
-        onClick={() => chooseVerdict(value)} className={`rounded-md border px-3 py-1.5 text-sm ${verdict === value ?
-          value === "AGREE" ? "border-green bg-green/20" : value === "DISAGREE" ? "border-red bg-red/20" : "border-amber bg-amber/20"
-          : "border-border text-muted"}`}>{VERDICT_LABEL[value]}</button>)}
-      <span className={`ml-auto text-xs ${status?.startsWith("✓") ? "text-green" : "text-muted"}`}>{status}</span>
+        onClick={() => chooseVerdict(value)} className={`${BTN_BASE} px-4 py-2 text-sm max-sm:w-full ${verdict === value ?
+          `${VERDICT_STYLE[value].on} font-semibold` : `${NEUTRAL} font-medium ${VERDICT_STYLE[value].off}`}`}>{VERDICT_LABEL[value]}</button>)}
+      <span className={`ml-auto text-xs max-sm:ml-0 ${status?.startsWith("✓") ? "text-green" : "text-foreground/70"}`}>{status}</span>
       {failed === payload && <button type="button" onClick={() => { void save(); }}
-        className="ml-auto rounded-md border border-red px-3 py-1.5 text-sm text-red">Lưu lỗi · Thử lại</button>}
+        className={`ml-auto rounded-md border border-red bg-red/15 px-3 py-1.5 text-sm text-red hover:bg-red/25 ${FOCUS}`}>Lưu lỗi · Thử lại</button>}
     </div>
     {strayEdit && <div className="flex flex-wrap items-center gap-2 border-t border-border px-4 py-2.5 text-xs text-amber">
       <span>Đáp án đã bị sửa nhưng đang chọn &quot;{VERDICT_LABEL[verdict]}&quot;. Chọn &quot;Không đồng ý&quot; và lý do để giữ bản sửa, hoặc</span>
-      <button type="button" onClick={() => setAnswer(draft.answer)} className="rounded border border-amber px-2 py-1">Dùng đáp án gốc</button>
+      <button type="button" onClick={() => setAnswer(draft.answer)} className={`rounded-md border border-amber bg-amber/10 px-2 py-1 hover:bg-amber/20 ${FOCUS}`}>Dùng đáp án gốc</button>
     </div>}
-    {verdict === "DISAGREE" && <div className="flex flex-col gap-2 border-t border-border px-4 py-2.5">
+    {verdict === "DISAGREE" && <div className="flex flex-col gap-2 border-t border-border px-4 py-3">
       <div className="flex flex-wrap gap-2">{REASONS.map((value) => <button key={value} type="button" aria-pressed={reason === value}
-        onClick={() => setReason(value)} className={`rounded border px-2 py-1 text-xs ${reason === value ? "border-accent bg-accent/20" : "border-border text-muted"}`}>{value}</button>)}</div>
+        onClick={() => setReason(value)} className={`px-2.5 py-1 text-xs ${reason === value ? `${BTN_BASE} border-accent bg-accent/25 text-foreground hover:bg-accent/35` : BTN}`}>{value}</button>)}</div>
       <input value={note} onChange={(event) => setNote(event.target.value)} placeholder={reason === "khác" ? "Bắt buộc: sai ở chỗ nào?" : "Ghi chú (không bắt buộc)"}
-        className="rounded-md border border-border bg-background px-2 py-1.5 text-sm" />
+        className={`rounded-md border border-border-strong bg-background px-2 py-1.5 text-sm text-foreground placeholder:text-foreground/40 ${FOCUS}`} />
     </div>}
   </article>;
+}
+
+// One end of the evidence span: shows the frame (click to seek there), and
+// sets it from the playhead or from typed seconds.
+function KeyframeSlot({ label, value, playhead, duration, onSeek, onSet, onClear }: {
+  label: string; value: number | null; playhead: number; duration: number;
+  onSeek: (time: number) => void; onSet: (time: number) => void; onClear: () => void;
+}) {
+  const [typed, setTyped] = useState("");
+  return <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-background/60 p-2">
+    <span className="w-9 font-semibold text-foreground">{label}</span>
+    {value === null ? <span className="text-foreground/50">chưa đặt</span>
+      : <span className="flex items-center rounded-md border border-accent bg-accent/20 text-foreground">
+        <button type="button" onClick={() => onSeek(value)} className={`rounded-l-md px-2 py-1 tabular-nums hover:bg-accent/30 ${FOCUS}`}>{value.toFixed(2)}s</button>
+        <button type="button" aria-label={`Xóa ${label} ${value.toFixed(2)} giây`} onClick={onClear}
+          className={`rounded-r-md px-2 py-1 text-foreground/70 hover:bg-red/20 hover:text-red ${FOCUS}`}>✕</button>
+      </span>}
+    <button type="button" onClick={() => onSet(playhead)} className={`${BTN} px-2 py-1 tabular-nums`}>= {playhead.toFixed(2)}s</button>
+    <input type="number" step="0.05" min={0} max={duration} placeholder="giây" value={typed} aria-label={`${label} (giây)`}
+      onChange={(event) => setTyped(event.target.value)}
+      className={`w-20 rounded-md border border-border-strong bg-background px-2 py-1 tabular-nums text-foreground placeholder:text-foreground/40 ${FOCUS}`} />
+    <button type="button" disabled={!typed.trim()} onClick={() => {
+      if (!typed.trim()) return;
+      onSet(Number(typed.replace(",", "."))); setTyped("");
+    }} className={`${BTN} px-2 py-1`}>Đặt</button>
+  </div>;
 }
 
 // A question whose disagreement was decided: read-only, showing what this
@@ -345,7 +388,8 @@ function DecidedCard({ draft, onSeek }: { draft: HostedDraft; onSeek: (time: num
   return <article className="rounded-md border border-border bg-surface">
     <header className="flex items-start gap-3 border-b border-border px-4 py-2.5">
       <span className="shrink-0 rounded border border-border bg-background px-2 py-0.5 text-xs font-semibold text-accent">{draft.qgroup}</span>
-      <div className="min-w-0"><div className="text-sm font-medium">{draft.group_name}</div><div className="text-xs text-muted">{draft.question}</div></div>
+      <div className="min-w-0"><div className="text-base font-semibold text-foreground">{draft.group_name}</div>
+        <div className="mt-0.5 text-xs leading-relaxed text-muted">{draft.question}</div></div>
       <span className="ml-auto shrink-0 text-xs text-muted">Đã thống nhất · khóa</span>
     </header>
     <dl className="grid gap-2 px-4 py-3 text-sm">

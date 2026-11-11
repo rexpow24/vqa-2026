@@ -56,7 +56,11 @@ for (const assignment of assignments) {
   for (const [group, answer] of byGroup) {
     if (!answer) continue;
     const marks = answer.human_keyframes_s ?? [];
-    if (KEYFRAME_GROUPS.includes(group) && (marks.length < 1 || marks.length > 3)) problems.push(`${group}: ${marks.length} keyframes`);
+    // Exactly [start, end] since 20261112; 1-3 frames saved before that are legacy, still valid.
+    if (KEYFRAME_GROUPS.includes(group) && !(marks.length === 2 && Number(marks[0]) < Number(marks[1]))) {
+      problems.push(marks.length >= 1 && marks.length <= 3 ? `${group}: ${marks.length} keyframes (legacy 1-3 rule)`
+        : `${group}: ${marks.length} keyframes`);
+    }
     if (!KEYFRAME_GROUPS.includes(group) && marks.length) problems.push(`${group}: keyframes on a group without evidence`);
     if (answer.verdict === "DISAGREE" && !answer.reason_code) problems.push(`${group}: DISAGREE without a reason`);
     // Only a disagreement carries an edited answer, and it must carry one (20261107_answer_adjudication.sql).

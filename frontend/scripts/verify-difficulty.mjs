@@ -71,7 +71,7 @@ try {
         draft_id: draft.id, annotator_id: user.id, verdict,
         reason_code: verdict === "DISAGREE" ? "sai nhân quả" : null,
         edited_answer: verdict === "DISAGREE" ? `Corrected ${draft.qgroup}` : null,
-        human_keyframes_s: KEYFRAME_GROUPS.includes(draft.qgroup) ? [1] : [],
+        human_keyframes_s: KEYFRAME_GROUPS.includes(draft.qgroup) ? [1, 2] : [],
       };
     }));
     if (answerError) throw answerError;

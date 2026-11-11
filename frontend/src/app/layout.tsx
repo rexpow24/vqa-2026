@@ -35,7 +35,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           </h1>
         </header>
         {hosted ? <PlatformNav profile={profile} /> : <Nav />}
-        <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-6">
+        {/* A page that needs the room (the labeling page: video beside nine cards) opts in with data-wide. */}
+        <main className="flex-1 w-full max-w-5xl has-[[data-wide]]:max-w-7xl mx-auto px-6 py-6">
           {children}
         </main>
       </body>

@@ -134,7 +134,7 @@ try {
   const drafts = must(await privileged.from("video_drafts").select("id,qgroup").eq("video_id", first.id));
   must(await alice.client.from("video_labels").insert({ video_id: first.id, annotator_id: alice.id, event_label: "accident" }));
   must(await alice.client.from("qa_annotations").insert(drafts.map((draft) => ({ draft_id: draft.id, annotator_id: alice.id,
-    verdict: "AGREE", human_keyframes_s: KEYFRAME_GROUPS.includes(draft.qgroup) ? [1] : [] }))));
+    verdict: "AGREE", human_keyframes_s: KEYFRAME_GROUPS.includes(draft.qgroup) ? [1, 2] : [] }))));
   must(await alice.client.from("video_assignments").update({ status: "completed" }).eq("video_id", first.id).eq("annotator_id", alice.id));
   const next = must(await alice.client.rpc("next_assigned_video"));
   const progress = must(await alice.client.rpc("annotator_progress"));
@@ -328,7 +328,7 @@ try {
     const secondDrafts = must(await privileged.from("video_drafts").select("id,qgroup").eq("video_id", second.id));
     must(await alice.client.from("video_labels").insert({ video_id: second.id, annotator_id: alice.id, event_label: "near-miss" }));
     must(await alice.client.from("qa_annotations").insert(secondDrafts.map((draft) => ({ draft_id: draft.id, annotator_id: alice.id,
-      verdict: "AGREE", human_keyframes_s: KEYFRAME_GROUPS.includes(draft.qgroup) ? [1] : [] }))));
+      verdict: "AGREE", human_keyframes_s: KEYFRAME_GROUPS.includes(draft.qgroup) ? [1, 2] : [] }))));
     const completed = await request(base, `/api/videos/${second.id}/complete`, alice.cookie, "POST", {});
     check(completed.status === 200 && completed.data.next_video_id === regular[0].id,
       "completing hands back the next assigned video by number", completed.data);
