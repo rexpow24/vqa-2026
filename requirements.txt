@@ -9,6 +9,9 @@ numpy>=2.0
 # is cv2.FaceDetectorYN, already covered by opencv-python-headless above).
 onnxruntime>=1.19
 
+# scripts/iaa_round.py: inter-annotator agreement from the answers export.
+pandas>=2.0
+
 # Optional: keyboard shortcuts in the review tab.
 # If it misbehaves, plain buttons work fine (CLAUDE.md Principle 2).
 # streamlit-shortcuts
