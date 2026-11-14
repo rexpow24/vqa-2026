@@ -333,7 +333,7 @@ Choose one difficulty label and one event label before pressing **Approve**,
 
 | Label | Guideline |
 |---|---|
-| **Accident** | Có va chạm thực tế giữa các phương tiện, người hoặc vật thể. |
+| **Accident** | Có va chạm thực tế giữa các phương tiện, người hoặc vật thể, hoặc phương tiện tự lật, văng khỏi đường dù không chạm bên nào. Nguồn: ANSI D16.1-2007, mục 2.6.1 (overturning accident) và 2.6.3 (noncollision accident). |
 | **Near-miss** | Không xảy ra va chạm, nhưng có tình huống suýt va chạm hoặc phải phanh, đánh lái, tránh gấp để tránh tai nạn. |
 
 Use **High** when the footage makes it difficult to determine the sequence of

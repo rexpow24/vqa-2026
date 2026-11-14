@@ -21,6 +21,11 @@ Guideline đích cho nhóm C: [docs/guidelines/C-nguyen-nhan.md](../../docs/guid
 7. **Mọi bước gọi LLM qua API phải được duyệt trước khi chạy hàng loạt.**
    Trưởng nhóm xem ba thứ: prompt đầy đủ, một input thật lấy từ dữ liệu, và output mong muốn cho input đó.
    Chỉ chạy khi đã duyệt.
+8. **Mọi phương pháp, quy tắc hay ngưỡng đưa ra đều phải có cơ sở lý luận uy tín, không tự đặt ra.**
+   Cơ sở là bài báo có bình duyệt, báo cáo của cơ quan chính thức (ví dụ NHTSA) hoặc chuẩn, danh mục đã công bố (ví dụ Unfalltypen-Katalog), hoặc số liệu đo được trên chính dữ liệu của dự án.
+   Mỗi đề xuất ghi kèm nguồn, và nói rõ nguồn đã được đọc ở bản gốc hay mới kiểm qua tài liệu thứ cấp.
+   Không tìm được cơ sở thì nói thẳng là chưa có, và để trưởng nhóm quyết; không trình bày như một quy tắc đã có căn cứ.
+   Ngoại lệ (2026-11-14): guideline của các nhóm E, N, V, O, R, Attr, Prev không cần cơ sở lý luận, vì không quan trọng bằng C; chúng dựa trên guideline gốc của dự án.
 
 ## 3. Các giai đoạn
 
@@ -40,7 +45,6 @@ Guideline đích cho nhóm C: [docs/guidelines/C-nguyen-nhan.md](../../docs/guid
 - Đo theo từng ô: n = M + K, độ phủ = M / n, tỉ lệ T, các cụm bị K, và danh sách phần câu nằm ngoài codebook.
 - Ô có n dưới khoảng 10 ghi "chưa đủ dữ liệu", không tính đạt hay không đạt.
 - Với các ô chưa đủ dữ liệu: trưởng nhóm và một người khác điền thử form ô (bảng tính là đủ) cho khoảng 10 video trong 60, ghi lại mỗi lần thiếu lựa chọn và thời gian điền.
-- Trưởng nhóm duyệt tay khoảng 50 câu để kiểm chất lượng map.
 - Sửa danh sách lựa chọn ở những chỗ phủ thấp. Chốt `codebook/<nhóm>.v1.json`: mỗi lựa chọn có ID cố định, nhãn tiếng Việt, nhóm cha (với kiểu xung đột).
 - Có thể map luôn draft của 60 video sang ô, để đo xem draft sai ở ô nào.
 
@@ -70,9 +74,9 @@ Cổng ra: migration chạy trên bản sao, các `verify-*.mjs` cũ đều pass
 ### P3. Tách draft thành ô (khoảng 2 ngày, offline)
 
 - Script cho LLM tách draft S và C của các video sẽ dùng thành `draft_slots`, gắn cờ khi gặp từ cấm, rồi upload.
-- Kiểm tay 30 draft.
+- Không kiểm tay (trưởng nhóm quyết 2026-11-14). Annotator sửa ô sai khi gán, vì form điền sẵn ô từ draft.
 
-Cổng ra: ít hơn 5% draft tách sai trên mẫu kiểm.
+Cổng ra: mọi draft qua kiểm tra tự động của script (đủ ô, giá trị có trong codebook).
 
 ### P4. Giao diện (khoảng 4-5 ngày, qua `quyen:ship-feature`)
 
@@ -95,19 +99,26 @@ Cổng ra: kiểm e2e trên local với một video thật, chụp màn hình, t
 ### P6. Vòng pilot (khoảng 1 tuần)
 
 - Cần video chung mới, vì 60 video cũ đã dùng để dựng codebook. Thêm hàm `extend_agreement_group(n)`: lấy n video chưa ai giữ, phân tầng như cũ, đánh dấu `agreement_sample` mà không đánh số lại các video đã chia.
-- 10-20 video, 3-4 annotator đã qua 3 vòng, chỉ S và C dùng dạng ô. 7 nhóm còn lại vẫn là câu tự do.
+- Ít nhất 81 video, 3-4 annotator đã qua 3 vòng, chỉ S và C dùng dạng ô. 7 nhóm còn lại vẫn là câu tự do.
+  Cỡ mẫu theo bảng của Krippendorff (2019, dùng công thức Bloch & Kraemer 1989): 81 đơn vị để kiểm alpha ≥ 0.667, 139 đơn vị để kiểm alpha ≥ 0.8, với p = 0.05.
+  Mỗi video là một đơn vị của mỗi ô. Bảng giả định 2 người gán và 4 lựa chọn xuất hiện đều nhau; ô lệch (ví dụ ánh sáng: 97% "ban ngày" ở P1) cần nhiều đơn vị hơn, nên con số này là mức tối thiểu.
+  Pilot chỉ kết luận được ở mức 0.667; mức 0.8 cần đủ 139 video chung, có thể cộng dồn qua các vòng P7 với cùng phiên bản codebook.
 - Đo theo mục 4 và hỏi annotator về thời gian và các chỗ khó.
 
 ### P7. Mở rộng sang các nhóm khác (mỗi nhóm khoảng 1 tuần)
 
 - Thứ tự: V, O, Attr (tập lựa chọn đóng) → E (đã làm ở P4) → R, Prev → C nhiều thực thể (dây chuyền, kẹp giữa) → N chuyển sang ghép tự động từ C, O, R.
-- Mỗi nhóm lặp lại P1 (codebook từ dữ liệu cũ), P3, P4, rồi một vòng 20 video chung.
+- Mỗi nhóm lặp lại P1 (codebook từ dữ liệu cũ), P3, P4, rồi vào các vòng video chung.
+- Cỡ mẫu giống P6: alpha của một nhóm chỉ được kết luận khi nhóm đó có ít nhất 81 video chung gán dạng ô (mức 0.667) hoặc 139 video (mức 0.8), cùng một phiên bản codebook.
+  Vòng có thể nhỏ hơn (ví dụ 20 video) để sửa guideline giữa chừng, nhưng alpha của một vòng nhỏ chỉ để tham khảo, không dùng làm cổng.
+  Một video chung cho đơn vị của mọi nhóm đã chuyển sang dạng ô, nên các nhóm chuyển trước tiếp tục cộng dồn ở các vòng của nhóm sau.
+  Đổi phiên bản codebook của một nhóm thì số video của nhóm đó tính lại từ 0 (nguyên tắc 2 và mục 5: không gộp các phiên bản).
 - Các vòng chung tiếp tục đến khi đạt ngưỡng mục 4, sau đó mới chia video thường theo dạng ô.
 
 ### P8. Dữ liệu video thường đang gán dạng câu tự do
 
 - Chốt một ngày chuyển. Video bắt đầu sau ngày đó gán bằng ô.
-- Video đã xong trước ngày chuyển: LLM map sang ô với nguồn `mapped`, rồi kiểm tay theo mẫu. Video nào map không được thì đưa vào hàng chờ gán lại. Không bắt gán lại toàn bộ.
+- Video đã xong trước ngày chuyển: LLM map sang ô với nguồn `mapped`, không kiểm tay. Video nào map không được thì đưa vào hàng chờ gán lại. Không bắt gán lại toàn bộ.
 - Video đang làm dở vào ngày chuyển thì làm nốt theo dạng cũ.
 
 ## 4. Ngưỡng đạt
@@ -116,8 +127,9 @@ Cổng ra: kiểm e2e trên local với một video thật, chụp màn hình, t
 | --- | --- | --- |
 | P1 | Độ phủ codebook trên 60 video, mỗi ô có n = M + K ≥ 10 | ≥ 80% |
 | P1 | Ô có n < 10 | "chưa đủ dữ liệu", kiểm bằng điền thử và ở P6 |
-| P3 | Draft tách sai | < 5% |
-| P6, P7 | Alpha các ô S | ≥ 0.8 |
+| P3 | Draft tách thành ô | qua kiểm tra tự động, không kiểm tay |
+| P6 | Số video chung mỗi ô | ≥ 81 (kiểm alpha 0.667); ≥ 139 để kiểm 0.8 |
+| P6, P7 | Alpha các ô S | ≥ 0.667 ở pilot, ≥ 0.8 khi đủ 139 video |
 | P6, P7 | Alpha mắt xích chính C (kiểu xung đột + chủ thể) | ≥ 0.67 ở pilot, ≥ 0.8 trước khi chia video thường |
 | P6, P7 | Tỉ lệ "Khác" | < 15% ở pilot, < 10% trước khi chia video thường |
 | P6, P7 | Tỉ lệ giữ nguyên ô draft so với tỉ lệ draft sai thật | không cao hơn rõ rệt (dấu hiệu bị neo) |
@@ -146,3 +158,39 @@ Mức 0.67 là ngưỡng "kết luận tạm" theo Krippendorff. Mức 0.8 là m
 | 5 trở đi | P7, mỗi nhóm khoảng 1 tuần; P8 khi đã đạt ngưỡng |
 
 Nếu cổng P1 không đạt, mọi việc từ P2 trở đi lùi lại. Đó là chủ ý của lộ trình này.
+
+## 7. Rà soát cơ sở theo nguyên tắc 8 (2026-11-14)
+
+Cột "Đã đọc" ghi mức kiểm: "gốc" là đọc văn bản gốc, "tóm tắt" là chỉ đọc abstract hoặc tài liệu thứ cấp.
+
+### 7.1. Đã có cơ sở
+
+| Quy tắc | Cơ sở | Đã đọc |
+| --- | --- | --- |
+| Alpha ≥ 0.8 là tin được, 0.667 là kết luận tạm | Krippendorff (2004), Content Analysis | tóm tắt |
+| Báo AC1 cạnh alpha khi một giá trị áp đảo | Feinstein & Cicchetti (1990); Gwet (2008) | tóm tắt |
+| Khoảng tin cậy bootstrap theo video, không theo câu | Field & Welsh (2007), JRSS-B 69(3), cluster bootstrap | tóm tắt |
+| Đo tỉ lệ giữ nguyên ô draft để phát hiện bị neo | Berzak et al. (2016), EMNLP: người sửa output của parser bị neo, đồng thuận bị thổi phồng | tóm tắt |
+| C: chỉ ghi cặp chính khi có từ 3 bên | Najm et al. (2007), NHTSA DOT HS 810 767 | gốc |
+| C: cặp chính theo xung đột dẫn tới tai nạn | Unfalltypen-Katalog (GDV/UDV) | tóm tắt |
+| Dựng codebook lặp lại từ dữ liệu, có thử trước | MacQueen et al. (1998), Cultural Anthropology Methods 10(2) | tóm tắt |
+
+Nguyên tắc 5 (video dựng codebook không dùng để đo) mới là suy luận.
+Krippendorff viết rằng huấn luyện không ghi lại và thống nhất bằng thảo luận làm đồng thuận bị thổi phồng; chưa tìm thấy câu nào nói thẳng phải loại các đơn vị đã dùng để dựng codebook.
+
+### 7.2. Chưa có cơ sở hoặc mâu thuẫn với số liệu
+
+| Quy tắc trong plan | Tình trạng | Ghi chú |
+| --- | --- | --- |
+| Cổng P1: độ phủ ≥ 80%, ô cần n ≥ 10 | Chưa có nguồn | Khoảng tin cậy Wilson 95%: 8/10 là [0.49; 0.94], mật độ xe 37/49 là [0.62; 0.85]. Ở cỡ mẫu này, 76% và 80% không phân biệt được. |
+| P3: kiểm tay 30 draft, ngưỡng sai < 5% | Đã bỏ 2026-11-14: trưởng nhóm quyết không kiểm tay | |
+| P6: pilot 10-20 video | Đã sửa 2026-11-14: ít nhất 81 video | Bảng cỡ mẫu của Krippendorff (2019), công thức Bloch & Kraemer (1989): 2 người, 4 lựa chọn đều nhau, p = 0.05 cần 139 đơn vị cho alpha_min 0.8 và 81 cho 0.667. Nguồn: hướng dẫn ATLAS.ti trích Krippendorff, tóm tắt. |
+| Tỉ lệ "Khác" < 15% ở pilot, < 10% trước khi chia | Chưa có nguồn | Tài liệu phân tích nội dung yêu cầu danh mục bao quát và thử trước, nhưng không nêu ngưỡng cho "Khác". |
+| Mốc thời gian khớp khi lệch ≤ 0,5 s | Chưa có nguồn | Có chuẩn thay thế: tIoU giữa hai khoảng [start, end], như đánh giá ActivityNet (trung bình trên ngưỡng 0.5 đến 0.95). |
+| Thêm retrieval khi một ô có hơn khoảng 25 lựa chọn | Chưa có nguồn | |
+| Duyệt tay khoảng 50 câu đã map | Đã bỏ 2026-11-14: trưởng nhóm quyết không kiểm tay | |
+| Điền thử khoảng 10 video | Chưa có nguồn | |
+| P7: vòng nhỏ khoảng 20 video để sửa guideline | Chưa có nguồn | Chỉ là nhịp làm việc. Cổng alpha của P7 đã sửa 2026-11-14 theo cỡ mẫu 81 / 139 như P6. |
+| Gửi 7 câu một lần gọi LLM (`scripts/codebook_map.py`) | Chưa có nguồn | Có thể đo trên dữ liệu dự án: chạy một mẫu theo lô và từng câu rồi so. Cần duyệt theo nguyên tắc 7 vì tốn API. |
+
+Các ngưỡng ở 7.2 giữ nguyên cho đến khi trưởng nhóm quyết: tìm thêm nguồn, đổi theo số liệu, hoặc ghi rõ là quy ước nội bộ.

@@ -87,7 +87,7 @@ Nhóm C, lấy từ [C-nguyen-nhan.md](../../docs/guidelines/C-nguyen-nhan.md):
 {
   "loại sự kiện": ["va chạm", "suýt va chạm", "không rõ"],
   "chủ thể": "bên thay đổi chuyển động trước (phanh, rẽ, chuyển làn, băng ngang...), dù câu lấy bên nào làm chủ ngữ; ghi mô tả thực thể (loại, màu) như câu viết, hoặc \"cả hai\" kèm hai mô tả",
-  "đối tượng": "bên đầu tiên phải né hoặc bị chạm; mô tả MỘT thực thể; câu nêu từ hai đối tượng trở lên thì K",
+  "đối tượng": "bên bị chủ thể chạm đầu tiên; chủ thể không chạm ai thì là bên đầu tiên phải né; mô tả MỘT thực thể; câu nêu từ hai đối tượng trở lên thì K",
   "kiểu xung đột": {
     "K01": {"tên": "Xe phía trước dừng hoặc đứng yên", "hành động": ["không giảm tốc", "tăng tốc"]},
     "K02": {"tên": "Xe phía trước phanh, giảm tốc", "hành động": ["phanh gấp", "dừng đột ngột"]},

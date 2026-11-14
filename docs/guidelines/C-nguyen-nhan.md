@@ -10,20 +10,41 @@
 | Ô | Lựa chọn |
 | --- | --- |
 | 0. Loại sự kiện | va chạm · suýt va chạm · không rõ |
-| 1. Chủ thể | A · B · cả A và B · không rõ |
+| 1. Chủ thể | chọn từ E · cả hai bên · không rõ |
 | 2. Kiểu xung đột | chọn nhóm, rồi chọn kiểu (bảng dưới) · không rõ |
 | 3. Hành động | lựa chọn theo kiểu xung đột (bảng dưới) |
 | 4. Tốc độ (không bắt buộc) | phanh gấp · dừng đột ngột · tăng tốc · không giảm tốc · đứng yên |
-| 5. Bên né (chỉ khi có né) | A · B · cả A và B |
+| 5. Bên né (chỉ khi có né) | chọn từ E · cả hai bên |
 | 6. Cách né | phanh gấp · đánh lái sang trái · đánh lái sang phải · phanh gấp và đánh lái |
 | 7. Kết quả né | tránh được · ngã, trượt · vẫn chạm · chạm vào thực thể khác [chọn từ E] |
 | Mốc | Start · End |
 
-Cặp chính gồm chủ thể (bên thay đổi chuyển động trước) và đối tượng (bên đầu tiên phải né hoặc bị chạm).
+Ô 0 "va chạm" gồm cả trường hợp phương tiện tự lật hoặc văng khỏi đường dù không chạm bên nào, kể cả khi trước đó có né.
+Cơ sở: ANSI D16.1-2007 (Manual on Classification of Motor Vehicle Traffic Accidents, bản NHTSA phát hành), mục 2.6.1 định nghĩa overturning accident là tai nạn có sự kiện gây hại đầu tiên là phương tiện bị lật, và mục 2.6.3 xếp nó vào noncollision accident, tức vẫn là tai nạn.
+"Suýt va chạm" chỉ dùng khi không có thiệt hại nào; định nghĩa near-crash của SHRP2 (Hankey et al. 2016) là tình huống phải né gấp để tránh tai nạn.
+
+Cặp chính gồm chủ thể (bên thay đổi chuyển động trước) và đối tượng.
+Đối tượng là bên bị chủ thể chạm đầu tiên; chủ thể không chạm ai thì là bên đầu tiên phải né.
 Bên né đâm vào bên thứ ba thì ghi ở kết quả né, không tạo cặp mới.
 
 Đối tượng: video có 2 thực thể thì hệ thống tự điền bên còn lại; từ 3 thực thể trở lên thì chọn từ E.
 Quan hệ được tự điền theo kiểu xung đột.
+
+## Video có từ 3 bên trở lên
+
+Chỉ ghi cặp chính như định nghĩa ở trên; các va chạm hoặc bên xuất hiện sau đó không tạo cặp mới.
+Bên chỉ có mặt trong khung hình mà không phải né, không bị chạm thì không ghi.
+Cơ sở: bộ phân loại tình huống trước va chạm của NHTSA (Najm và cộng sự, 2007, DOT HS 810 767) xếp tai nạn nhiều xe vào cùng các tình huống của tai nạn hai xe, dựa vào sự kiện đầu tiên của vụ việc.
+Unfalltypen-Katalog của Đức cũng xác định loại tai nạn chỉ bằng tình huống xung đột dẫn tới tai nạn, không theo diễn biến va chạm sau đó.
+
+Ví dụ thật từ nhóm agreement (mô tả lấy từ câu trả lời của người gán nhãn):
+
+| Video | Diễn biến | Cách ghi |
+| --- | --- | --- |
+| #10 | Xe tải xám mất lái, lật xuống rãnh; xe container, bán tải, xe khách đang dừng trên đường. | K18, chủ thể là xe tải xám, không có đối tượng. Các xe đang dừng không phải né, không bị chạm nên không ghi. |
+| #54 | Xe tải lấn sang làn ngược chiều để vượt, suýt va chạm với các ô tô trắng đi ngược chiều. | K08 lấn khi vượt, chủ thể là xe tải, đối tượng là ô tô trắng đầu tiên phải né. Các ô tô sau không ghi. |
+| #1 | Xe máy áo trắng băng qua đường cắt ngang ô tô gắn camera (ô tô phanh gấp), rồi tông xe máy áo xanh đang đi thẳng tới. | Va chạm, chủ thể là xe máy áo trắng, đối tượng là xe máy áo xanh (bên bị chủ thể chạm), không phải ô tô dù ô tô phải né trước. |
+| #24 | Xe máy trắng cắt ngang giữa ngã tư, chạm đầu ô tô gắn camera rồi chạm hông ô tô màu bạc. | Chủ thể là xe máy trắng, đối tượng là ô tô bị chạm trước (theo thứ tự trên video). Va chạm với ô tô thứ hai không ghi. |
 
 ## Kiểu xung đột
 
