@@ -1,0 +1,75 @@
+{
+  "group": "S",
+  "version": 1,
+  "frozen_on": "2026-11-14",
+  "source": "docs/guidelines/S-boi-canh.md",
+  "question": "Thời tiết, ánh sáng, loại đường và tình trạng mặt đường ra sao?",
+  "template": "Trời {weather}, {light}, {road_type} tại {segment}, mặt đường {surface}, mật độ xe {density}.",
+  "cells": [
+    {
+      "id": "weather",
+      "label": "Thời tiết",
+      "required": true,
+      "options": [
+        {"id": "weather.sunny", "label": "nắng"},
+        {"id": "weather.overcast", "label": "âm u"},
+        {"id": "weather.rain", "label": "mưa"},
+        {"id": "weather.fog", "label": "sương mù"},
+        {"id": "weather.unclear", "label": "không rõ"}
+      ]
+    },
+    {
+      "id": "light",
+      "label": "Ánh sáng",
+      "required": true,
+      "options": [
+        {"id": "light.day", "label": "ban ngày"},
+        {"id": "light.night", "label": "ban đêm"},
+        {"id": "light.unclear", "label": "không rõ"}
+      ]
+    },
+    {
+      "id": "road_type",
+      "label": "Loại đường",
+      "required": true,
+      "options": [
+        {"id": "road_type.two_way_divided", "label": "hai chiều có dải phân cách"},
+        {"id": "road_type.two_way_undivided", "label": "hai chiều không có dải phân cách"},
+        {"id": "road_type.one_way", "label": "một chiều"},
+        {"id": "road_type.unclear", "label": "không rõ"}
+      ]
+    },
+    {
+      "id": "surface",
+      "label": "Mặt đường",
+      "required": true,
+      "options": [
+        {"id": "surface.dry", "label": "khô"},
+        {"id": "surface.wet", "label": "ướt"},
+        {"id": "surface.unclear", "label": "không rõ"}
+      ]
+    },
+    {
+      "id": "density",
+      "label": "Mật độ xe",
+      "required": true,
+      "options": [
+        {"id": "density.sparse", "label": "thưa"},
+        {"id": "density.dense", "label": "đông"},
+        {"id": "density.jam", "label": "ùn tắc"},
+        {"id": "density.unclear", "label": "không rõ"}
+      ]
+    },
+    {
+      "id": "segment",
+      "label": "Đoạn đường",
+      "required": true,
+      "options": [
+        {"id": "segment.straight", "label": "thẳng"},
+        {"id": "segment.curve", "label": "khúc cua"},
+        {"id": "segment.intersection", "label": "giao lộ"},
+        {"id": "segment.unclear", "label": "không rõ"}
+      ]
+    }
+  ]
+}

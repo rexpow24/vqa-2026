@@ -41,12 +41,19 @@ Guideline đích cho nhóm C: [docs/guidelines/C-nguyen-nhan.md](../../docs/guid
 - Ô có n dưới khoảng 10 ghi "chưa đủ dữ liệu", không tính đạt hay không đạt.
 - Với các ô chưa đủ dữ liệu: trưởng nhóm và một người khác điền thử form ô (bảng tính là đủ) cho khoảng 10 video trong 60, ghi lại mỗi lần thiếu lựa chọn và thời gian điền.
 - Trưởng nhóm duyệt tay khoảng 50 câu để kiểm chất lượng map.
-- Sửa danh sách lựa chọn ở những chỗ phủ thấp. Chốt `codebook/v1.json`: mỗi lựa chọn có ID cố định, nhãn tiếng Việt, nhóm cha (với kiểu xung đột).
+- Sửa danh sách lựa chọn ở những chỗ phủ thấp. Chốt `codebook/<nhóm>.v1.json`: mỗi lựa chọn có ID cố định, nhãn tiếng Việt, nhóm cha (với kiểu xung đột).
 - Có thể map luôn draft của 60 video sang ô, để đo xem draft sai ở ô nào.
 
 Cổng ra: độ phủ ≥ 80% ở mỗi ô đủ dữ liệu (n ≥ 10) của S và C, và lần điền thử không còn chỗ thiếu lựa chọn chưa xử lý.
 Ô chưa đủ dữ liệu được kiểm tiếp ở pilot P6 bằng tỉ lệ "Khác".
 Không đạt thì quay lại sửa guideline, chưa viết code app.
+
+Trạng thái P1:
+
+- Nhóm S: đã chốt ngày 2026-11-14, file `codebook/S.v1.json`, giữ nguyên lựa chọn của guideline.
+  Lượt map bằng gemini-3.8-flash trên 209 câu khác nhau: 5/6 ô đạt; mật độ xe 76% (n = 49), trưởng nhóm quyết giữ nguyên.
+  Báo cáo: `scripts/codebook_map.py report` ra `csvs/p1/coverage_S.txt`.
+- Nhóm C: prompt đang chờ review.
 
 ### P2. Mô hình dữ liệu (khoảng 3 ngày, qua `quyen:ship-feature` và conflict audit)
 

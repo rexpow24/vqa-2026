@@ -10,6 +10,11 @@ Chưa gọi API lần nào.
 - Mỗi lần gọi chỉ gửi văn bản: nhóm, câu hỏi, câu trả lời. Không gửi video, không gửi draft, không gửi tên annotator.
 - LLM chỉ map những gì câu chữ nói. Nó không biết video thật ra sao.
 - Nhiệt độ 0, bắt trả JSON.
+- Gửi theo lô: mỗi lần gọi tối đa 7 câu, đánh số [1] đến [7], xếp theo số video để các biến thể của cùng một câu nằm chung lô.
+  Model trả về `{"kết quả": [...]}`, mỗi phần tử theo schema mục 5 và có thêm khóa "id".
+  Lô thiếu id, không parse được hoặc có câu sai codebook thì câu đó vào mục lỗi của báo cáo, không tính vào độ phủ.
+- Script: `scripts/codebook_map.py`. `prepare` tạo các lô và in đầy đủ prompt của lô 1 ra `prompt_batch_001.txt` để duyệt; `report` đọc output và ghi `coverage_S.txt`.
+  Script đọc prompt, codebook và few-shot trực tiếp từ file này, nên thứ đã duyệt ở đây là thứ được gửi đi.
 - Few-shot: 4 câu thật ở mục 6, gửi thành các lượt hội thoại (câu hỏi rồi output mẫu) trước câu cần map.
   Các câu này không dùng cho lần chạy thử ở mục 7, 8 và không tính vào mẫu 50 câu duyệt tay.
 
