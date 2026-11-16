@@ -1,6 +1,6 @@
 # P2 slot data model - progress
 
-- [ ] T1 - Codebook là nguồn seed, bản sao trong frontend            status: A2 verified (tests/test_codebook_copies.py 14 pass); A3 chờ trưởng nhóm cho commit 6 file
+- [x] T1 - Codebook là nguồn seed, bản sao trong frontend            status: A2 verified; A3 verified 2026-11-16 (commit 66ebded, `git ls-files codebook` = 7)
 - [x] T2 - Script trỏ sang local, verify-slots chặn host lạ           status: done (A39 thoát 2, 0 kết nối mạng; hai lần chạy local thoát 0)
 - [x] T3 - `codebook_versions` 7 dòng, chỉ đọc                        status: done (A1 8 mục, A4 pass; `db reset` có P2 không lỗi)
 - [x] T4 - Tracer: Lead lưu câu S dạng ô qua route                    status: done (A8 qua HTTP; A5: 3 phân công có sẵn đều `text` sau khi áp P2 bằng psql)
