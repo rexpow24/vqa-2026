@@ -4,8 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelGroup } from "@/components/LabelGroup";
+import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
+import { BTN, BTN_BASE, FOCUS, NEUTRAL } from "@/components/slots/styles";
 import { needsKeyframes } from "@/lib/qgroups";
-import type { EventLabel, Verdict } from "@/lib/types";
+import type { EventLabel, StoredVerdict, Verdict } from "@/lib/types";
+import { isSlotGroup } from "@/lib/codebook";
+import type { Entity, Slots } from "@/lib/codebook/compose";
+import { entityLabel } from "@/lib/codebook/form";
+import { EntityCard } from "@/components/slots/EntityCard";
+import { SlotCard, type SavedSlotRow } from "@/components/slots/SlotCard";
 
 type Video = { id: string; seq: number; filename: string; duration_s: number };
 type Assignment = { id: string; status: string; completed_at: string | null };
@@ -20,8 +27,10 @@ export type HostedDraft = {
   truncated: boolean; completion_tokens: number | null; latency_ms: number | null;
   prompt_version: number; frame_times_s: number[]; predicted_keyframes_s: number[] | null;
   source_kind: "vlm" | "admin_csv";
-  verdict: Verdict | null; reason_code: string | null; reason_note: string | null;
+  // "SLOTS" only on a slot answer of a slot assignment (S, E, C, V, O, R, Prev).
+  verdict: StoredVerdict | null; reason_code: string | null; reason_note: string | null;
   edited_answer: string | null; human_keyframes_s: number[];
+  slots: Slots | null; codebook_version: string | null;
   // Set once the annotators' disagreement on this question was decided; the
   // question is then locked for this annotator (answer_adjudications).
   decision: { final_verdict: Verdict; final_answer: string; final_keyframes_s: number[] } | null;
@@ -33,14 +42,7 @@ const VERDICT_LABEL: Record<Verdict, string> = {
 };
 const REASONS = ["thiếu thực thể", "sai thực thể", "sai nhân quả", "sai mốc thời gian",
   "bịa chi tiết", "sai diễn đạt", "khác"];
-// Shared button looks. Annotators found the page washed out: unselected
-// buttons were muted text on a near-invisible border. Every button now has a
-// fill, a border that reads against the card, a hover and a keyboard focus ring.
-const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
-const BTN_BASE = `rounded-md border transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${FOCUS}`;
-const NEUTRAL = "border-border-strong bg-surface-2 text-foreground";
-const BTN = `${BTN_BASE} ${NEUTRAL} hover:border-muted hover:bg-surface-3
-  disabled:hover:border-border-strong disabled:hover:bg-surface-2`;
+// Shared button looks live in components/slots/styles.ts.
 const VERDICT_STYLE: Record<Verdict, { on: string; off: string }> = {
   AGREE: { on: "border-green bg-green text-black hover:brightness-110", off: "hover:border-green hover:bg-green/15" },
   NOT_ANSWERABLE: { on: "border-amber bg-amber text-black hover:brightness-110", off: "hover:border-amber hover:bg-amber/15" },
@@ -55,9 +57,12 @@ async function requestJson<T>(url: string, body?: object): Promise<T> {
   return result as T;
 }
 
-export function HostedLabeling({ video, initialAssignment, initialLabel, initialDrafts, labelDecision }: {
+export function HostedLabeling({ video, initialAssignment, initialLabel, initialDrafts, labelDecision,
+  answerFormat = "text", initialEntities = [] }: {
   video: Video; initialAssignment: Assignment | null; initialLabel: Label | null; initialDrafts: HostedDraft[];
   labelDecision: EventLabel | null;
+  // "slots": S, E, C, V, O, R, Prev are answered with the slot form; N and Attr stay text.
+  answerFormat?: "text" | "slots"; initialEntities?: Entity[];
 }) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -71,6 +76,20 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const ready = drafts.length === 9;
+  // The saved parties of group E, which every other slot group picks from.
+  const [entities, setEntities] = useState<Entity[]>(initialEntities);
+  const causeDraft = drafts.find((draft) => draft.qgroup === "C");
+  const slotContext = { entities, cause: causeDraft?.verdict === "SLOTS" ? causeDraft.slots : null };
+  const entityLabels = Object.fromEntries(entities.map((entity) => [entity.key, entityLabel(entity)]));
+  const slotForm = (draft: HostedDraft) => answerFormat === "slots" && isSlotGroup(draft.qgroup) && !draft.decision;
+  function slotSaved(draft: HostedDraft, rows: SavedSlotRow[]) {
+    setDrafts((current) => current.map((item) => {
+      const row = rows.find((candidate) => candidate.draft_id === item.id);
+      return row ? { ...item, ...row } : item;
+    }));
+    setAssignment((current) => current?.status === "pending" ? { ...current, status: "in_progress" } : current);
+    setMessage(`Đã lưu câu ${draft.qgroup}.`); setError("");
+  }
   const done = drafts.filter((draft) => draft.verdict).length;
 
   const stepVideo = useCallback((direction: -1 | 1) => {
@@ -186,7 +205,13 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
         </div>}
       </div>
       <div className="flex flex-col gap-3">
-        {drafts.map((draft) => draft.decision ? <DecidedCard key={draft.id} draft={draft} onSeek={seek} /> : <DraftCard key={draft.id} draft={draft} duration={Number(video.duration_s)}
+        {drafts.map((draft) => slotForm(draft) ? (draft.qgroup === "E"
+          ? <EntityCard key={draft.id} videoId={video.id} draft={draft} saved={entities} canSave={!!assignment}
+            onSaved={(saved, row) => { setEntities(saved); slotSaved(draft, [{ draft_id: draft.id, verdict: "SLOTS", ...row }]); }} />
+          : <SlotCard key={draft.id} draft={draft} context={slotContext} labels={entityLabels} duration={Number(video.duration_s)}
+            playhead={playhead} canSave={!!assignment} onSeek={seek}
+            onSaved={({ also, ...row }) => slotSaved(draft, [{ ...row, draft_id: draft.id }, ...(also ?? [])])} />)
+          : draft.decision ? <DecidedCard key={draft.id} draft={draft} onSeek={seek} /> : <DraftCard key={draft.id} draft={draft} duration={Number(video.duration_s)}
           playhead={playhead} canSave={!!assignment} onSeek={seek} onSaved={(saved) => {
             setDrafts((current) => current.map((item) => item.id === draft.id ? { ...item, ...saved } : item));
             setAssignment((current) => current?.status === "pending" ? { ...current, status: "in_progress" } : current);
@@ -207,7 +232,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
   draft: HostedDraft; duration: number; playhead: number; canSave: boolean;
   onSeek: (time: number) => void; onSaved: (saved: Partial<HostedDraft>) => void; onError: (message: string) => void;
 }) {
-  const [verdict, setVerdict] = useState<Verdict | null>(draft.verdict);
+  const [verdict, setVerdict] = useState<Verdict | null>(draft.verdict as Verdict | null);
   const [reason, setReason] = useState(draft.reason_code);
   const [note, setNote] = useState(draft.reason_note ?? "");
   const [answer, setAnswer] = useState(draft.edited_answer ?? draft.answer);
@@ -304,7 +329,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
       <span className="shrink-0 rounded border border-accent/60 bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">{draft.qgroup}</span>
       <div className="min-w-0"><div className="text-base font-semibold text-foreground">{draft.group_name}</div>
         <div className="mt-0.5 text-xs leading-relaxed text-muted">{draft.question}</div></div>
-      {draft.verdict && <span className="ml-auto shrink-0 text-xs font-medium text-green">✓ {VERDICT_LABEL[draft.verdict]}</span>}
+      {draft.verdict && <span className="ml-auto shrink-0 text-xs font-medium text-green">✓ {VERDICT_LABEL[draft.verdict as Verdict]}</span>}
     </header>
     <div className="px-4 py-3">
       {editing ? <textarea rows={5} value={answer} onChange={(event) => setAnswer(event.target.value)}
@@ -355,32 +380,6 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
   </article>;
 }
 
-// One end of the evidence span: shows the frame (click to seek there), and
-// sets it from the playhead or from typed seconds.
-function KeyframeSlot({ label, value, playhead, duration, onSeek, onSet, onClear }: {
-  label: string; value: number | null; playhead: number; duration: number;
-  onSeek: (time: number) => void; onSet: (time: number) => void; onClear: () => void;
-}) {
-  const [typed, setTyped] = useState("");
-  return <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-background/60 p-2">
-    <span className="w-9 font-semibold text-foreground">{label}</span>
-    {value === null ? <span className="text-foreground/50">chưa đặt</span>
-      : <span className="flex items-center rounded-md border border-accent bg-accent/20 text-foreground">
-        <button type="button" onClick={() => onSeek(value)} className={`rounded-l-md px-2 py-1 tabular-nums hover:bg-accent/30 ${FOCUS}`}>{value.toFixed(2)}s</button>
-        <button type="button" aria-label={`Xóa ${label} ${value.toFixed(2)} giây`} onClick={onClear}
-          className={`rounded-r-md px-2 py-1 text-foreground/70 hover:bg-red/20 hover:text-red ${FOCUS}`}>✕</button>
-      </span>}
-    <button type="button" onClick={() => onSet(playhead)} className={`${BTN} px-2 py-1 tabular-nums`}>= {playhead.toFixed(2)}s</button>
-    <input type="number" step="0.05" min={0} max={duration} placeholder="giây" value={typed} aria-label={`${label} (giây)`}
-      onChange={(event) => setTyped(event.target.value)}
-      className={`w-20 rounded-md border border-border-strong bg-background px-2 py-1 tabular-nums text-foreground placeholder:text-foreground/40 ${FOCUS}`} />
-    <button type="button" disabled={!typed.trim()} onClick={() => {
-      if (!typed.trim()) return;
-      onSet(Number(typed.replace(",", "."))); setTyped("");
-    }} className={`${BTN} px-2 py-1`}>Đặt</button>
-  </div>;
-}
-
 // A question whose disagreement was decided: read-only, showing what this
 // annotator answered next to the final answer.
 function DecidedCard({ draft, onSeek }: { draft: HostedDraft; onSeek: (time: number) => void }) {
@@ -394,7 +393,7 @@ function DecidedCard({ draft, onSeek }: { draft: HostedDraft; onSeek: (time: num
     </header>
     <dl className="grid gap-2 px-4 py-3 text-sm">
       <div><dt className="text-xs text-muted">Bản nháp</dt><dd className="whitespace-pre-wrap">{draft.answer}</dd></div>
-      <div><dt className="text-xs text-muted">Bạn chọn: {draft.verdict ? VERDICT_LABEL[draft.verdict] : "-"}</dt>
+      <div><dt className="text-xs text-muted">Bạn chọn: {draft.verdict ? VERDICT_LABEL[draft.verdict as Verdict] : "-"}</dt>
         {draft.verdict === "DISAGREE" && draft.edited_answer && <dd className="whitespace-pre-wrap">{draft.edited_answer}</dd>}</div>
       <div className="rounded border border-green/50 bg-green/10 p-2">
         <dt className="text-xs text-green">Đáp án đã thống nhất: {VERDICT_LABEL[decision.final_verdict]}</dt>

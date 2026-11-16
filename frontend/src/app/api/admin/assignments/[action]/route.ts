@@ -3,7 +3,7 @@ import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 
 // Admin assignment actions, each a thin wrapper over one RPC in
-// 20261108_assigned_labeling.sql (the rules live there, not here).
+// 20261108_assigned_labeling.sql and later migrations (the rules live there, not here).
 export const maxDuration = 60;
 type Context = { params: Promise<{ action: string }> };
 
@@ -32,6 +32,20 @@ export async function POST(request: Request, context: Context) {
       ? await supabase.rpc("assign_range", { annotator, seq_from: from, seq_to: to,
           batch_label: typeof body.batch === "string" ? body.batch.slice(0, 100) : null })
       : await supabase.rpc("unassign_range", { annotator, seq_from: from, seq_to: to, delete_work: body.delete_work === true }));
+  }
+  if (action === "format") {
+    // set_answer_format (20261116100000_slot_data_model.sql) switches one person's
+    // assignments in the range and skips, and counts, those that already have work.
+    const annotator = uuid(body.annotator_id);
+    const from = int(body.from);
+    const to = int(body.to);
+    if (!annotator || from === null || to === null || from < 1 || from > to) {
+      return Response.json({ error: "Chọn người gán nhãn và khoảng số hợp lệ (từ ≤ đến)." }, { status: 422 });
+    }
+    if (body.format !== "text" && body.format !== "slots") {
+      return Response.json({ error: "Dạng trả lời phải là text hoặc slots." }, { status: 422 });
+    }
+    return respond(await supabase.rpc("set_answer_format", { annotator, seq_from: from, seq_to: to, format: body.format }));
   }
   if (action === "plan" || action === "create-group") {
     const size = int(body.size);

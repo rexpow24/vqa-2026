@@ -142,6 +142,8 @@ async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: st
   const { data: saved, error } = await supabase.rpc("save_slot_answers", { rows })
     .select("draft_id,verdict,reason_code,reason_note,edited_answer,slots,codebook_version,human_keyframes_s,annotated_at");
   const data = (saved as { draft_id: string }[] | null)?.find((row) => row.draft_id === draftId);
+  // Saving C re-composes the caller's R answer; the form shows that sentence too.
+  const also = (saved as { draft_id: string }[] | null)?.filter((row) => row.draft_id !== draftId) ?? [];
   if (error?.message.includes("adjudicated")) {
     return slotError("adjudicated", "Câu này đã được thống nhất, không sửa được nữa.", 409);
   }
@@ -150,5 +152,5 @@ async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: st
   await supabase.from("video_assignments").update({ status: "in_progress" })
     .eq("annotator_id", annotatorId).eq("video_id", draft.video_id)
     .neq("status", "completed");
-  return Response.json({ ...data, predicted_keyframes_s: draft.predicted_keyframes_s });
+  return Response.json({ ...data, predicted_keyframes_s: draft.predicted_keyframes_s, also });
 }

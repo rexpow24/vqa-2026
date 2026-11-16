@@ -15,6 +15,8 @@ export type Overview = {
 type Planned = { video_id: string; filename: string; event_label: string; difficulty: string };
 type Part = { part: number; seq_from: number; seq_to: number; videos: number };
 type Suggested = Part & { person: Person; result?: string };
+type Format = "text" | "slots";
+const FORMAT_NAMES: Record<Format, string> = { text: "chữ", slots: "ô" };
 
 /** "1-20, 25" -> [[1, 20], [25, 25]] */
 function intervals(ranges: string): [number, number][] {
@@ -38,7 +40,11 @@ const EVENTS = ["accident", "near-miss"];
 const input = "rounded border border-border bg-background px-2 py-1.5 text-sm";
 const button = "rounded border border-border px-3 py-1.5 text-sm disabled:opacity-40";
 
-export function AssignmentPanel({ overview, strata }: { overview: Overview; strata: Stratum[] }) {
+export function AssignmentPanel({ overview, strata, slotRanges }: {
+  overview: Overview; strata: Stratum[];
+  /** Annotator id -> the video numbers whose assignment is in slots form, e.g. "1-10". */
+  slotRanges: Record<string, string>;
+}) {
   const router = useRouter();
   const people = overview.annotators.filter((person) => person.enabled);
   const [busy, setBusy] = useState(false);
@@ -63,6 +69,10 @@ export function AssignmentPanel({ overview, strata }: { overview: Overview; stra
   const [from, setFrom] = useState(String(start));
   const [to, setTo] = useState(String(start + 99));
   const [batch, setBatch] = useState("");
+  const [formatPerson, setFormatPerson] = useState("");
+  const [formatFrom, setFormatFrom] = useState("1");
+  const [formatTo, setFormatTo] = useState("10");
+  const [format, setFormat] = useState<Format>("slots");
   // Follow the first free number after a refresh (a new group or a range
   // handed out moves it), adjusting state during render rather than in an effect.
   const [seenStart, setSeenStart] = useState(start);
@@ -262,7 +272,32 @@ export function AssignmentPanel({ overview, strata }: { overview: Overview; stra
     </section>
 
     <section className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
-      <h3 className="font-medium">4. Xuất câu trả lời (CSV)</h3>
+      <h3 className="font-medium">4. Dạng trả lời</h3>
+      <p className="text-xs text-muted">
+        Dạng ô: 7 nhóm S, E, C, V, O, R, Prev trả lời bằng cách chọn ô theo codebook; N và Attr vẫn là câu chữ. Dạng chữ là form hiện tại.
+        Chỉ đổi được video người đó chưa trả lời câu nào và chưa khai báo thực thể; video đã bắt đầu làm được bỏ qua và đếm lại. Video dạng ô không vào tính độ khó, thống nhất đáp án và độ đồng thuận.
+      </p>
+      <div className="flex flex-wrap items-end gap-3">
+        <label className="flex flex-col gap-1 text-sm">Người gán nhãn<select value={formatPerson} onChange={(event) => setFormatPerson(event.target.value)} className={input}>
+          <option value="">Chọn…</option>
+          {people.map((person) => <option key={person.id} value={person.id}>{person.name}{person.label ? ` · ${person.label}` : ""}</option>)}
+        </select></label>
+        <label className="flex flex-col gap-1 text-sm">Từ số<input type="number" min={1} value={formatFrom} onChange={(event) => setFormatFrom(event.target.value)} className={`${input} w-24`} /></label>
+        <label className="flex flex-col gap-1 text-sm">Đến số<input type="number" min={1} value={formatTo} onChange={(event) => setFormatTo(event.target.value)} className={`${input} w-24`} /></label>
+        <label className="flex flex-col gap-1 text-sm">Dạng<select value={format} onChange={(event) => setFormat(event.target.value as Format)} className={input}>
+          <option value="slots">Ô (slots)</option><option value="text">Chữ (text)</option>
+        </select></label>
+        <button type="button" className="rounded bg-accent px-3 py-1.5 text-sm text-white disabled:opacity-40" disabled={busy || !formatPerson} onClick={() => {
+          const name = people.find((person) => person.id === formatPerson)?.name ?? "";
+          void run(() => post<{ changed: number; already: number; skipped_started: number }>("format",
+            { annotator_id: formatPerson, from: Number(formatFrom), to: Number(formatTo), format }),
+          (result) => `${name} #${formatFrom}-${formatTo}: đã đổi ${result.changed} video sang dạng ${FORMAT_NAMES[format]}, ${result.already} video đã ở dạng này, bỏ qua ${result.skipped_started} video đã bắt đầu làm.`);
+        }}>Đổi dạng</button>
+      </div>
+    </section>
+
+    <section className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
+      <h3 className="font-medium">5. Xuất câu trả lời (CSV)</h3>
       <p className="text-xs text-muted">Mỗi dòng là một câu của một người: verdict, lý do, đáp án đã sửa (edited_answer) và đáp án người đó chốt (effective_answer). Dùng để tính độ đồng thuận.</p>
       <div className="flex flex-wrap items-end gap-3">
         <label className="flex flex-col gap-1 text-sm">Phạm vi<select value={scope} onChange={(event) => setScope(event.target.value)} className={input}>
@@ -277,7 +312,7 @@ export function AssignmentPanel({ overview, strata }: { overview: Overview; stra
     <section className="overflow-x-auto rounded-md border border-border bg-surface">
       <table className="w-full text-left text-sm">
         <thead className="border-b border-border text-xs text-muted"><tr>
-          <th className="p-3">Người</th><th className="p-3">Nhãn</th><th className="p-3">Khoảng đã giao</th>
+          <th className="p-3">Người</th><th className="p-3">Nhãn</th><th className="p-3">Khoảng đã giao</th><th className="p-3">Dạng ô</th>
           <th className="p-3 text-right">Agreement</th><th className="p-3 text-right">Hoàn thành</th>
         </tr></thead>
         <tbody>{overview.annotators.map((person) => <tr key={person.id} className="border-b border-border last:border-0">
@@ -287,6 +322,7 @@ export function AssignmentPanel({ overview, strata }: { overview: Overview; stra
             {person.trained && <span className="rounded border border-green/50 px-1 text-xs text-green">trained</span>}
           </span></td>
           <td className="p-3 tabular-nums">{person.ranges || <span className="text-muted">-</span>}</td>
+          <td className="p-3 tabular-nums">{slotRanges[person.id] ? `#${slotRanges[person.id]}` : <span className="text-muted">-</span>}</td>
           <td className="p-3 text-right tabular-nums">{person.agreement ? `#${person.agreement_ranges} · ${person.agreement_completed}/${person.agreement}` : <span className="text-muted">-</span>}</td>
           <td className="p-3 text-right tabular-nums">{person.completed}/{person.total}</td>
         </tr>)}</tbody>

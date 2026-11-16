@@ -14,7 +14,7 @@ export default async function VideoPage({ params }: Context) {
     .select("id,seq,filename,duration_s,available,status").eq("id", videoId).maybeSingle();
   if (!video || video.status !== "active") notFound();
   const [assignmentResult, labelResult, draftsResult, labelDecisionResult] = await Promise.all([
-    supabase.from("video_assignments").select("id,status,completed_at").eq("video_id", videoId).eq("annotator_id", profile.id).maybeSingle(),
+    supabase.from("video_assignments").select("id,status,completed_at,answer_format").eq("video_id", videoId).eq("annotator_id", profile.id).maybeSingle(),
     supabase.from("video_labels").select("event_label").eq("video_id", videoId).eq("annotator_id", profile.id).maybeSingle(),
     supabase.from("video_drafts").select("id,qgroup,group_name,question,answer,source_kind,truncated,completion_tokens,latency_ms,prompt_version,frame_times_s,predicted_keyframes_s")
       .eq("video_id", videoId),
@@ -25,18 +25,23 @@ export default async function VideoPage({ params }: Context) {
   if (error) throw new Error(error.message);
   const drafts = draftsResult.data ?? [];
   const draftIds = drafts.map((draft) => draft.id);
-  const [annotationResult, decisionResult] = draftIds.length ? await Promise.all([
-    supabase.from("qa_annotations").select("draft_id,verdict,reason_code,reason_note,edited_answer,human_keyframes_s")
+  const slotForm = assignmentResult.data?.answer_format === "slots";
+  const [annotationResult, decisionResult, entityResult] = draftIds.length ? await Promise.all([
+    supabase.from("qa_annotations").select("draft_id,verdict,reason_code,reason_note,edited_answer,human_keyframes_s,slots,codebook_version")
       .eq("annotator_id", profile.id).in("draft_id", draftIds),
     supabase.from("answer_adjudications").select("draft_id,final_verdict,final_answer,final_keyframes_s").in("draft_id", draftIds),
-  ]) : [{ data: [], error: null }, { data: [], error: null }];
-  const answersError = annotationResult.error ?? decisionResult.error;
+    // The parties A, B, C of group E, only a slot assignment has them.
+    slotForm ? supabase.from("video_entities").select("entity_key,cells").eq("video_id", videoId).eq("annotator_id", profile.id)
+      .order("entity_key") : Promise.resolve({ data: [], error: null }),
+  ]) : [{ data: [], error: null }, { data: [], error: null }, { data: [], error: null }];
+  const answersError = annotationResult.error ?? decisionResult.error ?? entityResult.error;
   if (answersError) throw new Error(answersError.message);
   const initialDrafts = drafts.map((draft) => {
     const mine = annotationResult.data?.find((item) => item.draft_id === draft.id);
     return { ...draft, verdict: mine?.verdict ?? null, reason_code: mine?.reason_code ?? null,
       reason_note: mine?.reason_note ?? null, edited_answer: mine?.edited_answer ?? null,
       human_keyframes_s: mine?.human_keyframes_s ?? [],
+      slots: mine?.slots ?? null, codebook_version: mine?.codebook_version ?? null,
       predicted_keyframes_s: mine ? draft.predicted_keyframes_s : null,
       decision: decisionResult.data?.find((item) => item.draft_id === draft.id) ?? null,
     };
@@ -44,5 +49,7 @@ export default async function VideoPage({ params }: Context) {
   return <HostedLabeling video={video} initialAssignment={assignmentResult.data}
     initialLabel={labelResult.data as { event_label: "accident" | "near-miss" } | null}
     initialDrafts={initialDrafts as HostedDraft[]}
-    labelDecision={(labelDecisionResult.data?.event_label ?? null) as "accident" | "near-miss" | null} />;
+    labelDecision={(labelDecisionResult.data?.event_label ?? null) as "accident" | "near-miss" | null}
+    answerFormat={slotForm ? "slots" : "text"}
+    initialEntities={(entityResult.data ?? []).map((row) => ({ key: row.entity_key as string, cells: row.cells as Record<string, unknown> }))} />;
 }

@@ -138,6 +138,46 @@ async function checkAnswerFormat(lead, t, agreed, regular) {
   return extra;
 }
 
+/**
+ * F4 (features/slot-form/requirements.md): the admin switch on /admin/assignments
+ * goes through POST /api/admin/assignments/format, a thin wrapper over
+ * set_answer_format. Anonymous callers get 401, annotators 403, and an admin
+ * changes the format of one person's range and gets the RPC's counts back.
+ */
+async function checkFormatRoute(lead, t) {
+  const video = await makeVideo("format-route", { agreement: false });
+  must(await privileged.from("video_assignments").insert({ video_id: video.id, annotator_id: t.id, status: "pending" }));
+  const body = { annotator_id: t.id, from: video.seq, to: video.seq, format: "slots" };
+  const format = async () => must(await privileged.from("video_assignments").select("answer_format")
+    .eq("video_id", video.id).eq("annotator_id", t.id).single()).answer_format;
+
+  const anonymous = await request(base, "/api/admin/assignments/format", "", "POST", body);
+  const byAnnotator = await request(base, "/api/admin/assignments/format", t.cookie, "POST", body);
+  const untouched = await format();
+  check("F4", anonymous.status === 401 && byAnnotator.status === 403 && untouched === "text",
+    "the format route answers 401 without a session and 403 to an annotator, and changes nothing",
+    { anonymous: anonymous.status, annotator: byAnnotator.status, untouched });
+
+  const invalid = await request(base, "/api/admin/assignments/format", lead.cookie, "POST", { ...body, format: "free" });
+  const reversed = await request(base, "/api/admin/assignments/format", lead.cookie, "POST", { ...body, from: video.seq + 1 });
+  check("F4", invalid.status === 422 && reversed.status === 422 && await format() === "text",
+    "the format route refuses an unknown format and a reversed range with 422", { invalid, reversed });
+
+  const toSlots = await request(base, "/api/admin/assignments/format", lead.cookie, "POST", body);
+  const switched = await format();
+  const again = await request(base, "/api/admin/assignments/format", lead.cookie, "POST", body);
+  const back = await request(base, "/api/admin/assignments/format", lead.cookie, "POST", { ...body, format: "text" });
+  check("F4", toSlots.status === 200 && isDeepStrictEqual(toSlots.data, { changed: 1, already: 0, skipped_started: 0 })
+    && switched === "slots" && again.status === 200 && again.data?.already === 1 && again.data?.changed === 0
+    && back.status === 200 && back.data?.changed === 1 && await format() === "text",
+  "an admin switches one annotator's range to slots and back through the route, with the RPC's counts",
+  { toSlots, switched, again: again.data, back: back.data });
+
+  const overview = await request(base, "/admin/assignments", lead.cookie);
+  check("F4", overview.status === 200 && typeof overview.data === "string" && overview.data.includes("Dạng trả lời"),
+    "/admin/assignments renders the answer format switch", { status: overview.status });
+}
+
 const ENTITIES = [
   { key: "A", cells: { type: { option: "type.car" }, dashcam: { option: "dashcam.yes" } } },
   { key: "B", cells: { type: { option: "type.motorbike" }, vehicle_color: { option: "vehicle_color.red" },
@@ -849,8 +889,14 @@ async function cleanup() {
   }
   const leftUsers = must(await privileged.from("user_profiles").select("id").like("email", `${tag}-%`));
   const leftVideos = must(await privileged.from("videos").select("id").like("filename", `zzz-${tag}-%`));
-  const { count: entities, error } = await privileged.from("video_entities").select("video_id", { count: "exact", head: true });
-  if (error) throw error;
+  // Only the fixture's own videos: other local data (e.g. a trial seed) may legitimately hold entities.
+  let entities = 0;
+  if (videoIds.length) {
+    const { count, error } = await privileged.from("video_entities")
+      .select("video_id", { count: "exact", head: true }).in("video_id", videoIds);
+    if (error) throw error;
+    entities = count;
+  }
   check("A38", leftUsers.length === 0 && leftVideos.length === 0 && entities === 0,
     "cleanup removes every fixture user and video, and no entity is left", { users: leftUsers.length, videos: leftVideos.length, entities });
 }
@@ -878,6 +924,9 @@ try {
 
   console.log("Answer format:");
   const extra = await checkAnswerFormat(lead, t, agreed, regular);
+
+  console.log("Admin format switch:");
+  await checkFormatRoute(lead, t);
 
   console.log("Entities:");
   await checkEntities(lead, agreed, extra);
