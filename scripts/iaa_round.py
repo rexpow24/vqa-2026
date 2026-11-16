@@ -26,6 +26,12 @@ video are not independent.
 Only rows whose assignment is completed are used unless --include-unfinished
 is given, and the report says when a question lacks some annotator.
 
+Rows of a slot assignment (answer_format = slots, features/slot-data-model/)
+are always left out: their answers are cells, not a verdict on the draft, so
+all nine rows of such an assignment, N and Attr included, stay out of every
+figure. An export without the answer_format column predates slot answers and
+is read as all text.
+
 Usage:
   python scripts/iaa_round.py answers.csv --out out_dir
   # score out_dir/pairs_to_judge.csv with the LLM judge (column judge_score in 0..1), then:
@@ -51,6 +57,13 @@ NA_TOKEN = "<NA>"
 # NOT_ANSWERABLE row; the guideline's phrase is folded in too.
 NA_PHRASES = {"không trả lời được", "không thể xác định"}
 VERDICTS = ["AGREE", "DISAGREE", "NOT_ANSWERABLE"]
+
+
+def text_rows(df):
+    """Rows of text assignments only; an export without answer_format has no others."""
+    if "answer_format" not in df:
+        return df
+    return df[df["answer_format"] == "text"].copy()
 
 
 # ----------------------------------------------------------------------------
@@ -263,6 +276,9 @@ def main(argv=None):
     os.makedirs(args.out, exist_ok=True)
 
     df = pd.read_csv(args.csv, dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    n_slot_rows = len(df)
+    df = text_rows(df)
+    n_slot_rows -= len(df)
     n_rows_raw = len(df)
     if not args.include_unfinished and "assignment_status" in df:
         df = df[df["assignment_status"] == "completed"].copy()
@@ -298,6 +314,8 @@ def main(argv=None):
     P = lines.append
     P(f"Annotators: {n_ann} | Videos: {n_vid} | Units (câu hỏi): {n_unit} | Rows: {len(df)}"
       + ("" if args.include_unfinished else f" (bỏ {n_rows_raw - len(df)} dòng chưa completed)"))
+    if n_slot_rows:
+        P(f"Bỏ {n_slot_rows} dòng của phân công dạng ô (answer_format = slots), không phải verdict trên draft.")
     P("Phân bố verdict: " + ", ".join(f"{k}={v:.1%}" for k, v in dist.items()))
 
     # Complete data: every question must have every annotator

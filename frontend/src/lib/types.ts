@@ -200,6 +200,10 @@ export interface ValidateResponse {
 // question could be about -- a property of the clip, not a model failure.
 
 export type Verdict = "AGREE" | "NOT_ANSWERABLE" | "DISAGREE";
+// A row read back from qa_annotations can also be a slot answer. Kept apart
+// from Verdict on purpose: the text form builds one button per Verdict key, so
+// adding "SLOTS" there would give it a fourth button.
+export type StoredVerdict = Verdict | "SLOTS";
 
 export interface Annotator {
   annotator_id: string;

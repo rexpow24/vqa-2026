@@ -6,7 +6,7 @@ Usage:
 The file has titled sections separated by blank lines (open it in Excel; UTF-8 with BOM):
 overall, coefficients with 95% CI, by qgroup, by round, by annotator, annotator pairs,
 verdict pairs, and one line per video. Coefficients come from scripts/iaa_round.py.
-Only assignment_status = completed rows count, same as there.
+Only assignment_status = completed rows of text assignments count, same as there.
 """
 
 import argparse
@@ -22,7 +22,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from scripts.iaa_questions import qgroup_names  # noqa: E402
 from scripts.iaa_round import (VERDICTS, bootstrap, fleiss_kappa, gwet_ac1, kripp_alpha,  # noqa: E402
-                               nominal, pairwise_pct, verdict_units)
+                               nominal, pairwise_pct, text_rows, verdict_units)
 
 TARGET = 0.8
 
@@ -50,7 +50,7 @@ def main(argv=None):
     ap.add_argument("--round-size", type=int, default=20)
     args = ap.parse_args(argv)
 
-    df = pd.read_csv(args.csv, dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    df = text_rows(pd.read_csv(args.csv, dtype=str, keep_default_na=False, encoding="utf-8-sig"))
     raw = len(df)
     df = df[df["assignment_status"] == "completed"].copy()
     df["verdict"] = df["verdict"].str.strip().str.upper().str.replace("-", "_")

@@ -1,0 +1,72 @@
+// The frozen codebooks the slot form and the save routes read.
+//
+// The JSON files here are byte-identical copies of codebook/<group>.v1.json at
+// the repository root (tests/test_codebook_copies.py): Vercel uploads only
+// frontend/, so the app cannot read the originals. The database seeds the same
+// files into codebook_versions (20261116100000_slot_data_model.sql).
+//
+// A group is answered with cells exactly when it has a codebook here; there is
+// no second list of slot groups. Imports stay relative (no "@/") so that
+// `node --test` can load this module and compose.ts without the Next.js resolver.
+
+import C1 from "./C.v1.json" with { type: "json" };
+import E1 from "./E.v1.json" with { type: "json" };
+import O1 from "./O.v1.json" with { type: "json" };
+import Prev1 from "./Prev.v1.json" with { type: "json" };
+import R1 from "./R.v1.json" with { type: "json" };
+import S1 from "./S.v1.json" with { type: "json" };
+import V1 from "./V.v1.json" with { type: "json" };
+
+export type CodebookOption = {
+  id: string;
+  label: string;
+  parent?: string;
+  free_text?: boolean;
+  from_entities?: boolean;
+  [key: string]: unknown;
+};
+
+export type CodebookCell = {
+  id: string;
+  label: string;
+  required: boolean;
+  options?: CodebookOption[];
+  from_entities?: boolean;
+  parent_cell?: string;
+  per_party?: boolean;
+  per_party_when?: string;
+  must_differ_from?: string;
+  [key: string]: unknown;
+};
+
+export type Codebook = {
+  group: string;
+  version: number;
+  frozen_on: string;
+  template?: string;
+  templates?: { case: string; text: string; [key: string]: unknown }[];
+  cells: CodebookCell[];
+  [key: string]: unknown;
+};
+
+const CODEBOOKS: Readonly<Record<string, Codebook>> = Object.fromEntries(
+  ([S1, E1, C1, V1, O1, R1, Prev1] as Codebook[]).map((book) => [`${book.group}.v${book.version}`, book]),
+);
+
+/** The codebook with this id ("C.v1"), or undefined when there is none. */
+export function getCodebook(version: string): Codebook | undefined {
+  return Object.hasOwn(CODEBOOKS, version) ? CODEBOOKS[version] : undefined;
+}
+
+/** The newest codebook id of a group ("S" gives "S.v1"), or undefined for a text group. */
+export function currentVersion(qgroup: string): string | undefined {
+  const versions = Object.values(CODEBOOKS).filter((book) => book.group === qgroup);
+  if (!versions.length) return undefined;
+  const newest = versions.reduce((best, book) => (book.version > best.version ? book : best));
+  return `${newest.group}.v${newest.version}`;
+}
+
+/** Whether the group is answered with cells (it has a codebook). N and Attr are not. */
+export function isSlotGroup(qgroup: string): boolean {
+  return currentVersion(qgroup) !== undefined;
+}

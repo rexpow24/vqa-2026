@@ -31,9 +31,14 @@ function parse(file) {
     }));
 }
 
-/** Root .env first, then frontend/.env.local, which wins on conflict. */
+/**
+ * Root .env first, then frontend/.env.local, then the process environment,
+ * which wins over both: `NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 node
+ * scripts/...` points a script at a local Supabase without editing any file.
+ */
 export function loadEnv() {
-  return { ...parse(path.join(REPO_ROOT, ".env")), ...parse(path.join(FRONTEND_DIR, ".env.local")) };
+  const fromProcess = Object.fromEntries(Object.entries(process.env).filter(([, value]) => value));
+  return { ...parse(path.join(REPO_ROOT, ".env")), ...parse(path.join(FRONTEND_DIR, ".env.local")), ...fromProcess };
 }
 
 /** Read a variable, failing with a message that names the file to edit. */
@@ -43,8 +48,32 @@ export function requireEnv(env, name, hint = "") {
   return value;
 }
 
-/** The admin login written by bootstrap-admin.mjs. */
+const LOCAL_HOSTS = new Set(["127.0.0.1", "localhost", "[::1]"]);
+
+/**
+ * Exit, before any network call, unless `value` is a URL on this machine. For
+ * the verification scripts that create and delete users and videos: they run
+ * against a local Supabase and dev server only (features/slot-data-model/, A39).
+ */
+export function refuseUnlessLocal(name, value) {
+  let host;
+  try { host = new URL(value).hostname; } catch { host = null; }
+  if (!LOCAL_HOSTS.has(host)) {
+    console.error(`Refusing to run: ${name} must point at a local host (127.0.0.1 or localhost), got ${host ?? "an invalid URL"}.`);
+    console.error("This script creates and deletes users and videos; it never runs against a hosted project.");
+    process.exit(2);
+  }
+}
+
+/**
+ * The admin login written by bootstrap-admin.mjs, or TEST_ADMIN_EMAIL and
+ * TEST_ADMIN_PASSWORD from the process environment when both are set: a local
+ * Supabase has no copy of the hosted admin, so a run against it brings its own.
+ */
 export function adminCredentials() {
+  if (process.env.TEST_ADMIN_EMAIL && process.env.TEST_ADMIN_PASSWORD) {
+    return { email: process.env.TEST_ADMIN_EMAIL, password: process.env.TEST_ADMIN_PASSWORD };
+  }
   const file = path.join(FRONTEND_DIR, ".admin-credentials");
   if (!fs.existsSync(file)) throw new Error("frontend/.admin-credentials is missing -- run scripts/bootstrap-admin.mjs");
   const text = fs.readFileSync(file, "utf8");

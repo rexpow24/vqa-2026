@@ -18,7 +18,7 @@ if (!profile) { console.error(`No user with email ${email}`); process.exit(2); }
 console.log(`${profile.name} (${email}) · ${profile.role}${profile.enabled ? "" : " · DISABLED"}\n`);
 
 const assignments = must(await admin.from("video_assignments")
-  .select("video_id,status,completed_at,videos(filename,duration_s)").eq("annotator_id", profile.id)
+  .select("video_id,status,answer_format,completed_at,videos(filename,duration_s)").eq("annotator_id", profile.id)
   .order("completed_at", { ascending: true, nullsFirst: false }));
 if (!assignments.length) { console.log("No videos opened yet."); process.exit(0); }
 const videoIds = assignments.map((row) => row.video_id);
@@ -34,7 +34,8 @@ const revisions = must(await admin.from("qa_annotation_revisions").select("draft
 const finals = must(await admin.from("final_answers").select("video_id,source").in("video_id", videoIds));
 const pooled = must(await admin.from("video_difficulty").select("video_id,annotators,model_errors,difficulty").in("video_id", videoIds));
 
-const SHORT = { AGREE: "✓", DISAGREE: "✗", NOT_ANSWERABLE: "?" };
+// SLOTS: an answer chosen as cells of a codebook (features/slot-data-model/), not a verdict on the draft.
+const SHORT = { AGREE: "✓", DISAGREE: "✗", NOT_ANSWERABLE: "?", SLOTS: "▣" };
 let broken = 0;
 for (const assignment of assignments) {
   const byGroup = new Map();
@@ -44,6 +45,8 @@ for (const assignment of assignments) {
   const label = labels.find((row) => row.video_id === assignment.video_id);
   const mine = derived.find((row) => row.video_id === assignment.video_id);
   const video = pooled.find((row) => row.video_id === assignment.video_id);
+  // A slot assignment has no derived difficulty: 20261116100000_slot_data_model.sql keeps it out of annotator_difficulty.
+  const slotForm = assignment.answer_format === "slots";
 
   const problems = [];
   const answered = [...byGroup.values()].filter(Boolean).length;
@@ -51,7 +54,8 @@ for (const assignment of assignments) {
   if (assignment.status === "completed") {
     if (answered !== 9) problems.push(`completed with ${answered}/9 answers`);
     if (!label) problems.push("completed without an event label");
-    if (!mine) problems.push("completed but missing from annotator_difficulty");
+    if (!mine && !slotForm) problems.push("completed but missing from annotator_difficulty");
+    if (mine && slotForm) problems.push("slot assignment counted in annotator_difficulty");
   }
   for (const [group, answer] of byGroup) {
     if (!answer) continue;
@@ -63,9 +67,11 @@ for (const assignment of assignments) {
     }
     if (!KEYFRAME_GROUPS.includes(group) && marks.length) problems.push(`${group}: keyframes on a group without evidence`);
     if (answer.verdict === "DISAGREE" && !answer.reason_code) problems.push(`${group}: DISAGREE without a reason`);
-    // Only a disagreement carries an edited answer, and it must carry one (20261107_answer_adjudication.sql).
-    if (answer.verdict !== "DISAGREE" && answer.edited_answer) problems.push(`${group}: answer rewritten under ${answer.verdict}, choose Không đồng ý or restore the draft`);
+    // Only a disagreement carries an edited answer, and it must carry one (20261107_answer_adjudication.sql);
+    // a slot answer carries the sentence composed from its cells the same way.
+    if (!["DISAGREE", "SLOTS"].includes(answer.verdict) && answer.edited_answer) problems.push(`${group}: answer rewritten under ${answer.verdict}, choose Không đồng ý or restore the draft`);
     if (answer.verdict === "DISAGREE" && !answer.edited_answer) problems.push(`${group}: DISAGREE without a corrected answer`);
+    if (answer.verdict === "SLOTS" && !answer.edited_answer) problems.push(`${group}: SLOTS without a composed sentence`);
   }
   if (mine) {
     const counted = [...byGroup.values()].filter((answer) => answer && answer.verdict !== "AGREE").length;
@@ -78,7 +84,7 @@ for (const assignment of assignments) {
   console.log(`     ${row}`);
   console.log(`     event ${label?.event_label ?? "-"} · ${mine
     ? `errors ${mine.model_errors} (✗${mine.disagree_count} ?${mine.not_answerable_count}) → ${mine.difficulty}`
-    : "difficulty after completion"}${video && Number(video.annotators) > 1
+    : slotForm ? "slot form, no derived difficulty" : "difficulty after completion"}${video && Number(video.annotators) > 1
     ? ` · video mean ${video.model_errors} over ${video.annotators} → ${video.difficulty}` : ""}`);
   const edited = drafts.filter((draft) => draft.video_id === assignment.video_id)
     .map((draft) => [draft.qgroup, revisions.filter((revision) => revision.draft_id === draft.id).length])

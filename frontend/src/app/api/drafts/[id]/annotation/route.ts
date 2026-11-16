@@ -1,6 +1,8 @@
 import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import { needsKeyframes } from "@/lib/qgroups";
+import { ComposeError, compose, type Slots } from "@/lib/codebook/compose";
+import { isSlotGroup } from "@/lib/codebook";
 
 type Context = { params: Promise<{ id: string }> };
 const VERDICTS = ["AGREE", "NOT_ANSWERABLE", "DISAGREE"];
@@ -26,6 +28,11 @@ export async function POST(request: Request, context: Context) {
   // Groups that take them store exactly two: [start, end] of the event, start
   // before end (same rule as validate_qa_annotation, 20261112_keyframes_start_end.sql).
   const required = needsKeyframes(draft.qgroup);
+  if (verdict === "SLOTS") return saveSlotAnswer(supabase, profile.id, id, draft, body);
+  // A text answer never carries cells (validate_qa_annotation refuses them too).
+  if (body.slots !== undefined || body.codebook_version !== undefined) {
+    return Response.json({ error: "Câu trả lời dạng chữ không gửi ô.", code: "unexpected_slots" }, { status: 422 });
+  }
   const marks = required ? body.human_keyframes_s : [];
   if (!VERDICTS.includes(verdict) || !Array.isArray(marks) ||
       !marks.every((value) => typeof value === "number" && Number.isFinite(value) && value >= 0) ||
@@ -60,6 +67,88 @@ export async function POST(request: Request, context: Context) {
   if (error) return Response.json({ error: error.message }, { status: 422 });
   await supabase.from("video_assignments").update({ status: "in_progress" })
     .eq("annotator_id", profile.id).eq("video_id", draft.video_id)
+    .neq("status", "completed");
+  return Response.json({ ...data, predicted_keyframes_s: draft.predicted_keyframes_s });
+}
+
+type Draft = { video_id: string; qgroup: string; answer: string; predicted_keyframes_s: number[] };
+type Client = Awaited<ReturnType<typeof createClient>>;
+const slotError = (code: string, error: string, status = 422) => Response.json({ error, code }, { status });
+
+type SlotRow = { draft_id: string; slots: Slots; codebook_version: string };
+
+/** The caller's slot answer to another group of the same video, or null. */
+async function slotAnswer(supabase: Client, annotatorId: string, videoId: string, qgroup: string): Promise<SlotRow | null> {
+  const { data: other } = await supabase.from("video_drafts").select("id")
+    .eq("video_id", videoId).eq("qgroup", qgroup).maybeSingle();
+  if (!other) return null;
+  const { data } = await supabase.from("qa_annotations").select("draft_id,slots,codebook_version")
+    .eq("draft_id", other.id).eq("annotator_id", annotatorId).eq("verdict", "SLOTS").maybeSingle();
+  return data as SlotRow | null;
+}
+
+/** Keyframes as the text branch accepts them: none outside C, V, Attr; there exactly [start, end]. */
+function keyframesOf(qgroup: string, value: unknown): number[] | null {
+  if (!needsKeyframes(qgroup)) return [];
+  if (!Array.isArray(value) || value.length !== 2 ||
+      !value.every((mark) => typeof mark === "number" && Number.isFinite(mark) && mark >= 0)) return null;
+  const marks = value.map((mark: number) => Number(mark.toFixed(3)));
+  return marks[0] < marks[1] ? marks : null;
+}
+
+// A slot answer: the cells are the answer, and the server composes the
+// sentence from them (compose.ts), so cells and sentence cannot disagree.
+// The database decides whether this row may be a slot answer at all
+// (validate_qa_annotation reads the assignment's answer_format); the checks
+// here only give the form a precise message first.
+async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: string, draft: Draft,
+  body: Record<string, unknown>) {
+  const { data: assignment } = await supabase.from("video_assignments").select("answer_format")
+    .eq("video_id", draft.video_id).eq("annotator_id", annotatorId).maybeSingle();
+  if (assignment?.answer_format !== "slots" || !isSlotGroup(draft.qgroup)) {
+    return slotError("text_group", "Nhóm này trả lời bằng chữ, không chọn ô.");
+  }
+  if (body.edited_answer !== undefined || body.reason_code !== undefined || body.reason_note !== undefined) {
+    return slotError("stale_page", "Trang này đã cũ: câu trả lời dạng ô không gửi câu viết lại hay lý do. Tải lại trang.");
+  }
+  const version = typeof body.codebook_version === "string" ? body.codebook_version : "";
+  const slots = body.slots;
+  if (!slots || typeof slots !== "object" || Array.isArray(slots)) return slotError("missing_slots", "Chưa chọn ô nào.");
+  const marks = keyframesOf(draft.qgroup, body.human_keyframes_s);
+  if (!marks) return slotError("keyframes", "Đặt đủ 2 keyframe: start trước end.");
+  // Entity references are named from the caller's own E list on this video.
+  const { data: declared } = await supabase.from("video_entities").select("entity_key,cells")
+    .eq("video_id", draft.video_id).eq("annotator_id", annotatorId);
+  const entities = (declared ?? []).map((row) => ({ key: row.entity_key as string, cells: row.cells as Slots }));
+  // R names its parties after the caller's C answer, so saving C re-composes
+  // an R answer already there, and both rows go in one call (spec Open 6).
+  const linked = draft.qgroup === "C" || draft.qgroup === "R"
+    ? await slotAnswer(supabase, annotatorId, draft.video_id, draft.qgroup === "C" ? "R" : "C") : null;
+  if (draft.qgroup === "R" && !linked) return slotError("cause_missing", "Lưu nhóm C trước khi lưu nhóm R.");
+  const rows: Record<string, unknown>[] = [];
+  try {
+    rows.push({ draft_id: draftId, codebook_version: version, slots, human_keyframes_s: marks,
+      edited_answer: compose(draft.qgroup, slots as Slots,
+        { version, entities, cause: draft.qgroup === "R" ? linked!.slots : undefined }) });
+    if (draft.qgroup === "C" && linked) {
+      rows.push({ draft_id: linked.draft_id, codebook_version: linked.codebook_version, slots: linked.slots,
+        human_keyframes_s: [], edited_answer: compose("R", linked.slots,
+          { version: linked.codebook_version, entities, cause: slots as Slots }) });
+    }
+  } catch (error) {
+    if (error instanceof ComposeError) return slotError(error.code, error.message);
+    throw error;
+  }
+  const { data: saved, error } = await supabase.rpc("save_slot_answers", { rows })
+    .select("draft_id,verdict,reason_code,reason_note,edited_answer,slots,codebook_version,human_keyframes_s,annotated_at");
+  const data = (saved as { draft_id: string }[] | null)?.find((row) => row.draft_id === draftId);
+  if (error?.message.includes("adjudicated")) {
+    return slotError("adjudicated", "Câu này đã được thống nhất, không sửa được nữa.", 409);
+  }
+  // validate_slots and validate_qa_annotation name the broken rule in HINT.
+  if (error) return slotError(error.hint || "invalid_slots", error.message);
+  await supabase.from("video_assignments").update({ status: "in_progress" })
+    .eq("annotator_id", annotatorId).eq("video_id", draft.video_id)
     .neq("status", "completed");
   return Response.json({ ...data, predicted_keyframes_s: draft.predicted_keyframes_s });
 }

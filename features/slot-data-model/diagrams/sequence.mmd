@@ -1,0 +1,93 @@
+%% P2 save flow: entities (E), one slot answer (S, C, V, O, R, Prev), and a stale text page.
+%% Every failure branch ends with nothing written: each RPC is one transaction.
+sequenceDiagram
+    autonumber
+    actor Ann as Annotator (form P4)
+    participant RE as PUT /api/videos/[id]/entities
+    participant RA as POST /api/drafts/[id]/annotation
+    participant CMP as compose.ts
+    participant RPCE as save_video_entities (definer)
+    participant RPCS as save_slot_answers (invoker)
+    participant VA as video_assignments row
+    participant TE as trigger validate_video_entity + guard_referenced_entity
+    participant TQ as trigger validate_qa_annotation + validate_slots
+    participant DB as video_entities / qa_annotations / revisions
+
+    Note over Ann,DB: Lưu thực thể (E)
+    Ann->>RE: codebook_version, entities (key, cells)
+    RE->>CMP: compose("E", entities)
+    CMP-->>RE: câu E
+    RE->>RPCE: target_video, version, entities, câu E
+    RPCE->>VA: select ... for update
+    alt không có phân công, phân công text, người dùng bị khóa
+        RPCE-->>RE: lỗi quyền
+        RE-->>Ann: 403
+    else bỏ hoặc sửa bên đang bị trỏ tới
+        RPCE->>DB: delete / update video_entities
+        DB->>TE: guard_referenced_entity
+        TE-->>RPCE: raise entity_referenced (khóa, các nhóm)
+        RPCE-->>RE: rollback cả giao dịch
+        RE-->>Ann: 409 entity_referenced
+    else ô sai codebook E (lựa chọn lạ, thiếu type, "khác" thiếu chữ)
+        RPCE->>DB: upsert video_entities
+        DB->>TE: validate_video_entity rồi validate_slots(E.v1)
+        TE-->>RPCE: raise theo luật vi phạm
+        RE-->>Ann: 422 code
+    else hợp lệ
+        RPCE->>DB: delete bên bỏ, upsert bên còn lại
+        RPCE->>DB: upsert dòng E (SLOTS, câu E)
+        DB->>TQ: dòng E: ghi đè slots bằng bản chụp video_entities
+        DB->>DB: revision nếu nội dung đổi
+        RPCE-->>RE: thực thể, câu E, slots đã chụp
+        RE-->>Ann: 200
+    end
+
+    Note over Ann,DB: Lưu một câu dạng ô
+    Ann->>RA: verdict SLOTS, codebook_version, slots, human_keyframes_s
+    RA->>RA: đọc draft, phân công, thực thể, câu C nếu là R
+    alt phân công text, hoặc nhóm N, Attr
+        RA-->>Ann: 422 "nhóm này trả lời bằng chữ"
+    else body có edited_answer, reason_code, reason_note
+        RA-->>Ann: 422 (dấu hiệu trang cũ)
+    else R khi chưa có câu C
+        RA-->>Ann: 422 "lưu nhóm C trước"
+    else C subject.both không đủ 2 mục trong parties
+        RA-->>Ann: 422
+    else C, V thiếu 2 mốc start nhỏ hơn end
+        RA-->>Ann: 422
+    else qua kiểm trước khi ghi
+        RA->>CMP: compose(qgroup, slots, context)
+        CMP-->>RA: câu ghép
+        opt là C và đã có câu R
+            RA->>CMP: compose("R", slots R, C mới)
+            CMP-->>RA: câu R mới (kể cả "Không thể xác định." khi subject.unclear)
+        end
+        RA->>RPCS: 1 hoặc 2 dòng (C cùng R)
+        loop mỗi dòng
+            RPCS->>DB: upsert qa_annotations
+            DB->>TQ: validate_qa_annotation
+            TQ->>VA: select answer_format ... for update
+            TQ->>TQ: keyframe, dạng dòng theo answer_format, validate_slots
+        end
+        alt một dòng sai (ô lạ, sai cha con, bên chưa khai báo, sai codebook)
+            TQ-->>RPCS: raise
+            RPCS-->>RA: rollback, không dòng nào được ghi
+            RA-->>Ann: 422 code
+        else câu đã được thống nhất
+            TQ-->>RPCS: raise
+            RA-->>Ann: 409
+        else hợp lệ
+            DB->>DB: revision nếu slots, codebook_version, câu hay keyframe đổi
+            RPCS-->>RA: dòng đã lưu
+            RA->>VA: status in_progress
+            RA-->>Ann: 200, dòng kèm câu ghép
+        end
+    end
+
+    Note over Ann,DB: Trang chữ cũ còn mở trên phân công slots
+    Ann->>RA: verdict DISAGREE, reason, edited_answer (không slots)
+    RA->>DB: upsert như hôm nay
+    DB->>TQ: validate_qa_annotation
+    TQ->>VA: answer_format = slots, nhóm có codebook
+    TQ-->>RA: raise: dòng dạng ô chỉ nhận SLOTS
+    RA-->>Ann: 422, dòng ô giữ nguyên

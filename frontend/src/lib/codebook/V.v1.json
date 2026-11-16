@@ -1,0 +1,187 @@
+{
+  "group": "V",
+  "version": 1,
+  "frozen_on": "2026-11-15",
+  "source": "docs/guidelines/V-vi-pham.md",
+  "question": "Có hành vi vi phạm quy tắc giao thông nào quan sát được không?",
+  "templates": [
+    {
+      "case": "Có",
+      "text": "[1] [2]."
+    },
+    {
+      "case": "Không quan sát thấy",
+      "text": "Không quan sát thấy vi phạm quy tắc giao thông rõ ràng."
+    },
+    {
+      "case": "Không rõ",
+      "text": "Không thể xác định."
+    }
+  ],
+  "cells": [
+    {
+      "id": "result",
+      "label": "Kết quả",
+      "required": true,
+      "options": [
+        {
+          "id": "result.yes",
+          "label": "có"
+        },
+        {
+          "id": "result.none_observed",
+          "label": "không quan sát thấy"
+        },
+        {
+          "id": "result.unclear",
+          "label": "không rõ"
+        }
+      ]
+    },
+    {
+      "id": "violator",
+      "label": "Bên vi phạm",
+      "required": false,
+      "when": "khi có",
+      "from_entities": true,
+      "options": []
+    },
+    {
+      "id": "behavior",
+      "label": "Hành vi",
+      "required": false,
+      "when": "khi có",
+      "options": [
+        {
+          "id": "behavior.wrong_lane",
+          "label": "đi sai làn, lấn làn"
+        },
+        {
+          "id": "behavior.wrong_way",
+          "label": "đi ngược chiều"
+        },
+        {
+          "id": "behavior.red_light",
+          "label": "vượt đèn đỏ",
+          "condition": "chỉ khi thấy rõ đèn."
+        },
+        {
+          "id": "behavior.sign_or_marking",
+          "label": "không chấp hành biển báo, vạch kẻ đường",
+          "condition": "chỉ khi thấy rõ biển hoặc vạch. Người đi bộ sang đường khi đèn dành cho người đi bộ đỏ cũng chọn lựa chọn này."
+        },
+        {
+          "id": "behavior.fail_to_yield",
+          "label": "không nhường đường",
+          "condition": "chỉ khi thấy rõ bên có quyền đi trước (xe đang đi thẳng trên đường chính, người đi bộ trên vạch, xe trong giao lộ). Dùng cho cả xe và người đi bộ."
+        },
+        {
+          "id": "behavior.tailgating",
+          "label": "không giữ khoảng cách an toàn"
+        },
+        {
+          "id": "behavior.illegal_overtake",
+          "label": "vượt xe sai quy định",
+          "condition": "chỉ khi thấy rõ vượt qua vạch liền, tại giao lộ hoặc khúc cua."
+        },
+        {
+          "id": "behavior.illegal_turn",
+          "label": "chuyển hướng, quay đầu sai quy định",
+          "condition": "chỉ khi thấy rõ biển cấm, vạch liền hoặc vị trí không được rẽ, quay đầu."
+        },
+        {
+          "id": "behavior.illegal_reverse",
+          "label": "lùi xe sai quy định"
+        },
+        {
+          "id": "behavior.no_helmet",
+          "label": "không đội mũ bảo hiểm",
+          "condition": "chỉ khi thấy rõ đầu người trên xe máy."
+        },
+        {
+          "id": "behavior.walking_in_road",
+          "label": "đi bộ dưới lòng đường",
+          "condition": "người đi bộ đứng hoặc đi dọc trong phần đường xe chạy, không phải băng qua."
+        },
+        {
+          "id": "behavior.other",
+          "label": "khác",
+          "condition": "ghi ngắn hành vi nhìn thấy, không dùng từ \"lỗi\", \"vi phạm điều/khoản\", mức phạt.",
+          "free_text": true
+        }
+      ]
+    }
+  ],
+  "prefill_from_c": [
+    {
+      "conflict_types": [
+        "K01",
+        "K02",
+        "K03"
+      ],
+      "option": "behavior.tailgating"
+    },
+    {
+      "conflict_types": [
+        "K04"
+      ],
+      "option": "behavior.wrong_lane"
+    },
+    {
+      "conflict_types": [
+        "K08"
+      ],
+      "c_actions": [
+        "action.k08.encroach_curve",
+        "action.k08.encroach_straight"
+      ],
+      "option": "behavior.wrong_lane",
+      "note": "K08 khi vào cua hoặc đi thẳng"
+    },
+    {
+      "conflict_types": [
+        "K05"
+      ],
+      "option": "behavior.illegal_overtake"
+    },
+    {
+      "conflict_types": [
+        "K08"
+      ],
+      "c_actions": [
+        "action.k08.encroach_overtaking"
+      ],
+      "option": "behavior.illegal_overtake",
+      "note": "K08 khi vượt"
+    },
+    {
+      "conflict_types": [
+        "K06",
+        "K10",
+        "K13"
+      ],
+      "option": "behavior.illegal_turn"
+    },
+    {
+      "conflict_types": [
+        "K09"
+      ],
+      "option": "behavior.wrong_way"
+    },
+    {
+      "conflict_types": [
+        "K11",
+        "K12",
+        "K14",
+        "K15"
+      ],
+      "option": "behavior.fail_to_yield"
+    },
+    {
+      "conflict_types": [
+        "K17"
+      ],
+      "option": "behavior.illegal_reverse"
+    }
+  ]
+}

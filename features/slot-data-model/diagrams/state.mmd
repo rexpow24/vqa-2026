@@ -1,0 +1,40 @@
+%% answer_format of one video_assignments row.
+%% Invariant this buys: answer_format never changes while the assignment owns any
+%% qa_annotations or video_entities row, so every stored answer was checked
+%% against the format it still has. The format is fixed once work starts; the
+%% only way to change it after that is to remove the work (unassign with
+%% delete_work) and assign again.
+%%
+%% Transitions that do NOT exist:
+%%   - an annotator changing answer_format (validate_assignment rejects any
+%%     change whose caller is not admin, service role included);
+%%   - TextStarted <-> SlotsStarted, TextDone <-> SlotsDone (set_answer_format
+%%     skips and reports assignments with answers or entities);
+%%   - unassign without delete_work out of a Started or Done state (an
+%%     assignment with only entities already counts as started, A37).
+stateDiagram-v2
+    state "text, chưa có việc" as TextNew
+    state "slots, chưa có việc" as SlotsNew
+    state "text, đang làm" as TextStarted
+    state "slots, đang làm" as SlotsStarted
+    state "text, hoàn thành" as TextDone
+    state "slots, hoàn thành" as SlotsDone
+
+    [*] --> TextNew: phân công mới, hoặc dòng có sẵn khi áp migration (mặc định text)
+    TextNew --> SlotsNew: set_answer_format(..., 'slots'), chỉ admin
+    SlotsNew --> TextNew: set_answer_format(..., 'text'), chỉ admin
+
+    TextNew --> TextStarted: lưu câu chữ đầu tiên
+    SlotsNew --> SlotsStarted: lưu thực thể hoặc câu đầu tiên
+
+    TextStarted --> TextDone: complete (9 câu, event label)
+    SlotsDone --> SlotsStarted: lưu lại hoặc xóa một câu (mở lại như hôm nay)
+    SlotsStarted --> SlotsDone: complete (9 câu, SLOTS cho 7 nhóm, chữ cho N và Attr, event label)
+    TextDone --> TextStarted: lưu lại hoặc xóa một câu (mở lại như hôm nay)
+
+    TextNew --> [*]: gỡ
+    SlotsNew --> [*]: gỡ
+    TextStarted --> [*]: gỡ kèm xóa việc
+    SlotsStarted --> [*]: gỡ kèm xóa việc (câu, rồi thực thể, rồi event label)
+    TextDone --> [*]: gỡ kèm xóa việc
+    SlotsDone --> [*]: gỡ kèm xóa việc

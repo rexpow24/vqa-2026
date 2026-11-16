@@ -11,7 +11,7 @@ evidence frames. --split-only keeps the questions where annotators did not all
 pick the same verdict, the ones to discuss when updating the guidelines.
 
 Same row filter as scripts/iaa_round.py: only assignment_status = completed
-unless --include-unfinished.
+unless --include-unfinished, and never the rows of a slot assignment.
 """
 
 import argparse
@@ -21,6 +21,9 @@ from collections import Counter
 from pathlib import Path
 
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from scripts.iaa_round import text_rows  # noqa: E402
 
 QGROUPS_JSON = Path(__file__).resolve().parent.parent / "frontend" / "src" / "lib" / "qgroups.json"
 VERDICTS = ["AGREE", "DISAGREE", "NOT_ANSWERABLE"]
@@ -104,7 +107,7 @@ def main(argv=None):
                     help="keep rows of annotators who have not completed the video")
     args = ap.parse_args(argv)
 
-    df = pd.read_csv(args.csv, dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    df = text_rows(pd.read_csv(args.csv, dtype=str, keep_default_na=False, encoding="utf-8-sig"))
     if not args.include_unfinished:
         df = df[df["assignment_status"] == "completed"]
     out = Path(args.out)

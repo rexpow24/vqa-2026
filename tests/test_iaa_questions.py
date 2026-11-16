@@ -59,3 +59,30 @@ def test_sheet_groups_by_qgroup_in_app_order_and_lists_every_annotator(tmp_path)
     main([str(source), "--out", str(out), "--split-only"])
     split = out.read_text(encoding="utf-8")
     assert "[C] Q1" in split and "[S] Q1" not in split
+
+
+def test_sheet_leaves_out_rows_of_slot_assignments(tmp_path):
+    header = HEADER[:4] + ["answer_format"] + HEADER[4:]
+    rows = [
+        _row(qgroup="S", question="Bối cảnh?", draft_id="dS", annotator_id="a", annotator_name="An",
+             verdict="AGREE", answer_format="text"),
+        _row(qgroup="S", question="Bối cảnh?", draft_id="dS", annotator_id="b", annotator_name="Bình",
+             verdict="DISAGREE", reason_code="sai diễn đạt", edited_answer="Trời mưa.", answer_format="text"),
+        # The lead answered with the slot form: S as cells, N as text, both of a slots assignment.
+        _row(qgroup="S", question="Bối cảnh?", draft_id="dS", annotator_id="l", annotator_name="Lead",
+             verdict="SLOTS", edited_answer="Trời nắng, ban ngày.", answer_format="slots"),
+        _row(qgroup="N", question="Câu chung?", draft_id="dN", annotator_id="l", annotator_name="Lead",
+             verdict="AGREE", answer_format="slots"),
+    ]
+    source, out = tmp_path / "answers.csv", tmp_path / "sheet.md"
+    with source.open("w", newline="", encoding="utf-8-sig") as file:
+        writer = csv.DictWriter(file, fieldnames=header)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({k: row.get(k, "") for k in header})
+
+    main([str(source), "--out", str(out)])
+    sheet = out.read_text(encoding="utf-8")
+
+    assert "SLOTS" not in sheet and "Lead" not in sheet and "Câu chung?" not in sheet
+    assert "2 người: 1 AGREE, 1 DISAGREE" in sheet

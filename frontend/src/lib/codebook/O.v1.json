@@ -1,0 +1,129 @@
+{
+  "group": "O",
+  "version": 1,
+  "frozen_on": "2026-11-15",
+  "source": "docs/guidelines/O-hau-qua.md",
+  "question": "Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?",
+  "templates": [
+    {
+      "case": "Có va chạm",
+      "text": "[Chủ thể] và [đối tượng] [1], [2]."
+    },
+    {
+      "case": "Chỉ một bên (C là K18, không có đối tượng)",
+      "text": "[Chủ thể] [2]."
+    },
+    {
+      "case": "Không va chạm",
+      "text": "Không quan sát thấy va chạm hoặc hư hỏng phương tiện."
+    },
+    {
+      "case": "Không rõ",
+      "text": "Không thể xác định."
+    }
+  ],
+  "constraints": [
+    "Ràng buộc với C: loại sự kiện \"va chạm\" thì mức độ không được là \"không va chạm\"; \"suýt va chạm\" với kết quả né \"tránh được\" thì mức độ là \"không va chạm\".",
+    "Suýt va chạm nhưng bên né ngã, trượt hoặc chạm thực thể khác thì ghi mức độ theo hậu quả nhìn thấy."
+  ],
+  "cells": [
+    {
+      "id": "parties",
+      "label": "Các bên",
+      "required": false,
+      "from_entities": true,
+      "auto_fill": "Các bên được tự điền từ cặp chủ thể và đối tượng của Nhóm C.",
+      "options": []
+    },
+    {
+      "id": "level",
+      "label": "Mức độ",
+      "required": true,
+      "options": [
+        {
+          "id": "level.none",
+          "label": "không va chạm"
+        },
+        {
+          "id": "level.minor",
+          "label": "va chạm nhẹ"
+        },
+        {
+          "id": "level.moderate",
+          "label": "va chạm vừa"
+        },
+        {
+          "id": "level.severe",
+          "label": "va chạm mạnh"
+        },
+        {
+          "id": "level.unclear",
+          "label": "không rõ"
+        }
+      ]
+    },
+    {
+      "id": "sign",
+      "label": "Dấu hiệu nhìn thấy",
+      "required": true,
+      "parent_cell": "level",
+      "options": [
+        {
+          "id": "sign.none",
+          "label": "không có",
+          "parent": "level.none"
+        },
+        {
+          "id": "sign.scrape_stationary",
+          "label": "chạm quẹt, vẫn đứng yên",
+          "parent": "level.minor"
+        },
+        {
+          "id": "sign.scrape_continued",
+          "label": "chạm quẹt, vẫn đi tiếp",
+          "parent": "level.minor"
+        },
+        {
+          "id": "sign.deflected",
+          "label": "lệch hướng",
+          "parent": "level.moderate"
+        },
+        {
+          "id": "sign.sudden_stop",
+          "label": "dừng đột ngột",
+          "parent": "level.moderate"
+        },
+        {
+          "id": "sign.vehicle_fell",
+          "label": "xe ngã",
+          "parent": "level.moderate"
+        },
+        {
+          "id": "sign.person_fell",
+          "label": "người ngã",
+          "parent": "level.moderate"
+        },
+        {
+          "id": "sign.overturned",
+          "label": "bị lật",
+          "parent": "level.severe"
+        },
+        {
+          "id": "sign.thrown",
+          "label": "bị văng",
+          "parent": "level.severe"
+        },
+        {
+          "id": "sign.visible_deformation",
+          "label": "biến dạng rõ",
+          "parent": "level.severe"
+        },
+        {
+          "id": "sign.person_lying",
+          "label": "người nằm trên đường",
+          "parent": "level.severe"
+        }
+      ]
+    }
+  ]
+}

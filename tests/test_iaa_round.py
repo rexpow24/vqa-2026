@@ -43,11 +43,15 @@ def test_kappa_paradox_high_raw_agreement_low_kappa_high_ac1():
     assert gwet_ac1(units) == pytest.approx(0.640625 / 0.890625)  # (0.75 - 0.109375) / 0.890625
 
 
-def _export(path, rows):
-    header = ["seq", "filename", "agreement", "annotator_email", "annotator_name", "assignment_status",
+# The export before P2 (features/slot-data-model/) had no answer_format column.
+OLD_HEADER = ["seq", "filename", "agreement", "annotator_email", "annotator_name", "assignment_status",
               "batch", "qgroup", "question", "draft_answer", "verdict", "reason_code", "reason_note",
               "edited_answer", "effective_answer", "human_keyframes_s", "annotated_at", "event_label",
               "draft_id", "video_id", "annotator_id"]
+HEADER = OLD_HEADER[:7] + ["answer_format"] + OLD_HEADER[7:]
+
+
+def _export(path, rows, header=OLD_HEADER):
     with path.open("w", newline="", encoding="utf-8-sig") as file:  # the web export has a BOM
         writer = csv.DictWriter(file, fieldnames=header)
         writer.writeheader()
@@ -79,3 +83,66 @@ def test_report_drops_unfinished_work_and_names_who_is_missing(tmp_path, capsys)
     assert "Fleiss kappa" in report and "Gwet AC1" in report
     assert (tmp_path / "out" / "report.txt").read_text(encoding="utf-8").strip() == report.strip()
     assert "fleiss_kappa" in (tmp_path / "out" / "by_qgroup.csv").read_text(encoding="utf-8")
+
+
+def _mixed_round():
+    """Two text annotators on 3 videos x 3 groups, with some disagreement, so every coefficient is defined."""
+    rows = []
+    split = {("v0", "C"): "DISAGREE", ("v1", "N"): "NOT_ANSWERABLE", ("v2", "S"): "DISAGREE"}
+    for v in ("v0", "v1", "v2"):
+        for q in ("S", "C", "N"):
+            for a in ("ann1", "ann2"):
+                verdict = split.get((v, q), "AGREE") if a == "ann2" else "AGREE"
+                rows.append({
+                    "seq": v[1], "filename": f"{v}.mp4", "annotator_name": a, "assignment_status": "completed",
+                    "batch": "agreement", "answer_format": "text", "qgroup": q, "question": f"{q}?",
+                    "draft_answer": "draft", "verdict": verdict,
+                    "edited_answer": "khác" if verdict == "DISAGREE" else "",
+                    "effective_answer": {"AGREE": "draft", "DISAGREE": "khác"}.get(verdict, "Không trả lời được"),
+                    "event_label": "accident", "draft_id": f"d{v}{q}", "video_id": v, "annotator_id": a,
+                })
+    return rows
+
+
+def _slot_rows():
+    """The lead answering the same videos with the slot form: N stays text, but the assignment is slots."""
+    return [{
+        "seq": v[1], "filename": f"{v}.mp4", "annotator_name": "lead", "assignment_status": "completed",
+        "batch": "agreement", "answer_format": "slots", "qgroup": q, "question": f"{q}?", "draft_answer": "draft",
+        "verdict": "NOT_ANSWERABLE" if q == "N" else "SLOTS",
+        "edited_answer": "" if q == "N" else "Câu ghép từ ô.",
+        "effective_answer": "Không trả lời được" if q == "N" else "Câu ghép từ ô.",
+        "event_label": "near-miss", "draft_id": f"d{v}{q}", "video_id": v, "annotator_id": "lead",
+    } for v in ("v0", "v1", "v2") for q in ("S", "C", "N")]
+
+
+TIER1 = ("% đồng ý từng cặp", "Fleiss kappa", "Krippendorff alpha     ", "Gwet AC1")
+
+
+def _run(tmp_path, name, rows, header, capsys):
+    source = tmp_path / f"{name}.csv"
+    _export(source, rows, header)
+    out = tmp_path / name
+    main([str(source), "--out", str(out), "--boot", "50"])
+    report = capsys.readouterr().out.replace(str(out), "<out>")  # the report names its output folder
+    return report, (out / "by_qgroup.csv").read_text(encoding="utf-8")
+
+
+def test_slot_rows_leave_every_tier1_coefficient_unchanged(tmp_path, capsys):
+    text_report, text_by_q = _run(tmp_path, "text", _mixed_round(), HEADER, capsys)
+    slot_report, slot_by_q = _run(tmp_path, "slots", _mixed_round() + _slot_rows(), HEADER, capsys)
+
+    tier1 = lambda report: [line for line in report.splitlines() if line.strip().startswith(TIER1)]
+    assert len(tier1(text_report)) == 5  # pairwise, kappa, alpha, AC1, and the event-label agreement line
+    assert tier1(slot_report) == tier1(text_report)
+    assert slot_by_q == text_by_q
+    assert "Annotators: 2 " in slot_report and "lead" not in slot_report and "SLOTS" not in slot_report
+
+
+def test_export_without_answer_format_column_reads_as_all_text(tmp_path, capsys):
+    old_report, old_by_q = _run(tmp_path, "old", _mixed_round(), OLD_HEADER, capsys)
+    new_report, new_by_q = _run(tmp_path, "new", _mixed_round(), HEADER, capsys)
+
+    assert "Fleiss kappa" in old_report
+    assert old_report == new_report
+    assert old_by_q == new_by_q

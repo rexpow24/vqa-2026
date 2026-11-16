@@ -11,9 +11,16 @@
 
 import crypto from "node:crypto";
 import { privilegedClient, signIn, request } from "./lib/session.mjs";
-import { adminCredentials } from "./lib/env.mjs";
+import { adminCredentials, loadEnv, refuseUnlessLocal } from "./lib/env.mjs";
 import { GROUP_CODES, KEYFRAME_GROUPS } from "./lib/qgroups.mjs";
 import { parse } from "csv-parse/sync";
+
+// Local only: this script creates and deletes users and videos (features/slot-data-model/, T23).
+{
+  const target = loadEnv();
+  refuseUnlessLocal("NEXT_PUBLIC_SUPABASE_URL", target.NEXT_PUBLIC_SUPABASE_URL);
+  if (process.env.TEST_BASE_URL) refuseUnlessLocal("TEST_BASE_URL", process.env.TEST_BASE_URL);
+}
 
 const privileged = privilegedClient();
 const base = process.env.TEST_BASE_URL;
