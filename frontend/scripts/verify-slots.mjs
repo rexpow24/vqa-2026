@@ -764,6 +764,25 @@ async function checkCodebookV2(lead, video) {
     && v2Row.edited_answer === "Trời tạnh ráo, ban ngày, đường một chiều tại đoạn đường thẳng, mặt đường nhựa khô, mật độ xe thưa.",
   "the same S saved with S.v2 stores S.v2 and the v2 sentence", { status: v2Saved.status, data: v2Saved.data, v2Row });
 
+  // ED (sentence edit, 2026-11-16): the composed sentence may be edited by adding words only.
+  const composedS = v2Row.edited_answer;
+  const sendS = (edited) => request(base, `/api/drafts/${video.drafts.S}/annotation`, lead.cookie, "POST", {
+    verdict: "SLOTS", codebook_version: "S.v2", slots: S2_SLOTS, human_keyframes_s: [], edited_answer: edited });
+  const added = "Hôm đó trời tạnh ráo và là ban ngày, xe đi trên đường một chiều tại đoạn đường thẳng, mặt đường nhựa khô, mật độ xe thưa.";
+  const addedSaved = await sendS(added);
+  check("ED", addedSaved.status === 200 && (await stored(video.drafts.S, lead.id)).edited_answer === added,
+    "an edit that only adds words to the composed sentence is stored", { status: addedSaved.status, data: addedSaved.data });
+  const changed = await sendS(composedS.replace("khô", "ướt"));
+  check("ED", changed.status === 422 && changed.data?.code === "sentence_edit"
+    && (await stored(video.drafts.S, lead.id)).edited_answer === added,
+  "an edit that changes a word of the composed sentence is refused, and the row stays", { status: changed.status, data: changed.data });
+  const reordered = await sendS("Mật độ xe thưa, trời tạnh ráo, ban ngày, đường một chiều tại đoạn đường thẳng, mặt đường nhựa khô.");
+  check("ED", reordered.status === 422 && reordered.data?.code === "sentence_edit",
+    "an edit that reorders the composed sentence is refused", { status: reordered.status, data: reordered.data });
+  const reset = await saveVersion(lead, video, "S", "S.v2", S2_SLOTS);
+  check("ED", reset.status === 200 && (await stored(video.drafts.S, lead.id)).edited_answer === composedS,
+    "saving without an edit stores the composed sentence again", { status: reset.status });
+
   // AC3: what v2 removed is refused under v2.
   await refuseSlots(lead, video, "S", "S.v2", { ...S2_SLOTS, weather: opt("weather.overcast") }, "unknown_option",
     "weather.overcast under S.v2");

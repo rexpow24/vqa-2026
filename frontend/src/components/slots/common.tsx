@@ -63,6 +63,44 @@ export function Sentence({ dirty, preview, saved }: { dirty: boolean; preview: s
   </div>;
 }
 
+/**
+ * The composed sentence of a slot answer, editable by adding words only
+ * (edit.ts). `edit` is null while the annotator keeps the composed sentence;
+ * `composed` is the sentence the current choices give (null while incomplete).
+ */
+export function EditableSentence({ composed, edit, problem, notice, dirty, saved, onEdit }: {
+  composed: string | null; edit: string | null; problem: string | null; notice: string | null; dirty: boolean;
+  saved: string | null; onEdit: (text: string | null) => void;
+}) {
+  const savedView = !dirty && saved;
+  return <div className="border-t border-border px-4 py-3">
+    <div className={`rounded-md border px-3 py-2 ${savedView ? "border-green/40 bg-green/10" : "border-border bg-background/60"}`}>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className={`text-[11px] font-medium uppercase tracking-wide ${savedView ? "text-green" : "text-foreground/50"}`}>
+          {savedView ? (edit !== null ? "Câu đã lưu (đã sửa)" : "Câu đã lưu (server ghép)")
+            : edit !== null ? "Câu sửa (chưa lưu)" : "Câu ghép (xem trước, chưa lưu)"}</span>
+        {composed && (edit === null
+          ? <button type="button" onClick={() => onEdit(composed)}
+            className={`rounded border border-border-strong px-2 py-0.5 text-xs text-foreground/80 hover:bg-surface ${FOCUS}`}>Sửa câu</button>
+          : <button type="button" onClick={() => onEdit(null)}
+            className={`rounded border border-border-strong px-2 py-0.5 text-xs text-foreground/80 hover:bg-surface ${FOCUS}`}>Bỏ sửa, dùng câu ghép</button>)}
+      </div>
+      {edit === null
+        ? <p className={`mt-0.5 text-[15px] leading-relaxed ${composed ? "text-foreground" : "text-foreground/45"}`}>
+          {composed ?? (saved && !dirty ? saved : "Chọn đủ các ô để thấy câu.")}</p>
+        : <>
+          <textarea value={edit} onChange={(event) => onEdit(event.target.value)} rows={3} aria-label="Câu sửa"
+            className={`mt-1 w-full resize-y rounded-md border border-border-strong bg-background px-2 py-1.5 text-[15px] leading-relaxed text-foreground ${FOCUS}`} />
+          <p className="mt-1 text-xs text-foreground/60">Chỉ thêm từ nối cho câu mạch lạc; không xóa, đổi hay đảo chữ của câu ghép.</p>
+          {composed && <p className="mt-1 text-xs text-foreground/55">Câu ghép gốc: {composed}</p>}
+          {problem && <p role="alert" className="mt-1 text-xs font-medium text-red">{problem}</p>}
+        </>}
+      {notice && <p className="mt-1 text-xs text-amber">{notice}</p>}
+      {saved && dirty && <p className="mt-1.5 text-xs text-foreground/55">Câu đang lưu: {saved}</p>}
+    </div>
+  </div>;
+}
+
 export function SaveBar({ canSave, saving, dirty, status, error, onSave, label = "Lưu" }: {
   canSave: boolean; saving: boolean; dirty: boolean; status: string; error?: string; onSave: () => void; label?: string;
 }) {

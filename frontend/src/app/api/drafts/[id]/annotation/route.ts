@@ -2,6 +2,7 @@ import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import { needsKeyframes } from "@/lib/qgroups";
 import { ComposeError, compose, type Slots } from "@/lib/codebook/compose";
+import { editProblem, sentenceToStore } from "@/lib/codebook/edit";
 import { isSlotGroup } from "@/lib/codebook";
 
 type Context = { params: Promise<{ id: string }> };
@@ -75,14 +76,14 @@ type Draft = { video_id: string; qgroup: string; answer: string; predicted_keyfr
 type Client = Awaited<ReturnType<typeof createClient>>;
 const slotError = (code: string, error: string, status = 422) => Response.json({ error, code }, { status });
 
-type SlotRow = { draft_id: string; slots: Slots; codebook_version: string };
+type SlotRow = { draft_id: string; slots: Slots; codebook_version: string; edited_answer: string };
 
 /** The caller's slot answer to another group of the same video, or null. */
 async function slotAnswer(supabase: Client, annotatorId: string, videoId: string, qgroup: string): Promise<SlotRow | null> {
   const { data: other } = await supabase.from("video_drafts").select("id")
     .eq("video_id", videoId).eq("qgroup", qgroup).maybeSingle();
   if (!other) return null;
-  const { data } = await supabase.from("qa_annotations").select("draft_id,slots,codebook_version")
+  const { data } = await supabase.from("qa_annotations").select("draft_id,slots,codebook_version,edited_answer")
     .eq("draft_id", other.id).eq("annotator_id", annotatorId).eq("verdict", "SLOTS").maybeSingle();
   return data as SlotRow | null;
 }
@@ -97,7 +98,8 @@ function keyframesOf(qgroup: string, value: unknown): number[] | null {
 }
 
 // A slot answer: the cells are the answer, and the server composes the
-// sentence from them (compose.ts), so cells and sentence cannot disagree.
+// sentence from them (compose.ts). The annotator may edit that sentence, but
+// only by adding words (edit.ts), so cells and sentence still cannot disagree.
 // The database decides whether this row may be a slot answer at all
 // (validate_qa_annotation reads the assignment's answer_format); the checks
 // here only give the form a precise message first.
@@ -108,9 +110,13 @@ async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: st
   if (assignment?.answer_format !== "slots" || !isSlotGroup(draft.qgroup)) {
     return slotError("text_group", "Nhóm này trả lời bằng chữ, không chọn ô.");
   }
-  if (body.edited_answer !== undefined || body.reason_code !== undefined || body.reason_note !== undefined) {
-    return slotError("stale_page", "Trang này đã cũ: câu trả lời dạng ô không gửi câu viết lại hay lý do. Tải lại trang.");
+  if (body.reason_code !== undefined || body.reason_note !== undefined) {
+    return slotError("stale_page", "Trang này đã cũ: câu trả lời dạng ô không gửi lý do. Tải lại trang.");
   }
+  if (body.edited_answer !== undefined && body.edited_answer !== null && typeof body.edited_answer !== "string") {
+    return slotError("sentence_edit", "Câu sửa phải là chữ.");
+  }
+  const edited = typeof body.edited_answer === "string" ? body.edited_answer : null;
   const version = typeof body.codebook_version === "string" ? body.codebook_version : "";
   const slots = body.slots;
   if (!slots || typeof slots !== "object" || Array.isArray(slots)) return slotError("missing_slots", "Chưa chọn ô nào.");
@@ -125,15 +131,28 @@ async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: st
   const linked = draft.qgroup === "C" || draft.qgroup === "R"
     ? await slotAnswer(supabase, annotatorId, draft.video_id, draft.qgroup === "C" ? "R" : "C") : null;
   if (draft.qgroup === "R" && !linked) return slotError("cause_missing", "Lưu nhóm C trước khi lưu nhóm R.");
+  // The caller's C as stored before this save: an R whose sentence the new C
+  // does not change keeps its own sentence, hand edits included.
+  const oldCause = draft.qgroup === "C" && linked ? await slotAnswer(supabase, annotatorId, draft.video_id, "C") : null;
   const rows: Record<string, unknown>[] = [];
   try {
+    const composed = compose(draft.qgroup, slots as Slots,
+      { version, entities, cause: draft.qgroup === "R" ? linked!.slots : undefined });
+    const problem = edited === null || edited.trim() === composed ? null : editProblem(composed, edited);
+    if (problem) return slotError("sentence_edit", problem);
     rows.push({ draft_id: draftId, codebook_version: version, slots, human_keyframes_s: marks,
-      edited_answer: compose(draft.qgroup, slots as Slots,
-        { version, entities, cause: draft.qgroup === "R" ? linked!.slots : undefined }) });
+      edited_answer: sentenceToStore(composed, edited) });
     if (draft.qgroup === "C" && linked) {
-      rows.push({ draft_id: linked.draft_id, codebook_version: linked.codebook_version, slots: linked.slots,
-        human_keyframes_s: [], edited_answer: compose("R", linked.slots,
-          { version: linked.codebook_version, entities, cause: slots as Slots }) });
+      const linkedContext = { version: linked.codebook_version, entities };
+      const next = compose("R", linked.slots, { ...linkedContext, cause: slots as Slots });
+      let before: string | null = null;
+      try {
+        if (oldCause) before = compose("R", linked.slots, { ...linkedContext, cause: oldCause.slots });
+      } catch { /* an old C that no longer composes: re-compose R */ }
+      if (next !== before) {
+        rows.push({ draft_id: linked.draft_id, codebook_version: linked.codebook_version, slots: linked.slots,
+          human_keyframes_s: [], edited_answer: next });
+      }
     }
   } catch (error) {
     if (error instanceof ComposeError) return slotError(error.code, error.message);

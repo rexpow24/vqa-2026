@@ -9,7 +9,8 @@ import {
 } from "@/lib/codebook/form";
 import { needsKeyframes } from "@/lib/qgroups";
 import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
-import { CardHeader, DraftReference, SaveBar, Sentence, postJson, type SaveError, type SlotDraft } from "@/components/slots/common";
+import { CardHeader, DraftReference, EditableSentence, SaveBar, postJson, type SaveError, type SlotDraft } from "@/components/slots/common";
+import { editProblem } from "@/lib/codebook/edit";
 import { Chip, EntityChip, FieldRow, FreeText, OptionPicker } from "@/components/slots/SlotField";
 
 /** The draft rows the save route returns: the saved row, and the caller's R when C re-composed it. */
@@ -50,23 +51,34 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const [tried, setTried] = useState(false);
   const [serverError, setServerError] = useState<SaveError | null>(null);
   const needsMarks = needsKeyframes(qgroup);
+  // The stored sentence is a hand edit when it differs from what the stored cells compose to.
+  const [edit, setEdit] = useState<string | null>(() => {
+    if (!savedSlots || !draft.edited_answer || draft.codebook_version !== version) return null;
+    return preview(qgroup, savedSlots, context) === draft.edited_answer ? null : draft.edited_answer;
+  });
+  const [editNotice, setEditNotice] = useState<string | null>(null);
 
   const visible = fields(qgroup, form, context);
   const slots = buildSlots(qgroup, form, context);
   const found = problems(qgroup, form, context);
   const marks = needsMarks && start !== null && end !== null ? [start, end] : [];
   if (needsMarks && marks.length !== 2) found.keyframes = "Đặt start và end.";
-  const dirty = !savedSlots || !sameSlots(slots, savedSlots) || draft.codebook_version !== version
-    || (needsMarks && !sameSlots(marks, savedMarks));
   // No preview while a cell still blocks the save: an empty Prev composed to "Không thể xác định.",
   // which read as an answer nobody gave.
   const sentence = Object.keys(found).some((key) => key !== "keyframes") ? null : preview(qgroup, slots, context);
+  const editError = edit !== null && sentence && edit.trim() !== sentence ? editProblem(sentence, edit) : null;
+  if (editError) found.sentence = editError;
+  const stored = edit !== null && edit.trim() && edit.trim() !== sentence ? edit.trim() : sentence;
+  const dirty = !savedSlots || !sameSlots(slots, savedSlots) || draft.codebook_version !== version
+    || (needsMarks && !sameSlots(marks, savedMarks)) || (stored !== null && stored !== draft.edited_answer);
 
   function update(item: Field, value: SlotValue | string[] | undefined) {
     if (item.kind === "refs") setRefsTouched(true);
     setTouched(true);
     setState(choose(qgroup, form, item, value, context));
     setServerError(null);
+    // A hand edit is of the old sentence; a changed cell starts again from the new composed one.
+    if (edit !== null) { setEdit(null); setEditNotice("Đã đổi ô nên câu sửa tay được bỏ; bấm \"Sửa câu\" để sửa lại."); }
   }
   function setMark(which: "start" | "end", time: number) {
     setMarkError(""); setServerError(null);
@@ -83,7 +95,10 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     try {
       const saved = await postJson<Saved>(`/api/drafts/${draft.id}/annotation`, "POST", {
         verdict: "SLOTS", codebook_version: version, slots, human_keyframes_s: marks,
+        ...(edit !== null && stored !== sentence ? { edited_answer: edit } : {}),
       });
+      if (edit !== null && stored === sentence) setEdit(null);
+      setEditNotice(null);
       setTried(false);
       onSaved(saved);
     } catch (cause) {
@@ -186,7 +201,9 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
       </div>
       {(markError || (tried && found.keyframes)) && <span role="alert" className="font-medium text-red">{markError || found.keyframes}</span>}
     </div>}
-    <Sentence dirty={dirty} preview={sentence} saved={savedSlots ? draft.edited_answer : null} />
+    <EditableSentence composed={sentence} edit={edit} problem={editError} notice={editNotice} dirty={dirty}
+      saved={savedSlots ? draft.edited_answer : null}
+      onEdit={(text) => { setEdit(text); setEditNotice(null); setServerError(null); }} />
     <SaveBar canSave={canSave} saving={saving} dirty={dirty} status={status}
       error={serverError?.message
         ?? (tried && Object.keys(found).length ? "Còn ô chưa chọn hoặc chưa hợp lệ, xem chữ đỏ ở trên." : undefined)}

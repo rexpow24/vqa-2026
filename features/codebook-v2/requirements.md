@@ -11,6 +11,8 @@ Dữ liệu ô đã có từ P2 ([../slot-data-model/spec.md](../slot-data-model
    Thay vào đó, form điền sẵn V từ C.
 2. Câu ghép: sửa mẫu câu cho mạch lạc (thêm từ nối), không cho annotator sửa tay câu.
    Trưởng nhóm sẽ gửi vài câu ví dụ nhóm muốn sửa.
+   Cập nhật cùng ngày: trưởng nhóm đổi quyết định, cho annotator sửa câu ghép nhưng chỉ được thêm từ nối.
+   Server kiểm: mọi chữ của câu ghép phải còn, đúng thứ tự (chữ hoa và dấu câu được đổi); sai thì từ chối với mã `sentence_edit`.
 3. S: thêm ô mới "Chất liệu mặt đường" (nhựa, đất cát, không rõ); ô "Loại đường" giữ nguyên.
 4. C: bỏ hẳn 3 ô bên né, cách né, kết quả né ở mọi loại sự kiện.
 
@@ -47,7 +49,7 @@ Cơ sở (nguyên tắc 8):
 ## Ngoài phạm vi
 
 - Gộp C và V.
-- Cho sửa tay câu ghép.
+- Cho sửa tự do câu ghép (chỉ được thêm từ nối, xem quyết định 2).
 - Điền sẵn Prev từ Attr (guideline Prev có ghi, nhưng trưởng nhóm chỉ yêu cầu V).
 
 ## Tiêu chí chấp nhận
