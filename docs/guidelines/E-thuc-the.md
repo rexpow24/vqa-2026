@@ -12,12 +12,12 @@
 
 | Ô | Lựa chọn | Khi nào điền |
 | --- | --- | --- |
-| 1. Loại | ô tô · xe khách · xe tải · xe máy, xe hai bánh · xe ba gác · người đi bộ · động vật · khác | Luôn điền |
+| 1. Loại | ô tô · xe khách · xe tải · xe cứu thương · xe máy, xe hai bánh · xe máy điện, xe đạp điện · xe ba gác · người đi bộ · động vật · khác | Luôn điền |
 | 2. Cỡ | to · nhỏ | Chỉ với xe khách, xe tải |
 | 3. Camera hành trình | có · không | Chỉ với ô tô |
 | 4. Màu xe | trắng · đen · xám, bạc · đỏ · xanh · vàng · nâu · màu khác · màu sáng · màu tối · không rõ | Bỏ trống với ô tô có camera hành trình, người đi bộ, động vật |
-| 5. Màu áo người điều khiển | như ô 4 | Chỉ với xe máy, xe hai bánh và người đi bộ |
-| 6. Số người trên xe | 1 · 2 · 3 trở lên | Chỉ với xe máy, xe hai bánh |
+| 5. Màu áo người điều khiển | như ô 4 | Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện và người đi bộ |
+| 6. Số người trên xe | 1 · 2 · 3 trở lên | Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện |
 
 Ghi màu cụ thể chỉ khi nhìn rõ. Ban đêm, xa hoặc ngược sáng thì chọn "màu sáng" hoặc "màu tối".
 Không ghi loại xe chi tiết hơn bảng trên (không "tay ga", không "24-29 chỗ"), không ghi biển số, khuôn mặt.
@@ -31,7 +31,8 @@ Xe container và xe bán tải ghi là xe tải.
 | Ô tô khác | Xe ô tô màu [4] |
 | Xe khách, xe tải | [1] [2] màu [4] |
 | Xe máy, xe hai bánh | Xe máy màu [4] do người mặc áo [5] điều khiển (chở [6] người, khi từ 2 trở lên) |
-| Xe ba gác, khác | [1] màu [4] |
+| Xe máy điện, xe đạp điện | Xe máy điện màu [4] do người mặc áo [5] điều khiển (chở [6] người, khi từ 2 trở lên) |
+| Xe cứu thương, xe ba gác, khác | [1] màu [4] |
 | Người đi bộ | Người đi bộ mặc áo [5] |
 | Động vật | Động vật |
 

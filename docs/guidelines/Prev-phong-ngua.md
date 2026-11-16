@@ -2,9 +2,9 @@
 
 - Câu hỏi chuẩn: Lẽ ra người lái hoặc người liên quan nên làm gì để tránh va chạm này?
 - Tên thực thể A, B, C lấy từ Nhóm E.
-- Một bên hoặc cả hai bên. Ô 1 được điền sẵn theo bên góp phần chính ở Nhóm Attr; annotator đổi được, ví dụ thêm bên còn lại khi bên đó cũng tránh được va chạm bằng một hành động rõ ràng.
+- Một bên hoặc cả hai bên. Ô 1 thường là bên góp phần chính ở Nhóm Attr; chọn thêm bên còn lại khi bên đó cũng tránh được va chạm bằng một hành động rõ ràng.
 - Hành động phải gắn với nguyên nhân ở C. Không ghi câu chung chung như "tuân thủ luật giao thông", "cẩn thận hơn".
-- Hành động của chủ thể ở C được điền sẵn theo kiểu xung đột (bảng dưới); annotator đổi được nếu không hợp.
+- Bảng dưới gợi ý hành động cho chủ thể ở C theo kiểu xung đột; form không điền sẵn, annotator tự chọn.
 
 ## Các ô
 
@@ -14,9 +14,9 @@
 | 2. Hành động chính (mỗi bên một ô) | giảm tốc · giữ khoảng cách an toàn · quan sát và nhường đường · chỉ chuyển làn khi an toàn · đi đúng phần đường · giữ ổn định hướng lái · dừng quan sát trước khi băng qua · bật xi nhan xin đường · tránh điểm mù xe lớn · chấp hành đèn tín hiệu · kiểm tra xe trước khi đi · đội mũ bảo hiểm · khác |
 | 3. Hành động thêm (không bắt buộc, mỗi bên một ô) | như ô 2, khác ô 2 |
 
-## Điền sẵn theo kiểu xung đột ở C
+## Gợi ý theo kiểu xung đột ở C
 
-| Kiểu xung đột | Hành động chính điền sẵn cho chủ thể |
+| Kiểu xung đột | Hành động chính gợi ý cho chủ thể |
 | --- | --- |
 | K01-K03 (cùng chiều, phía trước) | giữ khoảng cách an toàn |
 | K04, K05 (chuyển làn, vượt, len) | chỉ chuyển làn khi an toàn |
@@ -27,7 +27,7 @@
 | K17 (lùi xe) | quan sát và nhường đường |
 | K18 (trượt, văng) | giảm tốc |
 
-Bên không phải chủ thể không được điền sẵn.
+Bên không phải chủ thể không có gợi ý.
 
 ## Mẫu câu
 

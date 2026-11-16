@@ -1,0 +1,260 @@
+-- E.v2: two vehicle types the lead asked for after the trial, "xe cứu thương"
+-- (type.ambulance, phrased like "xe ba gác": [1] màu [4]) and "xe máy điện,
+-- xe đạp điện" (type.electric_two_wheeler, the cells and sentence shape of a
+-- motorbike). Everything else equals E.v1. A new frozen row; E.v1 and the
+-- entities stored with it stay as they are, and an annotator's next save of
+-- the entity list stores E.v2 (save_video_entities replaces the list).
+-- Generated, not typed, with the method of 20261116200000_codebook_v2.sql
+-- (names = ["E.v2"]).
+
+insert into public.codebook_versions (id, qgroup, version, content, sha256, frozen_on) values
+  ('E.v2', 'E', 2, $cb${
+  "group": "E",
+  "version": 2,
+  "frozen_on": "2026-11-16",
+  "source": "docs/guidelines/E-thuc-the.md",
+  "question": "Loại phương tiện và màu sắc của các bên liên quan là gì?",
+  "templates": [
+    {
+      "case": "Ô tô có camera hành trình",
+      "text": "Xe ô tô (có camera hành trình)"
+    },
+    {
+      "case": "Ô tô khác",
+      "text": "Xe ô tô màu [4]"
+    },
+    {
+      "case": "Xe khách, xe tải",
+      "text": "[1] [2] màu [4]"
+    },
+    {
+      "case": "Xe máy, xe hai bánh",
+      "text": "Xe máy màu [4] do người mặc áo [5] điều khiển (chở [6] người, khi từ 2 trở lên)"
+    },
+    {
+      "case": "Xe máy điện, xe đạp điện",
+      "text": "Xe máy điện màu [4] do người mặc áo [5] điều khiển (chở [6] người, khi từ 2 trở lên)"
+    },
+    {
+      "case": "Xe cứu thương, xe ba gác, khác",
+      "text": "[1] màu [4]"
+    },
+    {
+      "case": "Người đi bộ",
+      "text": "Người đi bộ mặc áo [5]"
+    },
+    {
+      "case": "Động vật",
+      "text": "Động vật"
+    }
+  ],
+  "per_entity": true,
+  "cells": [
+    {
+      "id": "type",
+      "label": "Loại",
+      "required": true,
+      "when": "Luôn điền",
+      "options": [
+        {
+          "id": "type.car",
+          "label": "ô tô"
+        },
+        {
+          "id": "type.bus",
+          "label": "xe khách"
+        },
+        {
+          "id": "type.truck",
+          "label": "xe tải"
+        },
+        {
+          "id": "type.ambulance",
+          "label": "xe cứu thương"
+        },
+        {
+          "id": "type.motorbike",
+          "label": "xe máy, xe hai bánh"
+        },
+        {
+          "id": "type.electric_two_wheeler",
+          "label": "xe máy điện, xe đạp điện"
+        },
+        {
+          "id": "type.cargo_tricycle",
+          "label": "xe ba gác"
+        },
+        {
+          "id": "type.pedestrian",
+          "label": "người đi bộ"
+        },
+        {
+          "id": "type.animal",
+          "label": "động vật"
+        },
+        {
+          "id": "type.other",
+          "label": "khác",
+          "free_text": true
+        }
+      ]
+    },
+    {
+      "id": "size",
+      "label": "Cỡ",
+      "required": false,
+      "when": "Chỉ với xe khách, xe tải",
+      "options": [
+        {
+          "id": "size.large",
+          "label": "to"
+        },
+        {
+          "id": "size.small",
+          "label": "nhỏ"
+        }
+      ]
+    },
+    {
+      "id": "dashcam",
+      "label": "Camera hành trình",
+      "required": false,
+      "when": "Chỉ với ô tô",
+      "options": [
+        {
+          "id": "dashcam.yes",
+          "label": "có"
+        },
+        {
+          "id": "dashcam.no",
+          "label": "không"
+        }
+      ]
+    },
+    {
+      "id": "vehicle_color",
+      "label": "Màu xe",
+      "required": false,
+      "when": "Bỏ trống với ô tô có camera hành trình, người đi bộ, động vật",
+      "options": [
+        {
+          "id": "vehicle_color.white",
+          "label": "trắng"
+        },
+        {
+          "id": "vehicle_color.black",
+          "label": "đen"
+        },
+        {
+          "id": "vehicle_color.gray_silver",
+          "label": "xám, bạc"
+        },
+        {
+          "id": "vehicle_color.red",
+          "label": "đỏ"
+        },
+        {
+          "id": "vehicle_color.blue_green",
+          "label": "xanh"
+        },
+        {
+          "id": "vehicle_color.yellow",
+          "label": "vàng"
+        },
+        {
+          "id": "vehicle_color.brown",
+          "label": "nâu"
+        },
+        {
+          "id": "vehicle_color.other",
+          "label": "màu khác"
+        },
+        {
+          "id": "vehicle_color.light",
+          "label": "màu sáng"
+        },
+        {
+          "id": "vehicle_color.dark",
+          "label": "màu tối"
+        },
+        {
+          "id": "vehicle_color.unclear",
+          "label": "không rõ"
+        }
+      ]
+    },
+    {
+      "id": "clothing_color",
+      "label": "Màu áo người điều khiển",
+      "required": false,
+      "when": "Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện và người đi bộ",
+      "options": [
+        {
+          "id": "clothing_color.white",
+          "label": "trắng"
+        },
+        {
+          "id": "clothing_color.black",
+          "label": "đen"
+        },
+        {
+          "id": "clothing_color.gray_silver",
+          "label": "xám, bạc"
+        },
+        {
+          "id": "clothing_color.red",
+          "label": "đỏ"
+        },
+        {
+          "id": "clothing_color.blue_green",
+          "label": "xanh"
+        },
+        {
+          "id": "clothing_color.yellow",
+          "label": "vàng"
+        },
+        {
+          "id": "clothing_color.brown",
+          "label": "nâu"
+        },
+        {
+          "id": "clothing_color.other",
+          "label": "màu khác"
+        },
+        {
+          "id": "clothing_color.light",
+          "label": "màu sáng"
+        },
+        {
+          "id": "clothing_color.dark",
+          "label": "màu tối"
+        },
+        {
+          "id": "clothing_color.unclear",
+          "label": "không rõ"
+        }
+      ]
+    },
+    {
+      "id": "riders",
+      "label": "Số người trên xe",
+      "required": false,
+      "when": "Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện",
+      "options": [
+        {
+          "id": "riders.one",
+          "label": "1"
+        },
+        {
+          "id": "riders.two",
+          "label": "2"
+        },
+        {
+          "id": "riders.three_plus",
+          "label": "3 trở lên"
+        }
+      ]
+    }
+  ]
+}$cb$::jsonb,
+   '71bae5f810a9f7002f8ad20b8a375f5c8608ff7c615608949ed754c6406009f8', '2026-11-16');

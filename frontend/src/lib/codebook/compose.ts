@@ -5,6 +5,14 @@
 // sentence), and the slot form calls it for the preview. Pure: no I/O, only
 // the codebooks bundled beside it. Only patterns from a codebook's own
 // `template`/`templates` are used, never a sentence invented here.
+//
+// Two generations of codebook. The v1 books (and every E, O, R, Prev book)
+// carry their patterns as guideline prose ("[Chủ thể] [hành động]"), which the
+// functions below follow by hand. Books from codebook v2 on (S.v2, C.v2, V.v2,
+// Attr.v1) write their patterns with `{name}` placeholders, rendered by
+// `render`: the connecting words live in the codebook, so rewording a sentence
+// is a change of data, while which pattern applies and what fills each
+// placeholder stays here.
 
 import { currentVersion, getCodebook, type Codebook, type CodebookOption } from "./index.ts";
 
@@ -48,10 +56,15 @@ function chosenOption(book: Codebook, cellId: string, value: unknown): CodebookO
   return option;
 }
 
-/** The label to print for a chosen option: the annotator's own words for a free-text "khác". */
+/**
+ * The words to print for a chosen option: the annotator's own words for a
+ * free-text "khác", else the option's `phrase` when the codebook gives one
+ * for the sentence (C.v2 "tốc độ cao" reads "chạy tốc độ cao"), else its label.
+ */
 function labelOf(option: CodebookOption, value: unknown): string {
   const text = (value as SlotValue | undefined)?.text?.trim();
-  return option.free_text && text ? text : option.label;
+  if (option.free_text && text) return text;
+  return typeof option.phrase === "string" ? option.phrase : option.label;
 }
 
 /** The label of an optional cell, or null when it is empty or "không rõ" (guideline: drop that part). */
@@ -69,6 +82,41 @@ const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1
 function sentence(clauses: (string | null)[]): string {
   const kept = clauses.filter((clause): clause is string => Boolean(clause));
   return kept.length ? `${capitalize(kept.join(", "))}.` : UNDETERMINED;
+}
+
+/** Whether a book writes its patterns with `{name}` placeholders (codebook v2 on). */
+function placeholders(book: Codebook): boolean {
+  return Boolean(book.templates?.some((template) => template.text.includes("{")));
+}
+
+const PLACEHOLDER = /\{(\w+)\}/g;
+const missing = (values: Record<string, string | null | undefined>, name: string) => !values[name];
+
+/**
+ * Renders a codebook pattern written with `{name}` placeholders:
+ * - `( ... )` is an optional part, dropped whole when any placeholder in it is empty;
+ * - the pattern is split into parts at ", " and "; "; a part whose placeholders
+ *   are all empty is dropped (guideline rule: an empty or unclear cell drops
+ *   its part), and an empty placeholder in a kept part is left out;
+ * - the first letter is capitalised and the closing full stop kept; with no
+ *   part left the answer cannot be determined.
+ * Values are filled in after the pattern is split, so a label holding a comma
+ * ("đi sai làn, lấn làn") never splits a part.
+ */
+export function render(pattern: string, values: Record<string, string | null | undefined>): string {
+  const body = pattern.trim().replace(/\.$/, "").replace(/\(([^()]*)\)/g, (_, inner: string) =>
+    [...inner.matchAll(PLACEHOLDER)].some(([, name]) => missing(values, name)) ? "" : inner);
+  const pieces = body.split(/(, |; )/);
+  const kept: string[] = [];
+  for (let index = 0; index < pieces.length; index += 2) {
+    const part = pieces[index];
+    const names = [...part.matchAll(PLACEHOLDER)].map(([, name]) => name);
+    if (names.length && names.every((name) => missing(values, name))) continue;
+    const text = part.replace(PLACEHOLDER, (_, name: string) => values[name] ?? "").replace(/\s+/g, " ").trim();
+    if (!text) continue;
+    kept.push(kept.length ? `${pieces[index - 1] ?? ", "}${text}` : text);
+  }
+  return kept.length ? `${capitalize(kept.join(""))}.` : UNDETERMINED;
 }
 
 /** A fixed sentence of the codebook, by its case name. */
@@ -98,12 +146,13 @@ function entityPhrase(book: Codebook, cells: Slots): { core: string; rest: strin
       const size = clearLabel(book, cells, "size");
       return { core: colored(size ? `${type.label} ${size}` : type.label), rest: "" };
     }
-    case "type.motorbike": { // "Xe máy, xe hai bánh"; riders only from two
+    case "type.motorbike": // "Xe máy, xe hai bánh"; riders only from two
+    case "type.electric_two_wheeler": { // E.v2 "Xe máy điện, xe đạp điện", same shape
       const riders = cells.riders === undefined ? null : chosenOption(book, "riders", cells.riders);
       // "chở [6] người": the count goes before "người", any qualifier after
       // it ("3 trở lên" reads "chở 3 người trở lên").
       const [count, ...qualifier] = riders ? riders.label.split(" ") : [];
-      return { core: colored("xe máy"),
+      return { core: colored(type.id === "type.motorbike" ? "xe máy" : "xe máy điện"),
         rest: (clothing ? ` do người mặc áo ${clothing} điều khiển` : "")
           + (riders && riders.id !== "riders.one" ? ` chở ${[count, "người", ...qualifier].join(" ")}` : "") };
     }
@@ -111,7 +160,7 @@ function entityPhrase(book: Codebook, cells: Slots): { core: string; rest: strin
       return { core: clothing ? `người đi bộ mặc áo ${clothing}` : "người đi bộ", rest: "" };
     case "type.animal": // "Động vật"
       return { core: "động vật", rest: "" };
-    default: // "Xe ba gác, khác": [1] màu [4]
+    default: // "Xe cứu thương, xe ba gác, khác": [1] màu [4]
       return { core: colored(labelOf(type, cells.type)), rest: "" };
   }
 }
@@ -152,6 +201,7 @@ function composeEntities(slots: Slots): string {
  * drops the object part.
  */
 function composeCause(book: Codebook, slots: Slots, context: ComposeContext): string {
+  if (placeholders(book)) return composeCauseV2(book, slots, context);
   const name = namer(context);
   const event = chosenOption(book, "event_type", slots.event_type);
   const subjectValue = slots.subject as SlotValue | undefined;
@@ -201,11 +251,69 @@ function composeBothParties(book: Codebook, slots: Slots, name: (value: unknown)
     event.id === "event_type.unclear" ? null : `dẫn đến ${event.label}`]);
 }
 
-/** V: "Có" is [bên vi phạm] [hành vi]; the other two results are fixed sentences. */
+/** The two parties of a per-party answer in E key order; a ComposeError unless they are two different entities. */
+function twoParties(slots: Slots, message: string): Slots[] {
+  const parties = Array.isArray(slots.parties) ? slots.parties as Slots[] : [];
+  const keys = parties.map((party) => (party.party as SlotValue | undefined)?.entity);
+  if (parties.length !== 2 || keys.some((key) => key === undefined) || keys[0] === keys[1]) {
+    throw new ComposeError("parties", message);
+  }
+  return [...parties].sort((a, b) => (a.party as SlotValue).entity!.localeCompare((b.party as SlotValue).entity!));
+}
+
+const EVENT_CASE: Record<string, string> = {
+  "event_type.collision": "Va chạm", "event_type.near_miss": "Suýt va chạm", "event_type.unclear": "Không rõ loại sự kiện",
+};
+
+/**
+ * C from codebook v2: the pattern of the event type ("Va chạm", "Suýt va
+ * chạm", "Không rõ loại sự kiện"), or its "Cả A và B" counterpart for
+ * subject.both. The relation comes from the conflict type and is left out
+ * with the object it relates to (K18 has none).
+ */
+function composeCauseV2(book: Codebook, slots: Slots, context: ComposeContext): string {
+  const name = namer(context);
+  const event = chosenOption(book, "event_type", slots.event_type);
+  const conflict = chosenOption(book, "conflict_type", slots.conflict_type);
+  const action = (cells: Slots) => cells.action === undefined ? null : labelOf(chosenOption(book, "action", cells.action), cells.action);
+  const subjectValue = slots.subject as SlotValue | undefined;
+  if (subjectValue?.option === "subject.both") {
+    const [first, second] = twoParties(slots, "Chọn \"cả hai bên\" thì khai báo đúng hai bên khác nhau, mỗi bên một hành động.");
+    return render(templateText(book, `Cả A và B, ${EVENT_CASE[event.id].toLowerCase()}`), {
+      A: name(first.party), action_A: action(first), B: name(second.party), action_B: action(second),
+    });
+  }
+  let subject: string | null = null;
+  if (subjectValue?.entity !== undefined) subject = name(subjectValue);
+  else chosenOption(book, "subject", subjectValue);
+  const object = slots.object === undefined ? null : name(slots.object);
+  const relation = typeof conflict.relation === "string" && conflict.relation !== "không có" && object ? conflict.relation : null;
+  return render(templateText(book, EVENT_CASE[event.id]), {
+    subject, action: action(slots), speed: clearLabel(book, slots, "speed"), relation, object,
+  });
+}
+
+/**
+ * V: "Có" is [bên vi phạm] [hành vi]; the other two results are fixed
+ * sentences. V.v2 adds "cả hai bên": one behaviour per party, or one sentence
+ * for both when they did the same.
+ */
 function composeViolation(book: Codebook, slots: Slots, context: ComposeContext): string {
   const result = chosenOption(book, "result", slots.result);
   if (result.id === "result.none_observed") return templateText(book, "Không quan sát thấy");
   if (result.id !== "result.yes") return templateText(book, "Không rõ");
+  if (placeholders(book)) {
+    const name = namer(context);
+    const behavior = (cells: Slots) => labelOf(chosenOption(book, "behavior", cells.behavior), cells.behavior);
+    if ((slots.violator as SlotValue | undefined)?.option === "violator.both") {
+      const [first, second] = twoParties(slots, "Chọn \"cả hai bên\" thì khai báo đúng hai bên khác nhau, mỗi bên một hành vi.");
+      const [a, b] = [behavior(first), behavior(second)];
+      return a === b
+        ? render(templateText(book, "Có, cả hai bên cùng hành vi"), { A: name(first.party), B: name(second.party), behavior: a })
+        : render(templateText(book, "Có, cả hai bên"), { A: name(first.party), behavior_A: a, B: name(second.party), behavior_B: b });
+    }
+    return render(templateText(book, "Có"), { violator: name(slots.violator), behavior: behavior(slots) });
+  }
   const behavior = chosenOption(book, "behavior", slots.behavior);
   return sentence([`${namer(context)(slots.violator)} ${labelOf(behavior, slots.behavior)}`]);
 }
@@ -247,8 +355,12 @@ function composePrevention(book: Codebook, slots: Slots, context: ComposeContext
     .map(({ party }) => {
       const main = chosenOption(book, "main_action", party.main_action);
       const extra = party.extra_action === undefined ? null : chosenOption(book, "extra_action", party.extra_action);
-      return `${name(party.party)} nên ${labelOf(main, party.main_action)}`
-        + (extra ? ` và ${labelOf(extra, party.extra_action)}` : "");
+      const first = labelOf(main, party.main_action);
+      const second = extra ? labelOf(extra, party.extra_action) : null;
+      // "nên quan sát và nhường đường và giảm tốc" repeats "và": when either
+      // action already holds one, the two are joined with ", đồng thời".
+      const joiner = second && ` ${first} ${second} `.includes(" và ") ? ", đồng thời " : " và ";
+      return `${name(party.party)} nên ${first}${second ? `${joiner}${second}` : ""}`;
     });
   return clauses.length ? `${capitalize(clauses.join("; "))}.` : UNDETERMINED;
 }
@@ -297,9 +409,43 @@ function composeAftermath(book: Codebook, slots: Slots, context: ComposeContext)
   ]);
 }
 
-/** S: one template whose `{cell}` placeholders take the chosen labels. */
+/** S.v1: one template whose `{cell}` placeholders take the chosen labels, "không rõ" included. */
 function composeTemplate(book: Codebook, slots: Slots): string {
   return book.template!.replace(/\{(\w+)\}/g, (_, cellId: string) => chosenOption(book, cellId, slots[cellId]).label);
+}
+
+/**
+ * S from v2 on: every cell is required and checked, and an unclear one
+ * leaves its part out as in every other group (S.v1 printed "không rõ", which
+ * read badly: "Trời không rõ, không rõ, ...").
+ */
+function composeScene(book: Codebook, slots: Slots): string {
+  const values = Object.fromEntries(book.cells.map((cell) => {
+    chosenOption(book, cell.id, slots[cell.id]);
+    return [cell.id, clearLabel(book, slots, cell.id)];
+  }));
+  return render(templateText(book, "Mặc định"), values);
+}
+
+/**
+ * Attr: the one or two parties that contributed most, in E key order, or
+ * "không rõ". Since codebook v2 it is chosen here, not copied from the C subject.
+ */
+function composeAttribution(book: Codebook, slots: Slots, context: ComposeContext): string {
+  const value = slots.parties;
+  const name = namer(context);
+  if (!Array.isArray(value)) {
+    if ((value as SlotValue | undefined)?.entity !== undefined) return render(templateText(book, "Một bên"), { A: name(value) });
+    chosenOption(book, "parties", value);
+    return templateText(book, "Không rõ");
+  }
+  const keys = value.map((ref) => (ref as SlotValue | undefined)?.entity);
+  if (!value.length || value.length > 2 || keys.some((key) => key === undefined) || keys[0] === keys[1]) {
+    throw new ComposeError("parties", "Chọn một hoặc hai bên khác nhau đã khai báo ở nhóm E, hoặc \"không rõ\".");
+  }
+  const names = [...value].sort((a, b) => (a as SlotValue).entity!.localeCompare((b as SlotValue).entity!)).map(name);
+  return names.length === 1 ? render(templateText(book, "Một bên"), { A: names[0] })
+    : render(templateText(book, "Hai bên"), { A: names[0], B: names[1] });
 }
 
 /** The answer sentence for these cells, by the group's guideline pattern. */
@@ -307,6 +453,8 @@ export function compose(qgroup: string, slots: Slots, context: ComposeContext = 
   const book = codebookFor(qgroup, context);
   if (book.template) return composeTemplate(book, slots);
   switch (qgroup) {
+    case "S": return composeScene(book, slots);
+    case "Attr": return composeAttribution(book, slots, context);
     case "E": return composeEntities(slots);
     case "C": return composeCause(book, slots, context);
     case "V": return composeViolation(book, slots, context);

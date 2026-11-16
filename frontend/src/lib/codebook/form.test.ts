@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   buildEntityCells, buildSlots, causePair, choose, defaultState, emptyState, entityCells, entityLabel, entityProblems,
-  errorText, fields, nextEntityKey, preview, problems, stateFromSlots, type FormContext, type FormState,
+  errorText, fields, nextEntityKey, prefilledKeys, prefillFromCause, preview, problems, staleChoices, stateFromSlots,
+  type FormContext, type FormState,
 } from "./form.ts";
 
 const entity = (key: string, cells: Record<string, string>) => ({
@@ -25,19 +26,22 @@ function fill(qgroup: string, context: FormContext, steps: [string, unknown][], 
 }
 const keys = (qgroup: string, state: FormState, context: FormContext) => fields(qgroup, state, context).map((item) => item.key);
 
-test("S shows its six cells and builds a flat payload that composes", () => {
+test("S shows its seven cells (S.v2) and builds a flat payload that composes", () => {
   const state = fill("S", TWO, [["outer.weather", { option: "weather.sunny" }], ["outer.light", { option: "light.day" }],
     ["outer.road_type", { option: "road_type.one_way" }], ["outer.surface", { option: "surface.dry" }],
-    ["outer.density", { option: "density.sparse" }], ["outer.segment", { option: "segment.straight" }]]);
+    ["outer.density", { option: "density.sparse" }], ["outer.segment", { option: "segment.straight" }],
+    ["outer.surface_material", { option: "surface_material.asphalt" }]]);
   const slots = buildSlots("S", state, TWO);
-  assert.deepEqual(Object.keys(slots).sort(), ["density", "light", "road_type", "segment", "surface", "weather"]);
+  assert.deepEqual(Object.keys(slots).sort(), ["density", "light", "road_type", "segment", "surface", "surface_material", "weather"]);
   assert.deepEqual(problems("S", state, TWO), {});
-  assert.equal(preview("S", slots, TWO), "Trời nắng, ban ngày, một chiều tại thẳng, mặt đường khô, mật độ xe thưa.");
+  assert.equal(preview("S", slots, TWO), "Trời nắng, ban ngày, đường một chiều tại đoạn đường thẳng, mặt đường nhựa khô, mật độ xe thưa.");
+  const weather = fields("S", state, TWO).find((item) => item.key === "outer.weather")!;
+  assert.ok(weather.options.some((option) => option.label === "tạnh ráo") && !weather.options.some((option) => option.label === "âm u"));
 });
 
 test("S names every missing required cell", () => {
   const found = problems("S", fill("S", TWO, [["outer.weather", { option: "weather.rain" }]]), TWO);
-  assert.equal(Object.keys(found).length, 5);
+  assert.equal(Object.keys(found).length, 6);
   assert.equal(found["outer.light"], "Chưa chọn.");
 });
 
@@ -70,16 +74,16 @@ test("C takes the only action of a conflict type at once, and none under an uncl
   assert.equal(buildSlots("C", unclear, TWO).action, undefined);
 });
 
-test("C near miss shows evader, evasion and result; hit_other needs an entity", () => {
+test("C.v2 near miss has no evasion cells, and a stored evasion is not sent again", () => {
   const state = fill("C", THREE, [["outer.event_type", { option: "event_type.near_miss" }], ["outer.subject", { entity: "B" }],
     ["outer.object", { entity: "A" }], ["outer.conflict_type", { option: "conflict_type.k14" }],
-    ["outer.action", { option: "action.k14.left_to_right" }], ["outer.evader", { entity: "A" }],
-    ["outer.evasion", { option: "evasion.hard_brake" }], ["outer.evasion_result", { option: "evasion_result.hit_other" }]]);
-  assert.equal(problems("C", state, THREE)["outer.evasion_result"], "Chọn bên.");
-  const done = fill("C", THREE, [["outer.evasion_result", { option: "evasion_result.hit_other", entity: "C" }]], state);
-  assert.deepEqual(problems("C", done, THREE), {});
-  assert.deepEqual(buildSlots("C", done, THREE).evasion_result, { option: "evasion_result.hit_other", entity: "C" });
-  assert.match(preview("C", buildSlots("C", done, THREE), THREE)!, /chạm vào người đi bộ\.$/);
+    ["outer.action", { option: "action.k14.left_to_right" }], ["outer.speed", { option: "speed.high" }]]);
+  assert.deepEqual(keys("C", state, THREE), ["outer.event_type", "outer.subject", "outer.object", "outer.conflict_type",
+    "outer.action", "outer.speed"]);
+  assert.deepEqual(problems("C", state, THREE), {});
+  assert.match(preview("C", buildSlots("C", state, THREE), THREE)!, /chạy tốc độ cao, .*suýt xảy ra va chạm\.$/);
+  const old = stateFromSlots("C", { ...buildSlots("C", state, THREE), evader: { entity: "A" }, evasion: { option: "evasion.hard_brake" } }, THREE);
+  assert.equal(buildSlots("C", old, THREE).evader, undefined);
 });
 
 test("C \"cả hai bên\" gives one action per party, fills the two parties and hides speed and evasion", () => {
@@ -125,6 +129,14 @@ test("O filters signs by level, takes \"không có\" for no collision, and start
   assert.deepEqual(none.cells.sign, { option: "sign.none" });
   assert.equal(buildSlots("O", none, context).parties, undefined);
   assert.equal(problems("O", none, context)["outer.level"], "Nhóm C là \"va chạm\" nên mức độ không được là \"không va chạm\".");
+  const nearMiss = { ...TWO, cause: { ...cause, event_type: { option: "event_type.near_miss" } } };
+  assert.equal(problems("O", fill("O", nearMiss, [["outer.level", { option: "level.minor" }]], start), nearMiss)["outer.level"],
+    "Nhóm C là \"suýt va chạm\" nên mức độ là \"không va chạm\".");
+  assert.equal(problems("O", fill("O", nearMiss, [["outer.level", { option: "level.none" }]], start), nearMiss)["outer.level"],
+    undefined);
+  const nearMissV1 = { ...TWO, cause: { ...nearMiss.cause, evader: { entity: "A" }, evasion_result: { option: "evasion_result.fell_or_skidded" } } };
+  assert.equal(problems("O", fill("O", nearMissV1, [["outer.level", { option: "level.minor" }]], start), nearMissV1)["outer.level"],
+    undefined);
   const unclear = fill("O", context, [["outer.level", { option: "level.unclear" }]], start);
   assert.deepEqual(keys("O", unclear, context), ["outer.level"]);
   const done = fill("O", context, [["outer.sign", { option: "sign.scrape_continued" }]], minor);
@@ -178,6 +190,65 @@ test("stored slots load back into the same form", () => {
   }
 });
 
+test("V.v2 \"cả hai bên\" gives one behaviour per party, filling the two parties", () => {
+  const state = fill("V", TWO, [["outer.result", { option: "result.yes" }], ["outer.violator", { option: "violator.both" }],
+    ["0.behavior", { option: "behavior.wrong_lane" }], ["1.behavior", { option: "behavior.no_slowdown_intersection" }]]);
+  assert.deepEqual(keys("V", state, TWO), ["outer.result", "outer.violator", "0.party", "0.behavior", "1.party", "1.behavior"]);
+  const slots = buildSlots("V", state, TWO);
+  assert.deepEqual(slots, { result: { option: "result.yes" }, violator: { option: "violator.both" },
+    parties: [{ party: { entity: "A" }, behavior: { option: "behavior.wrong_lane" } },
+      { party: { entity: "B" }, behavior: { option: "behavior.no_slowdown_intersection" } }] });
+  assert.deepEqual(problems("V", state, TWO), {});
+  assert.deepEqual(buildSlots("V", stateFromSlots("V", slots, TWO), TWO), slots);
+});
+
+test("F-V: V is filled from C, one party or both, behaviour by prefill_from_c", () => {
+  const one = prefillFromCause("V", { ...TWO, cause: { event_type: { option: "event_type.collision" }, subject: { entity: "B" },
+    object: { entity: "A" }, conflict_type: { option: "conflict_type.k08" }, action: { option: "action.k08.encroach_overtaking" } } });
+  assert.deepEqual(buildSlots("V", one!, TWO), { result: { option: "result.yes" }, violator: { entity: "B" },
+    behavior: { option: "behavior.illegal_overtake" } });
+  const both = prefillFromCause("V", { ...TWO, cause: { event_type: { option: "event_type.collision" },
+    subject: { option: "subject.both" }, conflict_type: { option: "conflict_type.k11" },
+    parties: [{ party: { entity: "B" }, action: { option: "action.k11.right_to_left" } },
+      { party: { entity: "A" }, action: { option: "action.k11.left_to_right" } }] } });
+  assert.deepEqual(buildSlots("V", both!, TWO), { result: { option: "result.yes" }, violator: { option: "violator.both" },
+    parties: [{ party: { entity: "B" }, behavior: { option: "behavior.fail_to_yield" } },
+      { party: { entity: "A" }, behavior: { option: "behavior.fail_to_yield" } }] });
+  const noRule = prefillFromCause("V", { ...TWO, cause: { subject: { entity: "A" }, conflict_type: { option: "conflict_type.k18" } } });
+  assert.deepEqual(buildSlots("V", noRule!, TWO), { result: { option: "result.yes" }, violator: { entity: "A" } });
+  assert.equal(prefillFromCause("V", { ...TWO, cause: { subject: { option: "subject.unclear" } } }), null);
+  assert.equal(prefillFromCause("V", TWO), null);
+  const changed = fill("V", TWO, [["outer.behavior", { option: "behavior.red_light" }]], one!);
+  assert.deepEqual([...prefilledKeys("V", changed, one, TWO)], ["outer.result", "outer.violator"]);
+});
+
+test("Attr: one or two parties, or \"không rõ\", which exclude each other", () => {
+  assert.equal(problems("Attr", emptyState(), TWO)["outer.parties"], "Chưa chọn.");
+  const two = fill("Attr", TWO, [["outer.parties", ["B", "A"]]]);
+  assert.deepEqual(buildSlots("Attr", two, TWO), { parties: [{ entity: "B" }, { entity: "A" }] });
+  assert.equal(preview("Attr", buildSlots("Attr", two, TWO), TWO), "Cả xe ô tô (có camera hành trình) và xe máy màu đỏ.");
+  const unclear = fill("Attr", TWO, [["outer.parties", { option: "parties.unclear" }]], two);
+  assert.deepEqual(buildSlots("Attr", unclear, TWO), { parties: { option: "parties.unclear" } });
+  assert.deepEqual(problems("Attr", unclear, TWO), {});
+  for (const state of [two, unclear]) {
+    const slots = buildSlots("Attr", state, TWO);
+    assert.deepEqual(buildSlots("Attr", stateFromSlots("Attr", slots, TWO), TWO), slots);
+  }
+});
+
+test("F-v1: an answer saved with v1 keeps what v2 still has and names what it lost", () => {
+  const s1 = { weather: { option: "weather.overcast" }, light: { option: "light.day" }, road_type: { option: "road_type.one_way" },
+    segment: { option: "segment.straight" }, surface: { option: "surface.dry" }, density: { option: "density.sparse" } };
+  const state = stateFromSlots("S", s1, TWO);
+  const slots = buildSlots("S", state, TWO);
+  assert.equal(slots.weather, undefined);
+  assert.equal(slots.light && (slots.light as { option: string }).option, "light.day");
+  assert.deepEqual(staleChoices("S", "S.v1", s1), { cells: { weather: "âm u" }, removed: [] });
+  assert.deepEqual(staleChoices("C", "C.v1", { event_type: { option: "event_type.near_miss" }, evader: { entity: "A" },
+    evasion: { option: "evasion.hard_brake" } }), { cells: {}, removed: ["Bên né", "Cách né"] });
+  assert.deepEqual(staleChoices("S", "S.v2", s1), { cells: {}, removed: [] });
+});
+
 test("C pair for R and O: entity subject and object, both parties in key order, nothing for unclear", () => {
   assert.deepEqual(causePair({ subject: { entity: "B" }, object: { entity: "A" } }), ["B", "A"]);
   assert.deepEqual(causePair({ subject: { option: "subject.both" }, parties: [{ party: { entity: "C" } }, { party: { entity: "A" } }] }), ["A", "C"]);
@@ -194,6 +265,8 @@ test("E shows each cell only when its codebook condition holds, and sends only t
   assert.deepEqual(ids({ type: "type.motorbike" }), ["type", "vehicle_color", "clothing_color", "riders"]);
   assert.deepEqual(ids({ type: "type.pedestrian" }), ["type", "clothing_color"]);
   assert.deepEqual(ids({ type: "type.animal" }), ["type"]);
+  assert.deepEqual(ids({ type: "type.ambulance" }), ["type", "vehicle_color"]);
+  assert.deepEqual(ids({ type: "type.electric_two_wheeler" }), ["type", "vehicle_color", "clothing_color", "riders"]);
   assert.deepEqual(buildEntityCells(entity("A", { type: "type.pedestrian", riders: "riders.two", clothing_color: "clothing_color.red" }).cells),
     { type: { option: "type.pedestrian" }, clothing_color: { option: "clothing_color.red" } });
 });

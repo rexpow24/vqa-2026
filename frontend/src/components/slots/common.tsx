@@ -2,7 +2,7 @@
 
 import type { Slots } from "@/lib/codebook/compose";
 import type { StoredVerdict } from "@/lib/types";
-import { FOCUS } from "@/components/slots/styles";
+import { FOCUS, QUESTION } from "@/components/slots/styles";
 
 /** What the slot form reads of a question; HostedDraft in HostedLabeling.tsx carries all of it. */
 export type SlotDraft = {
@@ -29,7 +29,7 @@ export function CardHeader({ draft, saved }: { draft: SlotDraft; saved: boolean 
   return <header className="flex items-start gap-3 border-b border-border px-4 py-3">
     <span className="shrink-0 rounded border border-accent/60 bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">{draft.qgroup}</span>
     <div className="min-w-0"><div className="text-base font-semibold text-foreground">{draft.group_name}</div>
-      <div className="mt-0.5 text-xs leading-relaxed text-muted">{draft.question}</div></div>
+      <div data-question className={QUESTION}>{draft.question}</div></div>
     {saved && <span className="ml-auto shrink-0 text-xs font-medium text-green">✓ Đã chọn ô</span>}
   </header>;
 }

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelGroup } from "@/components/LabelGroup";
 import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
-import { BTN, BTN_BASE, FOCUS, NEUTRAL } from "@/components/slots/styles";
+import { BTN, BTN_BASE, FOCUS, NEUTRAL, QUESTION } from "@/components/slots/styles";
 import { needsKeyframes } from "@/lib/qgroups";
 import type { EventLabel, StoredVerdict, Verdict } from "@/lib/types";
 import { isSlotGroup } from "@/lib/codebook";
@@ -91,6 +91,10 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
     setMessage(`Đã lưu câu ${draft.qgroup}.`); setError("");
   }
   const done = drafts.filter((draft) => draft.verdict).length;
+  // F-N (codebook v2): the slot form shows N last, after the groups its summary
+  // draws on. Display order only: `drafts` keeps the canonical qgroups.json order.
+  const shown = answerFormat === "slots"
+    ? [...drafts.filter((draft) => draft.qgroup !== "N"), ...drafts.filter((draft) => draft.qgroup === "N")] : drafts;
 
   const stepVideo = useCallback((direction: -1 | 1) => {
     const element = videoRef.current;
@@ -205,7 +209,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
         </div>}
       </div>
       <div className="flex flex-col gap-3">
-        {drafts.map((draft) => slotForm(draft) ? (draft.qgroup === "E"
+        {shown.map((draft) => slotForm(draft) ? (draft.qgroup === "E"
           ? <EntityCard key={draft.id} videoId={video.id} draft={draft} saved={entities} canSave={!!assignment}
             onSaved={(saved, row) => { setEntities(saved); slotSaved(draft, [{ draft_id: draft.id, verdict: "SLOTS", ...row }]); }} />
           : <SlotCard key={draft.id} draft={draft} context={slotContext} labels={entityLabels} duration={Number(video.duration_s)}
@@ -328,7 +332,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
     <header className="flex items-start gap-3 border-b border-border px-4 py-3">
       <span className="shrink-0 rounded border border-accent/60 bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">{draft.qgroup}</span>
       <div className="min-w-0"><div className="text-base font-semibold text-foreground">{draft.group_name}</div>
-        <div className="mt-0.5 text-xs leading-relaxed text-muted">{draft.question}</div></div>
+        <div data-question className={QUESTION}>{draft.question}</div></div>
       {draft.verdict && <span className="ml-auto shrink-0 text-xs font-medium text-green">✓ {VERDICT_LABEL[draft.verdict as Verdict]}</span>}
     </header>
     <div className="px-4 py-3">
@@ -388,7 +392,7 @@ function DecidedCard({ draft, onSeek }: { draft: HostedDraft; onSeek: (time: num
     <header className="flex items-start gap-3 border-b border-border px-4 py-2.5">
       <span className="shrink-0 rounded border border-border bg-background px-2 py-0.5 text-xs font-semibold text-accent">{draft.qgroup}</span>
       <div className="min-w-0"><div className="text-base font-semibold text-foreground">{draft.group_name}</div>
-        <div className="mt-0.5 text-xs leading-relaxed text-muted">{draft.question}</div></div>
+        <div data-question className={QUESTION}>{draft.question}</div></div>
       <span className="ml-auto shrink-0 text-xs text-muted">Đã thống nhất · khóa</span>
     </header>
     <dl className="grid gap-2 px-4 py-3 text-sm">

@@ -4,22 +4,25 @@ import { useState } from "react";
 import { currentVersion } from "@/lib/codebook";
 import type { SlotValue } from "@/lib/codebook/compose";
 import {
-  buildSlots, causePair, choose, currentValue, errorText, fields, preview, problems, rawValue, sameSlots,
-  stateFromSlots, type Field, type FormContext,
+  buildSlots, causePair, choose, currentValue, errorText, fields, prefilledKeys, prefillFromCause, preview, problems,
+  rawValue, sameSlots, staleChoices, stateFromSlots, type Field, type FormContext,
 } from "@/lib/codebook/form";
 import { needsKeyframes } from "@/lib/qgroups";
 import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
 import { CardHeader, DraftReference, SaveBar, Sentence, postJson, type SaveError, type SlotDraft } from "@/components/slots/common";
-import { EntityChip, FieldRow, FreeText, OptionPicker } from "@/components/slots/SlotField";
+import { Chip, EntityChip, FieldRow, FreeText, OptionPicker } from "@/components/slots/SlotField";
 
 /** The draft rows the save route returns: the saved row, and the caller's R when C re-composed it. */
 export type SavedSlotRow = Partial<SlotDraft> & { draft_id: string };
 type Saved = SavedSlotRow & { also?: SavedSlotRow[] };
 
 /**
- * The slot form of one question (S, C, V, O, R, Prev). Starts empty (decision
- * 3 of the slot data model: no prefill from the draft), saves with the button,
- * and shows the sentence the server composed. A refused save keeps every choice.
+ * The slot form of one question (S, C, V, O, R, Attr, Prev). Starts empty
+ * (decision 3 of the slot data model: no prefill from the draft), except V,
+ * which a never-saved V takes from the saved C answer (codebook v2, F-V);
+ * saves with the button, and shows the sentence the server composed. A
+ * refused save keeps every choice. An answer saved with an older codebook
+ * opens with what the current one still has and saves with the current one (F-v1).
  */
 export function SlotCard({ draft, context, labels, duration, playhead, canSave, onSeek, onSaved }: {
   draft: SlotDraft; context: FormContext; labels: Record<string, string>; duration: number; playhead: number;
@@ -27,10 +30,17 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
 }) {
   const qgroup = draft.qgroup;
   const savedSlots = draft.verdict === "SLOTS" ? draft.slots : null;
+  const version = currentVersion(qgroup);
+  const stale = staleChoices(qgroup, savedSlots ? draft.codebook_version : null, savedSlots);
   const [state, setState] = useState(() => stateFromSlots(qgroup, savedSlots, context));
   // O starts with the C pair; until the annotator touches it, it follows C as C is saved.
   const [refsTouched, setRefsTouched] = useState(savedSlots !== null);
-  const form = qgroup === "O" && !refsTouched ? { ...state, refs: causePair(context.cause) } : state;
+  // A V never saved is filled from the saved C, and follows C until the annotator touches it.
+  const prefill = savedSlots ? null : prefillFromCause(qgroup, context);
+  const [touched, setTouched] = useState(false);
+  const form = prefill && !touched ? prefill
+    : qgroup === "O" && !refsTouched ? { ...state, refs: causePair(context.cause) } : state;
+  const prefilled = prefilledKeys(qgroup, form, prefill, context);
   const savedMarks = draft.human_keyframes_s.map(Number);
   const savedPair = savedMarks.length === 2 && savedMarks[0] < savedMarks[1];
   const [start, setStart] = useState<number | null>(savedPair ? savedMarks[0] : null);
@@ -46,11 +56,15 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const found = problems(qgroup, form, context);
   const marks = needsMarks && start !== null && end !== null ? [start, end] : [];
   if (needsMarks && marks.length !== 2) found.keyframes = "Đặt start và end.";
-  const dirty = !savedSlots || !sameSlots(slots, savedSlots) || (needsMarks && !sameSlots(marks, savedMarks));
-  const sentence = preview(qgroup, slots, context);
+  const dirty = !savedSlots || !sameSlots(slots, savedSlots) || draft.codebook_version !== version
+    || (needsMarks && !sameSlots(marks, savedMarks));
+  // No preview while a cell still blocks the save: an empty Prev composed to "Không thể xác định.",
+  // which read as an answer nobody gave.
+  const sentence = Object.keys(found).some((key) => key !== "keyframes") ? null : preview(qgroup, slots, context);
 
   function update(item: Field, value: SlotValue | string[] | undefined) {
     if (item.kind === "refs") setRefsTouched(true);
+    setTouched(true);
     setState(choose(qgroup, form, item, value, context));
     setServerError(null);
   }
@@ -68,7 +82,7 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     setSaving(true);
     try {
       const saved = await postJson<Saved>(`/api/drafts/${draft.id}/annotation`, "POST", {
-        verdict: "SLOTS", codebook_version: currentVersion(qgroup), slots, human_keyframes_s: marks,
+        verdict: "SLOTS", codebook_version: version, slots, human_keyframes_s: marks,
       });
       setTried(false);
       onSaved(saved);
@@ -81,6 +95,12 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   // A server error about one cell shows next to the first field of that cell.
   const errorField = serverError?.cellId ? visible.find((item) => item.cellId === serverError.cellId)?.key : undefined;
   const errorOf = (item: Field) => (tried ? found[item.key] : undefined) ?? (item.key === errorField ? serverError?.message : undefined);
+  // F-v1: an old choice the current codebook dropped shows as a note on its now empty field.
+  const noteOf = (item: Field) => {
+    const old = item.scope === "outer" && !currentValue(form, item) ? stale.cells[item.cellId] : undefined;
+    return [item.note, old && `Bản cũ chọn "${old}"; lựa chọn này đã bỏ ở bản mới, chọn lại.`].filter(Boolean).join(" ") || undefined;
+  };
+  const badgeOf = (item: Field) => prefilled.has(item.key) ? "điền sẵn từ C" : undefined;
   const outer = visible.filter((item) => item.scope === "outer");
   const scopes = [...new Set(visible.filter((item) => item.scope !== "outer").map((item) => item.scope as number))];
   const twoParties = visible.some((item) => item.kind === "party");
@@ -90,24 +110,29 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
 
   const renderField = (item: Field) => {
     if (item.kind === "refs") {
-      return <FieldRow key={item.key} label={item.label} optional note={item.note} error={errorOf(item)}>
+      const option = form.cells[item.cellId]?.option;
+      return <FieldRow key={item.key} label={item.label} note={item.note} optional={!item.required} error={errorOf(item)}>
         <div className="flex flex-wrap gap-1.5">{item.entities?.map((key) => {
-          const pressed = form.refs.includes(key);
+          const pressed = form.refs.includes(key) && !option;
           return <EntityChip key={key} entityKey={key} label={labels[key] ?? key} pressed={pressed}
-            onClick={() => update(item, pressed ? form.refs.filter((ref) => ref !== key) : [...form.refs, key].slice(-2))} />;
-        })}</div>
+            onClick={() => update(item, pressed ? form.refs.filter((ref) => ref !== key)
+              : [...(option ? [] : form.refs), key].slice(-2))} />;
+        })}
+        {item.options.map((choice) => <Chip key={choice.id} pressed={option === choice.id}
+          onClick={() => update(item, option === choice.id ? [] : { option: choice.id })}>{choice.label}</Chip>)}</div>
       </FieldRow>;
     }
     if (item.kind === "party") {
       const value = rawValue(form, item) as SlotValue | undefined;
-      return <FieldRow key={item.key} label={item.label} error={errorOf(item)}>
+      return <FieldRow key={item.key} label={item.label} badge={badgeOf(item)} error={errorOf(item)}>
         <div className="flex flex-wrap gap-1.5">{item.entities?.map((key) => <EntityChip key={key} entityKey={key}
           label={labels[key] ?? key} pressed={value?.entity === key} onClick={() => update(item, { entity: key })} />)}</div>
       </FieldRow>;
     }
     const value = currentValue(form, item);
     const option = item.options.find((candidate) => candidate.id === value?.option);
-    return <FieldRow key={item.key} label={item.label} optional={!item.required} note={item.note} error={errorOf(item)}>
+    return <FieldRow key={item.key} label={item.label} optional={!item.required} note={noteOf(item)} badge={badgeOf(item)}
+      error={errorOf(item)}>
       <OptionPicker options={item.options} entities={item.entities} labels={labels} value={value}
         required={item.required} onChange={(next) => update(item, next)} />
       {option?.free_text && <FreeText label={`${item.label}: khác`} value={value?.text ?? ""}
@@ -126,6 +151,15 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     <div className="flex flex-col gap-3 border-t border-border px-4 py-3">
       {needsEntities && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
         Chưa có bên nào: khai báo và lưu các bên ở nhóm E trước.</p>}
+      {prefill && !touched && <p className="rounded border border-accent/50 bg-accent/10 px-3 py-2 text-xs text-foreground/85">
+        Đã điền sẵn từ nhóm C (ô có nhãn &quot;điền sẵn từ C&quot;). Kiểm tra, sửa nếu cần, rồi bấm Lưu.</p>}
+      {savedSlots && draft.codebook_version !== version && <p
+        className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
+        Câu này lưu bằng codebook {draft.codebook_version}; bấm Lưu để lưu lại bằng {version}.
+        {stale.removed.length > 0 && ` Ô đã bỏ ở bản mới, không lưu lại: ${stale.removed.join(", ")}.`}</p>}
+      {!savedSlots && draft.verdict && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
+        Câu này đã lưu dạng chữ trước khi nhóm {qgroup} có ô{draft.edited_answer ? `: "${draft.edited_answer}"` : ""}.
+        Chọn ô rồi bấm Lưu để thay.</p>}
       {qgroup === "R" && !context.cause && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
         Chủ thể và đối tượng của R lấy từ nhóm C: lưu nhóm C trước.</p>}
       {qgroup === "R" && context.cause && pair.length === 0 && <p className="text-xs text-foreground/60">

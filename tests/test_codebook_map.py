@@ -231,9 +231,10 @@ def test_frozen_s_codebook_matches_the_prompt_codebook(prompt):
 
 
 def test_frozen_s_codebook_matches_the_guideline_table():
+    # The guideline follows the newest S codebook (S.v2 since features/codebook-v2).
     md = (cm.ROOT / "docs" / "guidelines" / "S-boi-canh.md").read_text(encoding="utf-8")
     rows = dict(re.findall(r"^\| \d\. ([^|]+?) \| ([^|]+?) \|$", md, re.M))
-    frozen = {c["label"]: [o["label"] for o in c["options"]] for c in _frozen_s()["cells"]}
+    frozen = {c["label"]: [o["label"] for o in c["options"]] for c in _newest("S")["cells"]}
     assert {k: v.split(" · ") for k, v in rows.items()} == frozen
 
 
@@ -500,6 +501,12 @@ def _frozen(group):
     return json.loads((cm.ROOT / "codebook" / f"{group}.v1.json").read_text(encoding="utf-8"))
 
 
+def _newest(group):
+    """The newest frozen codebook of a group: the guideline follows it (features/codebook-v2)."""
+    files = sorted((cm.ROOT / "codebook").glob(f"{group}.v*.json"), key=lambda f: int(f.stem.split(".v")[1]))
+    return json.loads(files[-1].read_text(encoding="utf-8"))
+
+
 def _guideline(group):
     return (cm.ROOT / "docs" / "guidelines" / GUIDELINES[group]).read_text(encoding="utf-8")
 
@@ -525,7 +532,7 @@ def _expected_cells(md):
 
 @pytest.mark.parametrize("group", list(GUIDELINES))
 def test_frozen_codebook_matches_the_guideline_table(group):
-    cb, md = _frozen(group), _guideline(group)
+    cb, md = _newest(group), _guideline(group)
     expected = _expected_cells(md)
     labels = {lbl for lbl, _ in expected}
     cells = [c for c in cb["cells"] if c["label"] in labels or not c.get("auto_fill")]
@@ -533,7 +540,7 @@ def test_frozen_codebook_matches_the_guideline_table(group):
     for c, (_, options) in zip(cells, expected):
         if options is not None:
             assert [o["label"] for o in c["options"]] == options, c["id"]
-    assert cb["group"] == group and cb["version"] == 1 and cb["source"].endswith(GUIDELINES[group])
+    assert cb["group"] == group and cb["source"].endswith(GUIDELINES[group])
     assert f"- Câu hỏi chuẩn: {cb['question']}\n" in md
 
 
@@ -558,10 +565,15 @@ def test_frozen_codebook_ids_are_unique_prefixed_and_parents_exist(group):
 
 @pytest.mark.parametrize("group", list(GUIDELINES))
 def test_frozen_codebook_templates_are_verbatim_from_the_guideline(group):
-    cb, md = _frozen(group), _guideline(group)
+    cb, md = _newest(group), _guideline(group)
     assert cb["templates"]
     for t in cb["templates"]:
-        assert f"| {t['case']} | {t['text']} |" in md
+        if "{" in t["text"]:
+            # Codebook v2 patterns are machine-rendered ({cell} placeholders); the guideline shows each
+            # case by name, its variants ("Cả A và B, va chạm") under the base case.
+            assert f"| {t['case'].split(', ')[0]} |" in md, t["case"]
+        else:
+            assert f"| {t['case']} | {t['text']} |" in md
 
 
 def test_frozen_c_conflict_types_and_actions_match_the_guideline_table():

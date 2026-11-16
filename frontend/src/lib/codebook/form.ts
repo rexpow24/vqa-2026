@@ -96,9 +96,23 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
     case "V":
       out.push(field(book, "result", "outer"));
       if (optionOf(cells.result) === "result.yes") {
-        out.push(field(book, "violator", "outer", { required: true, entities: keys }),
-          field(book, "behavior", "outer", { required: true }));
+        out.push(field(book, "violator", "outer", { required: true, entities: keys }));
+        // V.v2 "cả hai bên": one behaviour per party, as C does for subject.both.
+        if (optionOf(cells.violator) === "violator.both") {
+          for (const index of [0, 1]) {
+            out.push(field(book, "violator", index, { kind: "party", key: `${index}.party`, cellId: "party",
+              label: "Chọn bên", required: true, options: [], entities: keys }),
+            field(book, "behavior", index, { required: true }));
+          }
+        } else {
+          out.push(field(book, "behavior", "outer", { required: true }));
+        }
       }
+      return out;
+    case "Attr":
+      // One or two parties from E, or "không rõ"; not tied to the C subject (codebook v2).
+      out.push(field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: keys,
+        note: "Chọn 1 hoặc 2 bên; không xác định được thì chọn \"không rõ\"." }));
       return out;
     case "O": {
       out.push(field(book, "level", "outer"));
@@ -142,7 +156,8 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
       }
       if (actions.length) out.push(field(book, "action", "outer", { options: actions }));
       out.push(field(book, "speed", "outer"));
-      if (optionOf(cells.event_type) === "event_type.near_miss") {
+      // C.v1 only: the evasion cells were removed in C.v2.
+      if (optionOf(cells.event_type) === "event_type.near_miss" && book.cells.some((cell) => cell.id === "evader")) {
         out.push(field(book, "evader", "outer", { entities: keys }), field(book, "evasion", "outer"),
           field(book, "evasion_result", "outer", { optionEntities: keys }));
       }
@@ -211,8 +226,11 @@ export function buildSlots(qgroup: string, state: FormState, context: FormContex
   const parties: Slots[] = [];
   for (const item of visible) {
     if (item.kind === "refs") {
+      // Attr "không rõ" is an option of the same cell, kept instead of any party.
+      const unclear = item.options.find((option) => option.id === state.cells[item.cellId]?.option);
       const refs = validRefs(state, item);
-      if (refs.length) slots.parties = refs.map((key) => ({ entity: key }));
+      if (unclear) slots.parties = { option: unclear.id };
+      else if (refs.length) slots.parties = refs.map((key) => ({ entity: key }));
       continue;
     }
     const value = currentValue(state, item);
@@ -226,7 +244,8 @@ export function buildSlots(qgroup: string, state: FormState, context: FormContex
     if (item.kind === "party") party.party = value;
     else party[item.cellId] = payloadValue(value);
   }
-  if (qgroup === "C" && optionOf(state.cells.subject) === "subject.both") {
+  // per_party_when (C subject.both, V.v2 violator.both): the per-party cells live in two parties.
+  if (visible.some((item) => item.kind === "party") && qgroup !== "Prev") {
     slots.parties = [0, 1].map((index) => parties[index] ?? {});
   }
   if (qgroup === "Prev") {
@@ -249,8 +268,9 @@ export function stateFromSlots(qgroup: string, slots: Slots | null | undefined, 
     const { party: who, ...cells } = party;
     return { entity: (who as SlotValue | undefined)?.entity, cells: cells as Cells };
   };
-  if (qgroup === "O") {
-    return { cells: rest as Cells, parties: [], refs: list.map((ref) => (ref as SlotValue).entity).filter((key): key is string => !!key) };
+  if (qgroup === "O" || qgroup === "Attr") {
+    const cells = (Array.isArray(parties) || parties === undefined ? rest : { ...rest, parties }) as Cells;
+    return { cells, parties: [], refs: list.map((ref) => (ref as SlotValue).entity).filter((key): key is string => !!key) };
   }
   if (qgroup === "Prev") {
     if (list.length === 1 && (list[0].party as SlotValue | undefined)?.option === "party.unclear") {
@@ -261,6 +281,92 @@ export function stateFromSlots(qgroup: string, slots: Slots | null | undefined, 
     return { cells: only?.entity ? { party: { entity: only.entity } } : {}, parties: only ? [only] : [], refs: [] };
   }
   return { cells: rest as Cells, parties: list.map(partyState), refs: [] };
+}
+
+type PrefillRule = { conflict_types: string[]; c_actions?: string[]; option: string };
+
+/** The V behaviour the codebook's `prefill_from_c` gives for a C conflict type and action, if any. */
+function prefillBehavior(book: Codebook, conflict: string | undefined, action: string | undefined): Cells {
+  const code = getCodebook(currentVersion("C") ?? "")?.cells.find((cell) => cell.id === "conflict_type")
+    ?.options?.find((option) => option.id === conflict)?.code;
+  const rules = (Array.isArray(book.prefill_from_c) ? book.prefill_from_c : []) as PrefillRule[];
+  const rule = rules.find((candidate) => typeof code === "string" && candidate.conflict_types.includes(code)
+    && (!candidate.c_actions || (action !== undefined && candidate.c_actions.includes(action))));
+  return rule ? { behavior: { option: rule.option } } : {};
+}
+
+/**
+ * F-V (codebook v2): the V form filled from the saved C answer, for a V that
+ * was never saved. The violator is the C subject ("cả hai bên" included), the
+ * result "có", and each behaviour comes from `prefill_from_c` of the V
+ * codebook by C conflict type and action; no rule leaves it empty. A C
+ * subject that is "không rõ" fills nothing. Null when there is nothing to fill.
+ */
+export function prefillFromCause(qgroup: string, context: FormContext): FormState | null {
+  const cause = context.cause;
+  if (qgroup !== "V" || !cause) return null;
+  const book = bookOf("V");
+  const keys = keysOf(context);
+  const conflict = optionOf(cause.conflict_type as SlotValue | undefined);
+  const subject = cause.subject as SlotValue | undefined;
+  if (subject?.option === "subject.both") {
+    if (!book.cells.find((cell) => cell.id === "violator")?.options?.some((option) => option.id === "violator.both")) return null;
+    const parties = (Array.isArray(cause.parties) ? cause.parties as Slots[] : [])
+      .map((party) => ({ entity: (party.party as SlotValue | undefined)?.entity,
+        cells: prefillBehavior(book, conflict, optionOf(party.action as SlotValue | undefined)) }))
+      .filter((party) => party.entity !== undefined && keys.includes(party.entity));
+    if (parties.length !== 2) return null;
+    return { cells: { result: { option: "result.yes" }, violator: { option: "violator.both" } }, parties, refs: [] };
+  }
+  if (subject?.entity === undefined || !keys.includes(subject.entity)) return null;
+  return { cells: { result: { option: "result.yes" }, violator: { entity: subject.entity },
+    ...prefillBehavior(book, conflict, optionOf(cause.action as SlotValue | undefined)) }, parties: [], refs: [] };
+}
+
+/** The keys of the fields whose value is still the one `prefill` gave them. */
+export function prefilledKeys(qgroup: string, state: FormState, prefill: FormState | null, context: FormContext): Set<string> {
+  const out = new Set<string>();
+  if (!prefill) return out;
+  for (const item of fields(qgroup, state, context)) {
+    const value = currentValue(state, item);
+    const given = fields(qgroup, prefill, context).find((candidate) => candidate.key === item.key);
+    if (value && given && sameSlots(value, currentValue(prefill, given))) out.add(item.key);
+  }
+  return out;
+}
+
+/**
+ * F-v1: what an answer saved with an older codebook loses in the current one.
+ * `cells`: cell id -> the label of an old choice that is no longer an option
+ * (the field shows empty with this note); `removed`: labels of cells the
+ * current codebook no longer has. Both empty when the versions are equal.
+ */
+export function staleChoices(qgroup: string, savedVersion: string | null, slots: Slots | null | undefined):
+  { cells: Record<string, string>; removed: string[] } {
+  const out = { cells: {} as Record<string, string>, removed: [] as string[] };
+  const current = currentVersion(qgroup);
+  const old = savedVersion ? getCodebook(savedVersion) : undefined;
+  if (!slots || !old || savedVersion === current) return out;
+  const book = bookOf(qgroup);
+  const scan = (cells: Slots) => {
+    for (const [cellId, value] of Object.entries(cells)) {
+      const oldCell = old.cells.find((cell) => cell.id === cellId);
+      if (!oldCell) continue;
+      const cell = book.cells.find((candidate) => candidate.id === cellId);
+      if (!cell) {
+        if (!out.removed.includes(oldCell.label)) out.removed.push(oldCell.label);
+        continue;
+      }
+      const optionId = (value as SlotValue | undefined)?.option;
+      if (optionId && !cell.options?.some((option) => option.id === optionId)) {
+        out.cells[cellId] = oldCell.options?.find((option) => option.id === optionId)?.label ?? optionId;
+      }
+    }
+  };
+  const { parties, ...rest } = slots;
+  scan(rest);
+  if (Array.isArray(parties)) for (const party of parties) if (party && typeof party === "object" && !("entity" in party)) scan(party as Slots);
+  return out;
 }
 
 /** A new, empty form; O starts with the C pair (codebook O, "auto_fill"). */
@@ -281,7 +387,14 @@ export function choose(qgroup: string, state: FormState, item: Field, value: Slo
   const next: FormState = { cells: { ...state.cells }, parties: state.parties.map((party) => ({ ...party, cells: { ...party.cells } })),
     refs: [...state.refs] };
   if (item.kind === "refs") {
-    next.refs = (value as string[] | undefined ?? []).slice(0, 2);
+    // Parties and "không rõ" (Attr) exclude each other.
+    if (Array.isArray(value) || value === undefined) {
+      next.refs = (value as string[] | undefined ?? []).slice(0, 2);
+      delete next.cells[item.cellId];
+    } else {
+      next.cells[item.cellId] = value;
+      next.refs = [];
+    }
     return next;
   }
   const slot = value as SlotValue | undefined;
@@ -300,6 +413,9 @@ export function choose(qgroup: string, state: FormState, item: Field, value: Slo
       if (!next.cells.object || next.cells.object.entity === slot.entity) next.cells.object = { entity: other };
     }
     if (slot?.option === "subject.both") fillTwoParties(next, keys);
+  }
+  if (qgroup === "V" && item.cellId === "violator" && item.scope === "outer" && slot?.option === "violator.both") {
+    fillTwoParties(next, keys);
   }
   if (qgroup === "Prev" && item.cellId === "party" && item.scope === "outer") {
     if (slot?.option === "party.both") fillTwoParties(next, keys);
@@ -337,7 +453,14 @@ export function problems(qgroup: string, state: FormState, context: FormContext)
   const out: Record<string, string> = {};
   const visible = fields(qgroup, state, context);
   for (const item of visible) {
-    if (item.kind === "refs") continue;
+    if (item.kind === "refs") {
+      const chosen = item.options.some((option) => option.id === state.cells[item.cellId]?.option) || validRefs(state, item).length > 0;
+      if (item.required && !chosen) {
+        out[item.key] = item.entities?.length === 0 && !item.options.length
+          ? "Chưa có bên nào: khai báo các bên ở nhóm E trước." : "Chưa chọn.";
+      }
+      continue;
+    }
     const value = currentValue(state, item);
     if (!value) {
       if (item.required) out[item.key] = item.entities?.length === 0 && !item.options.length
@@ -370,11 +493,16 @@ export function problems(qgroup: string, state: FormState, context: FormContext)
   if (qgroup === "O") {
     const level = optionOf(state.cells.level);
     const event = optionOf(context.cause?.event_type as SlotValue | undefined);
+    // A C.v1 answer may carry the evasion cells; C.v2 dropped them, and its
+    // near miss means no damage at all (C-nguyen-nhan.md), so O must be none.
+    const v1Evasion = context.cause?.evader !== undefined;
     const avoided = optionOf(context.cause?.evasion_result as SlotValue | undefined) === "evasion_result.avoided";
     if (event === "event_type.collision" && level === "level.none") {
       out["outer.level"] = "Nhóm C là \"va chạm\" nên mức độ không được là \"không va chạm\".";
-    } else if (event === "event_type.near_miss" && avoided && level && level !== "level.none") {
+    } else if (event === "event_type.near_miss" && v1Evasion && avoided && level && level !== "level.none") {
       out["outer.level"] = "Nhóm C là \"suýt va chạm\", né \"tránh được\" nên mức độ là \"không va chạm\".";
+    } else if (event === "event_type.near_miss" && !v1Evasion && level && level !== "level.none" && level !== "level.unclear") {
+      out["outer.level"] = "Nhóm C là \"suýt va chạm\" nên mức độ là \"không va chạm\".";
     }
   }
   return out;
@@ -397,7 +525,8 @@ const E_BOOK = () => bookOf("E");
  * The E cells shown for an entity, by the codebook's "when" conditions
  * (E.v1.json `when`): size only for bus and truck, dashcam only for a car,
  * no vehicle colour for a car with a dashcam, a pedestrian or an animal,
- * clothing colour for a motorbike or a pedestrian, riders for a motorbike.
+ * clothing colour for a two-wheeler (motorbike, or electric in E.v2) or a
+ * pedestrian, riders for a two-wheeler.
  */
 export function entityCells(cells: Cells): CodebookCell[] {
   const book = E_BOOK();
@@ -407,8 +536,9 @@ export function entityCells(cells: Cells): CodebookCell[] {
   if (type === "type.car") shown.add("dashcam");
   if (type && !["type.pedestrian", "type.animal"].includes(type)
       && !(type === "type.car" && cells.dashcam?.option === "dashcam.yes")) shown.add("vehicle_color");
-  if (type === "type.motorbike" || type === "type.pedestrian") shown.add("clothing_color");
-  if (type === "type.motorbike") shown.add("riders");
+  const twoWheeler = type === "type.motorbike" || type === "type.electric_two_wheeler"; // E.v2 adds the electric one
+  if (twoWheeler || type === "type.pedestrian") shown.add("clothing_color");
+  if (twoWheeler) shown.add("riders");
   return book.cells.filter((cell) => shown.has(cell.id));
 }
 

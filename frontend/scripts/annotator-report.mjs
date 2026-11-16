@@ -95,4 +95,7 @@ for (const assignment of assignments) {
   for (const problem of problems) console.log(`     ! ${problem}`);
 }
 console.log(`\n${assignments.length} videos, ${assignments.filter((row) => row.status === "completed").length} completed, ${broken} with problems.`);
-process.exit(broken ? 1 : 0);
+// exitCode, not process.exit(): exiting while fetch sockets are still closing
+// trips a libuv assertion on Windows (Node 24, "!(handle->flags & UV_HANDLE_CLOSING)",
+// exit status 3221226505), which made verify-slots A34 fail now and then.
+process.exitCode = broken ? 1 : 0;

@@ -4,8 +4,8 @@
 - Tên thực thể A, B, C lấy từ Nhóm E. Các bên được tự điền từ cặp chủ thể và đối tượng của Nhóm C.
 - Mỗi ô chọn đúng một giá trị.
 - Không ghi thương tích hay tử vong. Chỉ ghi điều nhìn thấy, ví dụ "người nằm trên đường".
-- Ràng buộc với C: loại sự kiện "va chạm" thì mức độ không được là "không va chạm"; "suýt va chạm" với kết quả né "tránh được" thì mức độ là "không va chạm".
-  Suýt va chạm nhưng bên né ngã, trượt hoặc chạm thực thể khác thì ghi mức độ theo hậu quả nhìn thấy.
+- Ràng buộc với C: loại sự kiện "va chạm" thì mức độ không được là "không va chạm"; "suýt va chạm" thì mức độ là "không va chạm" (hoặc "không rõ").
+  Suýt va chạm chỉ dùng khi không có thiệt hại; bên né ngã, trượt hoặc chạm thực thể khác thì C là "va chạm" và ghi mức độ theo hậu quả nhìn thấy.
 
 ## Các ô
 

@@ -27,12 +27,15 @@ export function EntityChip({ entityKey, label, pressed, onClick }: {
 }
 
 /** The row frame of one cell: label on the left (on top when narrow), the input on the right. */
-export function FieldRow({ label, optional, error, note, children }: {
-  label: string; optional?: boolean; error?: string; note?: string; children: ReactNode;
+export function FieldRow({ label, optional, error, note, badge, children }: {
+  label: string; optional?: boolean; error?: string; note?: string; badge?: string; children: ReactNode;
 }) {
   return <div data-field={label} className="grid gap-1.5 sm:grid-cols-[9.5rem_minmax(0,1fr)] sm:gap-3">
     <div className="pt-1 text-xs font-medium text-foreground/85">{label}
-      {optional && <span className="block font-normal text-foreground/50">không bắt buộc</span>}</div>
+      {optional && <span className="block font-normal text-foreground/50">không bắt buộc</span>}
+      {/* A value the form filled in for the annotator (V from C), until they change it. */}
+      {badge && <span data-badge className="mt-1 block w-fit rounded border border-accent/60 bg-accent/15 px-1.5 py-px
+        text-[11px] font-medium text-accent">{badge}</span>}</div>
     <div className="flex min-w-0 flex-col gap-1.5">
       {children}
       {note && <span className="text-xs text-foreground/55">{note}</span>}

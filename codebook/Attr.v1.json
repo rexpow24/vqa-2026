@@ -1,0 +1,40 @@
+{
+  "group": "Attr",
+  "version": 1,
+  "frozen_on": "2026-11-16",
+  "source": "docs/guidelines/Attr-ben-gop-phan.md",
+  "question": "Bên nào đóng vai trò chính dẫn đến va chạm, dựa trên bằng chứng thị giác?",
+  "templates": [
+    {
+      "case": "Một bên",
+      "text": "{A}."
+    },
+    {
+      "case": "Hai bên",
+      "text": "Cả {A} và {B}."
+    },
+    {
+      "case": "Không rõ",
+      "text": "Không thể xác định."
+    }
+  ],
+  "keyframes": [
+    "start",
+    "end"
+  ],
+  "cells": [
+    {
+      "id": "parties",
+      "label": "Bên góp phần chính",
+      "required": true,
+      "from_entities": true,
+      "max_entities": 2,
+      "options": [
+        {
+          "id": "parties.unclear",
+          "label": "không rõ"
+        }
+      ]
+    }
+  ]
+}

@@ -55,21 +55,25 @@ async function makeUser(label, role) {
   return { id: data.user.id, email, ...(await signIn(email, password)) };
 }
 
-const SLOT_GROUPS = ["S", "E", "C", "V", "O", "R", "Prev"];
+// Attr has been a slot group since codebook v2 (features/codebook-v2); N is the one text group.
+const SLOT_GROUPS = ["S", "E", "C", "V", "O", "R", "Attr", "Prev"];
+// Every frozen codebook: the seven v1 of P2, then S.v2, C.v2, V.v2 and Attr.v1 of codebook v2, then E.v2.
+const CODEBOOK_IDS = ["S.v1", "E.v1", "C.v1", "V.v1", "O.v1", "R.v1", "Prev.v1", "S.v2", "C.v2", "V.v2", "Attr.v1", "E.v2"];
 
-/** A1, A4: one read-only row per frozen codebook file, equal to the file. */
+/** A1, A4, AC1 (codebook v2): one read-only row per frozen codebook file, equal to the file. */
 async function checkCodebooks(t) {
   const rows = must(await t.client.from("codebook_versions").select("id,qgroup,version,content,sha256,frozen_on").order("id"));
-  check("A1", rows.length === 7 && SLOT_GROUPS.every((group) => rows.some((row) => row.id === `${group}.v1`)),
-    "codebook_versions holds exactly the seven v1 codebooks", rows.map((row) => row.id));
-  for (const group of SLOT_GROUPS) {
-    const bytes = fs.readFileSync(path.join(REPO_ROOT, "codebook", `${group}.v1.json`));
+  check("AC1", rows.length === CODEBOOK_IDS.length && CODEBOOK_IDS.every((id) => rows.some((row) => row.id === id)),
+    "codebook_versions holds exactly the seven v1 codebooks plus S.v2, C.v2, V.v2, Attr.v1, E.v2", rows.map((row) => row.id));
+  for (const id of CODEBOOK_IDS) {
+    const bytes = fs.readFileSync(path.join(REPO_ROOT, "codebook", `${id}.json`));
     const file = JSON.parse(bytes.toString("utf8"));
-    const row = rows.find((candidate) => candidate.id === `${group}.v1`);
+    const row = rows.find((candidate) => candidate.id === id);
     const sha = crypto.createHash("sha256").update(bytes).digest("hex");
-    check("A1", row && isDeepStrictEqual(row.content, file) && row.sha256 === sha && row.qgroup === group
+    check(id.endsWith(".v1") && id !== "Attr.v1" ? "A1" : "AC1",
+      row && isDeepStrictEqual(row.content, file) && row.sha256 === sha && row.qgroup === file.group
       && row.version === file.version && row.frozen_on === file.frozen_on,
-    `${group}.v1 equals codebook/${group}.v1.json (content and sha256)`, row ? { sha256: row.sha256, file: sha } : "missing");
+    `${id} equals codebook/${id}.json (content and sha256)`, row ? { sha256: row.sha256, file: sha } : "missing");
   }
   const insert = await t.client.from("codebook_versions")
     .insert({ id: "S.v9", qgroup: "S", version: 9, content: {}, sha256: "x", frozen_on: "2026-11-16" });
@@ -78,7 +82,7 @@ async function checkCodebooks(t) {
   const after = must(await privileged.from("codebook_versions").select("id,sha256").order("id"));
   check("A4", Boolean(insert.error) && (Boolean(update.error) || update.data.length === 0)
     && (Boolean(remove.error) || remove.data.length === 0)
-    && after.length === 7 && !after.some((row) => row.sha256 === "tampered"),
+    && after.length === CODEBOOK_IDS.length && !after.some((row) => row.sha256 === "tampered"),
   "an annotator cannot insert, update or delete codebook rows",
   { insert: insert.error?.code, update: update.error?.code ?? update.data, delete: remove.error?.code ?? remove.data, rows: after.length });
 }
@@ -658,8 +662,9 @@ async function checkSlotRevisions(lead, video) {
 
 /**
  * A23-A26: a row's form follows its assignment both ways. A stale text page
- * cannot overwrite a slot answer, a text assignment never takes cells, N and
- * Attr of a slot assignment stay text, and AGREE still carries no edited answer.
+ * cannot overwrite a slot answer, a text assignment never takes cells, N of a
+ * slot assignment stays text (Attr is a slot group since codebook v2, AC5),
+ * and AGREE still carries no edited answer.
  */
 async function checkFormBoundary(lead, t, agreed, regular) {
   const leadS = await stored(agreed.drafts.S, lead.id);
@@ -691,7 +696,6 @@ async function checkFormBoundary(lead, t, agreed, regular) {
     ["N", { verdict: "AGREE" }],
     ["N", { verdict: "DISAGREE", reason_code: "sai diễn đạt", edited_answer: "Câu khác draft." }],
     ["N", { verdict: "NOT_ANSWERABLE" }],
-    ["Attr", { verdict: "AGREE", human_keyframes_s: [2, 5.5] }],
   ];
   for (const [group, body] of textSaves) {
     const saved = await request(base, `/api/drafts/${agreed.drafts[group]}/annotation`, lead.cookie, "POST",
@@ -714,6 +718,133 @@ async function checkFormBoundary(lead, t, agreed, regular) {
     "AGREE with an edited answer is still refused on a text assignment", agree.error?.message ?? "saved");
 }
 
+
+// ---------------------------------------------------------------- codebook v2
+
+/** Saves a slot answer through the route with an explicit codebook version. */
+function saveVersion(lead, video, group, version, slots, marks) {
+  return request(base, `/api/drafts/${video.drafts[group]}/annotation`, lead.cookie, "POST", {
+    verdict: "SLOTS", codebook_version: version, slots,
+    human_keyframes_s: marks ?? (KEYFRAME_GROUPS.includes(group) ? [2, 5.5] : []),
+  });
+}
+
+/** A refused REST upsert of a slot answer; the row must stay as it was. */
+async function refuseSlots(lead, video, group, version, slots, hint, name, marks) {
+  const before = await stored(video.drafts[group], lead.id);
+  const { error } = await lead.client.from("qa_annotations").upsert({
+    draft_id: video.drafts[group], annotator_id: lead.id, verdict: "SLOTS", codebook_version: version,
+    edited_answer: "Câu bất kỳ.", slots, human_keyframes_s: marks ?? (KEYFRAME_GROUPS.includes(group) ? [2, 5.5] : []),
+  }, { onConflict: "draft_id,annotator_id" });
+  check("AC3", error?.hint === hint && isDeepStrictEqual(await stored(video.drafts[group], lead.id), before),
+    `the database refuses ${name}, and the row stays`, { expected: hint, got: error ? `${error.hint}: ${error.message}` : "saved" });
+}
+
+const S2_SLOTS = { ...S_SLOTS, weather: opt("weather.no_rain"), surface_material: opt("surface_material.asphalt") };
+const V2_BOTH = { result: opt("result.yes"), violator: opt("violator.both"),
+  parties: [{ party: ent("A"), behavior: opt("behavior.wrong_lane") }, { party: ent("B"), behavior: opt("behavior.no_slowdown_intersection") }] };
+
+/**
+ * AC2-AC5 of codebook v2: v1 answers stay readable and still save; v2 refuses
+ * what it removed; V takes "cả hai bên" with one behaviour per party; Attr is
+ * a slot group with one or two parties or "không rõ", and start/end frames.
+ */
+async function checkCodebookV2(lead, video) {
+  const entities = (await entityRows(video.id, lead.id)).map((row) => ({ key: row.entity_key, cells: row.cells }));
+
+  // AC2: an S answer stored with S.v1 (A8) is still there as stored, and re-saving moves it to S.v2.
+  const v1Row = await stored(video.drafts.S, lead.id);
+  const v1Again = await saveVersion(lead, video, "S", "S.v1", S_SLOTS);
+  check("AC2", v1Row?.codebook_version === "S.v1" && v1Again.status === 200
+    && (await stored(video.drafts.S, lead.id)).edited_answer === compose("S", S_SLOTS, { version: "S.v1" }),
+  "an S answer stored with S.v1 reads back as stored, and S.v1 still saves", { v1Row, status: v1Again.status });
+  const v2Saved = await saveVersion(lead, video, "S", "S.v2", S2_SLOTS);
+  const v2Row = await stored(video.drafts.S, lead.id);
+  check("AC2", v2Saved.status === 200 && v2Row.codebook_version === "S.v2" && isDeepStrictEqual(v2Row.slots, S2_SLOTS)
+    && v2Row.edited_answer === "Trời tạnh ráo, ban ngày, đường một chiều tại đoạn đường thẳng, mặt đường nhựa khô, mật độ xe thưa.",
+  "the same S saved with S.v2 stores S.v2 and the v2 sentence", { status: v2Saved.status, data: v2Saved.data, v2Row });
+
+  // AC3: what v2 removed is refused under v2.
+  await refuseSlots(lead, video, "S", "S.v2", { ...S2_SLOTS, weather: opt("weather.overcast") }, "unknown_option",
+    "weather.overcast under S.v2");
+  const noMaterial = Object.fromEntries(Object.entries(S2_SLOTS).filter(([key]) => key !== "surface_material"));
+  await refuseSlots(lead, video, "S", "S.v2", noMaterial, "missing_cell", "S.v2 without surface_material");
+  const c2 = { event_type: opt("event_type.near_miss"), subject: ent("B"), object: ent("A"),
+    conflict_type: opt("conflict_type.k04"), action: opt("action.k04.lane_change_left"), speed: opt("speed.high") };
+  await refuseSlots(lead, video, "C", "C.v2", { ...c2, evader: ent("A") }, "unknown_cell", "the evader cell under C.v2");
+  await refuseSlots(lead, video, "C", "C.v2", { ...c2, evasion: opt("evasion.hard_brake") }, "unknown_cell", "the evasion cell under C.v2");
+  await refuseSlots(lead, video, "C", "C.v2", { ...c2, evasion_result: opt("evasion_result.avoided") }, "unknown_cell",
+    "the evasion_result cell under C.v2");
+  await refuseSlots(lead, video, "C", "C.v1", c2, "unknown_option", "speed.high under C.v1");
+  const cSaved = await saveVersion(lead, video, "C", "C.v2", c2);
+  const cRow = await stored(video.drafts.C, lead.id);
+  check("AC3", cSaved.status === 200 && cRow.codebook_version === "C.v2" && isDeepStrictEqual(cRow.slots, c2)
+    && cRow.edited_answer === compose("C", c2, { entities }) && cRow.edited_answer.endsWith("suýt xảy ra va chạm.")
+    && cRow.edited_answer.includes("chạy tốc độ cao"),
+  "a C.v2 near miss with \"tốc độ cao\" and no evasion saves", { status: cSaved.status, data: cSaved.data, cRow });
+
+  // AC4: V "cả hai bên", one behaviour per party.
+  const vSaved = await saveVersion(lead, video, "V", "V.v2", V2_BOTH);
+  const vRow = await stored(video.drafts.V, lead.id);
+  check("AC4", vSaved.status === 200 && vRow.codebook_version === "V.v2" && isDeepStrictEqual(vRow.slots, V2_BOTH)
+    && vRow.edited_answer === compose("V", V2_BOTH, { entities }) && vRow.edited_answer.includes(", đồng thời "),
+  "V.v2 with violator.both and one behaviour per party saves", { status: vSaved.status, data: vSaved.data, vRow });
+  const [va, vb] = V2_BOTH.parties;
+  for (const [slots, hint, name] of [
+    [{ ...V2_BOTH, behavior: opt("behavior.wrong_lane") }, "per_party", "violator.both with a behaviour outside the parties"],
+    [{ ...V2_BOTH, parties: [va] }, "parties", "violator.both with one party"],
+    [{ ...V2_BOTH, parties: [va, { ...vb, party: ent("A") }] }, "parties", "violator.both with the same entity twice"],
+    [{ ...V2_BOTH, parties: [va, { party: ent("B") }] }, "missing_cell", "a party without a behaviour"],
+    [{ ...V2_BOTH, result: opt("result.none_observed") }, "conditional_cell", "violator.both without a violation"],
+    [{ result: opt("result.yes"), violator: ent("B"), behavior: opt("behavior.wrong_lane"), parties: V2_BOTH.parties },
+      "per_party", "an entity violator with parties"],
+    [{ ...V2_BOTH, parties: [va, { ...vb, party: ent("D") }] }, "unknown_entity", "a party Lead never declared"],
+  ]) await refuseSlots(lead, video, "V", "V.v2", slots, hint, name);
+  // V.v1 has neither "parties" nor violator.both: the first unknown key is refused.
+  await refuseSlots(lead, video, "V", "V.v1", V2_BOTH, "unknown_cell", "violator.both with parties under V.v1");
+  await refuseSlots(lead, video, "V", "V.v1", { result: opt("result.yes"), violator: opt("violator.both"), behavior: opt("behavior.wrong_lane") }, "unknown_option", "violator.both under V.v1");
+  const vOne = { result: opt("result.yes"), violator: ent("B"), behavior: opt("behavior.no_slowdown_intersection") };
+  await refuseSlots(lead, video, "V", "V.v1", vOne, "unknown_option", "behavior.no_slowdown_intersection under V.v1");
+  const oneSaved = await saveVersion(lead, video, "V", "V.v2", vOne);
+  check("AC4", oneSaved.status === 200 && (await stored(video.drafts.V, lead.id)).edited_answer === compose("V", vOne, { entities }),
+    "V.v2 with one violator and \"không giảm tốc độ qua giao lộ\" saves", oneSaved);
+
+  // AC5: Attr is a slot group with frames.
+  const textAttr = await request(base, `/api/drafts/${video.drafts.Attr}/annotation`, lead.cookie, "POST",
+    { verdict: "AGREE", human_keyframes_s: [2, 5.5] });
+  const restText = await lead.client.from("qa_annotations").upsert({ draft_id: video.drafts.Attr, annotator_id: lead.id,
+    verdict: "AGREE", human_keyframes_s: [2, 5.5] }, { onConflict: "draft_id,annotator_id" });
+  check("AC5", textAttr.status === 422 && restText.error?.hint === "slot_group" && !(await stored(video.drafts.Attr, lead.id)),
+    "a text answer to Attr of a slot assignment is refused (route and database)", { route: textAttr, rest: restText.error?.message });
+  for (const [slots, sentence, name] of [
+    [{ parties: [ent("B")] }, compose("Attr", { parties: [ent("B")] }, { entities }), "one party"],
+    [{ parties: [ent("B"), ent("A")] }, compose("Attr", { parties: [ent("A"), ent("B")] }, { entities }), "two parties"],
+    [{ parties: opt("parties.unclear") }, "Không thể xác định.", "\"không rõ\""],
+  ]) {
+    const saved = await saveVersion(lead, video, "Attr", "Attr.v1", slots, [1.25, 4]);
+    const row = await stored(video.drafts.Attr, lead.id);
+    check("AC5", saved.status === 200 && row.verdict === "SLOTS" && isDeepStrictEqual(row.slots, slots)
+      && row.edited_answer === sentence && isDeepStrictEqual(row.human_keyframes_s, [1.25, 4]),
+    `Attr saves ${name} with start and end`, { status: saved.status, data: saved.data, row });
+  }
+  check("AC5", compose("Attr", { parties: [ent("B"), ent("A")] }, { entities }).startsWith("Cả "),
+    "two parties read \"Cả [A] và [B].\"", "");
+  for (const [slots, hint, name, marks] of [
+    [{ parties: [ent("A"), ent("A")] }, "parties", "Attr with the same party twice"],
+    [{ parties: [ent("A"), ent("B"), ent("C")] }, "parties", "Attr with three parties"],
+    [{ parties: [ent("D")] }, "unknown_entity", "Attr with a party Lead never declared"],
+    [{}, "missing_cell", "Attr without a party"],
+    [{ parties: opt("parties.both") }, "unknown_option", "Attr with an option it does not have"],
+  ]) await refuseSlots(lead, video, "Attr", "Attr.v1", slots, hint, name, marks);
+  const before = await stored(video.drafts.Attr, lead.id);
+  const { error: noMarks } = await lead.client.from("qa_annotations").upsert({ draft_id: video.drafts.Attr, annotator_id: lead.id,
+    verdict: "SLOTS", codebook_version: "Attr.v1", edited_answer: "Câu bất kỳ.", slots: { parties: [ent("A")] }, human_keyframes_s: [] },
+  { onConflict: "draft_id,annotator_id" });
+  check("AC5", noMarks?.message === "Mark exactly two evidence frames: start before end"
+    && isDeepStrictEqual(await stored(video.drafts.Attr, lead.id), before),
+  "Attr without start and end is refused", noMarks?.message ?? "saved");
+}
+
 /** One statement as postgres in the local database container; returns its unaligned output. */
 function psql(sql) {
   const result = spawnSync("docker", ["exec", DB_CONTAINER, "psql", "-U", "postgres", "-X", "-A", "-t", "-c", sql], { encoding: "utf8" });
@@ -734,10 +865,10 @@ async function checkCompletion(lead, video) {
   const completed = await request(base, `/api/videos/${video.id}/complete`, lead.cookie, "POST");
   const assignment = must(await privileged.from("video_assignments").select("status,answer_format")
     .eq("video_id", video.id).eq("annotator_id", lead.id).single());
-  check("A28", rows.length === 9 && slotGroups.length === 7 && ["AGREE", "NOT_ANSWERABLE", "DISAGREE"].includes(verdicts.N)
-    && ["AGREE", "NOT_ANSWERABLE", "DISAGREE"].includes(verdicts.Attr) && label.status === 200
+  check("A28", rows.length === 9 && slotGroups.length === 8 && ["AGREE", "NOT_ANSWERABLE", "DISAGREE"].includes(verdicts.N)
+    && verdicts.Attr === "SLOTS" && label.status === 200
     && completed.status === 200 && assignment.status === "completed" && assignment.answer_format === "slots",
-  "Lead with seven slot answers, N and Attr as text and an event label completes the slot assignment",
+  "Lead with eight slot answers (Attr included), N as text and an event label completes the slot assignment",
   { verdicts, label: label.status, completed, assignment });
 }
 
@@ -957,6 +1088,9 @@ try {
 
   console.log("Revisions:");
   await checkSlotRevisions(lead, agreed);
+
+  console.log("Codebook v2:");
+  await checkCodebookV2(lead, agreed);
 
   console.log("Text and slot forms:");
   await checkFormBoundary(lead, t, agreed, regular);

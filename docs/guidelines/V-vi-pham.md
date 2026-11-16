@@ -11,8 +11,10 @@
 | Ô | Lựa chọn |
 | --- | --- |
 | 0. Kết quả | có · không quan sát thấy · không rõ |
-| 1. Bên vi phạm (khi có) | chọn từ E |
-| 2. Hành vi (khi có) | đi sai làn, lấn làn · đi ngược chiều · vượt đèn đỏ · không chấp hành biển báo, vạch kẻ đường · không nhường đường · không giữ khoảng cách an toàn · vượt xe sai quy định · chuyển hướng, quay đầu sai quy định · lùi xe sai quy định · không đội mũ bảo hiểm · đi bộ dưới lòng đường · khác |
+| 1. Bên vi phạm (khi có) | chọn từ E · cả hai bên |
+| 2. Hành vi (khi có) | đi sai làn, lấn làn · đi ngược chiều · vượt đèn đỏ · không chấp hành biển báo, vạch kẻ đường · không nhường đường · không giữ khoảng cách an toàn · vượt xe sai quy định · chuyển hướng, quay đầu sai quy định · lùi xe sai quy định · không đội mũ bảo hiểm · đi bộ dưới lòng đường · không giảm tốc độ qua giao lộ · khác |
+
+Ô 1 chọn "cả hai bên" thì mỗi bên một ô 2 riêng, như ô hành động của Nhóm C.
 
 Điều kiện cho ô 2:
 - Vượt đèn đỏ: chỉ khi thấy rõ đèn.
@@ -22,7 +24,11 @@
 - Chuyển hướng, quay đầu sai quy định: chỉ khi thấy rõ biển cấm, vạch liền hoặc vị trí không được rẽ, quay đầu.
 - Không đội mũ bảo hiểm: chỉ khi thấy rõ đầu người trên xe máy.
 - Đi bộ dưới lòng đường: người đi bộ đứng hoặc đi dọc trong phần đường xe chạy, không phải băng qua.
+- Không giảm tốc độ qua giao lộ: chỉ khi thấy rõ là giao lộ và thấy rõ xe không giảm tốc khi vào giao lộ.
 - Khác: ghi ngắn hành vi nhìn thấy, không dùng từ "lỗi", "vi phạm điều/khoản", mức phạt.
+
+Form điền sẵn V khi V chưa lưu và C đã lưu: ô 0 là "có", ô 1 là chủ thể của C (kể cả "cả hai bên"), ô 2 theo bảng dưới; ô điền sẵn có nhãn "điền sẵn từ C".
+Annotator kiểm tra, sửa nếu cần, rồi vẫn phải bấm Lưu.
 
 Gợi ý điền sẵn ô 2 theo kiểu xung đột ở C (annotator đổi được):
 
@@ -41,6 +47,8 @@ Gợi ý điền sẵn ô 2 theo kiểu xung đột ở C (annotator đổi đư
 Danh sách ô 2 lấy từ MMUCC 5th Edition (NHTSA 2017), phần tử P14 "Driver Actions at Time of Crash", giữ các giá trị nhìn thấy được trên video (mã 01-08, 13, 14, 16, 98).
 Bỏ mã 09 và 10 (đánh giá trạng thái người lái), 11 và 15 (hành động né, thuộc C), 12 (chạy khỏi đường, thuộc C và O).
 "Không đội mũ bảo hiểm" theo MMUCC P8; "đi bộ dưới lòng đường" theo MMUCC NM3 mã 09.
+"Không giảm tốc độ qua giao lộ": Luật Trật tự, an toàn giao thông đường bộ số 36/2024/QH15, Điều 12 khoản 3 điểm d (phải quan sát, giảm tốc độ hoặc dừng lại ở nơi đường bộ giao nhau cùng mức).
+Thông tư 38/2024/TT-BGTVT, Điều 5 khoản 1 dẫn sang Điều 12 của Luật; văn bản Điều 12 mới đọc qua hethongphapluat.com, chưa đối chiếu Công báo.
 Chi tiết đối chiếu: `features/codebook-multiple-choice/v-taxonomy.md`.
 
 ## Mẫu câu
@@ -48,5 +56,7 @@ Chi tiết đối chiếu: `features/codebook-multiple-choice/v-taxonomy.md`.
 | Kết quả | Mẫu câu |
 | --- | --- |
 | Có | [1] [2]. |
+| Có, cả hai bên | [A] [2 của A], đồng thời [B] [2 của B]. |
+| Có, cả hai bên cùng hành vi | Cả [A] và [B] cùng [2]. |
 | Không quan sát thấy | Không quan sát thấy vi phạm quy tắc giao thông rõ ràng. |
 | Không rõ | Không thể xác định. |
