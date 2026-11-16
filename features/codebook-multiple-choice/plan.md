@@ -57,7 +57,9 @@ Trạng thái P1:
 - Nhóm S: đã chốt ngày 2026-11-14, file `codebook/S.v1.json`, giữ nguyên lựa chọn của guideline.
   Lượt map bằng gemini-3.8-flash trên 209 câu khác nhau: 5/6 ô đạt; mật độ xe 76% (n = 49), trưởng nhóm quyết giữ nguyên.
   Báo cáo: `scripts/codebook_map.py report` ra `csvs/p1/coverage_S.txt`.
-- Nhóm C: prompt đang chờ review.
+- Các nhóm C, E, V, O, R, Prev: đã map hết (số liệu ở [p1-results.md](p1-results.md)), mọi ô đủ dữ liệu đều đạt hoặc được trưởng nhóm chấp nhận.
+  Chốt ngày 2026-11-15: `codebook/<nhóm>.v1.json`, lấy đúng ô và lựa chọn của guideline (kể cả "khác" mà prompt LLM bỏ đi), có test đối chiếu với bảng của guideline.
+- Còn lại của cổng ra: lần điền thử tay khoảng 10 video, do trưởng nhóm làm.
 
 ### P2. Mô hình dữ liệu (khoảng 3 ngày, qua `quyen:ship-feature` và conflict audit)
 

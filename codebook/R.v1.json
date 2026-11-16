@@ -1,0 +1,118 @@
+{
+  "group": "R",
+  "version": 1,
+  "frozen_on": "2026-11-15",
+  "source": "docs/guidelines/R-ung-xu.md",
+  "question": "Hành vi của các bên sau tai nạn là gì?",
+  "templates": [
+    {
+      "case": "Có đoạn sau",
+      "text": "[Chủ thể] [1], [đối tượng] [2], người và xe xung quanh [3]."
+    },
+    {
+      "case": "Hai bên cùng hành vi",
+      "text": "Các bên [1]."
+    },
+    {
+      "case": "Chỉ một bên",
+      "text": "[Chủ thể] [1], người và xe xung quanh [3]."
+    },
+    {
+      "case": "Không có đoạn sau",
+      "text": "Không thể xác định."
+    }
+  ],
+  "cells": [
+    {
+      "id": "has_aftermath",
+      "label": "Clip có đoạn sau sự kiện",
+      "required": true,
+      "options": [
+        {
+          "id": "has_aftermath.yes",
+          "label": "có"
+        },
+        {
+          "id": "has_aftermath.no",
+          "label": "không"
+        }
+      ]
+    },
+    {
+      "id": "subject",
+      "label": "Chủ thể",
+      "required": true,
+      "auto_fill": "Chủ thể và đối tượng được tự điền từ Nhóm C.",
+      "options": [
+        {
+          "id": "subject.stopped",
+          "label": "dừng lại"
+        },
+        {
+          "id": "subject.left",
+          "label": "tiếp tục di chuyển, rời đi"
+        },
+        {
+          "id": "subject.got_up",
+          "label": "tự đứng dậy, dựng xe"
+        },
+        {
+          "id": "subject.scuffle",
+          "label": "giằng co"
+        },
+        {
+          "id": "subject.unclear",
+          "label": "không rõ"
+        }
+      ]
+    },
+    {
+      "id": "object",
+      "label": "Đối tượng",
+      "required": false,
+      "auto_fill": "Chủ thể và đối tượng được tự điền từ Nhóm C.",
+      "when": "bỏ khi C không có đối tượng, ví dụ K18",
+      "options": [
+        {
+          "id": "object.stopped",
+          "label": "dừng lại"
+        },
+        {
+          "id": "object.left",
+          "label": "tiếp tục di chuyển, rời đi"
+        },
+        {
+          "id": "object.got_up",
+          "label": "tự đứng dậy, dựng xe"
+        },
+        {
+          "id": "object.scuffle",
+          "label": "giằng co"
+        },
+        {
+          "id": "object.unclear",
+          "label": "không rõ"
+        }
+      ]
+    },
+    {
+      "id": "bystanders",
+      "label": "Người, xe xung quanh",
+      "required": true,
+      "options": [
+        {
+          "id": "bystanders.helped",
+          "label": "dừng lại hoặc đến hỗ trợ"
+        },
+        {
+          "id": "bystanders.nobody_stopped",
+          "label": "không thấy ai dừng lại"
+        },
+        {
+          "id": "bystanders.unclear",
+          "label": "không rõ"
+        }
+      ]
+    }
+  ]
+}

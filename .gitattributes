@@ -1,0 +1,5 @@
+# Frozen codebooks are seeded into the database with the sha256 of their bytes
+# (supabase/migrations/20261116100000_slot_data_model.sql), so every checkout must
+# hold the same bytes whatever core.autocrlf says.
+codebook/*.json eol=lf
+frontend/src/lib/codebook/*.json eol=lf

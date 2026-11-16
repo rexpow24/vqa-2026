@@ -10,8 +10,8 @@
 
 | Ô | Lựa chọn |
 | --- | --- |
-| 1. Bên | một bên (chọn từ E) · cả hai bên |
-| 2. Hành động chính (mỗi bên một ô) | giảm tốc · giữ khoảng cách an toàn · quan sát và nhường đường · chỉ chuyển làn khi an toàn · đi đúng phần đường · giữ ổn định hướng lái · dừng quan sát trước khi băng qua · khác |
+| 1. Bên | một bên (chọn từ E) · cả hai bên · không rõ |
+| 2. Hành động chính (mỗi bên một ô) | giảm tốc · giữ khoảng cách an toàn · quan sát và nhường đường · chỉ chuyển làn khi an toàn · đi đúng phần đường · giữ ổn định hướng lái · dừng quan sát trước khi băng qua · bật xi nhan xin đường · tránh điểm mù xe lớn · chấp hành đèn tín hiệu · kiểm tra xe trước khi đi · đội mũ bảo hiểm · khác |
 | 3. Hành động thêm (không bắt buộc, mỗi bên một ô) | như ô 2, khác ô 2 |
 
 ## Điền sẵn theo kiểu xung đột ở C
