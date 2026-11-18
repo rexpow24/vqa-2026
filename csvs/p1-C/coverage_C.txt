@@ -1,0 +1,1146 @@
+BÁO CÁO ĐỘ PHỦ CODEBOOK, NHÓM C
+
+Câu trả lời khác nhau (đơn vị đếm): 286  | video: 60  | lượt viết của annotator: 383
+Map hợp lệ: 284  | lỗi, chưa tính: 2
+Độ phủ = M / n, n = M + K. Ô có n < 10: chưa đủ dữ liệu. Đạt khi độ phủ >= 80%.
+T chia hai: 'T thiếu chi tiết' (có nhắc nhưng không đủ để chọn) và 'T không nhắc'.
+
+1. ĐỘ PHỦ THEO Ô
+Ô              M    K   T    T thiếu chi tiết  T không nhắc  n = M + K  Độ phủ = M / n  Kết luận
+-------------  ---  --  ---  ----------------  ------------  ---------  --------------  ---------------
+loại sự kiện   29   0   255  0                 255           29         100%            đạt
+chủ thể        269  2   13   0                 13            271        99%             đạt
+đối tượng      130  17  137  0                 137           147        88%             đạt
+kiểu xung đột  138  3   143  76                67            141        98%             đạt
+hành động      36   1   247  97                150           37         97%             đạt
+tốc độ         28   7   249  11                238           35         80%             đạt
+bên né         15   0   269  0                 269           15         100%            đạt
+cách né        10   2   272  4                 268           12         83%             đạt
+kết quả né     7    0   277  0                 277           7          100%            chưa đủ dữ liệu
+
+2. GIÁ TRỊ ĐƯỢC CHỌN (chỉ tính M)
+
+[loại sự kiện]
+Giá trị       Số câu
+------------  ------
+va chạm       29
+suýt va chạm  0
+không rõ      0
+
+[chủ thể]
+Giá trị                                                Số câu
+-----------------------------------------------------  ------
+xe máy                                                 49
+xe tải                                                 16
+Người lái xe máy                                       12
+xe tải ben                                             12
+Người đi xe máy                                        7
+con chó                                                6
+Xe máy màu trắng                                       6
+người đi xe đạp                                        5
+xe ô tô con màu bạc                                    5
+Xe ô tô màu trắng                                      5
+xe bán tải màu đen                                     4
+xe máy trắng                                           4
+xe phía trước                                          4
+xe taxi màu xanh                                       4
+Xe tải trắng                                           4
+Người phụ nữ                                           3
+Xe máy đi ngược chiều                                  3
+xe tải lớn                                             3
+xe ô tô                                                3
+Xe ô tô con màu trắng                                  3
+Bé gái                                                 2
+Cả hai phương tiện                                     2
+em bé                                                  2
+Hai phương tiện                                        2
+xe ba gác máy                                          2
+Xe màu bạc                                             2
+xe máy màu tối                                         2
+Xe máy điện                                            2
+Xe tải ben màu đỏ                                      2
+xe tải lớn màu xám đen                                 2
+Xe tải màu xanh                                        2
+xe tải màu xám                                         2
+xe tải màu đen                                         2
+Xe ô tô trắng                                          2
+xe ô tô đỏ                                             2
+Chiếc xe máy                                           1
+Chiếc xe ô tô màu trắng                                1
+Cô bé áo hồng                                          1
+Cả hai bên                                             1
+cả hai xe tải và xe ô tô màu đỏ                        1
+Em học sinh mặc áo vàng                                1
+người dắt xe đạp                                       1
+Người lái xe đạp màu xám                               1
+Người mặc áo màu vàng lái xe máy màu đen               1
+Người xe tải                                           1
+Người đi xe tải                                        1
+người đi ô tô                                          1
+Người điều khiển xe máy màu xám                        1
+Người đàn ông điểu khiển xe máy                        1
+xe 2 bánh do người đàn ông mặc áo trắng điều khiển     1
+xe ba gác                                              1
+xe bồn                                                 1
+xe bồn chở nguyên liệu                                 1
+xe bồn chở nhiên liệu màu trắng                        1
+Xe bồn trộn bê tông                                    1
+xe chở 3                                               1
+Xe con                                                 1
+Xe khách                                               1
+xe máy ba gác                                          1
+xe máy chở ba người                                    1
+xe máy do người mặc áo xanh                            1
+xe máy do người áo xanh điều khiển                     1
+xe máy do người đàn ông mặc áo trắng điều khiển        1
+xe máy màu hồng                                        1
+Xe máy màu nâu do người phụ nữ điều khiển              1
+Xe máy màu trắng do phụ nữ áo đen chở 2 người          1
+Xe máy màu trắng do phụ nữ điều khiển                  1
+Xe máy màu trắng đen                                   1
+Xe máy màu đen do người phụ nữ điều khiển              1
+xe máy màu đen do người áo trắng chở 2                 1
+Xe máy màu đen do người đàn ông mặc áo xám điều khiển  1
+Xe máy màu đỏ do người mặc áo tối điều khiển           1
+xe máy màu đỏ sẫm                                      1
+xe máy thồ                                             1
+Xe máy trắng đen                                       1
+xe máy tối màu                                         1
+xe máy đối diện                                        1
+Xe SUV                                                 1
+Xe SUV màu bạc                                         1
+Xe SUV màu gold                                        1
+Xe SUV màu nâu                                         1
+Xe SUV đỏ                                              1
+Xe taxi                                                1
+Xe taxi xanh                                           1
+Xe tay ga màu bạc                                      1
+xe tải ben cabin màu xanh                              1
+Xe tải ben màu xanh                                    1
+xe tải kéo                                             1
+xe tải lớn màu tối                                     1
+xe tải lớn màu xanh                                    1
+xe tải màu vàng                                        1
+xe tải ngược chiều                                     1
+xe tải nhỏ                                             1
+Xe tải nhỏ màu trắng                                   1
+xe tải thùng kín                                       1
+xe tải thùng màu bạc                                   1
+xe tải thùng màu trắng                                 1
+Xe tải thùng xám                                       1
+xe tải to màu nâu                                      1
+xe tải xanh dương                                      1
+xe tải xám đen                                         1
+xe xám                                                 1
+xe ô tô bán tải màu đen                                1
+Xe ô tô bảy chỗ màu trắng                              1
+Xe ô tô gắn camera hành trình                          1
+xe ô tô màu nâu                                        1
+xe ô tô màu xanh                                       1
+xe ô tô màu xám                                        1
+xe ô tô màu đen                                        1
+Xe ô tô màu đỏ                                         1
+xe ô tô SUV màu đỏ                                     1
+xe ô tô tải                                            1
+xe ô tômàu đen của xe tải                              1
+xe đang sang đường                                     1
+ô tô con                                               1
+ô tô SUV màu đỏ                                        1
+
+[đối tượng]
+Giá trị                                                Số câu
+-----------------------------------------------------  ------
+xe ô tô                                                12
+xe tải                                                 10
+ô tô                                                   10
+Xe máy                                                 8
+tài xế                                                 5
+xe đạp                                                 5
+xe đang đi thẳng ở làn bên cạnh                        4
+xe đi thẳng                                            4
+xe SUV                                                 3
+xe đang đi thẳng                                       3
+xe con                                                 2
+xe máy màu xanh                                        2
+xe phía trước                                          2
+xe đang đỗ                                             2
+ô tô có camera hành trình                              2
+ô tô trắng                                             2
+bên ở phía trái                                        1
+con chó màu đen                                        1
+các phương tiện phía trước                             1
+người lái xe máy                                       1
+người xe máy                                           1
+phương tiện bên cạnh                                   1
+phương tiện giao thông đang di chuyển                  1
+phương tiện đang đi thẳng trên trục đường chính        1
+phương tiện đi làn chính                               1
+phương đi thẳng                                        1
+tài xế xe máy                                          1
+xe                                                     1
+xe ben xanh đen                                        1
+xe bồn                                                 1
+Xe camera hành trình                                   1
+xe chạy tới                                            1
+xe con màu bạc                                         1
+xe máy do người áo đen điều khiển                      1
+xe máy khác                                            1
+Xe máy màu trắng                                       1
+xe máy màu tối                                         1
+xe máy màu đen                                         1
+Xe máy màu đen do người đàn ông mặc áo sọc điều khiển  1
+xe máy đang đi thẳng                                   1
+xe máy đang đi thẳng tới                               1
+xe máy đi đúng chiều                                   1
+Xe sedan màu đỏ                                        1
+xe SUV bạc                                             1
+xe taxi                                                1
+xe taxi xanh                                           1
+xe tải ben                                             1
+xe tải lớn                                             1
+xe tải màu xanh                                        1
+xe tải phía sau                                        1
+xe tải phía trước                                      1
+xe tải thùng                                           1
+xe tải thùng kín                                       1
+xe ô tô (gắn camera hành trình)                        1
+xe ô tô con gắn cam                                    1
+xe ô tô con màu bạc                                    1
+xe ô tô con màu trắng                                  1
+xe ô tô gắn camera                                     1
+xe ô tô màu bạc                                        1
+xe ô tô màu xám                                        1
+xe ô tô SUV màu đỏ                                     1
+xe ô tô đang gắn camera hành trình                     1
+xe đang lưu thông thẳng                                1
+xe đang lưu thông trên đường chính                     1
+xe đang tới                                            1
+xe đang đi thẳng trên trục đường ưu tiên               1
+xe đang đi thẳng ở làn đối diện                        1
+xe đap phía trước                                      1
+ô tô con màu bạc                                       1
+ô tô taxi xanh                                         1
+
+[kiểu xung đột]
+Giá trị   Số câu
+--------  ------
+K01       1
+K02       5
+K03       0
+K04       18
+K05       19
+K06       4
+K07       1
+K08       16
+K09       10
+K10       3
+K11       5
+K12       4
+K13       3
+K14       32
+K15       6
+K16       6
+K17       0
+K18       5
+không rõ  0
+
+[hành động]
+Giá trị                        Số câu
+-----------------------------  ------
+K01: không giảm tốc            0
+K01: tăng tốc                  0
+K02: phanh gấp                 0
+K02: dừng đột ngột             1
+K03: không giảm tốc            0
+K03: tăng tốc                  0
+K04: chuyển sang làn bên trái  0
+K04: chuyển sang làn bên phải  0
+K05: vượt bên trái             0
+K05: vượt bên phải             0
+K05: len giữa                  6
+K06: rẽ trái                   2
+K06: rẽ phải                   2
+K07: mở cửa xe                 0
+K07: ra khỏi chỗ đỗ            1
+K08: lấn khi vượt              7
+K08: lấn khi vào cua           4
+K08: lấn khi đi thẳng          0
+K09: đi thẳng ngược chiều      0
+K10: rẽ trái                   3
+K10: quay đầu                  0
+K11: từ trái sang phải         0
+K11: từ phải sang trái         0
+K12: ra từ bên trái            0
+K12: ra từ bên phải            0
+K13: quay đầu sang trái        0
+K13: quay đầu sang phải        0
+K14: từ trái sang phải         0
+K14: từ phải sang trái         1
+K15: từ trái sang phải         0
+K15: từ phải sang trái         0
+K15: đi dọc đường              0
+K16: từ trái sang phải         1
+K16: từ phải sang trái         4
+K17: lùi xe                    0
+K18: trượt                     2
+K18: văng khỏi làn             0
+K18: nổ lốp                    2
+
+[tốc độ]
+Giá trị         Số câu
+--------------  ------
+phanh gấp       1
+dừng đột ngột   1
+tăng tốc        5
+không giảm tốc  19
+đứng yên        2
+
+[bên né]
+Giá trị    Số câu
+---------  ------
+chủ thể    9
+đối tượng  6
+cả hai     0
+
+[cách né]
+Giá trị                Số câu
+---------------------  ------
+phanh gấp              9
+đánh lái sang trái     0
+đánh lái sang phải     1
+phanh gấp và đánh lái  0
+
+[kết quả né]
+Giá trị                 Số câu
+----------------------  ------
+tránh được              0
+ngã, trượt              4
+vẫn chạm                3
+chạm vào thực thể khác  0
+
+3. MỌI CỤM BỊ K (codebook thiếu lựa chọn)
+Ô              Cụm không khớp                                                                                     Bằng chứng                                                                                         Video  Câu
+-------------  -------------------------------------------------------------------------------------------------  -------------------------------------------------------------------------------------------------  -----  -----
+chủ thể        Xe tải ben màu xám đậm di chuyển quá sát bên trái ô tô màu trắng và xe ô tô Ford quá sát bên phải  Xe tải ben màu xám đậm di chuyển quá sát bên trái ô tô màu trắng và xe ô tô Ford quá sát bên phải  #27    C0137
+chủ thể        Xe ô tô trắng đi vào không gian hẹp giữa các xe và xe Ford Ranger di chuyển                        Xe ô tô trắng đi vào không gian hẹp giữa các xe và xe Ford Ranger di chuyển                        #27    C0140
+cách né        lạng tay lái                                                                                       lạng tay lái                                                                                       #11    C0064
+cách né        đánh lái gấp                                                                                       đánh lái gấp                                                                                       #10    C0057
+hành động      tự mất thăng bằng                                                                                  tự mất thăng bằng                                                                                  #42    C0210
+kiểu xung đột  di chuyển quá sát                                                                                  di chuyển quá sát                                                                                  #27    C0137
+kiểu xung đột  thay đổi hướng đột ngột (tiến lên khi đang lùi)                                                    thay đổi hướng đột ngột (tiến lên khi đang lùi)                                                    #7     C0043
+kiểu xung đột  đánh lái                                                                                           đánh lái                                                                                           #27    C0139
+tốc độ         chạy nhanh                                                                                         chạy nhanh                                                                                         #31    C0157
+tốc độ         di chuyển nhanh                                                                                    di chuyển nhanh                                                                                    #46    C0235
+tốc độ         phóng nhanh                                                                                        phóng nhanh                                                                                        #53    C0256
+tốc độ         tốc độ rất cao                                                                                     tốc độ rất cao                                                                                     #5     C0029
+tốc độ         tốc độ rất cao                                                                                     tốc độ rất cao                                                                                     #5     C0030
+tốc độ         tốc độ rất cao                                                                                     tốc độ rất cao                                                                                     #5     C0031
+tốc độ         đi tốc độ nhanh                                                                                    đi tốc độ nhanh                                                                                    #23    C0117
+đối tượng      các phương tiện khác                                                                               các phương tiện khác                                                                               #43    C0219
+đối tượng      các phương tiện khác                                                                               các phương tiện khác                                                                               #43    C0220
+đối tượng      các phương tiện phía trước                                                                         các phương tiện phía trước                                                                         #10    C0057
+đối tượng      giữa các xe và xe Ford Ranger                                                                      giữa các xe và xe Ford Ranger                                                                      #27    C0140
+đối tượng      hai xe ô tô                                                                                        hai xe ô tô                                                                                        #15    C0081
+đối tượng      người dắt xe đạp và ô tô đỏ                                                                        người dắt xe đạp và ô tô đỏ                                                                        #8     C0048
+đối tượng      xe ben màu xám và xe bán tải đen                                                                   xe ben màu xám và xe bán tải đen                                                                   #27    C0143
+đối tượng      xe bồn và xe tải                                                                                   xe bồn và xe tải                                                                                   #55    C0262
+đối tượng      xe bồn và xe tải                                                                                   xe bồn và xe tải                                                                                   #55    C0263
+đối tượng      xe bồn và ô tô đỗ                                                                                  xe bồn và ô tô đỗ                                                                                  #55    C0264
+đối tượng      xe ô tô con bên cạnh và xe máy                                                                     xe ô tô con bên cạnh và xe máy                                                                     #43    C0216
+đối tượng      xe ô tô con màu trắng và xe máy chở 2 người phía bên phải                                          xe ô tô con màu trắng và xe máy chở 2 người phía bên phải                                          #43    C0217
+đối tượng      xe ô tô màu trắng và xe máy màu tối chở 2 người                                                    xe ô tô màu trắng và xe máy màu tối chở 2 người                                                    #43    C0218
+đối tượng      ô tô màu trắng và xe ô tô Ford                                                                     ô tô màu trắng và xe ô tô Ford                                                                     #27    C0137
+đối tượng      ô tô, xe máy                                                                                       ô tô khiến cả hai xe máy                                                                           #1     C0005
+đối tượng      ô tô, xe máy do người đàn ông mặc áo xanh điều khiển                                               ô tô ở khoảng cách gần khiến tài xế xe máy do người đàn ông mặc áo xanh điều khiển                 #1     C0003
+đối tượng      ô tô, xe máy đi cùng chiều                                                                         ô tô ở khoảng cách gần khiến tài xế xe máy đi cùng chiều                                           #1     C0006
+
+4. MỌI T THIẾU CHI TIẾT
+Ô              Bằng chứng                                             Video  Câu
+-------------  -----------------------------------------------------  -----  -----
+cách né        né                                                     #38    C0192
+cách né        phanh                                                  #8     C0049
+cách né        tránh                                                  #17    C0096
+cách né        đánh lái qua làn chiều ngược lại                       #17    C0091
+hành động      băng ngang qua đường chính                             #17    C0090
+hành động      băng nhanh qua đường                                   #24    C0120
+hành động      băng qua đường                                         #1     C0002
+hành động      băng qua đường                                         #16    C0086
+hành động      băng qua đường                                         #16    C0087
+hành động      băng qua đường                                         #20    C0106
+hành động      băng qua đường                                         #35    C0178
+hành động      băng qua đường rồi bất ngờ quay đầu đổi hướng          #6     C0037
+hành động      chuyển hướng sang làn đang chạy ngược chiều            #29    C0152
+hành động      chuyển làn                                             #12    C0065
+hành động      chuyển làn                                             #12    C0066
+hành động      chuyển làn                                             #12    C0067
+hành động      chuyển làn                                             #12    C0068
+hành động      chuyển làn                                             #14    C0075
+hành động      chuyển làn                                             #27    C0142
+hành động      chuyển làn                                             #28    C0145
+hành động      chuyển làn                                             #28    C0148
+hành động      chuyển làn                                             #41    C0207
+hành động      chuyển làn                                             #50    C0241
+hành động      chuyển làn                                             #50    C0246
+hành động      chuyển làn                                             #51    C0248
+hành động      chạy giữa đường                                        #40    C0202
+hành động      chạy ngược chiều                                       #29    C0154
+hành động      chạy ngược chiều                                       #40    C0204
+hành động      chạy nhanh qua đường                                   #40    C0206
+hành động      chạy sang đường                                        #40    C0203
+hành động      chạy vào làn                                           #58    C0275
+hành động      cắt ngang                                              #26    C0136
+hành động      cắt ngang làn đường                                    #1     C0001
+hành động      cắt ngang lộ trình                                     #26    C0134
+hành động      cắt ngang lộ trình                                     #26    C0135
+hành động      cắt ngang đường                                        #24    C0122
+hành động      di chuyển ngang giữa đường                             #7     C0039
+hành động      giảm tốc độ                                            #51    C0247
+hành động      lao sang đường                                         #40    C0201
+hành động      lách vào                                               #46    C0233
+hành động      lấn làn ngược chiều                                    #29    C0151
+hành động      lấn làn ngược chiều                                    #59    C0280
+hành động      lấn qua vạch vàng đôi                                  #29    C0153
+hành động      ngang qua đường                                        #1     C0004
+hành động      nhập làn                                               #16    C0089
+hành động      nhập làn                                               #60    C0284
+hành động      nhập làn từ đường phụ/bãi xe ra đường chính            #31    C0156
+hành động      nhập làn đường chính                                   #58    C0276
+hành động      phanh                                                  #30    C0155
+hành động      qua đường                                              #40    C0200
+hành động      qua đường                                              #50    C0244
+hành động      quay đầu                                               #14    C0079
+hành động      quay đầu                                               #7     C0040
+hành động      quay đầu xe                                            #7     C0042
+hành động      ra đường lớn                                           #58    C0277
+hành động      rẻ sang                                                #15    C0084
+hành động      rẽ trái                                                #11    C0062
+hành động      rẽ trái                                                #11    C0063
+hành động      rẽ trái                                                #15    C0080
+hành động      rẽ trái                                                #4     C0025
+hành động      rẽ trái                                                #4     C0026
+hành động      rẽ trái                                                #50    C0245
+hành động      sang đường                                             #14    C0078
+hành động      sang đường                                             #15    C0082
+hành động      sang đường                                             #26    C0132
+hành động      sang đường                                             #26    C0133
+hành động      sang đường                                             #40    C0205
+hành động      sang đường                                             #41    C0208
+hành động      sang đường                                             #41    C0209
+hành động      sang đường                                             #42    C0211
+hành động      sang đường                                             #45    C0232
+hành động      sang đường                                             #48    C0239
+hành động      thắng đột ngột                                         #14    C0073
+hành động      tạt đầu xe máy khác và luồn lách                       #24    C0124
+hành động      vượt                                                   #35    C0172
+hành động      vượt                                                   #35    C0174
+hành động      vượt                                                   #35    C0175
+hành động      vượt                                                   #35    C0176
+hành động      vượt                                                   #4     C0023
+hành động      vượt                                                   #55    C0266
+hành động      vượt lên                                               #35    C0173
+hành động      vượt lên trong không gian hẹp                          #27    C0138
+hành động      vượt qua đường                                         #39    C0199
+hành động      đi chậm lại                                            #60    C0285
+hành động      đi cắt ngang đường                                     #52    C0249
+hành động      đi ngược chiều                                         #13    C0069
+hành động      đi ngược chiều                                         #13    C0070
+hành động      đi ngược chiều                                         #13    C0071
+hành động      đi ngược chiều                                         #13    C0072
+hành động      đi ngược chiều                                         #42    C0212
+hành động      đi ngược chiều                                         #42    C0213
+hành động      đi ngược chiều                                         #42    C0214
+hành động      đi ngược chiều                                         #54    C0261
+hành động      đi qua                                                 #55    C0262
+hành động      đi qua                                                 #55    C0263
+hành động      đi qua                                                 #55    C0264
+hành động      đi qua đường                                           #39    C0197
+hành động      đi ra đường chính                                      #50    C0243
+hành động      đi thẳng                                               #32    C0159
+hành động      đánh lái qua làn chiều ngược lại                       #17    C0091
+hành động      đánh lái sang làn đường                                #9     C0053
+kiểu xung đột  băng nhanh qua đường                                   #24    C0120
+kiểu xung đột  băng qua đường                                         #22    C0114
+kiểu xung đột  băng qua đường                                         #24    C0119
+kiểu xung đột  chuyển hướng                                           #57    C0270
+kiểu xung đột  chuyển hướng                                           #58    C0278
+kiểu xung đột  chuyển hướng hoặc băng qua đường                       #21    C0109
+kiểu xung đột  chuyển hướng ngang qua phía trước ô tô trắng           #2     C0008
+kiểu xung đột  chuyển hướng sang làn đường ngược chiều                #36    C0179
+kiểu xung đột  chuyển hướng sang trái                                 #29    C0149
+kiểu xung đột  chuyển hướng sang trái                                 #36    C0180
+kiểu xung đột  chuyển hướng từ phải sang trái ngay sát đầu ô tô       #3     C0019
+kiểu xung đột  chuyển hướng đột ngột                                  #14    C0074
+kiểu xung đột  chạy hơi lệch trái về phía đầu xe bồn                  #44    C0225
+kiểu xung đột  cùng đi vào giao lộ                                    #32    C0158
+kiểu xung đột  cắt ngang đường                                        #24    C0122
+kiểu xung đột  di chuyển qua giao lộ                                  #39    C0193
+kiểu xung đột  dắt xe qua đường                                       #8     C0047
+kiểu xung đột  húc nhẹ vào đít xe đạp                                 #25    C0129
+kiểu xung đột  khi các phương tiện cùng đi vào khu vực nút giao       #3     C0016
+kiểu xung đột  khi các phương tiện cùng đi vào khu vực nút giao       #3     C0017
+kiểu xung đột  khi các phương tiện cùng đi vào khu vực nút giao       #3     C0018
+kiểu xung đột  khi gặp xe ô tô                                        #34    C0170
+kiểu xung đột  khi qua ngã 3                                          #53    C0256
+kiểu xung đột  khi đi qua ngã tư                                      #53    C0255
+kiểu xung đột  lao sang làn đường                                     #38    C0188
+kiểu xung đột  lấn làn đột ngột                                       #14    C0076
+kiểu xung đột  lấn đường                                              #35    C0177
+kiểu xung đột  qua đường                                              #39    C0194
+kiểu xung đột  quay đầu                                               #2     C0011
+kiểu xung đột  quay đầu                                               #57    C0273
+kiểu xung đột  quay đầu xe                                            #52    C0250
+kiểu xung đột  rẻ sang                                                #15    C0084
+kiểu xung đột  rẽ sang đường                                          #14    C0077
+kiểu xung đột  rẽ sang đường                                          #2     C0009
+kiểu xung đột  rẽ trái                                                #11    C0062
+kiểu xung đột  rẽ trái                                                #11    C0063
+kiểu xung đột  rẽ trái                                                #15    C0080
+kiểu xung đột  rẽ trái                                                #50    C0245
+kiểu xung đột  rẽ trái                                                #52    C0251
+kiểu xung đột  rẽ trái qua ngang đường                                #21    C0111
+kiểu xung đột  rẽ trái tạt đầu                                        #4     C0025
+kiểu xung đột  rẽ trái tạt đầu                                        #4     C0026
+kiểu xung đột  rẽ trái đổi chiều                                      #2     C0013
+kiểu xung đột  sang đường                                             #38    C0189
+kiểu xung đột  sang đường                                             #39    C0195
+kiểu xung đột  sang đường                                             #8     C0045
+kiểu xung đột  sang đường                                             #8     C0046
+kiểu xung đột  tiến vào giao lộ                                       #23    C0115
+kiểu xung đột  tiến vào giao lộ                                       #23    C0116
+kiểu xung đột  tạt đầu                                                #4     C0022
+kiểu xung đột  tạt đầu xe máy khác và luồn lách                       #24    C0124
+kiểu xung đột  va chạm đuôi xe                                        #38    C0187
+kiểu xung đột  va quẹt vào phía sau xe đạp đang di chuyển             #25    C0127
+kiểu xung đột  vào giao lộ                                            #24    C0121
+kiểu xung đột  vượt                                                   #44    C0224
+kiểu xung đột  với xe đap phía trước                                  #25    C0126
+kiểu xung đột  xin rẽ trái                                            #57    C0269
+kiểu xung đột  ôm cua quá sát                                         #53    C0257
+kiểu xung đột  đi qua ngã tư                                          #18    C0098
+kiểu xung đột  đi qua đường                                           #39    C0196
+kiểu xung đột  đi quá sát nhau                                        #15    C0083
+kiểu xung đột  đi sang đường                                          #37    C0185
+kiểu xung đột  đi sang đường                                          #39    C0198
+kiểu xung đột  đi vào giao lộ                                         #18    C0097
+kiểu xung đột  đi vào giao lộ                                         #32    C0160
+kiểu xung đột  đi vào giao lộ                                         #32    C0161
+kiểu xung đột  đâm thẳng qua làn đường                                #21    C0107
+kiểu xung đột  đâm đằng sau xe đạp                                    #25    C0131
+kiểu xung đột  đột ngột chuyển hướng hoặc mất lái lao sang làn đường  #38    C0190
+kiểu xung đột  đột ngột chuyển hướng hoặc mất lái lao sang làn đường  #38    C0191
+kiểu xung đột  đột ngột cắt ngang lộ trình của ô tô                   #1     C0003
+kiểu xung đột  đột ngột cắt ngang lộ trình của ô tô                   #1     C0005
+kiểu xung đột  đột ngột cắt ngang lộ trình của ô tô                   #1     C0006
+kiểu xung đột  đột ngột cắt ngang lộ trình của ô tô                   #1     C0007
+kiểu xung đột  đột ngột di chuyển                                     #52    C0252
+kiểu xung đột  đột ngột sang đường                                    #38    C0192
+tốc độ         băng nhanh                                             #24    C0120
+tốc độ         chạy nhanh                                             #25    C0125
+tốc độ         di chuyển đột ngột                                     #24    C0124
+tốc độ         lao nhanh                                              #19    C0102
+tốc độ         nhanh                                                  #40    C0204
+tốc độ         phóng nhanh                                            #1     C0004
+tốc độ         phóng nhanh                                            #24    C0122
+tốc độ         thắng đột ngột                                         #14    C0073
+tốc độ         tốc độ cao                                             #40    C0203
+tốc độ         với tốc độ nhanh                                       #17    C0090
+tốc độ         đi tốc độ nhanh                                        #19    C0105
+
+5. NGOÀI CODEBOOK (gộp theo loại và đoạn)
+Loại          Đoạn                                                       Số câu  Video
+------------  ---------------------------------------------------------  ------  -----------------------------------------------------------------------------------------
+khác          đột ngột                                                   9       #1 #16 #48 #60
+khác          ở khoảng cách gần                                          9       #1 #2 #19 #26
+khác          bất ngờ                                                    8       #2 #9 #16 #20 #48
+khác          ở khoảng cách quá gần                                      8       #6 #26 #60
+khác          đi nhanh                                                   4       #8 #11 #59
+khác          an toàn                                                    3       #55
+khác          di chuyển lên phía trước                                   3       #43
+khác          đi vào điểm mù bên phải của xe tải lớn                     3       #7
+khác          bất ngờ ngay sát đầu                                       2       #56
+khác          chạy nhanh                                                 2       #11 #14
+khác          di chuyển với tốc độ cao                                   2       #5
+khác          đi vào điểm mù                                             2       #4 #52
+khác          đầu ô tô                                                   2       #19
+khác          đột nhiên                                                  2       #2 #14
+khác          bắt đầu                                                    1       #57
+khác          chạy tốc độ cao                                            1       #11
+khác          di chuyển từ vạch dừng                                     1       #57
+khác          do xe cồng kềnh                                            1       #2
+khác          gây bất ngờ                                                1       #14
+khác          khi di chuyển                                              1       #3
+khác          khi quẹo cua                                               1       #19
+khác          khi thấy                                                   1       #15
+khác          không đủ không gian tránh nhau an toàn                     1       #35
+khác          lao nhanh từ hướng khác ra                                 1       #19
+khác          lệch hướng                                                 1       #9
+khác          lệch hướng sang trái                                       1       #9
+khác          lệch về phía sườn phải                                     1       #4
+khác          nghiêng mạnh                                               1       #9
+khác          rẽ phải                                                    1       #19
+khác          sát đầu                                                    1       #26
+khác          trong điểm mù xe bồn chở nguyên liệu                       1       #44
+khác          trực tiếp vào hông                                         1       #18
+khác          xe ô tô màu trắng nằm trong điểm mù của xe ben             1       #52
+khác          đang di chuyển sát nhau                                    1       #15
+khác          đang di chuyển thẳng                                       1       #28
+khác          đang đi tốc độ cao tới                                     1       #8
+khác          đang ở trong vùng điểm mù phía trước bên trái của xe       1       #57
+kết luận lỗi  thiếu quan sát                                             42      #3 #8 #11 #12 #18 #21 #24 #25 #26 #35 #37 #38 #39 #40 #41 #43 #45 #50 #51 #52 #53 #57 #58
+kết luận lỗi  không quan sát                                             34      #2 #7 #8 #17 #21 #22 #24 #27 #29 #31 #32 #35 #36 #39 #40 #41 #42 #45 #46 #50 #52 #57 #58
+kết luận lỗi  mất lái                                                    10      #9 #10 #21 #29 #34
+kết luận lỗi  không kịp phản ứng                                         7       #2 #6 #30 #38
+kết luận lỗi  không kịp xử lý                                            4       #1 #17
+kết luận lỗi  không chú ý quan sát                                       3       #15 #50 #58
+kết luận lỗi  không quan sát kỹ                                          3       #23 #35
+kết luận lỗi  sự thiếu quan sát                                          3       #3
+kết luận lỗi  bị bất ngờ                                                 2       #7 #11
+kết luận lỗi  khiến tài xế không kịp phản ứng                            2       #6
+kết luận lỗi  không làm chủ tốc độ                                       2       #18 #24
+kết luận lỗi  không thấy                                                 2       #6 #44
+kết luận lỗi  không đảm bảo tốc độ an toàn                               2       #36 #39
+kết luận lỗi  bất ngờ không kịp xử lí                                    1       #38
+kết luận lỗi  bất ngờ không quan sát                                     1       #37
+kết luận lỗi  bị mất kiểm soát tay lái đột ngột                          1       #47
+kết luận lỗi  bị mất lái                                                 1       #11
+kết luận lỗi  k quan sát                                                 1       #8
+kết luận lỗi  không có tầm nhìn                                          1       #35
+kết luận lỗi  không kịp                                                  1       #8
+kết luận lỗi  không kịp phanh                                            1       #60
+kết luận lỗi  không làm chủ được tay lái và tốc độ                       1       #2
+kết luận lỗi  không làm chủ được tốc độ                                  1       #18
+kết luận lỗi  không làm chủ được xe                                      1       #11
+kết luận lỗi  không nhìn xe                                              1       #40
+kết luận lỗi  không quan sát kịp                                         1       #19
+kết luận lỗi  không quan sát phía trước                                  1       #25
+kết luận lỗi  không quan sát thấy                                        1       #1
+kết luận lỗi  không quan sát đường đi                                    1       #24
+kết luận lỗi  không đủ an toàn                                           1       #35
+kết luận lỗi  không ưuan sát                                             1       #39
+kết luận lỗi  mà không chú ý tới                                         1       #39
+kết luận lỗi  mất tầm nhìn                                               1       #1
+kết luận lỗi  qua khúc cua mất lái                                       1       #19
+kết luận lỗi  quan sát                                                   1       #50
+kết luận lỗi  quan sát kỹ                                                1       #24
+kết luận lỗi  sự mất tập trung                                           1       #3
+nhóm khác: E  của xe máy                                                 2       #3
+nhóm khác: E  của ô tô gắn camera hành trình                             1       #3
+nhóm khác: E  do người đi xe mặc áo cam                                  1       #58
+nhóm khác: E  hai xe ô tô màu trắng và xe bán tải                        1       #27
+nhóm khác: E  người đi xe đạp điện                                       1       #18
+nhóm khác: E  người điều khiển xe máy                                    1       #50
+nhóm khác: E  xe gắn camera                                              1       #36
+nhóm khác: E  xe hatchback màu đen                                       1       #33
+nhóm khác: E  xe máy đang di chuyển cùng chiều                           1       #36
+nhóm khác: E  xe tải                                                     1       #33
+nhóm khác: E  xe ô tô trắng                                              1       #36
+nhóm khác: O  mất thăng bằng                                             4       #19
+nhóm khác: O  dẫn đến mất thăng bằng                                     2       #4
+nhóm khác: O  bị mất thăng bằng                                          1       #46
+nhóm khác: O  dẫn đến mất lái                                            1       #59
+nhóm khác: S  khi đi qua giao lộ                                         4       #5
+nhóm khác: S  đi vào ngã tư                                              4       #17
+nhóm khác: S  khi các phương tiện cùng đi vào khu vực nút giao           3       #3
+nhóm khác: S  qua giao lộ                                                2       #11
+nhóm khác: S  tại đoạn đường cong khuất tầm nhìn                         2       #33
+nhóm khác: S  bị ô tô che khuất tầm nhìn                                 1       #1
+nhóm khác: S  che khuất tầm nhìn                                         1       #11
+nhóm khác: S  giao lộ khuất tầm nhìn                                     1       #18
+nhóm khác: S  giữa ngã ba                                                1       #17
+nhóm khác: S  giữa ngã tư                                                1       #24
+nhóm khác: S  giữa đường                                                 1       #6
+nhóm khác: S  khi đi vào giao lộ                                         1       #18
+nhóm khác: S  khi đường đang ùn tắc                                      1       #27
+nhóm khác: S  khuất tầm nhìn                                             1       #49
+nhóm khác: S  không có đèn tín hiệu                                      1       #24
+nhóm khác: S  làn bên phải                                               1       #28
+nhóm khác: S  ngay trước đầu                                             1       #48
+nhóm khác: S  ngã tư khuất tầm nhìn                                      1       #18
+nhóm khác: S  phía sau                                                   1       #28
+nhóm khác: S  phía trước                                                 1       #28
+nhóm khác: S  qua khúc cua                                               1       #11
+nhóm khác: S  trong khi đường đang ùn tắc                                1       #27
+nhóm khác: S  trong khoảng đường hẹp                                     1       #27
+nhóm khác: S  trong không gian hep                                       1       #44
+nhóm khác: S  trên mặt đường trơn trượt                                  1       #59
+nhóm khác: S  trên đoạn đường hẹp                                        1       #35
+nhóm khác: S  tại một giao lộ                                            1       #39
+nhóm khác: S  tại ngã ba                                                 1       #15
+nhóm khác: S  tại đoạn đường cong hẹp                                    1       #33
+nhóm khác: S  với tốc độ nhanh                                           1       #17
+nhóm khác: S  đang di chuyển sát lề đường                                1       #7
+nhóm khác: S  đi sát lề đường                                            1       #25
+nhóm khác: S  đoạn đường hẹp                                             1       #35
+nhóm khác: S  đường trơn                                                 1       #8
+nhóm khác: S  ở khu dân cư                                               1       #40
+nhóm khác: V  không giữ khoảng cách an toàn                              22      #3 #8 #11 #15 #17 #25 #30 #33 #36 #37 #43 #44 #51 #60
+nhóm khác: V  không nhường đường                                         16      #2 #8 #11 #12 #15 #21 #24 #40 #41 #50 #56
+nhóm khác: V  nhường đường                                               11      #2 #8 #17 #31 #32 #38 #42 #45 #57
+nhóm khác: V  lấn làn                                                    6       #27 #33 #42 #46 #59
+nhóm khác: V  đi ngược chiều                                             5       #38 #49 #59
+nhóm khác: V  không xi nhan                                              4       #14 #16 #27 #42
+nhóm khác: V  không đảm bảo khoảng cách an toàn                          4       #28
+nhóm khác: V  vượt ẩu                                                    4       #33 #35 #43 #44
+nhóm khác: V  không nhường đường cho nhau                                3       #15 #23
+nhóm khác: V  nhường đường cho                                           3       #29
+nhóm khác: V  chưa đảm bảo khoảng cách an toàn                           2       #27
+nhóm khác: V  không giữ khoảng cách                                      2       #50 #60
+nhóm khác: V  lấn sang làn đường của xe ô tô                             2       #13
+nhóm khác: V  vượt đèn đỏ                                                2       #43
+nhóm khác: V  chuyển hướng sang làn đường ngược chiều                    1       #36
+nhóm khác: V  chuyển hướng đột ngột giữa làn đường đang lưu thông        1       #14
+nhóm khác: V  chuyển làn không an toàn                                   1       #41
+nhóm khác: V  chạy thẳng khi đèn đỏ                                      1       #43
+nhóm khác: V  di chuyển lấn làn                                          1       #43
+nhóm khác: V  di chuyển quá sát                                          1       #4
+nhóm khác: V  giữ khoảng cách an toàn                                    1       #24
+nhóm khác: V  giữ đúng khoảng các với các phương tiện phía trước         1       #15
+nhóm khác: V  không chấp hành tín hiệu đèn đỏ                            1       #5
+nhóm khác: V  không giữ khoảng cách với xe đạp                           1       #25
+nhóm khác: V  không nhường                                               1       #5
+nhóm khác: V  không nhường đường cho xe đang lưu thông trên đường chính  1       #16
+nhóm khác: V  không nhường đường cho xe đi thẳng                         1       #23
+nhóm khác: V  không xin đường                                            1       #14
+nhóm khác: V  không xin đường và đột ngột chuyển hướng                   1       #57
+nhóm khác: V  không đi đúng làn đường                                    1       #21
+nhóm khác: V  không đảm bảo an toàn                                      1       #55
+nhóm khác: V  không đội mũ                                               1       #24
+nhóm khác: V  lấn làn đường                                              1       #33
+nhóm khác: V  lấn làn để vượt                                            1       #33
+nhóm khác: V  lấn làn đột ngột giữa làn đường đang lưu thông             1       #14
+nhóm khác: V  lấn sang làn đường của ô tô đi hướng ngược lại             1       #13
+nhóm khác: V  lấn đường                                                  1       #35
+nhóm khác: V  nhường đường cho phương đi thẳng                           1       #57
+nhóm khác: V  nhường đường cho xe đang tới                               1       #22
+nhóm khác: V  rẽ sang đường đột ngột giữa làn đường đang lưu thông       1       #14
+nhóm khác: V  sai quy định                                               1       #45
+nhóm khác: V  vượt trong không gian hẹp                                  1       #7
+nhóm khác: V  đi quá nhanh                                               1       #58
+nhóm khác: V  đi quá tốc độ                                              1       #58
+ý định        cố                                                         4       #15 #27 #55
+ý định        cố gắng                                                    3       #4
+ý định        cố tình                                                    3       #7 #15
+ý định        để tránh nhau                                              3       #32
+ý định        muốn                                                       1       #44
+ý định        muốn vượt lên                                              1       #35
+ý định        đều muốn đi                                                1       #27
+ý định        để                                                         1       #59
+ý định        định                                                       1       #39
+
+6. GHI CHÚ CỦA MODEL
+Video  Câu    Ghi chú
+-----  -----  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#1     C0001  Hành vi 'cắt ngang làn đường' được hiểu gần nghĩa nhất là băng ngang đường (K14); câu không nêu rõ hướng di chuyển từ trái hay phải nên hành động là T.
+#1     C0003  Câu nêu hai đối tượng (ô tô và xe máy do người đàn ông mặc áo xanh điều khiển) nhưng không cho biết thứ tự va chạm hay né nên ô đối tượng là K.
+#1     C0004  'phóng nhanh' không đủ chi tiết để xác định có tăng tốc hay không giảm tốc theo codebook tốc độ nên ô tốc độ là T.
+#1     C0005  Câu nhắc tới ô tô và một xe máy khác nhưng không rõ bên nào bị va chạm hay phải né trước nên đối tượng là K.
+#1     C0006  Câu nêu hai đối tượng (ô tô và xe máy đi cùng chiều) nhưng không cho biết thứ tự va chạm hay né nên đối tượng là K.
+#2     C0008  Câu chỉ nói 'chuyển hướng ngang qua phía trước' không đủ chi tiết để xác định K06, K10, K11 hay K14 nên kiểu xung đột là T theo quy tắc 4.
+#2     C0009  'rẽ sang đường' không đủ chi tiết để xác định kiểu xung đột cụ thể nên là T theo quy tắc 4.
+#2     C0011  Chỉ nói 'quay đầu' không rõ bối cảnh (giữa đường hay giao lộ/ngược chiều) để chọn K10 hay K13 nên kiểu xung đột là T theo quy tắc 4.
+#2     C0013  Câu không nêu rõ hướng đi của ô tô nên không đủ căn cứ chọn K06, K10 hay K13, theo quy tắc 4 là T.
+#3     C0019  Kiểu xung đột là T theo quy tắc 4 vì 'chuyển hướng từ phải sang trái' không đủ chi tiết để xác định K04, K06 hay K14.
+#4     C0020  Xe tải đang di chuyển bên trái được hiểu là xe đi cùng chiều bên cạnh, xe máy quẹo trái cắt qua (K06).
+#4     C0022  Câu dùng từ 'tạt đầu' nhưng không đủ chi tiết để xác định K04, K05 hay K06.
+#4     C0025  Câu không nói rõ xe tải đi cùng chiều hay ngược chiều nên không đủ chi tiết để chọn K06 hay K10.
+#4     C0026  Câu không nói rõ xe tải đi cùng chiều hay ngược chiều nên không đủ chi tiết để chọn K06 hay K10.
+#6     C0037  Hành động là T vì câu nói 'băng qua đường rồi bất ngờ quay đầu đổi hướng' không nêu rõ từ trái sang phải hay từ phải sang trái.
+#7     C0039  Xe tải di chuyển ngang là bên thay đổi chuyển động/băng ngang trước nên là chủ thể. Hành động K14 để T vì không nói rõ hướng từ trái sang phải hay từ phải sang trái.
+#7     C0040  Xe tải quay đầu là bên thay đổi chuyển động trước nên là chủ thể. Hành động để T vì không rõ quay đầu sang trái hay phải.
+#7     C0042  Xe tải quay đầu là bên thay đổi chuyển động trước nên là chủ thể. Hành động để T vì không rõ quay đầu sang trái hay phải.
+#7     C0043  Xe tải thay đổi chuyển động trước khiến người xe máy phản ứng nên xe tải là chủ thể. Đổ xe thuộc loại sự kiện va chạm theo quy định tự lật/ngã.
+#8     C0045  Kiểu xung đột là T vì 'sang đường' không đủ chi tiết để xác định K11 hay K14 và hướng di chuyển.
+#8     C0046  Kiểu xung đột là T vì 'sang đường' không đủ chi tiết để xác định K11 hay K14 và hướng di chuyển.
+#8     C0047  Người đi xe đạp dắt xe qua đường là bên thay đổi chuyển động trước nên là chủ thể.
+#8     C0048  Câu nêu hai đối tượng (người dắt xe đạp và ô tô đỏ) nhưng không cho biết thứ tự va chạm nên đối tượng là K.
+#8     C0049  Sự cố K18 tự trượt bánh nên đối tượng là T theo quy tắc codebook. 'phanh' không nói rõ phanh gấp nên cách né là T.
+#9     C0051  Theo codebook, va chạm bao gồm cả xe tự lật.
+#9     C0053  "đánh lái sang làn đường" thể hiện việc chuyển làn (K04), nhưng không nói rõ trái hay phải nên hành động là T theo quy tắc 4.
+#9     C0054  "bể bánh xe" được hiểu tương đương với nổ lốp trong ngữ cảnh sự cố phương tiện.
+#9     C0056  Theo codebook, va chạm bao gồm cả xe tự lật.
+#10    C0057  Đối tượng nêu số nhiều không rõ thứ tự nên là K theo quy tắc.
+#11    C0062  Câu không nói rõ xe máy đi chiều nào so với ô tô (cùng chiều, ngược chiều hay cắt ngang) nên kiểu xung đột và hành động là T theo quy tắc 4.
+#11    C0063  Câu không nói rõ xe máy đi chiều nào so với ô tô (cùng chiều, ngược chiều hay cắt ngang) nên kiểu xung đột và hành động là T theo quy tắc 4.
+#14    C0073  'thắng đột ngột' là phanh đột ngột, không khớp hoàn toàn với 'phanh gấp' hay 'dừng đột ngột' ở hành động và tốc độ, nên hành động và tốc độ để T theo quy tắc 4.
+#14    C0074  Chuyển hướng đột ngột không nêu rõ rẽ trái, rẽ phải hay quay đầu nên kiểu xung đột là T.
+#14    C0075  Chuyển làn nhưng không nói rõ trái hay phải nên hành động là T.
+#14    C0076  'lấn làn' không nói rõ là lấn sang phần đường ngược chiều hay lấn làn cùng chiều, không đủ chi tiết để chọn K08 nên kiểu xung đột là T.
+#14    C0077  Rẽ sang đường nhưng không nói rõ hướng (trái/phải) hay bối cảnh xung đột (K06, K10) nên kiểu xung đột là T.
+#15    C0080  Câu chỉ nói rẽ trái tại ngã ba nhưng không nêu đối tượng nên không đủ cơ sở để gán K06 hay K10.
+#15    C0082  Chủ thể là xe ô tô đỏ vì đây là bên đổi chuyển động (sang đường), xe tải đi thẳng là đối tượng.
+#15    C0084  Hành vi rẽ sang không nói rõ hướng (trái/phải) và không rõ vị trí/hướng đối tượng nên không đủ chi tiết xác định kiểu xung đột và hành động.
+#16    C0086  Hành động là T vì không rõ hướng 'từ trái sang phải' hay 'từ phải sang trái'.
+#16    C0087  Hành động là T vì không nói rõ hướng băng qua.
+#16    C0089  Hành động là T do không nói nhập sang trái hay phải.
+#17    C0090  Hành động là T vì không xác định hướng từ trái sang phải hay phải sang trái; tốc độ là T do không khớp các lựa chọn trong codebook.
+#17    C0091  Hành động lấn làn là T vì không nói rõ lấn khi vượt/vào cua/đi thẳng. Cách né là T vì không nói rõ đánh lái trái hay phải.
+#17    C0096  Xe tải kéo dừng đột ngột trước nên là chủ thể; xe ben xanh đen né nên là đối tượng.
+#20    C0106  Hành động là T vì câu chỉ nói băng qua đường, không nói rõ từ trái sang phải hay từ phải sang trái.
+#21    C0107  Kiểu xung đột là T vì câu chỉ nói đâm thẳng qua làn đường của xe khác, không nêu rõ là làn ngược chiều (K08) hay cùng chiều (K04).
+#21    C0109  Kiểu xung đột là T vì câu đưa ra hai khả năng chuyển hướng hoặc băng qua đường nên không xác định được mã cụ thể.
+#21    C0111  Kiểu xung đột là T vì câu chỉ nói rẽ trái qua ngang đường mà không nhắc đến phương tiện khác nên không đủ chi tiết để chọn K06, K10 hay K14.
+#22    C0114  Kiểu xung đột là T vì 'băng qua đường' không nói rõ giữa đoạn hay tại giao lộ và không rõ hướng.
+#23    C0117  Xe máy màu nâu được xác định là chủ thể vì là bên gây xung đột khi không nhường đường cho xe đi thẳng.
+#24    C0119  Kiểu xung đột là T vì 'băng qua đường' không đủ chi tiết để xác định K14 hay vị trí cụ thể.
+#25    C0127  Kiểu xung đột là T theo quy tắc 4 do câu nêu va chạm vào phía sau xe đạp đang di chuyển nhưng không đủ chi tiết để xác định K01, K02 hay K03.
+#25    C0129  Kiểu xung đột là T theo quy tắc 4 do câu nêu húc vào đít xe đạp nhưng không đủ chi tiết để xác định K01, K02 hay K03.
+#25    C0131  Kiểu xung đột là T theo quy tắc 4 do câu nêu đâm đằng sau xe đạp nhưng không đủ chi tiết để xác định K01, K02 hay K03.
+#26    C0132  Hành động là T theo quy tắc 4 do câu không nêu rõ hướng từ trái sang phải hay từ phải sang trái.
+#26    C0133  Hành động là T theo quy tắc 4 do câu không nêu rõ hướng từ trái sang phải hay từ phải sang trái.
+#28    C0144  Câu có cả chuyển làn và rẽ trái, chọn K06 theo hành động rẽ trái.
+#28    C0146  Câu có cả chuyển làn và rẽ phải, chọn K06 theo hành động rẽ phải.
+#28    C0147  Câu có cả chuyển làn và rẽ phải, chọn K06 theo hành động rẽ phải.
+#28    C0148  Hành động là T do câu chỉ nói 'chuyển làn' mà không nói rõ sang trái hay sang phải.
+#29    C0149  'chuyển hướng sang trái' không đủ chi tiết để xác định K04 (chuyển làn), K06 (rẽ cắt qua xe cùng chiều), K10 (rẽ cắt qua xe ngược chiều) hay K13 (quay đầu) nên kiểu xung đột là T.
+#29    C0151  Hành động là T do câu không nói rõ lấn khi vượt, khi vào cua hay khi đi thẳng.
+#29    C0152  Hành động là T vì câu không nêu rõ lấn khi vượt, lấn khi vào cua hay lấn khi đi thẳng.
+#29    C0153  Vạch vàng đôi phân chia hai chiều xe chạy, lấn qua vạch vàng đôi tương ứng K08. Hành động là T do không nói rõ lấn khi nào.
+#29    C0154  Hành động là T do câu chỉ nói 'chạy ngược chiều', không nói rõ là 'đi thẳng ngược chiều'.
+#30    C0155  Chủ thể là xe phía trước do thực hiện phanh trước; hành động là T vì câu chỉ ghi 'phanh' không đủ chi tiết phân biệt phanh gấp hay dừng đột ngột.
+#33    C0166  Cụm 'xe ô tômàu đen của xe tải' có thể do lỗi gõ, trích nguyên văn làm chủ thể.
+#35    C0177  Câu chỉ nói 'lấn đường' không nói rõ lấn sang làn ngược chiều hay lấn làn cùng chiều nên kiểu xung đột là T theo quy tắc 4.
+#36    C0179  Cụm 'chuyển hướng sang làn đường ngược chiều' không đủ chi tiết để xác định rẽ trái (K10), quay đầu (K10) hay lấn làn (K08) nên kiểu xung đột là T.
+#36    C0180  'Chuyển hướng sang trái' không nói rõ là chuyển làn (K04), rẽ cắt xe cùng chiều (K06), rẽ cắt xe ngược chiều (K10) hay quay đầu (K13) nên kiểu xung đột là T theo quy tắc 4.
+#36    C0181  Câu không cho biết bên nào thay đổi chuyển động trước nên chủ thể và đối tượng đều là T.
+#38    C0187  Kiểu xung đột là T vì va chạm đuôi xe có thể thuộc K01, K02 hoặc K03 nhưng câu không nêu trạng thái chuyển động của xe phía trước.
+#38    C0188  Kiểu xung đột là T vì 'lao sang làn đường' không nói rõ cùng chiều (K04) hay ngược chiều (K08).
+#38    C0189  Chủ thể là xe đang sang đường do thay đổi chuyển động trước xe đi thẳng. Kiểu xung đột là T vì 'sang đường' không đủ chi tiết để xác định K10 hay K14.
+#40    C0204  Hành động của K09 chỉ có 'đi thẳng ngược chiều', câu ghi 'chạy ngược chiều' không nói rõ đi thẳng nên là T. Tốc độ 'nhanh' không khớp với các lựa chọn 'tăng tốc', 'không giảm tốc',... nên là T theo quy tắc 4.
+#40    C0205  Hành động của K15 cần hướng (từ trái sang phải / từ phải sang trái / đi dọc đường), câu chỉ nói 'sang đường' nên là T.
+#40    C0206  Hành động của K15 cần hướng chạy, câu chỉ nói 'chạy nhanh qua đường' nên là T.
+#41    C0207  Hành động của K04 yêu cầu rõ bên trái hay bên phải, câu chỉ nói 'chuyển làn' nên hành động là T.
+#41    C0208  Hành động của K14 cần hướng (từ trái sang phải / từ phải sang trái), câu chỉ nói 'sang đường' nên hành động là T.
+#42    C0210  K18 không có đối tượng nên ô đối tượng là T theo codebook. Hành động của K18 chỉ gồm 'trượt', 'văng khỏi làn', 'nổ lốp', không có 'mất thăng bằng' nên hành động là K.
+#42    C0212  Hành động là T theo quy tắc 4 vì câu chỉ nói 'đi ngược chiều', không nói rõ 'đi thẳng ngược chiều'.
+#42    C0213  Hành động là T theo quy tắc 4 vì câu chỉ nói 'đi ngược chiều', không nói rõ 'đi thẳng ngược chiều'.
+#42    C0214  Hành động là T theo quy tắc 4 vì câu chỉ nói 'đi ngược chiều', không nói rõ 'đi thẳng ngược chiều'.
+#43    C0216  Câu nêu hai đối tượng (xe ô tô con bên cạnh và xe máy) nhưng không cho biết thứ tự va chạm hay né tránh nên ô đối tượng là K.
+#43    C0217  Câu nêu hai đối tượng (xe ô tô con màu trắng và xe máy chở 2 người phía bên phải) nhưng không cho biết thứ tự va chạm hay né tránh nên ô đối tượng là K.
+#43    C0218  Câu nêu hai đối tượng (xe ô tô màu trắng và xe máy...) nhưng không cho biết thứ tự va chạm nên đối tượng là K.
+#43    C0220  Hành động là T vì câu chỉ nói 'chạy thẳng', không nói 'không giảm tốc' hay 'tăng tốc'.
+#44    C0224  Kiểu xung đột K05 cần có bối cảnh vượt/len giữa các xe, ở đây chỉ nói 'vượt ẩu' chung chung không rõ vượt bên nào hay len giữa nên để T theo quy tắc 4.
+#44    C0225  Câu chỉ nói 'chạy hơi lệch trái' không đủ chi tiết để xác định là chuyển làn (K04), rẽ (K06) hay lấn làn (K08).
+#45    C0228  Câu dùng cụm 'chuyển làn sang đường', chọn K04 theo từ 'chuyển làn'.
+#48    C0239  Hành động là T vì câu chỉ nói sang đường mà không nêu rõ từ trái sang phải hay từ phải sang trái.
+#50    C0241  Hành động là T vì câu không nói rõ chuyển sang làn bên trái hay bên phải.
+#50    C0243  Hành động là T vì câu không nói rõ ra từ bên trái hay bên phải.
+#50    C0244  Hành động là T vì câu không nói rõ từ trái sang phải hay từ phải sang trái.
+#50    C0245  Kiểu xung đột là T theo quy tắc 4 do 'rẽ trái' không đủ chi tiết để xác định K06 (cắt qua xe cùng chiều) hay K10 (cắt đầu xe ngược chiều).
+#52    C0250  Câu chỉ nói quay đầu xe, không đủ chi tiết để phân biệt giữa K10 (cắt đầu xe ngược chiều) và K13 (giữa đường).
+#52    C0251  Không rõ ô tô đi cùng chiều (K06) hay ngược chiều (K10) nên kiểu xung đột là T.
+#52    C0253  Câu chỉ nêu vị trí tương đối, không có hành vi hay bên nào thay đổi chuyển động trước nên không xác định được chủ thể và đối tượng.
+#53    C0255  Kiểu xung đột là T theo quy tắc 4 do câu nêu ngã tư nhưng không đủ chi tiết về hướng di chuyển của hai xe.
+#53    C0257  Kiểu xung đột là T theo quy tắc 4 do 'ôm cua quá sát' không nói rõ có lấn sang làn ngược chiều hay không.
+#54    C0261  Hành động là T vì câu chỉ nêu 'đi ngược chiều', không đủ chi tiết để xác định 'đi thẳng ngược chiều'.
+#56    C0267  Kiểu xung đột K14 (băng ngang đường giữa đoạn) do 'sang đường' nhưng không rõ hướng từ trái sang phải hay từ phải sang trái nên hành động là T.
+#56    C0268  Kiểu xung đột K14 (băng ngang đường giữa đoạn) do 'sang đường' nhưng không rõ hướng từ trái sang phải hay từ phải sang trái nên hành động là T.
+#57    C0269  Câu không nói rõ xe màu bạc rẽ trái cắt qua chiều nào (cùng chiều hay ngược chiều hay tại giao lộ), nên kiểu xung đột chưa đủ chi tiết để chọn (T). Chủ thể là xe màu bạc đổi hướng rẽ.
+#57    C0270  Không rõ chuyển hướng là rẽ hay chuyển làn hay quay đầu nên kiểu xung đột là T.
+#57    C0271  Kiểu xung đột K14 (băng ngang đường giữa đoạn) do 'sang đường' nhưng không rõ hướng trái/phải nên hành động là T.
+#57    C0272  Kiểu xung đột không đủ thông tin để xác định cụ thể trong codebook nên để T.
+#57    C0273  Hành động quay đầu có thể là K10 hoặc K13 nhưng không đủ dữ kiện xác định kiểu xung đột cụ thể nên để T.
+#58    C0275  Hành động là T do câu chỉ nói chạy vào làn mà không nêu rõ bên trái hay bên phải.
+#58    C0276  Hành động là T do câu không nói rõ chuyển/nhập sang làn bên trái hay bên phải.
+#58    C0277  Hành động là T do không rõ ra từ bên trái hay bên phải.
+#58    C0278  Kiểu xung đột là T theo quy tắc 4 do câu chỉ nói chung chung 'chuyển hướng' mà không đủ chi tiết để chọn K06, K10 hay K13.
+#59    C0280  Hành động là T do câu không nói rõ lấn khi vượt, khi vào cua hay khi đi thẳng.
+#60    C0284  Hành động là T do câu không nêu rõ chuyển sang làn bên trái hay bên phải.
+#60    C0285  Xe phía trước thay đổi chuyển động (giảm tốc/chậm lại) trước nên là chủ thể. Hành động của K02 là T vì không nói rõ phanh gấp hay dừng đột ngột.
+
+7. LỖI (không tính vào độ phủ)
+Video  Câu    Lô     Lỗi
+-----  -----  -----  -------------------------------------------------------------------
+#4     C0021  C-003  hành động: M cần kiểu xung đột M với mã K01-K18 (đang là 'T', None)
+#4     C0021  C-003  hành động: kiểu xung đột là T thì hành động phải là T
+#21    C0113  C-017  hành động: M cần kiểu xung đột M với mã K01-K18 (đang là 'T', None)
+#21    C0113  C-017  hành động: kiểu xung đột là T thì hành động phải là T
+
+8. TỪNG CÂU TRẢ LỜI
+Câu    Video  Số người  loại sự kiện  chủ thể                                                  đối tượng                                                kiểu xung đột  hành động            tốc độ            bên né       cách né               kết quả né    Câu trả lời
+-----  -----  --------  ------------  -------------------------------------------------------  -------------------------------------------------------  -------------  -------------------  ----------------  -----------  --------------------  ------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+C0001  #1     1         M:va chạm     M:xe 2 bánh do người đàn ông mặc áo trắng điều khiển     M:bên ở phía trái                                        M:K14          T                    T                 T            T                     T             Người đàn ông mặc áo trắng điều khiển xe 2 bánh cắt ngang làn đường dẫn đến va chạm với bên ở phía trái
+C0002  #1     1         T             M:xe máy                                                 M:xe máy đang đi thẳng tới                               M:K14          T                    T                 T            T                     T             Xe máy băng qua đường bị ô tô che khuất tầm nhìn không quan sát thấy có một xe máy đang đi thẳng tới.
+C0003  #1     1         T             M:xe máy do người đàn ông mặc áo trắng điều khiển        K                                                        T              T                    T                 T            T                     T             Xe máy do người đàn ông mặc áo trắng điều khiển đột ngột cắt ngang lộ trình của ô tô ở khoảng cách gần khiến tài xế xe máy do người đàn ông mặc áo xanh điều khiển không kịp xử lý.
+C0004  #1     1         T             M:xe máy                                                 T                                                        M:K14          T                    T                 T            T                     T             Xe máy phóng nhanh ngang qua đường.
+C0005  #1     1         T             M:xe máy                                                 K                                                        T              T                    T                 T            T                     T             Xe máy đột ngột cắt ngang lộ trình của ô tô khiến cả hai xe máy mất tầm nhìn và không kịp xử lý.
+C0006  #1     1         T             M:xe máy                                                 K                                                        T              T                    T                 T            T                     T             Xe máy đột ngột cắt ngang lộ trình của ô tô ở khoảng cách gần khiến tài xế xe máy đi cùng chiều không kịp xử lý.
+C0007  #1     1         T             M:xe máy                                                 M:ô tô                                                   T              T                    T                 M:đối tượng  M:phanh gấp           T             Xe máy đột ngột cắt ngang lộ trình của ô tô ở khoảng cách gần khiến tài xế ô tô phanh gấp
+C0008  #2     1         T             M:xe ba gác máy                                          M:ô tô trắng                                             T              T                    T                 T            T                     T             Xe ba gác máy chuyển hướng ngang qua phía trước ô tô trắng ở khoảng cách gần.
+C0009  #2     1         T             M:xe ba gác máy                                          T                                                        T              T                    T                 T            T                     T             Xe ba gác máy rẽ sang đường do xe cồng kềnh không làm chủ được tay lái và tốc độ.
+C0010  #2     1         T             M:xe ba gác                                              M:ô tô con màu bạc                                       M:K10          M:rẽ trái            T                 T            T                     T             Xe ba gác rẽ trái nhưng không nhường đường cho ô tô con màu bạc đang đi thẳng ở chiều ngược lại.
+C0011  #2     1         T             M:xe máy ba gác                                          T                                                        T              T                    T                 T            T                     T             Xe máy ba gác quay đầu bất ngờ
+C0012  #2     1         T             M:xe máy                                                 M:ô tô                                                   M:K10          M:rẽ trái            T                 T            T                     T             Xe máy rẽ trái nhưng không quan sát nhường đường cho ô tô đang đi thẳng ở chiều ngược lại.
+C0013  #2     1         T             M:xe máy                                                 M:ô tô                                                   T              T                    T                 T            T                     T             Xe máy đột nhiên rẽ trái đổi chiều khiến ô tô không kịp phản ứng.
+C0014  #2     1         T             M:xe máy thồ                                             M:ô tô                                                   M:K10          M:rẽ trái            T                 T            T                     T             xe máy thồ rẽ trái nhưng không nhường đường cho ô tô đang đi thẳng ở chiều ngược lại.
+C0015  #3     1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Sự mất tập trung khi di chuyển.
+C0016  #3     1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Sự thiếu quan sát của xe máy và không giữ khoảng cách an toàn của ô tô gắn camera hành trình khi các phương tiện cùng đi vào khu vực nút giao.
+C0017  #3     1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Sự thiếu quan sát và không giữ khoảng cách an toàn của xe máy khi các phương tiện cùng đi vào khu vực nút giao.
+C0018  #3     3         T             T                                                        T                                                        T              T                    T                 T            T                     T             Sự thiếu quan sát và không giữ khoảng cách an toàn khi các phương tiện cùng đi vào khu vực nút giao.
+C0019  #3     1         T             M:xe máy màu tối                                         M:ô tô                                                   T              T                    T                 T            T                     T             Xe máy màu tối chuyển hướng từ phải sang trái ngay sát đầu ô tô thiếu quan sát và không giữ khoảng cách an toàn.
+C0020  #4     1         M:va chạm     M:xe máy                                                 M:xe tải                                                 M:K06          M:rẽ trái            T                 T            T                     T             Xe máy cố gắng quẹo trái trước đầu xe tải đang di chuyển dẫn đến va chạm với xe tải đang di chuyển bên trái.
+C0021  #4     1         lỗi           lỗi                                                      lỗi                                                      lỗi            lỗi                  lỗi               lỗi          lỗi                   lỗi           Xe máy cố gắng rẽ trái trong khi xe tải đang di chuyển không để ý dẫn tai nạn.
+C0022  #4     1         T             M:xe máy                                                 M:xe tải                                                 T              T                    T                 T            T                     T             Xe máy cố gắng tạt đầu và đi vào điểm mù của xe tải đang di chuyển dẫn đến mất thăng bằng.
+C0023  #4     1         T             M:xe máy                                                 M:xe tải                                                 M:K05          T                    T                 T            T                     T             Xe máy cố gắng vượt xe tải đang di chuyển dẫn đến mất thăng bằng
+C0024  #4     1         T             M:xe máy màu đỏ sẫm                                      M:xe tải                                                 T              T                    T                 T            T                     T             Xe máy màu đỏ sẫm di chuyển quá sát và lệch về phía sườn phải xe tải.
+C0025  #4     1         T             M:xe máy                                                 M:xe tải                                                 T              T                    M:tăng tốc        T            T                     T             Xe máy rẽ trái tạt đầu sát xe tải, xe tải lại tăng tốc ngay đúng lúc đó.
+C0026  #4     1         T             M:xe máy                                                 M:xe tải thùng kín                                       T              T                    T                 T            T                     T             Xe máy rẽ trái tạt đầu xe tải thùng kín đang di chuyển tới.
+C0027  #5     1         T             M:xe tải ben cabin màu xanh                              T                                                        T              T                    T                 T            T                     T             Xe tải ben cabin màu xanh di chuyển với tốc độ cao
+C0028  #5     1         T             M:xe tải ben                                             T                                                        T              T                    T                 T            T                     T             Xe tải ben di chuyển với tốc độ cao khi đi qua giao lộ.
+C0029  #5     2         T             M:xe tải ben                                             T                                                        T              T                    K                 T            T                     T             Xe tải ben di chuyển với tốc độ rất cao khi đi qua giao lộ.
+C0030  #5     2         T             M:xe tải ben                                             T                                                        T              T                    K                 T            T                     T             Xe tải ben không chấp hành tín hiệu đèn đỏ và di chuyển với tốc độ rất cao khi đi qua giao lộ.
+C0031  #5     1         T             M:xe tải ben                                             M:xe ô tô con gắn cam                                    T              T                    K                 T            T                     T             Xe tải ben không nhường xe ô tô con gắn cam và di chuyển với tốc độ rất cao khi đi qua giao lộ.
+C0032  #6     1         T             M:con chó                                                M:tài xế                                                 M:K16          M:từ phải sang trái  T                 T            T                     T             Con chó bất ngờ lao ra đường từ vỉa hè bên phải ra giữa đường khiến tài xế không kịp phản ứng.
+C0033  #6     1         T             M:con chó                                                M:tài xế                                                 M:K16          M:từ phải sang trái  T                 T            T                     T             Con chó bất ngờ lao ra đường từ vỉa hè bên phải ở khoảng cách quá gần khiến tài xế không kịp phản ứng.
+C0034  #6     1         T             M:con chó                                                M:tài xế xe máy                                          M:K16          M:từ phải sang trái  T                 T            T                     T             Con chó bất ngờ lao ra đường từ vỉa hè bên phải ở khoảng cách quá gần khiến tài xế xe máy không kịp phản ứng.
+C0035  #6     1         T             M:con chó                                                M:tài xế                                                 M:K16          M:từ trái sang phải  T                 T            T                     T             Con chó bất ngờ lao ra đường từ vỉa hè bên trái ở khoảng cách quá gần khiến tài xế không kịp phản ứng.
+C0036  #6     1         T             M:Con chó                                                M:tài xế                                                 M:K16          M:từ phải sang trái  M:đứng yên        T            T                     T             Con chó lao ra đường từ vỉa hè bên phải và đứng ở đấy khiến tài xế không kịp phản ứng.
+C0037  #6     1         T             M:Con chó                                                M:tài xế                                                 M:K16          T                    T                 T            T                     T             Con chó đang băng qua đường rồi bất ngờ quay đầu đổi hướng ở khoảng cách quá gần khiến tài xế không kịp phản ứng.
+C0038  #6     1         T             M:Người đàn ông điểu khiển xe máy                        M:con chó màu đen                                        T              T                    T                 T            T                     T             Người đàn ông điểu khiển xe máy không thấy con chó màu đen giữa đường.
+C0039  #7     1         T             M:xe tải lớn màu xanh                                    M:Xe máy                                                 M:K14          T                    T                 T            T                     T             Xe máy di chuyển không quan sát xe tải lớn màu xanh đang di chuyển ngang giữa đường
+C0040  #7     1         T             M:xe tải lớn                                             M:Xe máy                                                 M:K13          T                    T                 T            T                     T             Xe máy đi vào điểm mù bên phải của xe tải lớn khi xe tải đang di chuyển quay đầu.
+C0041  #7     2         T             M:Xe máy                                                 M:xe tải lớn                                             T              T                    T                 T            T                     T             Xe máy đi vào điểm mù bên phải của xe tải lớn khi xe tải đang di chuyển sát lề đường.
+C0042  #7     2         T             M:xe tải lớn                                             M:Xe máy                                                 M:K13          T                    T                 T            T                     T             Xe máy đi vào điểm mù bên phải của xe tải lớn khi xe tải đang quay đầu xe.
+C0043  #7     1         M:va chạm     M:xe tải                                                 M:người xe máy                                           K              T                    T                 M:đối tượng  M:phanh gấp           M:ngã, trượt  Xe tải thay đổi hướng đột ngột (tiến lên khi đang lùi) khiến người xe máy bị bất ngờ, dẫn đến phanh gấp mất thăng bằng và đổ xe. Người đi xe máy cũng cố tình vượt trong không gian hẹp.
+C0044  #8     1         T             M:người dắt xe đạp                                       M:xe tải màu xanh                                        T              T                    T                 T            T                     T             Người dắt xe đạp không nhường đường cho xe tải màu xanh
+C0045  #8     1         T             M:người đi xe đạp                                        M:xe tải                                                 T              T                    T                 T            T                     T             Người đi xe đạp không quan sát khi sang đường và xe tải không giữ khoảng cách an toàn.
+C0046  #8     1         T             M:người đi xe đạp                                        T                                                        T              T                    T                 T            T                     T             Người đi xe đạp đi sang đường thiếu quan sát
+C0047  #8     1         T             M:người đi xe đạp                                        M:xe tải                                                 T              T                    M:không giảm tốc  T            T                     T             Xe tải thiếu quan sát, không giảm tốc độ nhường đường và người đi xe đạp dắt xe qua đường mà k quan sát có xe tải đang đi tốc độ cao tới.
+C0048  #8     1         M:va chạm     M:xe tải xanh dương                                      K                                                        M:K05          M:len giữa           T                 T            T                     T             Xe tải xanh dương tiếp tục tiến vào khoảng trống hẹp giữa người dắt xe đạp và ô tô đỏ, dẫn đến va chạm.
+C0049  #8     1         T             M:xe tải                                                 T                                                        M:K18          M:trượt              T                 T            T                     T             Đường trơn xe tải đi nhanh khiến xe bị trượt bánh phanh không kịp
+C0050  #9     1         T             M:xe tải                                                 T                                                        T              T                    T                 T            T                     T             Xe tải bất ngờ mất lái
+C0051  #9     1         M:va chạm     M:xe tải                                                 T                                                        T              T                    T                 T            T                     T             Xe tải bất ngờ mất lái, lệch hướng và lật xe.
+C0052  #9     1         T             M:xe tải                                                 T                                                        T              T                    T                 T            T                     T             Xe tải bất ngờ mất lái.
+C0053  #9     1         T             M:xe tải                                                 T                                                        M:K04          T                    M:tăng tốc        T            T                     T             Xe tải bất ngờ tăng tốc và đánh lái sang làn đường .
+C0054  #9     1         T             M:xe tải                                                 T                                                        M:K18          M:nổ lốp             T                 T            T                     T             Xe tải bị bể bánh xe sau và bị mất lái
+C0055  #9     1         T             M:xe tải                                                 T                                                        M:K18          M:nổ lốp             T                 T            T                     T             Xe tải bị nổ lốp bánh xe.
+C0056  #9     1         M:va chạm     M:xe tải thùng kín                                       T                                                        T              T                    T                 T            T                     T             Xe tải thùng kín lệch hướng sang trái rồi nghiêng mạnh trước khi lật ngang.
+C0057  #10    7         T             M:xe tải màu xám                                         K                                                        T              T                    T                 M:chủ thể    K                     T             Xe tải màu xám mất lái hoặc đánh lái gấp để tránh va chạm với các phương tiện phía trước.
+C0058  #11    1         T             M:xe máy                                                 T                                                        T              T                    T                 T            T                     T             Xe máy chạy nhanh và che khuất tầm nhìn.
+C0059  #11    1         T             M:xe máy                                                 T                                                        T              T                    T                 T            T                     T             Xe máy di chuyển không giữ khoảng cách an toàn.
+C0060  #11    1         T             M:xe máy                                                 T                                                        T              T                    T                 T            T                     T             Xe máy đi nhanh không làm chủ được xe.
+C0061  #11    1         T             M:xe máy                                                 T                                                        T              T                    T                 T            T                     T             Xe máy đi nhanh qua khúc cua bị mất lái.
+C0062  #11    1         T             M:xe ô tô                                                M:xe máy                                                 T              T                    T                 T            T                     T             Xe ô tô rẽ trái thiếu quan sát hoặc không nhường đường cho xe máy đang đi thẳng qua giao lộ.
+C0063  #11    1         T             M:xe ô tô                                                M:xe máy                                                 T              T                    T                 T            T                     T             Xe ô tô rẽ trái thiếu quan sát, không nhường đường cho xe máy đang đi thẳng qua giao lộ.
+C0064  #11    1         T             M:xe ô tô                                                M:xe máy                                                 M:K14          T                    T                 M:đối tượng  K                     T             xe máy chạy tốc độ cao, khi gặp xe ô tô băng ngang bị bất ngờ và lạng tay lái
+C0065  #12    4         T             M:Xe SUV màu bạc                                         M:xe đang đi thẳng ở làn bên cạnh                        M:K04          T                    T                 T            T                     T             Xe SUV màu bạc chuyển làn thiếu quan sát và không nhường đường cho xe đang đi thẳng ở làn bên cạnh.
+C0066  #12    1         T             M:Xe SUV màu gold                                        M:xe đang đi thẳng ở làn bên cạnh                        M:K04          T                    T                 T            T                     T             Xe SUV màu gold chuyển làn thiếu quan sát và không nhường đường cho xe đang đi thẳng ở làn bên cạnh.
+C0067  #12    1         T             M:Xe SUV màu nâu                                         M:xe đang đi thẳng ở làn bên cạnh                        M:K04          T                    T                 T            T                     T             Xe SUV màu nâu chuyển làn thiếu quan sát và không nhường đường cho xe đang đi thẳng ở làn bên cạnh.
+C0068  #12    1         T             M:Xe màu bạc                                             M:xe đang đi thẳng ở làn bên cạnh                        M:K04          T                    T                 T            T                     T             Xe màu bạc chuyển làn thiếu quan sát và không nhường đường cho xe đang đi thẳng ở làn bên cạnh.
+C0069  #13    1         T             M:Xe máy màu trắng                                       T                                                        M:K09          T                    T                 T            T                     T             Xe máy màu trắng đi ngược chiều
+C0070  #13    4         T             M:Xe máy                                                 M:xe ô tô                                                M:K09          T                    T                 T            T                     T             Xe máy đi ngược chiều lấn sang làn đường của xe ô tô.
+C0071  #13    1         T             M:xe máy                                                 M:ô tô                                                   M:K09          T                    T                 T            T                     T             Xe máy đi ngược chiều lấn sang làn đường của ô tô đi hướng ngược lại.
+C0072  #13    1         T             M:xe máy đối diện                                        M:xe ô tô                                                M:K09          T                    T                 T            T                     T             Xe máy đối diện đi ngược chiều lấn sang làn đường của xe ô tô.
+C0073  #14    1         T             M:xe tải thùng màu trắng                                 T                                                        M:K02          T                    T                 T            T                     T             Xe tải thùng màu trắng chạy nhanh và thắng đột ngột.
+C0074  #14    1         T             M:xe ô tô con màu bạc                                    T                                                        T              T                    T                 T            T                     T             Xe ô tô con màu bạc chuyển hướng đột ngột giữa làn đường đang lưu thông.
+C0075  #14    1         T             M:xe ô tô con màu bạc                                    T                                                        M:K04          T                    T                 T            T                     T             Xe ô tô con màu bạc không xi nhan khi chuyển làn
+C0076  #14    1         T             M:xe ô tô con màu bạc                                    T                                                        T              T                    T                 T            T                     T             Xe ô tô con màu bạc lấn làn đột ngột giữa làn đường đang lưu thông.
+C0077  #14    1         T             M:xe ô tô con màu bạc                                    T                                                        T              T                    T                 T            T                     T             Xe ô tô con màu bạc rẽ sang đường đột ngột giữa làn đường đang lưu thông.
+C0078  #14    1         T             M:Xe ô tô con màu bạc                                    T                                                        M:K14          T                    T                 T            T                     T             Xe ô tô con màu bạc đột nhiên sang đường giữa làn đường đang lưu thông.
+C0079  #14    1         T             M:Xe ô tô con màu trắng                                  M:xe tải phía sau                                        M:K13          T                    T                 T            T                     T             Xe ô tô con màu trắng quay đầu không xin đường gây bất ngờ cho xe tải phía sau.
+C0080  #15    1         T             M:Xe SUV đỏ                                              T                                                        T              T                    T                 T            T                     T             Xe SUV đỏ không giữ khoảng cách an toàn khi rẽ trái tại ngã ba
+C0081  #15    1         T             M:Xe máy                                                 K                                                        M:K05          M:len giữa           T                 T            T                     T             Xe máy cố tình lách qua khe hẹp giữa hai xe ô tô đang di chuyển sát nhau.
+C0082  #15    1         T             M:xe ô tô đỏ                                             M:Xe tải                                                 M:K14          T                    T                 T            T                     T             Xe tải cố tình đi thẳng khi thấy xe ô tô đỏ đang sang đường.
+C0083  #15    1         T             M:cả hai xe tải và xe ô tô màu đỏ                        T                                                        T              T                    T                 T            T                     T             Xe tải và xe ô tô màu đỏ đi quá sát nhau, không nhường đường cho nhau.
+C0084  #15    1         M:va chạm     M:Xe ô tô đỏ                                             M:xe tải thùng                                           T              T                    T                 T            T                     T             Xe ô tô đỏ không nhường đường cố rẻ sang nên va chạm với xe tải thùng.
+C0085  #15    1         T             M:xe ô tô SUV màu đỏ                                     M:các phương tiện phía trước                             T              T                    T                 T            T                     T             xe ô tô SUV màu đỏ không chú ý quan sát và giữ đúng khoảng các với các phương tiện phía trước
+C0086  #16    4         T             M:Xe tải trắng                                           M:xe đang lưu thông trên đường chính                     M:K14          T                    T                 T            T                     T             Xe tải trắng băng qua đường đột ngột mà không nhường đường cho xe đang lưu thông trên đường chính.
+C0087  #16    1         T             M:Xe tải trắng                                           T                                                        M:K14          T                    T                 T            T                     T             Xe tải trắng băng qua đường đột ngột mà không xi nhan.
+C0088  #16    1         T             M:Xe tải trắng                                           T                                                        M:K14          M:từ phải sang trái  T                 T            T                     T             Xe tải trắng bất ngờ băng cắt ngang đường từ bên phải.
+C0089  #16    1         T             M:Xe tải trắng                                           T                                                        M:K04          T                    T                 T            T                     T             Xe tải trắng nhập làn đột ngột
+C0090  #17    1         T             M:Xe tải ben màu xanh                                    T                                                        M:K11          T                    T                 T            T                     T             Xe tải ben màu xanh đi qua ngã tư với tốc độ nhanh băng ngang qua đường chính.
+C0091  #17    1         T             M:Xe tải ben                                             M:xe tải phía trước                                      M:K08          T                    T                 M:chủ thể    T                     T             Xe tải ben né xe tải phía trước, do không giữ khoảng cách an toàn nên đánh lái qua làn chiều ngược lại.
+C0092  #17    1         T             M:Xe tải ben                                             M:xe đang lưu thông thẳng                                M:K11          T                    M:không giảm tốc  T            T                     T             Xe tải ben đi vào ngã tư và băng qua giao lộ với tốc độ không đổi và không quan sát nhường đường cho xe đang lưu thông thẳng.
+C0093  #17    1         M:va chạm     M:Xe tải ben                                             M:xe SUV                                                 M:K11          T                    M:không giảm tốc  T            T                     T             Xe tải ben đi vào ngã tư với tốc độ không đổi khiến xe SUV đang trong quá trình băng qua giao lộ không kịp xử lý và tông vào xe tải ben.
+C0094  #17    1         M:va chạm     M:Xe tải ben                                             M:xe SUV                                                 M:K11          T                    M:không giảm tốc  T            T                     T             Xe tải ben đi vào ngã tư với tốc độ không đổi và xe SUV bị đâm vào đang trong quá trình băng qua giao lộ.
+C0095  #17    1         M:va chạm     M:Xe tải ben                                             M:xe SUV                                                 M:K11          T                    M:không giảm tốc  T            T                     T             Xe tải ben đi vào ngã tư với tốc độ không đổi và đâm vào xe SUV đang trong quá trình băng qua giao lộ.
+C0096  #17    1         T             M:xe tải kéo                                             M:xe ben xanh đen                                        M:K02          M:dừng đột ngột      M:dừng đột ngột   M:đối tượng  T                     T             xe ben xanh đen tránh xe tải kéo dừng đột ngột giữa ngã ba.
+C0097  #18    4         T             M:Cả hai bên                                             T                                                        T              T                    M:không giảm tốc  T            T                     T             Cả hai bên đều thiếu quan sát và không giảm tốc độ khi đi vào giao lộ khuất tầm nhìn.
+C0098  #18    1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Do người đi xe đạp điện không làm chủ được tốc độ và cả hai thiếu quan sát khi đi qua ngã tư khuất tầm nhìn.
+C0099  #18    1         M:va chạm     M:Xe máy điện                                            M:xe đạp                                                 T              T                    T                 T            T                     T             Xe máy điện không làm chủ tốc độ đâm trực tiếp vào hông xe đạp.
+C0100  #18    1         T             M:Xe máy điện                                            T                                                        T              T                    M:không giảm tốc  T            T                     T             Xe máy điện thiếu quan sát và không giảm tốc độ khi đi vào giao lộ.
+C0101  #19    1         T             M:Người lái xe máy                                       M:ô tô                                                   T              T                    M:không giảm tốc  M:chủ thể    M:phanh gấp           T             Người lái xe máy khi quẹo cua không giảm tốc độ dẫn đến phanh gấp đột ngột khi gặp ô tô ở khoảng cách gần, dẫn đến mất thăng bằng.
+C0102  #19    1         M:va chạm     M:Người lái xe máy                                       M:xe ô tô                                                T              T                    T                 M:chủ thể    M:phanh gấp           M:vẫn chạm    Người lái xe máy lao nhanh từ hướng khác ra, qua khúc cua mất lái, gặp xe ô tô phanh gấp đột ngột dẫn đến tông nhẹ vào xe ô tô và mất thăng bằng.
+C0103  #19    3         T             M:Người lái xe máy                                       M:ô tô                                                   T              T                    T                 M:chủ thể    M:phanh gấp           T             Người lái xe máy phanh gấp đột ngột khi gặp ô tô ở khoảng cách gần, dẫn đến mất thăng bằng.
+C0104  #19    1         M:va chạm     M:Người lái xe máy                                       M:ô tô                                                   T              T                    T                 M:chủ thể    M:phanh gấp           M:vẫn chạm    Người lái xe máy phanh gấp đột ngột khi gặp ô tô ở khoảng cách gần, dẫn đến đâm vào đầu ô tô.
+C0105  #19    1         M:va chạm     M:Người lái xe máy                                       M:ô tô                                                   T              T                    T                 M:chủ thể    M:phanh gấp           M:vẫn chạm    Người lái xe máy rẽ phải cùng với đi tốc độ nhanh, không quan sát kịp và phanh gấp đột ngột khi gặp ô tô ở khoảng cách gần, dẫn đến đâm vào đầu ô tô và mất thăng bằng.
+C0106  #20    7         T             M:Xe máy                                                 M:xe ô tô                                                M:K14          T                    T                 T            T                     T             Xe máy bất ngờ băng qua đường ngay trước đầu xe ô tô đang di chuyển.
+C0107  #21    1         T             M:Chiếc xe ô tô màu trắng                                M:ô tô taxi xanh                                         T              T                    T                 T            T                     T             Chiếc xe ô tô màu trắng mất lái đâm thẳng qua làn đường của ô tô taxi xanh.
+C0108  #21    1         M:va chạm     M:Xe ô tô bảy chỗ màu trắng                              M:xe taxi xanh                                           M:K08          M:lấn khi vào cua    T                 T            T                     T             Xe ô tô bảy chỗ màu trắng không quan sát vào cua, không đi đúng làn đường nên va chạm với xe taxi xanh đi ngược hướng.
+C0109  #21    1         T             M:Xe ô tô màu trắng                                      M:xe đi thẳng                                            T              T                    T                 T            T                     T             Xe ô tô màu trắng chuyển hướng hoặc băng qua đường thiếu quan sát, không nhường đường cho xe đi thẳng.
+C0110  #21    1         T             M:Xe ô tô màu trắng                                      T                                                        M:K08          M:lấn khi vào cua    T                 T            T                     T             Xe ô tô màu trắng chạy thẳng ở khúc cua, chạy qua làn đường chiều ngược lại
+C0111  #21    1         T             M:Xe ô tô màu trắng                                      T                                                        T              T                    T                 T            T                     T             Xe ô tô màu trắng rẽ trái qua ngang đường không quan sát.
+C0112  #21    1         T             M:Xe ô tô màu trắng                                      M:xe taxi                                                M:K08          M:lấn khi vào cua    T                 T            T                     T             Xe ô tô màu trắng vẫn đi thẳng khi đi qua khúc cua lấn sang làn đường của xe taxi đang đi hướng ngược lại.
+C0113  #21    1         lỗi           lỗi                                                      lỗi                                                      lỗi            lỗi                  lỗi               lỗi          lỗi                   lỗi           do đường trơn trượt dẫn đến không làm chủ được tốc độ và va chạm trực diện với xe taxi màu xanh đang chuyển hướng quẹo trái.
+C0114  #22    7         T             M:Người đi xe đạp                                        M:xe đang tới                                            T              T                    T                 T            T                     T             Người đi xe đạp bất ngờ băng qua đường mà không quan sát hoặc nhường đường cho xe đang tới.
+C0115  #23    5         M:va chạm     M:Hai phương tiện                                        T                                                        T              T                    T                 T            T                     T             Hai phương tiện cùng tiến vào giao lộ mà không quan sát kỹ hoặc không nhường đường cho nhau dẫn đến va chạm trực diện.
+C0116  #23    1         M:va chạm     M:Hai phương tiện                                        T                                                        T              T                    M:không giảm tốc  T            T                     T             Hai phương tiện cùng tiến vào giao lộ mà không quan sát kỹ và không nhường đường cho nhau, không giảm tốc độ dẫn đến va chạm trực diện.
+C0117  #23    1         T             M:Xe máy màu nâu do người phụ nữ điều khiển              M:Xe máy màu đen do người đàn ông mặc áo sọc điều khiển  T              T                    K                 T            T                     T             Xe máy màu đen do người đàn ông mặc áo sọc điều khiển đi tốc độ nhanh qua ngã tư. Xe máy màu nâu do người phụ nữ điều khiển khiến không nhường đường cho xe đi thẳng.
+C0118  #24    1         T             M:Chiếc xe máy                                           T                                                        T              T                    M:không giảm tốc  T            T                     T             Chiếc xe máy khi qua giao lộ không giảm tốc độ và quan sát kỹ.
+C0119  #24    1         T             M:Xe máy màu trắng                                       T                                                        T              T                    T                 T            T                     T             Xe máy màu trắng băng qua đường không quan sát.
+C0120  #24    1         T             M:xe máy màu trắng                                       T                                                        T              T                    T                 T            T                     T             Xe máy màu trắng do thanh niên không đội mũ điều khiển băng nhanh qua đường.
+C0121  #24    1         T             M:xe máy                                                 T                                                        T              T                    T                 T            T                     T             Xe máy vào giao lộ thiếu quan sát và không làm chủ tốc độ và giữ khoảng cách an toàn.
+C0122  #24    1         T             M:xe máy                                                 T                                                        T              T                    T                 T            T                     T             xe máy phóng nhanh cắt ngang đường
+C0123  #24    1         T             M:xe máy                                                 M:xe ô tô                                                T              T                    T                 T            T                     T             xe máy thiếu quan sát và không nhường đường cho xe ô tô đang đi thẳng.
+C0124  #24    1         T             M:xe máy trắng                                           M:xe máy khác                                            T              T                    T                 T            T                     T             xe máy trắng di chuyển đột ngột giữa ngã tư không có đèn tín hiệu, không quan sát đường đi, tạt đầu xe máy khác và luồn lách.
+C0125  #25    1         T             M:xe taxi màu xanh                                       T                                                        T              T                    T                 T            T                     T             Xe taxi màu xanh chạy nhanh.
+C0126  #25    1         T             M:xe taxi màu xanh                                       M:xe đap phía trước                                      T              T                    T                 T            T                     T             Xe taxi màu xanh không giữ khoảng cách an toàn với xe đap phía trước.
+C0127  #25    1         M:va chạm     M:Xe taxi màu xanh                                       M:xe đạp                                                 T              T                    T                 T            T                     T             Xe taxi màu xanh thiếu quan sát, va quẹt vào phía sau xe đạp đang di chuyển.
+C0128  #25    1         M:va chạm     M:Xe taxi xanh                                           M:xe đạp                                                 T              T                    T                 T            T                     T             Xe taxi xanh không giữ khoảng cách với xe đạp và va chạm với xe đạp.
+C0129  #25    1         M:va chạm     M:Xe taxi                                                M:xe đạp                                                 T              T                    T                 T            T                     T             Xe taxi đã húc nhẹ vào đít xe đạp
+C0130  #25    1         T             M:người đi ô tô                                          T                                                        T              T                    M:tăng tốc        T            T                     T             người đi ô tô tăng tốc mà không quan sát phía trước.
+C0131  #25    1         M:va chạm     M:xe taxi màu xanh                                       M:xe đạp                                                 T              T                    T                 T            T                     T             xe taxi màu xanh đi sát lề đường đâm đằng sau xe đạp.
+C0132  #26    2         T             M:Người lái xe máy                                       M:xe tải                                                 M:K14          T                    T                 T            T                     T             Người lái xe máy sang đường thiếu quan sát, cắt ngang lộ trình của xe tải đang đi tới ở khoảng cách quá gần.
+C0133  #26    1         T             M:Người lái xe máy                                       M:xe ô tô (gắn camera hành trình)                        M:K14          T                    T                 T            T                     T             Người lái xe máy sang đường thiếu quan sát, cắt ngang lộ trình của xe ô tô (gắn camera hành trình) đang đi tới ở khoảng cách gần.
+C0134  #26    2         T             M:xe máy                                                 M:xe ô tô gắn camera                                     M:K14          T                    T                 T            T                     T             Người lái xe máy sang đường thiếu quan sát, cắt ngang lộ trình của xe ô tô gắn camera đang đi tới ở khoảng cách quá gần.
+C0135  #26    1         T             M:xe máy                                                 M:xe ô tô đang gắn camera hành trình                     M:K14          T                    T                 T            T                     T             Người lái xe máy sang đường thiếu quan sát, cắt ngang lộ trình của xe ô tô đang gắn camera hành trình đi tới ở khoảng cách quá gần.
+C0136  #26    1         T             M:Xe máy màu đỏ do người mặc áo tối điều khiển           M:ô tô có camera hành trình                              M:K14          T                    T                 T            T                     T             Xe máy màu đỏ do người mặc áo tối điều khiển cắt ngang sát đầu ô tô có camera hành trình.
+C0137  #27    1         T             K                                                        K                                                        K              T                    T                 T            T                     T             Xe tải ben màu xám đậm di chuyển quá sát bên trái ô tô màu trắng và xe ô tô Ford quá sát bên phải trong khoảng đường hẹp.
+C0138  #27    1         T             M:Xe tải màu xám                                         M:phương tiện bên cạnh                                   M:K05          T                    T                 T            T                     T             Xe tải màu xám cố vượt lên trong không gian hẹp khi đường đang ùn tắc, lấn làn phương tiện bên cạnh.
+C0139  #27    1         T             M:Xe ô tô con màu trắng                                  T                                                        K              T                    T                 T            T                     T             Xe ô tô con màu trắng đánh lái không quan sát.
+C0140  #27    1         T             K                                                        K                                                        M:K05          M:len giữa           T                 T            T                     T             Xe ô tô trắng đi vào không gian hẹp giữa các xe và xe Ford Ranger di chuyển khi chưa đảm bảo khoảng cách an toàn.
+C0141  #27    1         T             T                                                        T                                                        T              T                    T                 T            T                     T             do hai xe ô tô màu trắng và xe bán tải đều muốn đi trong khi đường đang ùn tắc.
+C0142  #27    1         T             M:xe ô tô con màu trắng                                  T                                                        M:K04          T                    T                 T            T                     T             xe ô tô con màu trắng chuyển làn không xi nhan.
+C0143  #27    1         T             M:xe ô tô màu trắng                                      K                                                        M:K05          M:len giữa           T                 T            T                     T             xe ô tô màu trắng cố che vào gian hẹp giữa xe ben màu xám và xe bán tải đen di chuyển khi chưa đảm bảo khoảng cách an toàn.
+C0144  #28    3         T             M:Xe con                                                 M:xe tải                                                 M:K06          M:rẽ trái            T                 T            T                     T             Xe con chuyển làn và rẽ trái đột ngột khi không đảm bảo khoảng cách an toàn với xe tải phía sau.
+C0145  #28    1         T             M:Xe tải ben                                             M:xe con                                                 M:K04          T                    T                 T            T                     T             Xe tải ben chuyển làn không đảm bảo khoảng cách an toàn với xe con đang di chuyển thẳng.
+C0146  #28    1         T             M:Xe tải ben                                             M:xe con màu bạc                                         M:K06          M:rẽ phải            T                 T            T                     T             Xe tải ben chuyển làn và rẽ phải khi không đảm bảo khoảng cách an toàn với xe con màu bạc làn bên phải.
+C0147  #28    1         T             M:Xe tải ben màu đỏ                                      M:xe ô tô con màu bạc                                    M:K06          M:rẽ phải            T                 T            T                     T             Xe tải ben màu đỏ chuyển làn và rẽ phải đột ngột khi không đảm bảo khoảng cách an toàn với xe ô tô con màu bạc phía trước
+C0148  #28    1         T             M:xe tải ben màu đỏ                                      T                                                        M:K04          T                    T                 T            T                     T             Xe tải ben màu đỏ đột ngột chuyển làn.
+C0149  #29    1         T             M:xe bán tải màu đen                                     M:xe đang đi thẳng                                       T              T                    T                 T            T                     T             Xe bán tải màu đen bất ngờ chuyển hướng sang trái mà không quan sát hoặc nhường đường cho xe đang đi thẳng.
+C0150  #29    2         T             M:xe bán tải màu đen                                     M:xe đang đi thẳng                                       M:K07          M:ra khỏi chỗ đỗ     T                 T            T                     T             Xe bán tải màu đen bất ngờ chuyển hướng sang trái từ vị trí dừng đỗ mà không quan sát hoặc nhường đường cho xe đang đi thẳng.
+C0151  #29    1         T             M:xe bán tải màu đen                                     M:xe đang đi thẳng                                       M:K08          T                    T                 T            T                     T             Xe bán tải màu đen bất ngờ lấn làn ngược chiều mà không quan sát hoặc nhường đường cho xe đang đi thẳng.
+C0152  #29    1         T             M:xe bán tải màu đen                                     T                                                        M:K08          T                    T                 T            T                     T             Xe bán tải màu đen mất lái, chuyển hướng sang làn đang chạy ngược chiều.
+C0153  #29    1         T             M:xe ô tô bán tải màu đen                                M:ô tô có camera hành trình                              M:K08          T                    T                 T            T                     T             Xe ô tô bán tải màu đen lấn qua vạch vàng đôi, đi vào phần đường của ô tô có camera hành trình.
+C0154  #29    1         T             M:xe ô tô màu đen                                        T                                                        M:K09          T                    T                 T            T                     T             Xe ô tô màu đen bất ngờ chạy ngược chiều.
+C0155  #30    7         T             M:xe phía trước                                          M:Xe camera hành trình                                   M:K02          T                    T                 T            T                     T             Xe camera hành trình không giữ khoảng cách an toàn và không kịp phản ứng khi xe phía trước phanh.
+C0156  #31    6         T             M:Xe bồn trộn bê tông                                    M:xe đang đi thẳng trên trục đường ưu tiên               M:K12          T                    T                 T            T                     T             Xe bồn trộn bê tông nhập làn từ đường phụ/bãi xe ra đường chính mà không quan sát hoặc nhường đường cho xe đang đi thẳng trên trục đường ưu tiên.
+C0157  #31    1         T             M:Xe ô tô gắn camera hành trình                          T                                                        T              T                    K                 T            T                     T             Xe ô tô gắn camera hành trình chạy nhanh.
+C0158  #32    4         T             M:Cả hai phương tiện                                     T                                                        T              T                    M:không giảm tốc  T            T                     T             Cả hai phương tiện cùng đi vào giao lộ mà không giảm tốc độ hoặc nhường đường để tránh nhau.
+C0159  #32    1         T             M:Xe tải nhỏ màu trắng                                   T                                                        M:K12          T                    T                 T            T                     T             Xe tải nhỏ màu trắng đi thẳng ra đường chính không quan sát.
+C0160  #32    1         T             M:xe tải nhỏ                                             T                                                        T              T                    M:không giảm tốc  T            T                     T             xe tải nhỏ đi vào giao lộ mà không giảm tốc độ hoặc nhường đường để tránh nhau.
+C0161  #32    1         T             M:xe ô tô tải                                            T                                                        T              T                    M:không giảm tốc  T            T                     T             xe ô tô tải đi vào giao lộ mà không giảm tốc độ hoặc nhường đường để tránh nhau.
+C0162  #33    1         T             M:xe tải lớn màu xám đen                                 T                                                        M:K08          M:lấn khi vượt       T                 T            T                     T             Hành vi lấn làn đường ngược chiều để vượt của xe tải lớn màu xám đen tại đoạn đường cong khuất tầm nhìn.
+C0163  #33    1         T             M:xe tải lớn màu xám đen                                 T                                                        M:K08          M:lấn khi vượt       T                 T            T                     T             Hành vi lấn làn đường ngược chiều để vượt của xe tải lớn màu xám đen.
+C0164  #33    1         T             M:xe tải màu đen                                         T                                                        M:K08          M:lấn khi vượt       T                 T            T                     T             Hành vi lấn làn đường ngược chiều để vượt của xe tải màu đen tại đoạn đường cong khuất tầm nhìn.
+C0165  #33    1         T             M:xe tải màu đen                                         T                                                        T              T                    T                 T            T                     T             Hành vi lấn làn đường vượt ẩu của xe tải màu đen tại đoạn đường cong hẹp.
+C0166  #33    1         T             M:xe ô tômàu đen của xe tải                              T                                                        T              T                    T                 T            T                     T             Hành vi lấn làn để vượt của xe ô tômàu đen của xe tải
+C0167  #33    1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Xe tải không giữ khoảng cách an toàn với xe hatchback màu đen.
+C0168  #33    1         T             M:xe tải xám đen                                         T                                                        T              T                    T                 T            T                     T             Xe tải xám đen lấn làn
+C0169  #34    1         M:va chạm     M:Người đi xe máy                                        T                                                        M:K18          M:trượt              M:phanh gấp       T            T                     T             Người đi xe máy phanh gấp hoặc mất lái dẫn đến trượt bánh và ngã xuống đường .
+C0170  #34    5         M:va chạm     M:Người đi xe máy                                        M:xe ô tô                                                T              T                    T                 M:chủ thể    M:phanh gấp           M:ngã, trượt  Người đi xe máy phanh gấp hoặc mất lái dẫn đến trượt bánh và ngã xuống đường khi gặp xe ô tô.
+C0171  #34    1         M:va chạm     M:Người đi xe máy                                        M:xe ô tô                                                T              T                    T                 M:chủ thể    M:phanh gấp           M:ngã, trượt  Người đi xe máy phanh gấp hoặc mất lái dẫn đến trượt bánh và ngã xuống đường ngay trước xe ô tô.
+C0172  #35    1         T             M:xe máy                                                 T                                                        M:K05          T                    T                 T            T                     T             Hai phương tiện cùng đi vào đoạn đường hẹp nhưng không đủ không gian tránh nhau an toàn, xe máy vượt không có tầm nhìn.
+C0173  #35    1         T             M:Xe máy màu trắng do phụ nữ áo đen chở 2 người          T                                                        M:K05          T                    T                 T            T                     T             Xe máy màu trắng do phụ nữ áo đen chở 2 người vượt lên trên đoạn đường hẹp.
+C0174  #35    1         T             M:Xe máy trắng                                           T                                                        M:K05          T                    T                 T            T                     T             Xe máy trắng vượt không đủ an toàn
+C0175  #35    1         T             M:Xe máy                                                 T                                                        M:K05          T                    T                 T            T                     T             Xe máy vượt không quan sát kỹ.
+C0176  #35    1         T             M:Xe máy                                                 T                                                        M:K05          T                    T                 T            T                     T             Xe máy vượt ẩu thiếu quan sát.
+C0177  #35    1         T             M:xe máy                                                 T                                                        T              T                    T                 T            T                     T             xe máy lấn đường muốn vượt lên.
+C0178  #35    1         T             M:xe máy trắng                                           T                                                        M:K14          T                    T                 T            T                     T             xe máy trắng di chuyển băng qua đường không quan sát
+C0179  #36    1         T             M:Người đi xe máy                                        T                                                        T              T                    T                 T            T                     T             Người đi xe máy bất ngờ chuyển hướng sang làn đường ngược chiều mà không quan sát.
+C0180  #36    1         T             M:Người đi xe máy                                        T                                                        T              T                    T                 T            T                     T             Người đi xe máy bất ngờ chuyển hướng sang trái mà không quan sát.
+C0181  #36    1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Xe gắn camera không giữ khoảng cách an toàn với xe máy đang di chuyển cùng chiều.
+C0182  #36    1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Xe ô tô trắng không đảm bảo tốc độ an toàn.
+C0183  #37    1         T             M:xe máy màu hồng                                        T                                                        T              T                    T                 T            T                     T             Người điều khiển xe máy màu hồng bất ngờ không quan sát.
+C0184  #37    5         T             M:xe máy                                                 M:xe đang đỗ                                             T              T                    T                 T            T                     T             Người điều khiển xe máy đang di chuyển thiếu quan sát hoặc không giữ khoảng cách an toàn khi đi quá sát xe đang đỗ.
+C0185  #37    1         T             M:xe máy                                                 M:xe đang đỗ                                             T              T                    T                 T            T                     T             Người điều khiển xe máy đang di chuyển thiếu quan sát hoặc không giữ khoảng cách an toàn khi đi sang đường và quá sát xe đang đỗ.
+C0186  #38    1         T             M:xe máy do người mặc áo xanh                            M:xe máy màu tối                                         M:K14          T                    T                 T            T                     T             Xe máy do người mặc áo xanh đột ngột băng qua đường làm cho xe máy màu tối bất ngờ không kịp xử lí
+C0187  #38    1         M:va chạm     M:xe máy do người áo xanh điều khiển                     M:xe máy do người áo đen điều khiển                      T              T                    T                 T            T                     T             Xe máy do người áo xanh điều khiển va chạm đuôi xe máy do người áo đen điều khiển
+C0188  #38    1         T             M:xe máy tối màu                                         M:xe máy màu đen                                         T              T                    T                 T            T                     T             Xe máy tối màu lao sang làn đường của xe máy màu đen
+C0189  #38    1         T             M:xe đang sang đường                                     M:xe máy đang đi thẳng                                   T              T                    T                 T            T                     T             Xe máy đang đi thẳng thiếu quan sát với xe đang sang đường.
+C0190  #38    1         T             M:Xe máy đi ngược chiều                                  M:xe máy màu xanh                                        T              T                    M:không giảm tốc  T            T                     T             Xe máy đi ngược chiều không giảm tốc độ nhường đường, đột ngột chuyển hướng hoặc mất lái lao sang làn đường của xe máy màu xanh.
+C0191  #38    1         T             M:Xe máy đi ngược chiều                                  M:xe máy màu xanh                                        T              T                    T                 T            T                     T             Xe máy đi ngược chiều đột ngột chuyển hướng hoặc mất lái lao sang làn đường của xe máy màu xanh.
+C0192  #38    1         T             M:Xe máy đi ngược chiều                                  M:xe máy đi đúng chiều                                   T              T                    T                 M:đối tượng  T                     M:ngã, trượt  Xe máy đi ngược chiều đột ngột sang đường làm xe máy đi đúng chiều không kịp phản ứng né nên ngã xuống đường.
+C0193  #39    1         T             M:Xe máy màu trắng đen                                   T                                                        T              T                    T                 T            T                     T             Xe máy màu trắng đen không quan sát di chuyển qua giao lộ
+C0194  #39    1         T             M:Xe máy                                                 T                                                        T              T                    T                 T            T                     T             Xe máy qua đường thiếu quan sát.
+C0195  #39    1         T             M:Xe máy                                                 M:phương tiện đi làn chính                               T              T                    T                 T            T                     T             Xe máy sang đường nhưng không quan sát phương tiện đi làn chính
+C0196  #39    1         T             M:Xe máy trắng đen                                       T                                                        T              T                    T                 T            T                     T             Xe máy trắng đen đi qua đường không ưuan sát không đảm bảo tốc độ an toàn
+C0197  #39    1         T             M:Xe máy                                                 M:xe đi thẳng                                            M:K14          T                    T                 T            T                     T             Xe máy đi qua đường mà không chú ý tới xe đi thẳng.
+C0198  #39    1         T             M:Xe máy                                                 T                                                        T              T                    T                 T            T                     T             Xe máy đi sang đường thiếu quan sát tại một giao lộ.
+C0199  #39    1         T             M:Xe máy                                                 T                                                        M:K14          T                    T                 T            T                     T             Xe máy định vượt qua đường.
+C0200  #40    1         T             M:Bé gái                                                 T                                                        M:K15          T                    T                 T            T                     T             Bé gái qua đường thiếu quan sát.
+C0201  #40    1         T             M:Cô bé áo hồng                                          M:phương tiện giao thông đang di chuyển                  M:K15          T                    T                 T            T                     T             Cô bé áo hồng lao sang đường mà không quan sát phương tiện giao thông đang di chuyển.
+C0202  #40    1         T             M:Em học sinh mặc áo vàng                                M:xe                                                     M:K15          T                    T                 T            T                     T             Em học sinh mặc áo vàng chạy giữa đường mà không nhìn xe.
+C0203  #40    1         T             M:em bé                                                  M:Xe máy màu trắng                                       M:K15          T                    T                 T            T                     T             Xe máy màu trắng đi với tốc độ cao ở khu dân cư và em bé chạy sang đường.
+C0204  #40    1         T             M:Xe máy trắng                                           T                                                        M:K09          T                    T                 T            T                     T             Xe máy trắng chạy ngược chiều và nhanh
+C0205  #40    1         T             M:bé gái                                                 M:xe đang đi thẳng ở làn đối diện                        M:K15          T                    T                 T            T                     T             bé gái sang đường nhưng không nhường đường cho xe đang đi thẳng ở làn đối diện.
+C0206  #40    1         T             M:em bé                                                  T                                                        M:K15          T                    T                 T            T                     T             có em bé chạy nhanh qua đường.
+C0207  #41    1         T             M:Xe máy màu trắng                                       T                                                        M:K04          T                    T                 T            T                     T             Xe máy màu trắng chuyển làn không an toàn, thiếu quan sát
+C0208  #41    1         T             M:Xe máy màu trắng                                       T                                                        M:K14          T                    T                 T            T                     T             Xe máy màu trắng sang đường mà không quan sát.
+C0209  #41    2         T             M:Xe máy màu trắng                                       M:phương tiện đang đi thẳng trên trục đường chính        M:K14          T                    T                 T            T                     T             Xe máy màu trắng sang đường thiếu quan sát và không nhường đường cho phương tiện đang đi thẳng trên trục đường chính.
+C0210  #42    1         T             M:Người lái xe máy                                       T                                                        M:K18          K                    T                 T            T                     T             Người lái xe máy tự mất thăng bằng.
+C0211  #42    1         T             M:Người lái xe đạp màu xám                               T                                                        M:K14          T                    T                 T            T                     T             Người lái xe đạp màu xám sang đường mà không quan sát và nhường đường.
+C0212  #42    1         T             M:Người điều khiển xe máy màu xám                        T                                                        M:K09          T                    T                 T            T                     T             Người điều khiển xe máy màu xám đi ngược chiều.
+C0213  #42    1         T             M:Xe máy màu trắng do phụ nữ điều khiển                  T                                                        M:K09          T                    T                 T            T                     T             Xe máy màu trắng do phụ nữ điều khiển đi ngược chiều.
+C0214  #42    1         T             M:Xe tay ga màu bạc                                      T                                                        M:K09          T                    T                 T            T                     T             Xe tay ga màu bạc đi ngược chiều
+C0215  #42    1         T             M:xe xám                                                 T                                                        T              T                    T                 T            T                     T             xe xám lấn làn không xi nhan
+C0216  #43    1         T             M:Xe tải                                                 K                                                        T              T                    T                 T            T                     T             Xe tải di chuyển lên phía trước nhưng thiếu quan sát và không giữ khoảng cách an toàn với xe ô tô con bên cạnh và xe máy.
+C0217  #43    1         T             M:Xe tải                                                 K                                                        T              T                    T                 T            T                     T             Xe tải di chuyển lên phía trước nhưng thiếu quan sát và không giữ khoảng cách an toàn với xe ô tô con màu trắng và xe máy chở 2 người phía bên phải.
+C0218  #43    1         T             M:xe tải                                                 K                                                        T              T                    T                 T            T                     T             Xe tải di chuyển lên phía trước vượt đèn đỏ nhưng thiếu quan sát và không giữ khoảng cách an toàn với xe ô tô màu trắng và xe máy màu tối chở 2 người.
+C0219  #43    1         T             M:xe tải                                                 K                                                        T              T                    T                 T            T                     T             Xe tải di chuyển lấn làn, vượt ẩu thiếu quan sát và không giữ khoảng cách an toàn với các phương tiện khác.
+C0220  #43    1         T             M:xe tải lớn màu tối                                     K                                                        M:K01          T                    T                 T            T                     T             Xe tải lớn màu tối chạy thẳng khi đèn đỏ và các phương tiện khác đang dừng đỗ
+C0221  #43    1         T             M:xe tải lớn                                             T                                                        T              T                    T                 T            T                     T             Xe tải lớn vượt đèn đỏ.
+C0222  #44    1         T             M:xe bồn chở nguyên liệu                                 M:ô tô trắng                                             T              T                    T                 T            T                     T             Xe bồn chở nguyên liệu không giữ khoảng cách an toàn và ô tô trắng trong điểm mù xe bồn chở nguyên liệu.
+C0223  #44    1         T             M:xe bồn chở nhiên liệu màu trắng                        M:xe ô tô con màu trắng                                  T              T                    T                 T            T                     T             Xe bồn chở nhiên liệu màu trắng không thấy xe ô tô con màu trắng.
+C0224  #44    1         T             M:xe bồn                                                 T                                                        T              T                    T                 T            T                     T             Xe bồn vượt ẩu trong không gian hep.
+C0225  #44    1         T             M:Xe ô tô trắng                                          M:xe bồn                                                 T              T                    T                 T            T                     T             Xe ô tô trắng chạy hơi lệch trái về phía đầu xe bồn
+C0226  #44    1         T             T                                                        T                                                        T              T                    T                 T            T                     T             xe ô tô con không giữ khoảng cách an toàn với xe bồn
+C0227  #44    1         T             M:xe ô tô màu xanh                                       T                                                        M:K05          T                    T                 T            T                     T             xe ô tô màu xanh muốn vượt lên .
+C0228  #45    1         T             M:Xe máy                                                 T                                                        M:K04          T                    T                 T            T                     T             Xe máy chuyển làn sang đường sai quy định.
+C0229  #45    1         T             M:Xe máy màu đen do người đàn ông mặc áo xám điều khiển  M:xe đi thẳng                                            T              T                    T                 T            T                     T             Xe máy màu đen do người đàn ông mặc áo xám điều khiển không quan sát và nhường đường cho xe đi thẳng.
+C0230  #45    1         T             M:Xe máy                                                 T                                                        M:K14          T                    T                 T            T                     T             Xe máy qua đường thiếu quan sát
+C0231  #45    2         T             M:Xe máy                                                 T                                                        M:K14          T                    T                 T            T                     T             Xe máy sang đường thiếu quan sát.
+C0232  #45    1         T             M:xe máy                                                 T                                                        M:K14          T                    T                 T            T                     T             xe máy khi sang đường không quan sát.
+C0233  #46    1         M:va chạm     M:Người lái xe máy                                       M:xe SUV bạc                                             M:K05          T                    T                 T            T                     T             Người lái xe máy bị lách vào phần bên hong trái của xe SUV bạc gây va chạm mạnh
+C0234  #46    2         T             M:Người lái xe máy                                       T                                                        M:K05          M:len giữa           T                 T            T                     T             Người lái xe máy bị mất thăng bằng khi đang di chuyển len lỏi giữa các làn ô tô.
+C0235  #46    1         T             M:Người lái xe máy                                       T                                                        T              T                    K                 T            T                     T             Người lái xe máy di chuyển nhanh không quan sát.
+C0236  #46    1         T             M:Người lái xe máy                                       T                                                        T              T                    T                 T            T                     T             Người lái xe máy lấn làn.
+C0237  #46    1         M:va chạm     M:Người mặc áo màu vàng lái xe máy màu đen               M:xe ô tô màu xám                                        T              T                    T                 T            T                     T             Người mặc áo màu vàng lái xe máy màu đen va chạm trực tiếp xe ô tô màu xám.
+C0238  #47    5         T             M:Xe tải                                                 T                                                        T              T                    T                 T            T                     T             Xe tải bị mất kiểm soát tay lái đột ngột.
+C0239  #48    6         T             M:Người đi xe đạp                                        M:xe ô tô                                                M:K14          T                    T                 T            T                     T             Người đi xe đạp bất ngờ chuyển hướng sang đường đột ngột ngay trước đầu xe ô tô.
+C0240  #49    6         T             M:Xe khách                                               T                                                        M:K08          M:lấn khi vào cua    T                 T            T                     T             Xe khách đi ngược chiều đã lấn hoàn toàn sang làn đường đối diện khi đang ôm cua khuất tầm nhìn.
+C0241  #50    1         T             M:Người đi xe máy                                        T                                                        M:K04          T                    T                 T            T                     T             Người đi xe máy chuyển làn không quan sát và không giữ khoảng cách.
+C0242  #50    1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Người điều khiển xe máy không chú ý quan sát
+C0243  #50    1         T             M:Xe máy màu tối                                         T                                                        M:K12          T                    T                 T            T                     T             Xe máy màu tối đi ra đường chính không quan sát.
+C0244  #50    1         T             M:Xe máy                                                 M:xe đi thẳng                                            M:K14          T                    T                 T            T                     T             Xe máy qua đường thiếu quan sát, không nhường đường cho xe đi thẳng.
+C0245  #50    1         T             M:Xe máy                                                 T                                                        T              T                    M:không giảm tốc  T            T                     T             Xe máy rẽ trái không giảm tốc và quan sát
+C0246  #50    1         T             M:người đi xe máy                                        T                                                        M:K04          T                    T                 T            T                     T             người đi xe máy không quan sát khi chuyển làn.
+C0247  #51    5         T             M:xe phía trước                                          M:Xe máy                                                 M:K02          T                    T                 T            T                     T             Xe máy không giữ khoảng cách an toàn và thiếu quan sát khi xe phía trước giảm tốc độ.
+C0248  #51    1         T             M:xe phía trước                                          M:Xe máy                                                 M:K04          T                    M:không giảm tốc  T            T                     T             Xe máy thiếu quan sát và không giảm tốc độ khi xe phía trước có tín hiệu chuyển làn.
+C0249  #52    1         T             M:Người xe tải                                           M:xe ô tô                                                M:K14          T                    T                 T            T                     T             Người xe tải đi cắt ngang đường thiếu quan sát khi xe ô tô đang đi tới.
+C0250  #52    1         T             M:Người đi xe tải                                        T                                                        T              T                    T                 T            T                     T             Người đi xe tải không quan sát khi quay đầu xe
+C0251  #52    1         T             M:Xe tải ben                                             M:xe ô tô                                                T              T                    M:đứng yên        T            T                     T             Xe tải ben đang dừng bất ngờ rẽ trái trong khi xe ô tô đang đi tới.
+C0252  #52    1         T             M:Xe tải thùng xám                                       T                                                        T              T                    T                 T            T                     T             Xe tải thùng xám đột ngột di chuyển không quan sát
+C0253  #52    1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Xe ô tô màu trắng nằm trong điểm mù của xe ben.
+C0254  #52    1         T             M:xe ô tô trắng                                          M:xe tải ben                                             T              T                    T                 T            T                     T             Xe ô tô trắng đi vào điểm mù của xe tải ben.
+C0255  #53    3         T             M:cả hai phương tiện                                     T                                                        T              T                    M:không giảm tốc  T            T                     T             Cả hai phương tiện thiếu quan sát và không giảm tốc độ khi đi qua ngã tư.
+C0256  #53    1         T             M:xe chở 3                                               T                                                        T              T                    K                 T            T                     T             Xe chở 3 phóng nhanh khi qua ngã 3.
+C0257  #53    1         T             M:xe máy chở ba người                                    T                                                        T              T                    M:không giảm tốc  T            T                     T             Xe máy chở ba người không giảm tốc độ và ôm cua quá sát.
+C0258  #54    1         T             M:xe tải                                                 M:xe phía trước                                          M:K08          M:lấn khi vượt       T                 T            T                     T             Xe tải lấn sang làn đường ngược chiều để vượt xe phía trước.
+C0259  #54    1         T             M:xe tải màu vàng                                        M:xe phía trước                                          M:K08          M:lấn khi vượt       T                 T            T                     T             Xe tải màu vàng lấn sang làn đường ngược chiều để vượt xe phía trước.
+C0260  #54    1         T             M:xe tải thùng màu bạc                                   T                                                        M:K08          M:lấn khi vượt       T                 T            T                     T             Xe tải thùng màu bạc lấn sang làn đường ngược chiều để vượt xe phía trước.
+C0261  #54    1         T             M:xe tải to màu nâu                                      T                                                        M:K09          T                    T                 T            T                     T             Xe tải to màu nâu đi ngược chiều.
+C0262  #55    1         T             M:xe máy                                                 K                                                        M:K05          T                    T                 T            T                     T             Khoảng cách giữa xe bồn và xe tải đi quá hẹp, không đủ cho xe máy đi qua an toàn.
+C0263  #55    1         T             M:xe máy                                                 K                                                        M:K05          T                    T                 T            T                     T             Khoảng cách giữa xe bồn và xe tải, không đủ cho xe máy đi qua an toàn.
+C0264  #55    1         T             M:xe máy                                                 K                                                        M:K05          T                    T                 T            T                     T             Khoảng cách giữa xe bồn và ô tô đỗ quá hẹp, không đủ cho xe máy đi qua an toàn.
+C0265  #55    1         T             M:xe máy màu đen do người áo trắng chở 2                 T                                                        M:K05          M:len giữa           T                 T            T                     T             Xe máy màu đen do người áo trắng chở 2 cố luồn qua khe hẹp.
+C0266  #55    1         T             M:xe máy                                                 T                                                        M:K05          T                    T                 T            T                     T             Xe máy vượt trong không gian hẹp không đảm bảo an toàn.
+C0267  #56    4         T             M:xe máy                                                 M:xe ô tô                                                M:K14          T                    T                 T            T                     T             Xe máy sang đường bất ngờ ngay sát đầu xe ô tô mà không nhường đường cho xe đi thẳng.
+C0268  #56    1         T             M:xe máy                                                 M:xe ô tô                                                M:K14          T                    T                 T            T                     T             Xe máy sang đường bất ngờ ngay sát đầu xe ô tô đi thẳng.
+C0269  #57    1         T             M:xe màu bạc                                             M:xe ô tô SUV màu đỏ                                     T              T                    M:không giảm tốc  T            T                     T             Xe ô tô SUV màu đỏ thiếu quan sát xe màu bạc có tín hiệu xin rẽ trái và không giảm tốc độ nhường đường.
+C0270  #57    1         T             M:xe ô tô màu nâu                                        T                                                        T              T                    T                 T            T                     T             Xe ô tô màu nâu không xin đường và đột ngột chuyển hướng.
+C0271  #57    1         T             M:xe ô tô màu xám                                        M:phương đi thẳng                                        M:K14          T                    T                 T            T                     T             xe ô tô màu xám sang đường mà không quan sát, nhường đường cho phương đi thẳng .
+C0272  #57    1         M:va chạm     M:ô tô SUV màu đỏ                                        M:xe ô tô màu bạc                                        T              T                    M:tăng tốc        T            T                     T             Ô tô SUV màu đỏ bắt đầu tăng tốc di chuyển từ vạch dừng và va quệt vào xe ô tô màu bạc đang ở trong vùng điểm mù phía trước bên trái của xe.
+C0273  #57    1         T             M:ô tô con                                               T                                                        T              T                    T                 T            T                     T             Ô tô con quay đầu không quan sát
+C0274  #58    1         T             T                                                        T                                                        T              T                    T                 T            T                     T             Do người đi xe mặc áo cam đi quá tốc độ
+C0275  #58    1         M:va chạm     M:Người phụ nữ                                           M:xe chạy tới                                            M:K04          T                    T                 T            T                     T             Người phụ nữ chạy vào làn không quan sát nên bị xe chạy tới va quẹt vào.
+C0276  #58    1         T             M:Người phụ nữ                                           T                                                        M:K04          T                    T                 T            T                     T             Người phụ nữ nhập làn đường chính thiếu quan sát.
+C0277  #58    1         T             M:Xe máy màu đen do người phụ nữ điều khiển              T                                                        M:K12          T                    T                 T            T                     T             Xe máy màu đen do người phụ nữ điều khiển khi ra đường lớn không chú ý quan sát.
+C0278  #58    1         T             M:người phụ nữ                                           M:người lái xe máy                                       T              T                    T                 T            T                     T             người phụ nữ không quan sát khi chuyển hướng và người lái xe máy đi quá nhanh.
+C0279  #59    1         T             M:xe tải ngược chiều                                     M:Xe con                                                 T              T                    T                 M:đối tượng  M:đánh lái sang phải  T             Xe con đánh lái gấp sang phải trên mặt đường trơn trượt khi tránh xe tải ngược chiều dẫn đến mất lái.
+C0280  #59    1         T             M:Xe tải màu xanh                                        T                                                        M:K08          T                    T                 T            T                     T             Xe tải màu xanh lấn làn ngược chiều.
+C0281  #59    1         T             M:xe tải màu xanh                                        T                                                        T              T                    T                 T            T                     T             Xe tải màu xanh lấn làn.
+C0282  #59    1         T             M:xe tải                                                 T                                                        T              T                    T                 T            T                     T             Xe tải đi ngược chiều, lấn làn
+C0283  #59    1         T             M:xe tải                                                 T                                                        M:K08          M:lấn khi vượt       M:tăng tốc        T            T                     T             xe tải đi nhanh lấn làn ngược chiều tăng tốc để vượt lên .
+C0284  #60    1         T             M:Xe SUV                                                 T                                                        M:K04          T                    T                 T            T                     T             Xe SUV nhập làn đột ngột ở khoảng cách quá gần.
+C0285  #60    3         T             M:xe phía trước                                          M:Xe sedan màu đỏ                                        M:K02          T                    T                 T            T                     T             Xe sedan màu đỏ không giữ khoảng cách an toàn và không kịp phanh khi xe phía trước đi chậm lại.
+C0286  #60    1         T             M:Xe ô tô màu đỏ                                         T                                                        T              T                    T                 T            T                     T             Xe ô tô màu đỏ không giữ khoảng cách.

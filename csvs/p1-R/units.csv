@@ -1,0 +1,229 @@
+﻿unit,draft_id,seq,question,answer,n_annotators,annotators,batch,item
+R0001,f63b4873-3956-45c1-bcde-062f1fe30fd5,1,Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,Hai người dừng lại và xảy ra giằng co.,1,Huỳnh Trung,R-001,1
+R0002,f63b4873-3956-45c1-bcde-062f1fe30fd5,1,Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,Người mặc áo trắng đã đánh vào mặt người mặc áo xanh.,1,Tuyết Hạnh,R-001,2
+R0003,f63b4873-3956-45c1-bcde-062f1fe30fd5,1,Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,"Ô tô dừng lại, người đi xe máy màu trắng nổi giận đánh người đi xe máy màu xanh.",1,Đức Mạnh,R-001,3
+R0004,f63b4873-3956-45c1-bcde-062f1fe30fd5,1,Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,"Ô tô dừng lại, người đi xe máy tự đứng dậy và di chuyển vào lề đường.",1,Tuấn Hùng,R-001,4
+R0005,f63b4873-3956-45c1-bcde-062f1fe30fd5,1,Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,"Ô tô dừng lại, người đi xe máy tự đứng dậy và tác động vật lí vào mặt người đi xe máy cùng chiều với ô tô gắn camera",1,Nhật Trường,R-001,5
+R0006,f63b4873-3956-45c1-bcde-062f1fe30fd5,1,Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,"Ô tô dừng lại, người đi xe máy tự đứng dậy và đánh người trước đầu xe ô tô",1,Tuấn Anh,R-001,6
+R0007,f63b4873-3956-45c1-bcde-062f1fe30fd5,1,Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,"Ô tô dừng lại, người đi xe máy đen đánh người đi xe máy mặc áo xanh",1,Mai Linh,R-001,7
+R0008,ad18198a-3d28-4baf-a454-3f2264456ec0,2,"Sau khi xảy ra va chạm, tài xế ô tô đã có phản ứng như thế nào?",Tài xế xe máy thồ đã điều khiển xe đi tiếp và xe ô tô dừng lại.,1,Tuấn Hùng,R-002,1
+R0009,ad18198a-3d28-4baf-a454-3f2264456ec0,2,"Sau khi xảy ra va chạm, tài xế ô tô đã có phản ứng như thế nào?",Tài xế ô tô đã điều khiển xe tấp vào lề đường và dừng lại.,4,"Mai Linh, Nhật Trường, Tuấn Anh, Đức Mạnh",R-002,2
+R0010,ad18198a-3d28-4baf-a454-3f2264456ec0,2,"Sau khi xảy ra va chạm, tài xế ô tô đã có phản ứng như thế nào?",Tài xế ô tô đã điều khiển xe tấp vào lề đường và dừng lại. Xe ba gác tiếp tục di chuyển dọc mép đường,1,Huỳnh Trung,R-002,3
+R0011,a198ec7a-95ed-4d06-b219-3d0220eacbd2,3,Phản ứng của người đi xe máy ngay sau khi ngã là gì?,Người lái xe máy nhanh chóng đứng dậy và đi bộ về phía trước đầu xe của camera hành trình.,5,"Mai Linh, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-002,4
+R0012,a198ec7a-95ed-4d06-b219-3d0220eacbd2,3,Phản ứng của người đi xe máy ngay sau khi ngã là gì?,Người lái xe máy nhanh chóng đứng dậy và đi bộ về phía trước đầu xe gắn camera hành trình.,1,Nhật Trường,R-002,5
+R0013,a198ec7a-95ed-4d06-b219-3d0220eacbd2,3,Phản ứng của người đi xe máy ngay sau khi ngã là gì?,"Ô tô có camera hành trình dừng lại, người lái xe máy nhanh chóng đứng dậy và đi bộ về phía trước đầu xe của camera hành trình.",1,Huỳnh Trung,R-002,6
+R0014,dbb85e4f-9201-4dc0-af82-7f8cf7a1ece1,4,Phản ứng của tài xế xe tải sau khi va chạm xảy ra là gì?,Xe tải lớn đã dừng lại ngay sau khi vụ việc xảy ra.,5,"Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",R-002,7
+R0015,dbb85e4f-9201-4dc0-af82-7f8cf7a1ece1,4,Phản ứng của tài xế xe tải sau khi va chạm xảy ra là gì?,Xe tải tiếp tục di chuyển sau khi xe máy ngã,1,Huỳnh Trung,R-003,1
+R0016,dbb85e4f-9201-4dc0-af82-7f8cf7a1ece1,4,Phản ứng của tài xế xe tải sau khi va chạm xảy ra là gì?,Xe tải xe tải thùng kín đã dừng lại ngay sau khi vụ việc xảy ra.,1,Tuấn Anh,R-003,2
+R0017,150cec1b-e93a-479b-9e7b-9ba27c08d45a,5,Hành vi của tài xế xe tải ben sau khi vượt đèn đỏ là gì?,Xe tải ben tiếp tục phóng đi với tốc độ cao mà không có dấu hiệu dừng lại.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-003,3
+R0018,d335d456-9019-4fad-9d57-4ba0428e4976,6,Tài xế đã làm gì ngay sau khi va chạm xảy ra?,Người đàn ông điểu khiển xe máy đứng dậy lưỡng thững nhìn ngó và dựng xe máy lên.,1,Tuấn Anh,R-003,4
+R0019,d335d456-9019-4fad-9d57-4ba0428e4976,6,Tài xế đã làm gì ngay sau khi va chạm xảy ra?,Tài xế đã chủ động giảm tốc độ và tấp xe vào lề đường bên phải.,2,"Tuấn Hùng, Đức Mạnh",R-003,5
+R0020,d335d456-9019-4fad-9d57-4ba0428e4976,6,Tài xế đã làm gì ngay sau khi va chạm xảy ra?,Tài xế đã chủ động đứng dậy và dựng xe lên một bên để không ảnh hưởng giao thông của các xe khác trên đường.,1,Tuyết Hạnh,R-003,6
+R0021,d335d456-9019-4fad-9d57-4ba0428e4976,6,Tài xế đã làm gì ngay sau khi va chạm xảy ra?,Tài xế đã đứng dậy và nhấc xe lên,1,Mai Linh,R-003,7
+R0022,d335d456-9019-4fad-9d57-4ba0428e4976,6,Tài xế đã làm gì ngay sau khi va chạm xảy ra?,Tài xế đã đứng dậy và tấp xe vào lề đường bên phải.,1,Nhật Trường,R-004,1
+R0023,d335d456-9019-4fad-9d57-4ba0428e4976,6,Tài xế đã làm gì ngay sau khi va chạm xảy ra?,con chó và người điều khiển dựng xe dậy và đi vào lề đường bên phải,1,Huỳnh Trung,R-004,2
+R0024,95f1ea43-3a4e-441a-b465-d9b2cc5f3db9,7,Hành vi của tài xế xe tải sau khi tai nạn xảy ra là gì?,Tài xế dừng xe ngay lập tức và xuống xe để kiểm tra tình hình nạn nhân.,4,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Hùng",R-004,3
+R0025,95f1ea43-3a4e-441a-b465-d9b2cc5f3db9,7,Hành vi của tài xế xe tải sau khi tai nạn xảy ra là gì?,Tài xế dừng xe ngay lập tức và xuống xe để kiểm tra tình hình vụ va chạm.,1,Tuyết Hạnh,R-004,4
+R0026,95f1ea43-3a4e-441a-b465-d9b2cc5f3db9,7,Hành vi của tài xế xe tải sau khi tai nạn xảy ra là gì?,Tài xế dừng xe ngay lập tức.,1,Đức Mạnh,R-004,5
+R0027,95f1ea43-3a4e-441a-b465-d9b2cc5f3db9,7,Hành vi của tài xế xe tải sau khi tai nạn xảy ra là gì?,"Xe tải lớn màu xanh dừng lại, tài xế xe tải lớn màu xanh chạy xuống kiểm tra tình trạng xe máy.",1,Tuấn Anh,R-004,6
+R0028,dcd66aa2-ac4b-45ab-9be6-096c30ea403d,8,Hành vi của các bên sau tai nạn là gì?,"Tài xế xe tải dừng lại, xuống xe cùng người dân xung quanh hỗ trợ nạn nhân.",6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-004,7
+R0029,dcd66aa2-ac4b-45ab-9be6-096c30ea403d,8,Hành vi của các bên sau tai nạn là gì?,"Tài xế xe tải dừng lại, xuống xe để xem xét tình hình vụ va chạm.",1,Tuyết Hạnh,R-005,1
+R0030,4ece8a5e-771b-430d-93ba-879e8353bda4,9,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe tải dừng lại sau khi bị lật nằm trên mặt đường.,1,Tuyết Hạnh,R-005,2
+R0031,4ece8a5e-771b-430d-93ba-879e8353bda4,9,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe tải nằm lại trên đường cao tốc.,1,Tuấn Anh,R-005,3
+R0032,fd865bfb-ae80-4b7a-87e3-b1accc2e3768,10,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Các phương tiện liên quan như xe container và xe bán tải đã dừng lại tại hiện trường.,6,"Huỳnh Trung, Mai Linh, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-005,4
+R0033,fd865bfb-ae80-4b7a-87e3-b1accc2e3768,10,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe tải màu trắng đã dừng lại.,1,Nhật Trường,R-005,5
+R0034,329b3875-ce6b-4356-9c8b-d4953769c728,11,Hành vi của các bên và người xung quanh sau tai nạn là gì?,"Người lái xe máy tự đứng dậy, người dân xung quanh nhanh chóng chạy đến hỗ trợ người bị nạn.",1,Tuyết Hạnh,R-005,6
+R0035,329b3875-ce6b-4356-9c8b-d4953769c728,11,Hành vi của các bên và người xung quanh sau tai nạn là gì?,Người lái xe máy đứng dậy.,1,Tuấn Anh,R-005,7
+R0036,329b3875-ce6b-4356-9c8b-d4953769c728,11,Hành vi của các bên và người xung quanh sau tai nạn là gì?,"Người đi xe máy đứng dậy, người dân xung quanh nhanh chóng chạy đến hỗ trợ người bị nạn.",1,Nhật Trường,R-006,1
+R0037,329b3875-ce6b-4356-9c8b-d4953769c728,11,Hành vi của các bên và người xung quanh sau tai nạn là gì?,Người đi xe đạp dừng lại gần vị trí xe ngã; người xung quanh tiến đến và người điều khiển xe máy ngồi dậy.,1,Huỳnh Trung,R-006,2
+R0038,329b3875-ce6b-4356-9c8b-d4953769c728,11,Hành vi của các bên và người xung quanh sau tai nạn là gì?,người dân xung quanh nhanh chóng chạy đến hỗ trợ người bị nạn.,3,"Mai Linh, Tuấn Hùng, Đức Mạnh",R-006,3
+R0039,bf385532-df5f-4cca-921f-f3d1cd7d81cc,12,Phản ứng của các tài xế ngay sau khi xảy ra va chạm là gì?,Cả hai xe tiếp tục di chuyển chậm về phía trước một đoạn ngắn trước khi video kết thúc.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-006,4
+R0040,f7d018fe-fa36-458c-948b-259737bb7585,13,Phản ứng của xe ô tô ngay sau khi va chạm xảy ra là gì?,Xe ô tô có camera hành trình dừng lại ngay lập tức tại hiện trường.,1,Tuấn Anh,R-006,5
+R0041,f7d018fe-fa36-458c-948b-259737bb7585,13,Phản ứng của xe ô tô ngay sau khi va chạm xảy ra là gì?,Xe ô tô dừng lại ngay lập tức tại hiện trường.,5,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Đức Mạnh",R-006,6
+R0042,f7d018fe-fa36-458c-948b-259737bb7585,13,Phản ứng của xe ô tô ngay sau khi va chạm xảy ra là gì?,Xe ô tô và xe máy dừng lại ngay lập tức tại hiện trường.,1,Tuấn Hùng,R-006,7
+R0043,0d342e35-f6b5-4e5b-bc97-76f034a65525,14,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Các phương tiện liên quan dừng lại tại hiện trường ( trừ xe ô tô con màu bạc),1,Mai Linh,R-007,1
+R0044,0d342e35-f6b5-4e5b-bc97-76f034a65525,14,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Các phương tiện liên quan dừng lại tại hiện trường.,1,Nhật Trường,R-007,2
+R0045,0d342e35-f6b5-4e5b-bc97-76f034a65525,14,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe tải và xe ô tô màu đen dừng lại tại hiện trường. Xe ô tô màu trắng chạy đi.,1,Tuấn Anh,R-007,3
+R0046,0d342e35-f6b5-4e5b-bc97-76f034a65525,14,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe tải và ô tô màu đen dừng lại.,1,Đức Mạnh,R-007,4
+R0047,0d342e35-f6b5-4e5b-bc97-76f034a65525,14,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Xe ô tô con tiếp tục di chuyển, các phương tiện liên quan còn lại dừng lại tại hiện trường.",1,Tuấn Hùng,R-007,5
+R0048,0d342e35-f6b5-4e5b-bc97-76f034a65525,14,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Xe ô tô màu bạc tiếp tục di chuyển, xe tải và xe ô tô con màu đen dừng lại.",1,Tuyết Hạnh,R-007,6
+R0049,0d342e35-f6b5-4e5b-bc97-76f034a65525,14,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",ô tô màu tối và xe tài thùng dừng lại tại hiện trường.,1,Huỳnh Trung,R-007,7
+R0050,e8bb4f5e-f79d-4d41-bb94-fe48d8af26d2,15,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,Hai xe dừng lại ngay lập tức tại hiện trường.,1,Tuyết Hạnh,R-008,1
+R0051,e8bb4f5e-f79d-4d41-bb94-fe48d8af26d2,15,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,"Xe tải dừng lại, xe ô tô màu đỏ dừng lại.",1,Tuấn Anh,R-008,2
+R0052,e8bb4f5e-f79d-4d41-bb94-fe48d8af26d2,15,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,Xe ô tô đỏ dừng lại ngay lập tức tại hiện trường.,2,"Huỳnh Trung, Mai Linh",R-008,3
+R0053,e8bb4f5e-f79d-4d41-bb94-fe48d8af26d2,15,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,Xe ô tô đỏ và xe tải dừng lại ngay lập tức tại hiện trường.,2,"Tuấn Hùng, Đức Mạnh",R-008,4
+R0054,e8bb4f5e-f79d-4d41-bb94-fe48d8af26d2,15,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,Xe ô tô đỏ và xe tải thùng dừng lại ngay lập tức tại hiện trường.,1,Nhật Trường,R-008,5
+R0055,f17ed7b2-3fc1-46fc-b7fd-711c5458e2d3,16,Hành vi của các bên ngay sau khi va chạm xảy ra là gì?,2 phương tiện tiếp tục di chuyển,1,Huỳnh Trung,R-008,6
+R0056,f17ed7b2-3fc1-46fc-b7fd-711c5458e2d3,16,Hành vi của các bên ngay sau khi va chạm xảy ra là gì?,2 xe vẫn tiếp tục hành trình,1,Mai Linh,R-008,7
+R0057,f17ed7b2-3fc1-46fc-b7fd-711c5458e2d3,16,Hành vi của các bên ngay sau khi va chạm xảy ra là gì?,Cả hai phương tiện vẫn di chuyển như bình thường.,1,Nhật Trường,R-009,1
+R0058,f17ed7b2-3fc1-46fc-b7fd-711c5458e2d3,16,Hành vi của các bên ngay sau khi va chạm xảy ra là gì?,Cả hai phương tiện vẫn tiếp tục di chuyển.,1,Tuyết Hạnh,R-009,2
+R0059,f17ed7b2-3fc1-46fc-b7fd-711c5458e2d3,16,Hành vi của các bên ngay sau khi va chạm xảy ra là gì?,Cả hai phương tiện đều di chuyển tiếp.,1,Tuấn Hùng,R-009,3
+R0060,f17ed7b2-3fc1-46fc-b7fd-711c5458e2d3,16,Hành vi của các bên ngay sau khi va chạm xảy ra là gì?,Cả hai phương tiện đều đi tiếp.,1,Đức Mạnh,R-009,4
+R0061,268b42c6-50a5-407b-a5b2-1a1ce9c983b4,17,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,Cả hai phương tiện đều dừng lại ngay tại vị trí va chạm giữa ngã tư.,1,Tuấn Hùng,R-009,5
+R0062,268b42c6-50a5-407b-a5b2-1a1ce9c983b4,17,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,Cả hai phương tiện đều dừng lại sau khi va chạm.,1,Tuyết Hạnh,R-009,6
+R0063,268b42c6-50a5-407b-a5b2-1a1ce9c983b4,17,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,Xe SUV dừng lại và xe tải ben tiếp tục đi tiếp.,1,Đức Mạnh,R-009,7
+R0064,268b42c6-50a5-407b-a5b2-1a1ce9c983b4,17,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,"Xe màu đen dừng lại tại chỗ, xe tải ben màu xanh đen chạy nhanh qua một đoạn và dừng lại.",1,Tuấn Anh,R-010,1
+R0065,268b42c6-50a5-407b-a5b2-1a1ce9c983b4,17,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,Xe tải ben tiếp tục di chuyển qua giao lộ; ô tô SUV dừng lại trước ô tô có camera hành trình.,1,Huỳnh Trung,R-010,2
+R0066,268b42c6-50a5-407b-a5b2-1a1ce9c983b4,17,Phản ứng của các bên liên quan ngay sau khi va chạm xảy ra là gì?,"xe SUV đen dừng lại ngay tại vị trí va chạm, xe ben xanh đen tiếp tục đi tiếp.",1,Mai Linh,R-010,3
+R0067,8f8d826a-861d-40a8-a7f6-efd15ec1f833,18,Hành vi của các bên và người xung quanh sau tai nạn là gì?,Các bên dừng lại tại hiện trường và có người dân chạy đến giúp đỡ người gặp nạn.,6,"Huỳnh Trung, Mai Linh, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-010,4
+R0068,8f8d826a-861d-40a8-a7f6-efd15ec1f833,18,Hành vi của các bên và người xung quanh sau tai nạn là gì?,"Các bên dừng lại tại hiện trường và người đi xe máy điện không tắt chìa khóa, nên lúc dựng xe lên có tăng ga và ngã thêm lần nữa, có người dân chạy đến giúp đỡ người gặp nạn.",1,Nhật Trường,R-010,5
+R0069,e137eeab-1378-4525-b019-4bca9f8399e6,19,Các bên đã phản ứng như thế nào ngay sau khi sự việc xảy ra?,Các phương tiện di chuyển tiếp,1,Tuấn Hùng,R-010,6
+R0070,e137eeab-1378-4525-b019-4bca9f8399e6,19,Các bên đã phản ứng như thế nào ngay sau khi sự việc xảy ra?,"Ô tô dừng lại kịp thời, người đi xe máy lấy lại được thăng bằng và cả hai tiếp tục di chuyển.",1,Tuyết Hạnh,R-010,7
+R0071,e137eeab-1378-4525-b019-4bca9f8399e6,19,Các bên đã phản ứng như thế nào ngay sau khi sự việc xảy ra?,"Ô tô dừng lại kịp thời, người đi xe máy tự dựng xe và di chuyển tiếp.",1,Nhật Trường,R-011,1
+R0072,e137eeab-1378-4525-b019-4bca9f8399e6,19,Các bên đã phản ứng như thế nào ngay sau khi sự việc xảy ra?,"Ô tô dừng lại kịp thời, người đi xe máy tự dựng xe và dắt vào lề đường.",3,"Huỳnh Trung, Mai Linh, Đức Mạnh",R-011,2
+R0073,e137eeab-1378-4525-b019-4bca9f8399e6,19,Các bên đã phản ứng như thế nào ngay sau khi sự việc xảy ra?,"Ô tô màu trắng dừng lại kịp thời, người đi xe máy màu xanh đen tự dựng xe lên và chạy đi tiếp.",1,Tuấn Anh,R-011,3
+R0074,86ba1a4f-972d-4fd6-a891-0845d618afbe,20,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Cả hai xe tiếp tục di chuyển.,1,Tuyết Hạnh,R-011,4
+R0075,86ba1a4f-972d-4fd6-a891-0845d618afbe,20,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Cả hai xe đều di chuyển tiếp,1,Tuấn Hùng,R-011,5
+R0076,86ba1a4f-972d-4fd6-a891-0845d618afbe,20,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe ô tô giảm tốc độ cho xe máy đi qua rồi đi thẳng.,1,Tuấn Anh,R-011,6
+R0077,86ba1a4f-972d-4fd6-a891-0845d618afbe,20,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Xe ô tô giảm tốc độ và dừng lại tại hiện trường, xe máy tiếp tục di chuyển.",1,Mai Linh,R-011,7
+R0078,86ba1a4f-972d-4fd6-a891-0845d618afbe,20,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe ô tô giảm tốc độ và đi tiếp ngay sau đó.,1,Đức Mạnh,R-012,1
+R0079,86ba1a4f-972d-4fd6-a891-0845d618afbe,20,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe ô tô tiếp tục di chuyển.,1,Nhật Trường,R-012,2
+R0080,86ba1a4f-972d-4fd6-a891-0845d618afbe,20,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",cả 2 phương tiện vẫn tiếp tục di chuyển,1,Huỳnh Trung,R-012,3
+R0081,b2f70b99-ffcc-41f3-9f37-fbaf9cea4f97,21,Phản ứng của các bên ngay sau khi va chạm xảy ra là gì?,Cả hai phương tiện đều dừng lại ngay tại vị trí va chạm trên đường.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-012,4
+R0082,f3c10815-0692-4cb6-9e9f-57ab288c1794,22,Hành vi của người lái xe ô tô ngay sau tai nạn là gì?,Không thể xác định,1,Huỳnh Trung,R-012,5
+R0083,f3c10815-0692-4cb6-9e9f-57ab288c1794,22,Hành vi của người lái xe ô tô ngay sau tai nạn là gì?,Người lái xe ô tô đã đạp phanh để dừng xe lại ngay lập tức.,3,"Mai Linh, Tuấn Hùng, Đức Mạnh",R-012,6
+R0084,edbf7761-7956-4634-b71f-ecf967033150,23,Phản ứng của những người liên quan và xung quanh sau tai nạn như thế nào?,"Người điều khiển xe tay ga vẫn tiếp tục di chuyển, người đi xe máy đang cố đứng dậy.",1,Tuyết Hạnh,R-012,7
+R0085,edbf7761-7956-4634-b71f-ecf967033150,23,Phản ứng của những người liên quan và xung quanh sau tai nạn như thế nào?,"Người điểu khiển xe máy đứng dậy, những người đi đường khác giảm tốc độ và bắt đầu quan sát để hỗ trợ.",1,Huỳnh Trung,R-013,1
+R0086,edbf7761-7956-4634-b71f-ecf967033150,23,Phản ứng của những người liên quan và xung quanh sau tai nạn như thế nào?,"Nạn nhân nằm trên đường, những người đi đường khác giảm tốc độ và bắt đầu quan sát để hỗ trợ.",1,Tuấn Hùng,R-013,2
+R0087,edbf7761-7956-4634-b71f-ecf967033150,23,Phản ứng của những người liên quan và xung quanh sau tai nạn như thế nào?,Xe máy màu nâu do người phụ nữ điều khiển khiến chạy luôn. Xe máy màu đen do người đàn ông mặc áo sọc điều khiển nằm tại vị trí va chạm.,1,Tuấn Anh,R-013,3
+R0088,edbf7761-7956-4634-b71f-ecf967033150,23,Phản ứng của những người liên quan và xung quanh sau tai nạn như thế nào?,người lái xe màu tối đang tự đứng dậy,1,Mai Linh,R-013,4
+R0089,edbf7761-7956-4634-b71f-ecf967033150,23,Phản ứng của những người liên quan và xung quanh sau tai nạn như thế nào?,"người lái xe máy tối màu nằm trên đường, những người đi đường khác giảm tốc độ và bắt đầu quan sát để hỗ trợ.",1,Đức Mạnh,R-013,5
+R0090,ee87c5af-b84b-4002-8820-3ee0714fee5f,24,"Sau khi va chạm xảy ra, người lái ô tô con đã làm gì?",Xe ô tô màu xám dừng lại ngay tại hiện trường vụ tai nạn. Xe máy màu trắng do thanh niên không đội mũ điều khiển chạy luôn.,1,Tuấn Anh,R-013,6
+R0091,ee87c5af-b84b-4002-8820-3ee0714fee5f,24,"Sau khi va chạm xảy ra, người lái ô tô con đã làm gì?","xe ô tô gắn camera và ô tô con màu bạc dừng xe, xe máy tiếp tục di chuyển.",1,Mai Linh,R-013,7
+R0092,ee87c5af-b84b-4002-8820-3ee0714fee5f,24,"Sau khi va chạm xảy ra, người lái ô tô con đã làm gì?",Ô tô con dừng lại ngay tại hiện trường vụ tai nạn.,4,"Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",R-014,1
+R0093,ee87c5af-b84b-4002-8820-3ee0714fee5f,24,"Sau khi va chạm xảy ra, người lái ô tô con đã làm gì?",Ô tô con dừng lại và tài xế bước xuống xử lí. Xe máy tiếp tục chạy đi,1,Huỳnh Trung,R-014,2
+R0094,634c9279-1bb1-4397-aa12-30fa95badf0c,25,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,Các bên liên quan đều dừng lại tại hiện trường.,5,"Mai Linh, Nhật Trường, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-014,3
+R0095,634c9279-1bb1-4397-aa12-30fa95badf0c,25,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,Người mặc áo sáng đứng dậy cạnh xe đạp bị đổ; ô tô màu xanh ngọc dừng gần vị trí xảy ra sự việc.,1,Huỳnh Trung,R-014,4
+R0096,634c9279-1bb1-4397-aa12-30fa95badf0c,25,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,"Xe ô tô dừng lại, người đi xe đạp đứng dậy sau va chạm.",1,Tuyết Hạnh,R-014,5
+R0097,ea982b52-8c7e-4431-9250-214fd370546a,26,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,Xe máy màu đỏ dừng lại trước đầu ô tô có camera hành trình; người ngồi sau xuống xe và người điều khiển đi vào phía bên phải.,1,Huỳnh Trung,R-014,6
+R0098,ea982b52-8c7e-4431-9250-214fd370546a,26,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,Xe tải dừng lại ngay lập tức; người ngồi sau xe máy nhảy khỏi xe và đi vào lề đường.,1,Tuấn Hùng,R-014,7
+R0099,ea982b52-8c7e-4431-9250-214fd370546a,26,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,Xe tải dừng lại ngay lập tức; người ngồi sau xe máy tự đứng dậy và đi vào lề đường.,1,Đức Mạnh,R-015,1
+R0100,ea982b52-8c7e-4431-9250-214fd370546a,26,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,Xe ô tô (có camera hành trình) dừng lại ngay lập tức; người ngồi sau xe máy màu đỏ do phụ nữ áo đen chở 2 người xuống xe và lên xe lại rồi xe máy chạy đi.,1,Tuấn Anh,R-015,2
+R0101,ea982b52-8c7e-4431-9250-214fd370546a,26,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,Xe ô tô dừng lại ngay lập tức; người trên xe máy dừng lại rồi đi vào lề đường.,1,Tuyết Hạnh,R-015,3
+R0102,ea982b52-8c7e-4431-9250-214fd370546a,26,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,Xe ô tô gắn camera và xe máy dừng lại ngay lập tức; người ngồi sau xe máy tự đứng dậy và xuống xe.,1,Mai Linh,R-015,4
+R0103,ea982b52-8c7e-4431-9250-214fd370546a,26,Hành động của các bên ngay sau khi va chạm xảy ra là gì?,Xe ô tô đang gắn camera hành trình dừng lại ngay lập tức; người ngồi sau xe máy xuống khỏi xe máy và đi vào lề đường.,1,Nhật Trường,R-015,5
+R0104,0ba328ed-8772-4cdc-b0e7-d5b82d875754,27,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Các xe phải dừng lại, tài xế xe tải xuống xe xem tình hình.",1,Tuyết Hạnh,R-015,6
+R0105,0ba328ed-8772-4cdc-b0e7-d5b82d875754,27,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Cả ba xe đừng lại và người đàn ông xe bán tải đen bước xuống.,1,Nhật Trường,R-015,7
+R0106,0ba328ed-8772-4cdc-b0e7-d5b82d875754,27,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Hai xe dừng lại và tài xế xe Ford Ranger bước ra cửa để xử lý.,1,Tuấn Hùng,R-016,1
+R0107,0ba328ed-8772-4cdc-b0e7-d5b82d875754,27,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Tài xế xe Ford Ranger bước xuống giải quyết,1,Huỳnh Trung,R-016,2
+R0108,0ba328ed-8772-4cdc-b0e7-d5b82d875754,27,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Tài xế xe ô tô màu đen mở cửa bước ra nói chuyện với tài xế xe ô tô màu trắng ở trong xe.,1,Tuấn Anh,R-016,3
+R0109,0ba328ed-8772-4cdc-b0e7-d5b82d875754,27,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",tài xế xe Ford Ranger xuống xe .,1,Đức Mạnh,R-016,4
+R0110,0ba328ed-8772-4cdc-b0e7-d5b82d875754,27,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",tài xế xe ô tô con trắng đứng lại tranh cãi với tài xế xe Ford Ranger.,1,Mai Linh,R-016,5
+R0111,255bcc59-849a-4b4a-b8c0-15bc6cc3cfad,28,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Hai xe đã dừng lại tại hiện trường ngay sau va chạm.,1,Tuyết Hạnh,R-016,6
+R0112,255bcc59-849a-4b4a-b8c0-15bc6cc3cfad,28,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe tải đã dừng lại tại hiện trường ngay sau va chạm.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-016,7
+R0113,8e214096-c1ba-4485-9783-f3ca5db16d88,29,Hành vi của các bên sau tai nạn là gì?,Cả hai phương tiện đều di chuyển bình thường.,1,Tuấn Anh,R-017,1
+R0114,8e214096-c1ba-4485-9783-f3ca5db16d88,29,Hành vi của các bên sau tai nạn là gì?,Cả hai phương tiện đều tiếp tục di chuyển .,1,Mai Linh,R-017,2
+R0115,8e214096-c1ba-4485-9783-f3ca5db16d88,29,Hành vi của các bên sau tai nạn là gì?,Xe có camera vẫn tiếp tục di chuyển.,1,Tuyết Hạnh,R-017,3
+R0116,8e214096-c1ba-4485-9783-f3ca5db16d88,29,Hành vi của các bên sau tai nạn là gì?,Xe gắn camera dừng lại tại hiện trường ngay sau khi va chạm.,1,Tuấn Hùng,R-017,4
+R0117,8e214096-c1ba-4485-9783-f3ca5db16d88,29,Hành vi của các bên sau tai nạn là gì?,Xe ô tô bán tải màu đen lách sang phải và tiếp tục di chuyển; ô tô có camera hành trình đi tiếp.,1,Huỳnh Trung,R-017,5
+R0118,8e214096-c1ba-4485-9783-f3ca5db16d88,29,Hành vi của các bên sau tai nạn là gì?,xe gắn camera hành trình vẫn tiếp tục đi tiếp.,1,Đức Mạnh,R-017,6
+R0119,6895b319-1bdf-4706-b9a7-3a8d21fa2638,30,Hành vi của các bên sau tai nạn là gì?,Xe camera hành trình dừng lại ngay tại hiện trường sau va chạm.,5,"Huỳnh Trung, Mai Linh, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng",R-017,7
+R0120,3c146e2c-ccac-4a61-8147-50f57a065ac1,31,Hành vi của các bên ngay sau khi xảy ra va chạm là gì?,Cả hai phương tiện đều di chuyển tiếp tục.,1,Tuấn Anh,R-018,1
+R0121,3c146e2c-ccac-4a61-8147-50f57a065ac1,31,Hành vi của các bên ngay sau khi xảy ra va chạm là gì?,Cả hai phương tiện đều dừng lại tại hiện trường ngay sau cú va chạm.,1,Tuấn Hùng,R-018,2
+R0122,3c146e2c-ccac-4a61-8147-50f57a065ac1,31,Hành vi của các bên ngay sau khi xảy ra va chạm là gì?,Cả hai phương tiện đều tiếp tục hành trình,1,Mai Linh,R-018,3
+R0123,3c146e2c-ccac-4a61-8147-50f57a065ac1,31,Hành vi của các bên ngay sau khi xảy ra va chạm là gì?,Cả hai phương tiện đều đi tiếp do không có va chạm.,1,Đức Mạnh,R-018,4
+R0124,3c146e2c-ccac-4a61-8147-50f57a065ac1,31,Hành vi của các bên ngay sau khi xảy ra va chạm là gì?,Không thể xác định,1,Huỳnh Trung,R-018,5
+R0125,027ef40f-86e2-4394-a44d-53fa1972dd67,32,Các bên liên quan đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,Cả hai phương tiện đều dừng lại ngay tại vị trí va chạm giữa ngã tư.,1,Tuấn Hùng,R-018,6
+R0126,027ef40f-86e2-4394-a44d-53fa1972dd67,32,Các bên liên quan đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,Cả hai phương tiện đều tiếp tục di chuyển.,1,Tuấn Anh,R-018,7
+R0127,027ef40f-86e2-4394-a44d-53fa1972dd67,32,Các bên liên quan đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,Không thể xác định khi,1,Huỳnh Trung,R-019,1
+R0128,027ef40f-86e2-4394-a44d-53fa1972dd67,32,Các bên liên quan đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,Xe gắn camera vẫn tiếp tục di chuyển.,1,Tuyết Hạnh,R-019,2
+R0129,027ef40f-86e2-4394-a44d-53fa1972dd67,32,Các bên liên quan đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,các phương tiện đều đi tiếp do không có va chạm.,1,Đức Mạnh,R-019,3
+R0130,027ef40f-86e2-4394-a44d-53fa1972dd67,32,Các bên liên quan đã phản ứng như thế nào ngay sau khi va chạm xảy ra?,xe ô tô gắn camera và xe tải trắng không có va chạm và tiếp tục di chuyển.,1,Mai Linh,R-019,4
+R0131,4ece6fd5-a068-4301-8a71-6a51a39475fe,33,Các phương tiện và người xung quanh phản ứng như thế nào ngay sau va chạm?,"Các xe liên quan dừng lại tại hiện trường, một số người đi xe máy đi chậm lại để quan sát.",5,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Hùng, Đức Mạnh",R-019,5
+R0132,4ece6fd5-a068-4301-8a71-6a51a39475fe,33,Các phương tiện và người xung quanh phản ứng như thế nào ngay sau va chạm?,Các xe liên quan dừng lại tại hiện trường.,2,"Tuyết Hạnh, Tuấn Anh",R-019,6
+R0133,47d7164e-1e05-4c2e-bc0b-96c351ead97c,34,Phản ứng của các bên liên quan sau khi xảy ra va chạm như thế nào?,"Tài xế ô tô dừng xe lại, người đi xe máy tự đứng dậy dựng xe và có người đi đường dừng lại hỗ trợ.",6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",R-019,7
+R0134,47d7164e-1e05-4c2e-bc0b-96c351ead97c,34,Phản ứng của các bên liên quan sau khi xảy ra va chạm như thế nào?,"Tài xế ô tô dừng xe lại, người đi xe máy tự đứng dậy dựng xe.",1,Tuấn Anh,R-020,1
+R0135,9f41a41c-5827-4d63-9834-5cd73a89a204,35,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Tài xế xe tải dừng lại , xe máy trắng tiếp tục di chuyển",1,Huỳnh Trung,R-020,2
+R0136,9f41a41c-5827-4d63-9834-5cd73a89a204,35,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Tài xế xe tải dừng lại và xe máy tiếp tục di chuyển.,1,Nhật Trường,R-020,3
+R0137,9f41a41c-5827-4d63-9834-5cd73a89a204,35,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Tài xế xe tải dừng lại và xe máy đi tiếp.,1,Đức Mạnh,R-020,4
+R0138,9f41a41c-5827-4d63-9834-5cd73a89a204,35,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Tài xế xe tải dừng lại, còn xe máy di chuyển tiếp.",1,Tuấn Hùng,R-020,5
+R0139,9f41a41c-5827-4d63-9834-5cd73a89a204,35,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Tài xế xe tải dừng lại, xe máy trắng tiếp tục di chuyển.",1,Mai Linh,R-020,6
+R0140,9f41a41c-5827-4d63-9834-5cd73a89a204,35,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Tài xế xe tải dừng lại, xe máy vẫn tiếp tục di chuyển.",1,Tuyết Hạnh,R-020,7
+R0141,9f41a41c-5827-4d63-9834-5cd73a89a204,35,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe máy màu trắng do phụ nữ áo đen chở 2 người đi thẳng. Xe tải màu xanh lạng tay lái và dừng xe lại.,1,Tuấn Anh,R-021,1
+R0142,490f087b-58e7-411c-b8f3-cca9401e0967,36,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Không thể xác định,1,Huỳnh Trung,R-021,2
+R0143,490f087b-58e7-411c-b8f3-cca9401e0967,36,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Video kết thúc ngay khi không thể xác định rõ hành vi tiếp theo.,1,Mai Linh,R-021,3
+R0144,490f087b-58e7-411c-b8f3-cca9401e0967,36,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Video kết thúc ngay trước va chạm nên không thể xác định rõ hành vi tiếp theo.,1,Tuấn Hùng,R-021,4
+R0145,08632b66-8330-4ef4-b474-c3d6f5df7262,37,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Những người xung quanh và nhân viên tiệm sửa xe nhanh chóng chạy ra hỗ trợ dựng xe và giúp đỡ người bị nạn.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",R-021,5
+R0146,92f1ce08-3b41-4409-b2c2-fe418e0a2084,38,"Sau khi va chạm xảy ra, những người liên quan đã có phản ứng như thế nào?","Người lái xe bị ngã tự đứng dậy ngay lập tức và cãi vã với người mặc áo xanh, người lái xe mặc màu xanh dừng lại để kiểm tra.",1,Tuyết Hạnh,R-021,6
+R0147,92f1ce08-3b41-4409-b2c2-fe418e0a2084,38,"Sau khi va chạm xảy ra, những người liên quan đã có phản ứng như thế nào?","Người lái xe bị ngã tự đứng dậy ngay lập tức, người lái xe màu tối màu dừng lại để kiểm tra.",1,Mai Linh,R-021,7
+R0148,92f1ce08-3b41-4409-b2c2-fe418e0a2084,38,"Sau khi va chạm xảy ra, những người liên quan đã có phản ứng như thế nào?","Người lái xe bị ngã tự đứng dậy ngay lập tức, người lái xe màu xanh dừng lại để kiểm tra.",4,"Huỳnh Trung, Nhật Trường, Tuấn Hùng, Đức Mạnh",R-022,1
+R0149,92f1ce08-3b41-4409-b2c2-fe418e0a2084,38,"Sau khi va chạm xảy ra, những người liên quan đã có phản ứng như thế nào?",Người lái xe máy bị ngã tự đứng dậy ngay lập tức chửi người mặc áo màu xanh lái xe máy.,1,Tuấn Anh,R-022,2
+R0150,035ce9da-89b7-4d45-9bd2-82270d443766,39,Hành vi của các bên sau tai nạn là gì?,"Cả hai đã dừng lại, xe máy chủ động lùi lại nhường đường cho xe có camera tiếp tục di chuyển.",1,Tuyết Hạnh,R-022,3
+R0151,035ce9da-89b7-4d45-9bd2-82270d443766,39,Hành vi của các bên sau tai nạn là gì?,Không thể xác định.,2,"Mai Linh, Đức Mạnh",R-022,4
+R0152,035ce9da-89b7-4d45-9bd2-82270d443766,39,Hành vi của các bên sau tai nạn là gì?,Xe có camera hành trình và xe máy do người mặc áo xanh điều khiển đứng lại tại chỗ.,1,Tuấn Anh,R-022,5
+R0153,035ce9da-89b7-4d45-9bd2-82270d443766,39,Hành vi của các bên sau tai nạn là gì?,Xe máy lùi xe nhường cho xe ô tô gắn camera di chuyển tiếp,1,Tuấn Hùng,R-022,6
+R0154,035ce9da-89b7-4d45-9bd2-82270d443766,39,Hành vi của các bên sau tai nạn là gì?,"Xe máy màu trắng đen giảm tốc sát đầu ô tô, sau đó lùi xe khỏi khung hình.",1,Huỳnh Trung,R-022,7
+R0155,8c52c3f8-f388-41d1-948a-35650667fc16,40,Các bên liên quan và người xung quanh phản ứng như thế nào sau va chạm?,Các tài xế xe máy vẫn chạy tiếp người đi đường và người dân gần đó chạy đến giúp đỡ em bé.,1,Đức Mạnh,R-023,1
+R0156,8c52c3f8-f388-41d1-948a-35650667fc16,40,Các bên liên quan và người xung quanh phản ứng như thế nào sau va chạm?,Những người đi đường và người dân gần đó chạy đến giúp đỡ.,1,Tuấn Hùng,R-023,2
+R0157,8c52c3f8-f388-41d1-948a-35650667fc16,40,Các bên liên quan và người xung quanh phản ứng như thế nào sau va chạm?,Xe máy màu trắng vẫn di chuyển tiếp và những người đi đường và người dân gần đó dừng lại xem.,1,Tuyết Hạnh,R-023,3
+R0158,8c52c3f8-f388-41d1-948a-35650667fc16,40,Các bên liên quan và người xung quanh phản ứng như thế nào sau va chạm?,Xe máy màu đen chạy đi và mọi người nhìn em học sinh mặc áo màu vàng.,1,Tuấn Anh,R-023,4
+R0159,8c52c3f8-f388-41d1-948a-35650667fc16,40,Các bên liên quan và người xung quanh phản ứng như thế nào sau va chạm?,những người đi đường và người dân gần đó chạy đến giúp đỡ.,1,Mai Linh,R-023,5
+R0160,8c52c3f8-f388-41d1-948a-35650667fc16,40,Các bên liên quan và người xung quanh phản ứng như thế nào sau va chạm?,"xe máy trắng tiếp tục chạy, trong khi những người đi đường và người dân gần đó chạy đến giúp đỡ.",1,Huỳnh Trung,R-023,6
+R0161,af8dad0c-33b3-424b-b67d-592efb22f181,42,Phản ứng của những người xung quanh sau khi tai nạn xảy ra như thế nào?,Các phương tiện khác chủ động giảm tốc độ hoặc lách qua để tránh người bị nạn.,3,"Mai Linh, Tuyết Hạnh, Đức Mạnh",R-023,7
+R0162,af8dad0c-33b3-424b-b67d-592efb22f181,42,Phản ứng của những người xung quanh sau khi tai nạn xảy ra như thế nào?,"Xe gắn camera hành trình dừng lại tại vị trí va chạm, xe máy do người đàn ông áo đen điều khiển nằm trước đầu xe.",1,Tuấn Anh,R-024,1
+R0163,af8dad0c-33b3-424b-b67d-592efb22f181,42,Phản ứng của những người xung quanh sau khi tai nạn xảy ra như thế nào?,Xe tay ga bạc tiếp tục chạy đi và xe ô tô gắn camera kịp thời dừng lại,1,Huỳnh Trung,R-024,2
+R0164,af8dad0c-33b3-424b-b67d-592efb22f181,42,Phản ứng của những người xung quanh sau khi tai nạn xảy ra như thế nào?,"Xe ô tô gắn camera hành trình dừng lại, người lái xe máy màu xám tự đứng dậy.",1,Nhật Trường,R-024,3
+R0165,bc142793-f647-464f-88ce-b9bb422db9e8,43,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Các phương tiện dừng lại ngay tại hiện trường để giải quyết vụ việc còn xe tải vẫn đi tiếp.,1,Đức Mạnh,R-024,4
+R0166,bc142793-f647-464f-88ce-b9bb422db9e8,43,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Các phương tiện dừng lại ngay tại hiện trường để giải quyết vụ việc, 2 người xe máy tự đứng dậy.",1,Huỳnh Trung,R-024,5
+R0167,bc142793-f647-464f-88ce-b9bb422db9e8,43,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Các phương tiện dừng lại ngay tại hiện trường, xe máy tự đứng dậy và xe tải lớn tiếp tục di chuyển.",1,Nhật Trường,R-024,6
+R0168,bc142793-f647-464f-88ce-b9bb422db9e8,43,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Xe tải lớn màu tối dừng lại khi chạy qua bên kia đường, các phương tiện dừng lại ngay tại hiện trường.",1,Tuấn Anh,R-024,7
+R0169,bc142793-f647-464f-88ce-b9bb422db9e8,43,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Xe tải tiếp tục di chuyển, hai người điều khiển xe máy tự đứng dậy dựng xe lên.",1,Tuyết Hạnh,R-025,1
+R0170,bc142793-f647-464f-88ce-b9bb422db9e8,43,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","xe ô tô con dừng lại, xe tải đi tiếp, xe máy chở 2 người đứng dậy tqaaps vào lề đường",1,Mai Linh,R-025,2
+R0171,bad8ccbf-f212-42dc-92eb-b280da3a89b1,44,Phản ứng của các bên liên quan sau khi xảy ra sự việc như thế nào?,Các bên liên quan đã dừng phương tiện tại hiện trường và mọi người xung quanh chạy tới xem,1,Huỳnh Trung,R-025,3
+R0172,bad8ccbf-f212-42dc-92eb-b280da3a89b1,44,Phản ứng của các bên liên quan sau khi xảy ra sự việc như thế nào?,Các bên liên quan đã dừng phương tiện tại hiện trường.,2,"Tuyết Hạnh, Tuấn Anh",R-025,4
+R0173,bad8ccbf-f212-42dc-92eb-b280da3a89b1,44,Phản ứng của các bên liên quan sau khi xảy ra sự việc như thế nào?,Các phương tiện tại hiện trường và mọi người ra xem tình hình.,1,Đức Mạnh,R-025,5
+R0174,bad8ccbf-f212-42dc-92eb-b280da3a89b1,44,Phản ứng của các bên liên quan sau khi xảy ra sự việc như thế nào?,"xe bồn dừng lại, xe ô tô con đi tiếp",1,Mai Linh,R-025,6
+R0175,1bbaed73-b694-48d8-b0de-81c96e3de505,45,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Người lái xe máy dựng xe dậy, xe bồn tiếp tục di chuyển.",1,Tuyết Hạnh,R-025,7
+R0176,1bbaed73-b694-48d8-b0de-81c96e3de505,45,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Người lái xe máy nhảy xuống, xe bồn đi tiếp một đoạn, các xe khác dừng lại hỗ trợ.",1,Huỳnh Trung,R-026,1
+R0177,1bbaed73-b694-48d8-b0de-81c96e3de505,45,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Người lái xe máy tự đứng dậy, xe bồn đi tiếp , các xe khác dừng lại",1,Đức Mạnh,R-026,2
+R0178,1bbaed73-b694-48d8-b0de-81c96e3de505,45,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Người lái xe máy tự đứng dậy, xe bồn đi tiếp một đoạn, các xe khác dừng lại hỗ trợ.",3,"Mai Linh, Nhật Trường, Tuấn Anh",R-026,3
+R0179,ffab9611-5eb2-4398-a25a-e78190edc3c8,46,Hành động của người lái xe máy ngay sau khi ngã là gì?,"Người lái xe máy nhanh chóng đứng dậy và tự dựng xe của mình lên, xe ô tô có camera kịp thời dừng lại",1,Huỳnh Trung,R-026,4
+R0180,ffab9611-5eb2-4398-a25a-e78190edc3c8,46,Hành động của người lái xe máy ngay sau khi ngã là gì?,Người lái xe máy nhanh chóng đứng dậy và tự dựng xe của mình lên.,5,"Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Đức Mạnh",R-026,5
+R0181,c79bbf67-d240-4b89-b730-4645f2c4528b,47,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Xe tải dừng lại trên dải phân cách, các xe khác đi chậm lại và tiếp tục hành trình.",6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Đức Mạnh",R-026,6
+R0182,4e971226-8e5e-4ead-937b-44ed84caa54b,48,Hành động của tài xế xe ô tô ngay sau va chạm là gì?,Tài xế xe ô tô đã giảm tốc độ và dừng lại.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Đức Mạnh",R-026,7
+R0183,b09f2535-81d5-4ce0-be36-967b8a794962,49,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Các phương tiện liên quan đều dừng lại hiệngay tạin trường.,1,Nhật Trường,R-027,1
+R0184,b09f2535-81d5-4ce0-be36-967b8a794962,49,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Các phương tiện liên quan đều dừng lại ngay tại hiện trường sau va chạm.,1,Đức Mạnh,R-027,2
+R0185,b09f2535-81d5-4ce0-be36-967b8a794962,49,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Các phương tiện liên quan đều đi tiếp,1,Mai Linh,R-027,3
+R0186,b09f2535-81d5-4ce0-be36-967b8a794962,49,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Các phương tiện tiếp tục di chuyển chạm ra khỏi vị trí sáp va chạm.,1,Tuấn Anh,R-027,4
+R0187,9012a9b4-f2ba-4ed2-ad0f-82e75f63afcb,50,Hành vi của các bên sau tai nạn là gì?,Cảnh sát giao thông đã có mặt tại hiện trường để điều tiết và xử lý vụ việc.,4,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Anh",R-027,5
+R0188,9012a9b4-f2ba-4ed2-ad0f-82e75f63afcb,50,Hành vi của các bên sau tai nạn là gì?,"Xe ô tô dừng lại, người đi xe máy tự đứng dậy và dựng xe lên.",1,Tuyết Hạnh,R-027,6
+R0189,9012a9b4-f2ba-4ed2-ad0f-82e75f63afcb,50,Hành vi của các bên sau tai nạn là gì?,"các phương tiện dừng lại, cảnh sát ở cạnh đó cũng tới xem tình hình.",1,Đức Mạnh,R-027,7
+R0190,31ee9b57-c997-425d-8f88-36c6e65ffcd3,51,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Do đến đoạn lạng tay lái hết video nên chưa xác nhận được,1,Mai Linh,R-028,1
+R0191,31ee9b57-c997-425d-8f88-36c6e65ffcd3,51,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?","Người lái xe máy dừng lại, xe khách tiếp tục di chuyển.",1,Tuyết Hạnh,R-028,2
+R0192,d5c46c92-8025-4393-87d5-1e00b72bf025,52,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",2 bên dừng lại tại hiện trường,1,Huỳnh Trung,R-028,3
+R0193,d5c46c92-8025-4393-87d5-1e00b72bf025,52,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",2 bên đều dừng lại,1,Mai Linh,R-028,4
+R0194,d5c46c92-8025-4393-87d5-1e00b72bf025,52,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Hai phương tiên dừng lại ở vị trí va chạm.,1,Tuấn Anh,R-028,5
+R0195,d5c46c92-8025-4393-87d5-1e00b72bf025,52,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Hai xe dừng lại hiện trường sau va chạm.,1,Tuyết Hạnh,R-028,6
+R0196,d5c46c92-8025-4393-87d5-1e00b72bf025,52,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Tài xế xe ô tô và xe ben điều dựng lại tại hiện trường,1,Nhật Trường,R-028,7
+R0197,d5c46c92-8025-4393-87d5-1e00b72bf025,52,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",các xe dừng lại hiện trường sau va chạm.,1,Đức Mạnh,R-029,1
+R0198,b7acf96b-328c-40db-8ab8-f08db20648d4,53,Hành vi của các bên và người xung quanh sau tai nạn là gì?,"Các bên liên quan dừng lại, tự đứng dậy",1,Huỳnh Trung,R-029,2
+R0199,b7acf96b-328c-40db-8ab8-f08db20648d4,53,Hành vi của các bên và người xung quanh sau tai nạn là gì?,"Các bên liên quan dừng lại, tự đứng dậy .",1,Đức Mạnh,R-029,3
+R0200,b7acf96b-328c-40db-8ab8-f08db20648d4,53,Hành vi của các bên và người xung quanh sau tai nạn là gì?,"Các bên liên quan dừng lại, tự đứng dậy và hỗ trợ nhau",1,Mai Linh,R-029,4
+R0201,b7acf96b-328c-40db-8ab8-f08db20648d4,53,Hành vi của các bên và người xung quanh sau tai nạn là gì?,"Các bên liên quan dừng lại, tự đứng dậy và những người xung quanh đi chậm lại.",1,Tuyết Hạnh,R-029,5
+R0202,b7acf96b-328c-40db-8ab8-f08db20648d4,53,Hành vi của các bên và người xung quanh sau tai nạn là gì?,"Xe máy chở 3 đứng dậy, xe máy màu nâu dựng xe lên.",1,Tuấn Anh,R-029,6
+R0203,f5ad1ac5-55bc-4085-933b-fc643f6d99e7,54,Hành vi của các bên sau va chạm như thế nào?,Các phương tiện tiếp tục di chuyển,1,Huỳnh Trung,R-029,7
+R0204,f5ad1ac5-55bc-4085-933b-fc643f6d99e7,54,Hành vi của các bên sau va chạm như thế nào?,Các phương tiện vẫn tiếp tục di chuyển.,1,Tuyết Hạnh,R-030,1
+R0205,f5ad1ac5-55bc-4085-933b-fc643f6d99e7,54,Hành vi của các bên sau va chạm như thế nào?,Không có va chạm,1,Mai Linh,R-030,2
+R0206,f5ad1ac5-55bc-4085-933b-fc643f6d99e7,54,Hành vi của các bên sau va chạm như thế nào?,Xe tải to chạy thẳng.,1,Tuấn Anh,R-030,3
+R0207,99d0015f-92a7-46e5-9c37-4097b49ce4b7,55,Người đi xe máy đã làm gì ngay sau khi va chạm xảy ra?,"Người ngồi sau xe máy chạy vào lề đường kiểm tra vết thương, người điều khiển xe máy lùi lại để nhường đường.",1,Tuyết Hạnh,R-030,4
+R0208,99d0015f-92a7-46e5-9c37-4097b49ce4b7,55,Người đi xe máy đã làm gì ngay sau khi va chạm xảy ra?,Người đi xe máy dừng lại tại hiện trường để kiểm tra thiệt hại .,1,Đức Mạnh,R-030,5
+R0209,99d0015f-92a7-46e5-9c37-4097b49ce4b7,55,Người đi xe máy đã làm gì ngay sau khi va chạm xảy ra?,Người đi xe máy dừng lại tại hiện trường để kiểm tra thiệt hại trên xe ô tô.,1,Tuấn Anh,R-030,6
+R0210,99d0015f-92a7-46e5-9c37-4097b49ce4b7,55,Người đi xe máy đã làm gì ngay sau khi va chạm xảy ra?,Người đi xe máy lùi lại,1,Mai Linh,R-030,7
+R0211,99d0015f-92a7-46e5-9c37-4097b49ce4b7,55,Người đi xe máy đã làm gì ngay sau khi va chạm xảy ra?,người đi xe máy cố gắng lui xe ra khỏi chỗ kẹt.,1,Huỳnh Trung,R-031,1
+R0212,0cee950a-db79-495b-a6e6-20785cbb45e9,56,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",2 xe đều đi tiếp,1,Mai Linh,R-031,2
+R0213,0cee950a-db79-495b-a6e6-20785cbb45e9,56,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe gắn camera hành trình chạy tiếp.,1,Tuấn Anh,R-031,3
+R0214,0cee950a-db79-495b-a6e6-20785cbb45e9,56,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe ô tô tiếp tục di chuyển.,1,Tuyết Hạnh,R-031,4
+R0215,0cee950a-db79-495b-a6e6-20785cbb45e9,56,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe ô tô đi tiếp,1,Đức Mạnh,R-031,5
+R0216,0cee950a-db79-495b-a6e6-20785cbb45e9,56,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe ô tô đã né tránh và tiếp tục di chuyển.,1,Huỳnh Trung,R-031,6
+R0217,86514b75-650c-43d7-83c2-265ab51468d8,57,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",2 chiếc ô tô đã dừng lại ngay lập tức sau khi va chạm xảy ra.,1,Huỳnh Trung,R-031,7
+R0218,86514b75-650c-43d7-83c2-265ab51468d8,57,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Chiếc ô tô SUV màu đỏ và ô tô màu xám đã dừng lại ngay lập tức sau khi va chạm xảy ra.,1,Đức Mạnh,R-032,1
+R0219,86514b75-650c-43d7-83c2-265ab51468d8,57,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Hai phương tiện dừng lại.,1,Tuyết Hạnh,R-032,2
+R0220,86514b75-650c-43d7-83c2-265ab51468d8,57,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Tất cả các xe cùng làn đã dừng lại sau va chạm xảy ra,1,Mai Linh,R-032,3
+R0221,86514b75-650c-43d7-83c2-265ab51468d8,57,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Xe ô tô màu nâu và xe ô tô màu đỏ dừng lại ở vị trí va chạm.,1,Tuấn Anh,R-032,4
+R0222,70cb62c2-989e-473c-ad05-4101194e108f,58,Phản ứng của những người xung quanh sau khi vụ việc xảy ra như thế nào?,Một số người đi đường đã dừng lại để hỏi thăm và hỗ trợ người phụ nữ.,2,"Mai Linh, Tuyết Hạnh",R-032,5
+R0223,70cb62c2-989e-473c-ad05-4101194e108f,58,Phản ứng của những người xung quanh sau khi vụ việc xảy ra như thế nào?,Người đàn ông từ trong nhà bước ra hỗ trợ người phụ nữ.,1,Huỳnh Trung,R-032,6
+R0224,70cb62c2-989e-473c-ad05-4101194e108f,58,Phản ứng của những người xung quanh sau khi vụ việc xảy ra như thế nào?,Xe máy màu đen do người phụ nữ điều khiển đứng tại chỗ.,1,Tuấn Anh,R-032,7
+R0225,70cb62c2-989e-473c-ad05-4101194e108f,58,Phản ứng của những người xung quanh sau khi vụ việc xảy ra như thế nào?,mọi người vẫn tiếp tục di chuyển.,1,Đức Mạnh,R-033,1
+R0226,95cf4cbc-2170-4c1c-9772-9d1ad8319f17,59,Hành vi của xe con sau khi xảy ra sự cố là gì?,Xe con dừng lại hẳn ở vị trí gặp nạn bên lề đường.,4,"Huỳnh Trung, Mai Linh, Tuyết Hạnh, Tuấn Anh",R-033,2
+R0227,95cf4cbc-2170-4c1c-9772-9d1ad8319f17,59,Hành vi của xe con sau khi xảy ra sự cố là gì?,xe ô tô màu đen dừng lại,1,Đức Mạnh,R-033,3
+R0228,d8d2325c-ff6d-4420-971f-be17514df9e6,60,"Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?",Các phương tiện dừng lại tại hiện trường ngay sau khi xảy ra va chạm.,5,"Huỳnh Trung, Mai Linh, Tuyết Hạnh, Tuấn Anh, Đức Mạnh",R-033,4

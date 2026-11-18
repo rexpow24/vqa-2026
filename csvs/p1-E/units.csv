@@ -1,0 +1,277 @@
+﻿unit,draft_id,seq,question,answer,n_annotators,annotators,batch,item
+E0001,46231dab-b6d5-4fc6-91ec-3eeb0096e7a6,1,Các phương tiện chính liên quan đến vụ va chạm gồm những gì?,Một xe máy màu đen do người đàn ông mặc áo trắng điều khiển và một xe máy màu đen do người mặc áo xanh điều khiển.,1,Tuyết Hạnh,E-001,1
+E0002,46231dab-b6d5-4fc6-91ec-3eeb0096e7a6,1,Các phương tiện chính liên quan đến vụ va chạm gồm những gì?,Một xe máy màu đen do người đàn ông mặc áo xanh điều khiển và một xe máy màu đen do người đàn ông mặc áo trắng điều khiển.,1,Đức Mạnh,E-001,2
+E0003,46231dab-b6d5-4fc6-91ec-3eeb0096e7a6,1,Các phương tiện chính liên quan đến vụ va chạm gồm những gì?,Một ô tô con (xe camera) và hai xe máy màu đen do người đàn ông mặc áo trắng và áo xanh điều khiển.,1,Tuấn Hùng,E-001,3
+E0004,46231dab-b6d5-4fc6-91ec-3eeb0096e7a6,1,Các phương tiện chính liên quan đến vụ va chạm gồm những gì?,Một ô tô con (xe camera) và một xe máy màu đen do người đàn ông mặc áo trắng điều khiển và một xe máy màu đen do người đàn ông mặc áo xanh điều khiển,1,Nhật Trường,E-001,4
+E0005,46231dab-b6d5-4fc6-91ec-3eeb0096e7a6,1,Các phương tiện chính liên quan đến vụ va chạm gồm những gì?,"Một ô tô con (xe camera), một xe máy màu đen do người đàn ông mặc áo trắng điều khiển, một người đàn ông áo xanh.",1,Tuấn Anh,E-001,5
+E0006,46231dab-b6d5-4fc6-91ec-3eeb0096e7a6,1,Các phương tiện chính liên quan đến vụ va chạm gồm những gì?,"Một ô tô con (xe camera), một xe máy màu đen do người đàn ông mặc áo trắng điều khiển, và một xe máy màu xám do người đàn ông mặc áo xanh điều khiển",1,Mai Linh,E-001,6
+E0007,46231dab-b6d5-4fc6-91ec-3eeb0096e7a6,1,Các phương tiện chính liên quan đến vụ va chạm gồm những gì?,một xe máy màu đen do người đàn ông mặc áo trắng điều khiển và 1 người điều khiển xe 2 bánh mặc áo hoodie xanh lá đội mũ bảo hiểm màu sáng.,1,Huỳnh Trung,E-001,7
+E0008,ec8bd7df-5a7b-4594-bff9-c71564180726,2,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc ô tô con màu bạc (loại SUV) và một chiếc xe ba gác,1,Mai Linh,E-001,8
+E0009,ec8bd7df-5a7b-4594-bff9-c71564180726,2,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc ô tô con màu bạc (loại SUV) và một chiếc xe ba gác máy.,1,Tuyết Hạnh,E-001,9
+E0010,ec8bd7df-5a7b-4594-bff9-c71564180726,2,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc ô tô con màu bạc (loại SUV) và một chiếc xe máy thồ tự chế.,1,Tuấn Hùng,E-001,10
+E0011,ec8bd7df-5a7b-4594-bff9-c71564180726,2,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc ô tô con màu bạc (loại SUV) và một chiếc xe máy.,2,"Huỳnh Trung, Đức Mạnh",E-001,11
+E0012,ec8bd7df-5a7b-4594-bff9-c71564180726,2,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc ô tô con màu bạc và một chiếc xe máy ba bánh,1,Nhật Trường,E-001,12
+E0013,ec8bd7df-5a7b-4594-bff9-c71564180726,2,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc ô tô con màu trắng và một chiếc xe máy ba gác.,1,Tuấn Anh,E-001,13
+E0014,6bd92889-547b-49dc-be6f-de22e28e4690,3,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe ô tô gắn camera hành trình và một người đi xe máy.,1,Tuấn Hùng,E-001,14
+E0015,6bd92889-547b-49dc-be6f-de22e28e4690,3,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe ô tô đang gắn camera hành trình và một người đi xe máy.,1,Nhật Trường,E-001,15
+E0016,6bd92889-547b-49dc-be6f-de22e28e4690,3,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc ô tô do camera ghi hình và một người đi xe máy.,1,Đức Mạnh,E-001,16
+E0017,6bd92889-547b-49dc-be6f-de22e28e4690,3,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Xe gắn camera và một người đi xe máy.,1,Tuấn Anh,E-001,17
+E0018,6bd92889-547b-49dc-be6f-de22e28e4690,3,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Xe máy màu tối do người mặc quần trắng điều khiển và ô tô gắn camera,1,Huỳnh Trung,E-001,18
+E0019,6bd92889-547b-49dc-be6f-de22e28e4690,3,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Xe ô tô có gắn camera hành trình và một người đi xe máy mặc áo khoác màu đen.,1,Tuyết Hạnh,E-001,19
+E0020,6bd92889-547b-49dc-be6f-de22e28e4690,3,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Xe ô tô gắn cam và một người đi xe máy.,1,Mai Linh,E-001,20
+E0021,bc012b72-b7ab-481f-95d3-4aa811e11124,4,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một xe tải lớn màu bạc và một người đi xe máy mặc áo xanh.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-001,21
+E0022,bc012b72-b7ab-481f-95d3-4aa811e11124,4,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một xe tải thùng kín và một người đi xe máy mặc áo xanh.,1,Tuấn Anh,E-001,22
+E0023,7175754b-afe5-4fe4-b41e-5b454a9fc5ca,5,Các phương tiện chính xuất hiện trong tình huống này là gì?,Một xe tải ben cabin màu xanh và một xe ô tô gắn camera,1,Tuấn Anh,E-001,23
+E0024,7175754b-afe5-4fe4-b41e-5b454a9fc5ca,5,Các phương tiện chính xuất hiện trong tình huống này là gì?,Một xe tải ben màu xanh (nhãn hiệu Howo) và một xe ô tô con màu đen đang dừng chờ đèn.,1,Tuyết Hạnh,E-001,24
+E0025,7175754b-afe5-4fe4-b41e-5b454a9fc5ca,5,Các phương tiện chính xuất hiện trong tình huống này là gì?,Một xe tải ben màu xanh (nhãn hiệu Howo) và một xe ô tô có camera.,1,Đức Mạnh,E-001,25
+E0026,7175754b-afe5-4fe4-b41e-5b454a9fc5ca,5,Các phương tiện chính xuất hiện trong tình huống này là gì?,Một xe tải ben màu xanh (nhãn hiệu Howo) và một xe ô tô đi ngược chiều.,1,Tuấn Hùng,E-002,1
+E0027,7175754b-afe5-4fe4-b41e-5b454a9fc5ca,5,Các phương tiện chính xuất hiện trong tình huống này là gì?,Một xe tải ben màu xanh và một xe ô tô con gắn cam đang đi trên đường,1,Mai Linh,E-002,2
+E0028,7175754b-afe5-4fe4-b41e-5b454a9fc5ca,5,Các phương tiện chính xuất hiện trong tình huống này là gì?,Một xe tải ben màu xanh và một xe ô tô đang gắn camera hành trình.,1,Nhật Trường,E-002,3
+E0029,7175754b-afe5-4fe4-b41e-5b454a9fc5ca,5,Các phương tiện chính xuất hiện trong tình huống này là gì?,"Xe tải ben cabin màu xanh dương, thùng màu xám đen và một xe ô tô con đối diện không xác định được màu.",1,Huỳnh Trung,E-002,4
+E0030,be0f55b3-113c-4d9c-b1b7-3fd1fbd511ac,6,Các bên liên quan trực tiếp đến vụ việc gồm những gì?,Một chiếc xe 2 bánh do người mặc áo caro điều khiển và một con chó màu trắng đen.,1,Huỳnh Trung,E-002,5
+E0031,be0f55b3-113c-4d9c-b1b7-3fd1fbd511ac,6,Các bên liên quan trực tiếp đến vụ việc gồm những gì?,Một chiếc xe máy do người mặc áo caro không đội mũ bảo hiểm điều khiển và một con chó màu đen trắng.,1,Tuyết Hạnh,E-002,6
+E0032,be0f55b3-113c-4d9c-b1b7-3fd1fbd511ac,6,Các bên liên quan trực tiếp đến vụ việc gồm những gì?,Một chiếc xe máy do người áo kẻ xanh lái và một con chó đen,1,Mai Linh,E-002,7
+E0033,be0f55b3-113c-4d9c-b1b7-3fd1fbd511ac,6,Các bên liên quan trực tiếp đến vụ việc gồm những gì?,Một chiếc xe máy màu đen và một con chó màu đen.,1,Nhật Trường,E-002,8
+E0034,be0f55b3-113c-4d9c-b1b7-3fd1fbd511ac,6,Các bên liên quan trực tiếp đến vụ việc gồm những gì?,Một chiếc xe máy và một con chó màu đen.,2,"Tuấn Hùng, Đức Mạnh",E-002,9
+E0035,be0f55b3-113c-4d9c-b1b7-3fd1fbd511ac,6,Các bên liên quan trực tiếp đến vụ việc gồm những gì?,Một người đàn ông điểu khiển xe máy và một con chó màu đen.,1,Tuấn Anh,E-002,10
+E0036,30312e99-7a17-4792-b5b1-2dd90222a068,7,Các phương tiện liên quan trực tiếp đến vụ tai nạn gồm những loại nào và màu sắc gì?,Một xe tải lớn màu xanh lá cây và một xe máy do người mặc áo khoác sáng màu điều khiển.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",E-002,11
+E0037,cf208afa-e5c1-480c-9cef-8581b3256cb4,8,Loại phương tiện và màu sắc của các bên liên quan trong vụ va chạm là gì?,Một xe tải màu xanh và một người đi xe đạp.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",E-002,12
+E0038,3104ffa9-387d-4ebc-a4fd-3e381e030ca8,9,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe tải thùng màu xám,1,Tuấn Anh,E-002,13
+E0039,3104ffa9-387d-4ebc-a4fd-3e381e030ca8,9,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe tải thùng màu xám và một chiếc ô tô con màu trắng.,1,Mai Linh,E-002,14
+E0040,3104ffa9-387d-4ebc-a4fd-3e381e030ca8,9,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe tải thùng màu xám.,4,"Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-002,15
+E0041,3104ffa9-387d-4ebc-a4fd-3e381e030ca8,9,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe tải thùng kín màu sáng, có mảng màu xanh trên thùng",1,Huỳnh Trung,E-002,16
+E0042,cea406cd-46c4-42b0-bfe8-1ed22e7fb536,10,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe container màu trắng và xe tải màu xám.,2,"Nhật Trường, Tuấn Hùng",E-002,17
+E0043,cea406cd-46c4-42b0-bfe8-1ed22e7fb536,10,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe container màu trắng, xe bán tải màu trắng, xe khách màu vàng và xe tải màu xám.",3,"Huỳnh Trung, Mai Linh, Tuyết Hạnh",E-002,18
+E0044,cea406cd-46c4-42b0-bfe8-1ed22e7fb536,10,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe tải màu xám phủ bạt.,1,Tuấn Anh,E-002,19
+E0045,cea406cd-46c4-42b0-bfe8-1ed22e7fb536,10,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe tải màu xám.,1,Đức Mạnh,E-002,20
+E0046,1f413672-b560-4f6c-ae14-111aa857158e,11,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến va chạm là gì?,Một chiếc xe máy màu tối và một chiếc xe đạp,1,Nhật Trường,E-002,21
+E0047,1f413672-b560-4f6c-ae14-111aa857158e,11,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến va chạm là gì?,Một chiếc xe máy màu tối và một người đi xe đạp.,1,Tuyết Hạnh,E-002,22
+E0048,1f413672-b560-4f6c-ae14-111aa857158e,11,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến va chạm là gì?,Một chiếc xe máy màu tối. Một người đi xe đạp.,1,Tuấn Anh,E-002,23
+E0049,1f413672-b560-4f6c-ae14-111aa857158e,11,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến va chạm là gì?,Một chiếc xe ô tô SUV màu trắng và một chiếc xe máy màu tối và 1 người đi xe đạp.,1,Tuấn Hùng,E-002,24
+E0050,1f413672-b560-4f6c-ae14-111aa857158e,11,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến va chạm là gì?,Một chiếc xe ô tô SUV màu trắng và một chiếc xe máy màu tối.,2,"Mai Linh, Đức Mạnh",E-002,25
+E0051,1f413672-b560-4f6c-ae14-111aa857158e,11,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến va chạm là gì?,Xe máy màu sáng phối đen do người mặc áo tối điều khiển; ô tô SUV màu trắng và xe đạp màu tối.,1,Huỳnh Trung,E-003,1
+E0052,dc9be2b0-0873-46fe-ae5f-fa6d5edd63d6,12,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe SUV hạng sang màu xanh đen (Audi Q8) và một chiếc SUV màu bạc (Honda CR-V).,3,"Huỳnh Trung, Tuấn Hùng, Đức Mạnh",E-003,2
+E0053,dc9be2b0-0873-46fe-ae5f-fa6d5edd63d6,12,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe SUV hạng sang màu xanh đen (Audi Q8) và một chiếc SUV màu nâu.,1,Tuyết Hạnh,E-003,3
+E0054,dc9be2b0-0873-46fe-ae5f-fa6d5edd63d6,12,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe SUV hạng sang màu xanh đen và một chiếc SUV màu gold,1,Mai Linh,E-003,4
+E0055,dc9be2b0-0873-46fe-ae5f-fa6d5edd63d6,12,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe SUV màu xanh đen và một chiếc SUV màu bạc.,1,Nhật Trường,E-003,5
+E0056,dc9be2b0-0873-46fe-ae5f-fa6d5edd63d6,12,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe màu xám. Một chiếc xe màu xanh biển.,1,Tuấn Anh,E-003,6
+E0057,dc41d28a-702e-4490-8550-d34d139050a2,13,Các phương tiện chính liên quan đến vụ va chạm là gì?,Xe ô tô có camera hành trình và một xe máy màu trắng.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",E-003,7
+E0058,ecaf1b08-2855-458c-ae5a-380a3a3681ad,14,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu bạc, xe tải thùng màu trắng và xe ô tô con màu đen",1,Mai Linh,E-003,8
+E0059,ecaf1b08-2855-458c-ae5a-380a3a3681ad,14,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu bạc, xe tải thùng màu trắng và xe ô tô con màu đen.",1,Tuyết Hạnh,E-003,9
+E0060,ecaf1b08-2855-458c-ae5a-380a3a3681ad,14,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu bạc, xe tải thùng màu trắng và xe ô tô màu tối",1,Huỳnh Trung,E-003,10
+E0061,ecaf1b08-2855-458c-ae5a-380a3a3681ad,14,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu bạc, xe tải thùng màu trắng và xe ô tô màu đen.",1,Đức Mạnh,E-003,11
+E0062,ecaf1b08-2855-458c-ae5a-380a3a3681ad,14,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu bạc, xe tải thùng màu trắng và xe ô tô đen.",1,Tuấn Hùng,E-003,12
+E0063,ecaf1b08-2855-458c-ae5a-380a3a3681ad,14,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu trắng, xe tải, xe ô tô con màu đen",1,Tuấn Anh,E-003,13
+E0064,ecaf1b08-2855-458c-ae5a-380a3a3681ad,14,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu đen, xe tải thùng màu trắng.",1,Nhật Trường,E-003,14
+E0065,7abb0baa-8deb-4172-a9b0-18e981bb85bc,15,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến vụ việc là gì?,Một xe ô tô SUV màu đỏ và một xe tải thùng kín màu trắng.,1,Tuấn Hùng,E-003,15
+E0066,7abb0baa-8deb-4172-a9b0-18e981bb85bc,15,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến vụ việc là gì?,"Một xe ô tô SUV màu đỏ, một xe tải thùng kín màu trắng",1,Mai Linh,E-003,16
+E0067,7abb0baa-8deb-4172-a9b0-18e981bb85bc,15,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến vụ việc là gì?,"Một xe ô tô SUV màu đỏ, một xe tải thùng kín màu trắng và một xe máy màu tối.",1,Huỳnh Trung,E-003,17
+E0068,7abb0baa-8deb-4172-a9b0-18e981bb85bc,15,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến vụ việc là gì?,"Một xe ô tô SUV màu đỏ, một xe tải thùng kín màu trắng.",3,"Nhật Trường, Tuyết Hạnh, Đức Mạnh",E-003,18
+E0069,7abb0baa-8deb-4172-a9b0-18e981bb85bc,15,Loại phương tiện và màu sắc của các bên liên quan trực tiếp đến vụ việc là gì?,"Một xe ô tô màu đỏ, một xe tải thùng kín màu trắng",1,Tuấn Anh,E-003,19
+E0070,9163d143-1088-4669-b946-8ce0efb48ac8,16,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào?,Một chiếc xe tải màu trắng và xe ô tô có gắn camera hành trình.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",E-003,20
+E0071,8b6534be-57df-4d0f-99d7-da07702be7f1,17,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,"Một chiếc xe SUV màu đen và một chiếc xe tải ben màu xanh đen, một chiếc xe tải .",1,Nhật Trường,E-003,21
+E0072,8b6534be-57df-4d0f-99d7-da07702be7f1,17,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe SUV màu đen và một chiếc xe tải ben màu xanh đen.,2,"Tuyết Hạnh, Đức Mạnh",E-003,22
+E0073,8b6534be-57df-4d0f-99d7-da07702be7f1,17,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,"Một chiếc xe SUV màu đen, một chiếc xe tải kéo, và một chiếc xe tải ben màu xanh đen.",1,Mai Linh,E-003,23
+E0074,8b6534be-57df-4d0f-99d7-da07702be7f1,17,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe ô tô màu đen và một chiếc xe tải ben màu xanh đen.,1,Tuấn Hùng,E-003,24
+E0075,8b6534be-57df-4d0f-99d7-da07702be7f1,17,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,"Một chiếc xe ô tô màu đen, một chiếc xe tải ben màu xanh đen",1,Tuấn Anh,E-003,25
+E0076,8b6534be-57df-4d0f-99d7-da07702be7f1,17,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,"Ô tô SUV màu đen có giá nóc và xe tải ben cabin màu xanh đậm, thùng phủ bạt màu tối.",1,Huỳnh Trung,E-004,1
+E0077,914fb779-5a9f-4ffc-8151-d648acc28ab3,18,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe đạp màu bạc và một chiếc xe máy điện màu tím.,4,"Huỳnh Trung, Nhật Trường, Tuấn Hùng, Đức Mạnh",E-004,2
+E0078,914fb779-5a9f-4ffc-8151-d648acc28ab3,18,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe đạp màu bạc và một chiếc xe máy điện màu xanh,1,Mai Linh,E-004,3
+E0079,914fb779-5a9f-4ffc-8151-d648acc28ab3,18,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe đạp màu bạc và một chiếc xe đạp điện màu xanh.,1,Tuyết Hạnh,E-004,4
+E0080,914fb779-5a9f-4ffc-8151-d648acc28ab3,18,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe đạp và một chiếc xe máy điện màu tím.,1,Tuấn Anh,E-004,5
+E0081,3820b1c4-b2ae-408a-b4c6-298a126af8ad,19,Các phương tiện liên quan trực tiếp đến sự việc gồm những loại nào?,Một chiếc ô tô màu trắng (xe gắn camera) và một chiếc xe máy màu xanh đen.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",E-004,6
+E0082,cd5f546e-357a-4a78-9be3-9f67189bd549,20,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe ô tô con màu xanh (xe camera) và xe máy màu đen.,6,"Huỳnh Trung, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",E-004,7
+E0083,cd5f546e-357a-4a78-9be3-9f67189bd549,20,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe ô tô gắn camera và xe máy màu đen.,1,Mai Linh,E-004,8
+E0084,7925b7ce-4f40-4b2d-a8c3-014e50f37cf9,21,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe ô tô 7 chỗ màu trắng và một chiếc xe taxi màu xanh,1,Mai Linh,E-004,9
+E0085,7925b7ce-4f40-4b2d-a8c3-014e50f37cf9,21,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe ô tô 7 chỗ màu trắng và một chiếc xe taxi màu xanh lá cây.,4,"Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-004,10
+E0086,7925b7ce-4f40-4b2d-a8c3-014e50f37cf9,21,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe ô tô 7 chỗ màu trắng và một chiếc xe taxi màu xanh.,1,Huỳnh Trung,E-004,11
+E0087,7925b7ce-4f40-4b2d-a8c3-014e50f37cf9,21,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe ô tô màu trắng và một chiếc xe taxi màu xanh lá cây.,1,Tuấn Anh,E-004,12
+E0088,32b2da94-8e8b-468c-be96-aad7cea903e6,22,Các bên liên quan trực tiếp đến vụ va chạm gồm những phương tiện nào?,Một chiếc ô tô con (xe camera) và một người đi xe đạp mặc áo trắng,2,"Mai Linh, Đức Mạnh",E-004,13
+E0089,32b2da94-8e8b-468c-be96-aad7cea903e6,22,Các bên liên quan trực tiếp đến vụ va chạm gồm những phương tiện nào?,Một chiếc ô tô con (xe camera) và một người đi xe đạp mặc áo trắng.,5,"Huỳnh Trung, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng",E-004,14
+E0090,5696245b-98c5-4ac1-a282-b99e03f11db4,23,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe máy màu trắng và một chiếc xe máy màu đen.,1,Nhật Trường,E-004,15
+E0091,5696245b-98c5-4ac1-a282-b99e03f11db4,23,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe máy màu xanh và một chiếc xe máy màu tối.,1,Tuấn Hùng,E-004,16
+E0092,5696245b-98c5-4ac1-a282-b99e03f11db4,23,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,"Một chiếc xe máy màu đen do người đàn ông mặc áo sọc điều khiển, xe máy màu nâu do người phụ nữ điều khiển",1,Tuấn Anh,E-004,17
+E0093,5696245b-98c5-4ac1-a282-b99e03f11db4,23,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe tay ga màu tối và một chiếc xe máy màu tối.,1,Huỳnh Trung,E-004,18
+E0094,5696245b-98c5-4ac1-a282-b99e03f11db4,23,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe tay ga màu xanh và một chiếc xe máy màu tối do người thanh niên mang áo khoác caro điều khiển.,1,Tuyết Hạnh,E-004,19
+E0095,5696245b-98c5-4ac1-a282-b99e03f11db4,23,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Một chiếc xe tay ga màu xanh và một chiếc xe máy màu tối.,2,"Mai Linh, Đức Mạnh",E-004,20
+E0096,9a16d533-f24e-4fd0-95b2-80ac83c0ec5c,24,Các phương tiện nào trực tiếp liên quan đến vụ va chạm?,"Một chiếc xe máy màu trắng do thanh niên không đội mũ điều khiển, xe ô tô màu xám.",1,Tuấn Anh,E-004,21
+E0097,9a16d533-f24e-4fd0-95b2-80ac83c0ec5c,24,Các phương tiện nào trực tiếp liên quan đến vụ va chạm?,Một chiếc ô tô con màu bạc và một chiếc xe máy màu trắng.,1,Tuyết Hạnh,E-004,22
+E0098,9a16d533-f24e-4fd0-95b2-80ac83c0ec5c,24,Các phương tiện nào trực tiếp liên quan đến vụ va chạm?,Một chiếc ô tô con màu bạc và một chiếc xe máy.,4,"Huỳnh Trung, Nhật Trường, Tuấn Hùng, Đức Mạnh",E-004,23
+E0099,9a16d533-f24e-4fd0-95b2-80ac83c0ec5c,24,Các phương tiện nào trực tiếp liên quan đến vụ va chạm?,"Một chiếc ô tô con màu bạc, xe ô tô gắn camera và một chiếc xe máy màu trắng.",1,Mai Linh,E-004,24
+E0100,669684a5-fb0a-4d21-b716-09024d2d6bbb,25,Các bên liên quan trực tiếp đến vụ việc gồm những ai và phương tiện gì?,"Người đi bộ vác thùng hàng, người đi xe đạp và xe taxi màu xanh.",1,Tuyết Hạnh,E-004,25
+E0101,669684a5-fb0a-4d21-b716-09024d2d6bbb,25,Các bên liên quan trực tiếp đến vụ việc gồm những ai và phương tiện gì?,Người đi xe đạp và xe taxi màu xanh.,3,"Mai Linh, Tuấn Anh, Tuấn Hùng",E-005,1
+E0102,669684a5-fb0a-4d21-b716-09024d2d6bbb,25,Các bên liên quan trực tiếp đến vụ việc gồm những ai và phương tiện gì?,người đi xe đạp và xe taxi màu xanh.,3,"Huỳnh Trung, Nhật Trường, Đức Mạnh",E-005,2
+E0103,2c9a890e-c845-47d3-bc12-53cd85d6fb11,26,Các phương tiện chính liên quan đến vụ va chạm là gì?,"Một chiếc xe (có camera hành trình), xe máy màu đỏ do phụ nữ áo đen chở 2 người.",1,Tuấn Anh,E-005,3
+E0104,2c9a890e-c845-47d3-bc12-53cd85d6fb11,26,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe ô tô (đang gắn cam hành trình) và một chiếc xe máy màu đỏ.,1,Tuấn Hùng,E-005,4
+E0105,2c9a890e-c845-47d3-bc12-53cd85d6fb11,26,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe ô tô đang gắn camera hành trình và một chiếc xe máy màu đỏ.,1,Nhật Trường,E-005,5
+E0106,2c9a890e-c845-47d3-bc12-53cd85d6fb11,26,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc ô tô có cam hành trình và một chiếc xe máy màu đỏ chở 1 người.,1,Đức Mạnh,E-005,6
+E0107,2c9a890e-c845-47d3-bc12-53cd85d6fb11,26,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một ô tô gắn camera hành trình và một chiếc xe máy màu đỏ.,1,Tuyết Hạnh,E-005,7
+E0108,2c9a890e-c845-47d3-bc12-53cd85d6fb11,26,Các phương tiện chính liên quan đến vụ va chạm là gì?,"Xe máy màu đỏ do người mặc áo tối điều khiển, chở 2 người và xe ô tô (có camera hành trình).",1,Huỳnh Trung,E-005,8
+E0109,2c9a890e-c845-47d3-bc12-53cd85d6fb11,26,Các phương tiện chính liên quan đến vụ va chạm là gì?,xe ô tô gắn camera và một chiếc xe máy màu đỏ.,1,Mai Linh,E-005,9
+E0110,f09cee7f-e2eb-4547-a464-c5bf08521ef4,27,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu trắng, xe bán tải Ford Ranger màu đen .",1,Đức Mạnh,E-005,10
+E0111,f09cee7f-e2eb-4547-a464-c5bf08521ef4,27,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu trắng, xe bán tải Ford Ranger màu đen và xe tải lớn màu xám.",4,"Huỳnh Trung, Mai Linh, Tuyết Hạnh, Tuấn Hùng",E-005,11
+E0112,f09cee7f-e2eb-4547-a464-c5bf08521ef4,27,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu trắng, xe bán tải màu đen và xe tải lớn màu xám.",1,Nhật Trường,E-005,12
+E0113,f09cee7f-e2eb-4547-a464-c5bf08521ef4,27,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô con màu trắng, xe ô tô màu đen.",1,Tuấn Anh,E-005,13
+E0114,34aa53a4-e556-4e93-b99a-be511f864689,28,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một xe tải ben màu đỏ và một xe ô tô con màu bạc.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-005,14
+E0115,34aa53a4-e556-4e93-b99a-be511f864689,28,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một xe tải ben màu đỏ và một xe ô tô con màu trắng.,1,Tuấn Anh,E-005,15
+E0116,cca938ca-8c49-429e-9ed7-4866d246ccb9,29,Loại phương tiện và màu sắc của các bên liên quan trực tiếp là gì?,Xe camera hành trình (có nắp capo màu đỏ) và một chiếc xe bán tải màu đen.,5,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Hùng, Đức Mạnh",E-005,16
+E0117,cca938ca-8c49-429e-9ed7-4866d246ccb9,29,Loại phương tiện và màu sắc của các bên liên quan trực tiếp là gì?,Xe có camera hành trình và một chiếc xe bán tải màu đen.,1,Tuyết Hạnh,E-005,17
+E0118,cca938ca-8c49-429e-9ed7-4866d246ccb9,29,Loại phương tiện và màu sắc của các bên liên quan trực tiếp là gì?,Xe gắn camera và một chiếc xe ô tô màu đen.,1,Tuấn Anh,E-005,18
+E0119,52d279e6-f5a8-4182-bdc7-163e286a02cc,30,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe có camera hành trình và xe ô tô con màu trắng hiệu Kia.,5,"Huỳnh Trung, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-005,19
+E0120,52d279e6-f5a8-4182-bdc7-163e286a02cc,30,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe có camera hành trình và xe ô tô con màu trắng.,1,Tuấn Anh,E-005,20
+E0121,52d279e6-f5a8-4182-bdc7-163e286a02cc,30,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe có camera hành trình, xe khách và xe ô tô con màu trắng hiệu Kia.",1,Mai Linh,E-005,21
+E0122,f24d0674-588e-4af6-95a2-4a50e3f9dccd,31,Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?,Xe ô tô gắn camera hành trình và một chiếc xe bồn trộn bê tông màu trắng.,7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",E-005,22
+E0123,acf9e7a5-856c-4274-a3a7-87cb4a3dc9d8,32,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc xe ô tô con màu trắng và một chiếc xe tải nhỏ màu trắng.,1,Đức Mạnh,E-005,23
+E0124,acf9e7a5-856c-4274-a3a7-87cb4a3dc9d8,32,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc xe ô tô con đang gắn camera hành trình và một chiếc xe tải nhỏ màu trắng.,1,Nhật Trường,E-005,24
+E0125,acf9e7a5-856c-4274-a3a7-87cb4a3dc9d8,32,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc xe ô tô gắn camera hành trình và một chiếc xe tải nhỏ màu trắng.,3,"Tuyết Hạnh, Tuấn Anh, Tuấn Hùng",E-005,25
+E0126,acf9e7a5-856c-4274-a3a7-87cb4a3dc9d8,32,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,xe ô tô gắn camera và một chiếc xe tải nhỏ màu trắng.,1,Mai Linh,E-006,1
+E0127,acf9e7a5-856c-4274-a3a7-87cb4a3dc9d8,32,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,ô tô camera và một chiếc xe tải nhỏ màu trắng.,1,Huỳnh Trung,E-006,2
+E0128,d366eb10-fea4-43bd-9c30-b712cb633300,33,Các phương tiện chính liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Một xe tải lớn màu xám đen (nhãn hiệu Vimid), một xe hatchback màu đen",1,Huỳnh Trung,E-006,3
+E0129,d366eb10-fea4-43bd-9c30-b712cb633300,33,Các phương tiện chính liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Một xe tải lớn màu xám đen (nhãn hiệu Vimid), một xe hatchback màu đen .",1,Đức Mạnh,E-006,4
+E0130,d366eb10-fea4-43bd-9c30-b712cb633300,33,Các phương tiện chính liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Một xe tải lớn màu xám đen (nhãn hiệu Vimid), một xe hatchback màu đen.",2,"Tuyết Hạnh, Tuấn Hùng",E-006,5
+E0131,d366eb10-fea4-43bd-9c30-b712cb633300,33,Các phương tiện chính liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Một xe tải lớn màu xám đen , một xe ô tô màu đen",1,Tuấn Anh,E-006,6
+E0132,d366eb10-fea4-43bd-9c30-b712cb633300,33,Các phương tiện chính liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,Một xe tải lớn màu xám đen và một chiếc ô tô con màu đen,1,Mai Linh,E-006,7
+E0133,d366eb10-fea4-43bd-9c30-b712cb633300,33,Các phương tiện chính liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Một xe tải lớn màu xám đen, một xe ô tô màu đen.",1,Nhật Trường,E-006,8
+E0134,3107d8a1-f9ea-4ca4-aa51-c927f66e90fe,34,Các phương tiện liên quan trực tiếp đến vụ việc gồm những loại nào và màu sắc gì?,"Một chiếc xe máy màu trắng do nam học sinh điều khiển, một chiếc xe máy màu đỏ giao hàng.",1,Tuấn Anh,E-006,9
+E0135,3107d8a1-f9ea-4ca4-aa51-c927f66e90fe,34,Các phương tiện liên quan trực tiếp đến vụ việc gồm những loại nào và màu sắc gì?,Một chiếc xe máy màu trắng và một chiếc xe máy màu đỏ,1,Tuấn Hùng,E-006,10
+E0136,3107d8a1-f9ea-4ca4-aa51-c927f66e90fe,34,Các phương tiện liên quan trực tiếp đến vụ việc gồm những loại nào và màu sắc gì?,Một chiếc xe máy màu đỏ và một chiếc xe máy màu trắng.,1,Đức Mạnh,E-006,11
+E0137,3107d8a1-f9ea-4ca4-aa51-c927f66e90fe,34,Các phương tiện liên quan trực tiếp đến vụ việc gồm những loại nào và màu sắc gì?,Một chiếc xe ô tô MPV màu đen và một chiếc xe máy màu trắng và chiếc xe máy màu đỏ.,1,Tuyết Hạnh,E-006,12
+E0138,3107d8a1-f9ea-4ca4-aa51-c927f66e90fe,34,Các phương tiện liên quan trực tiếp đến vụ việc gồm những loại nào và màu sắc gì?,Một chiếc xe ô tô MPV màu đen. một chiếc xe máy màu trắng và một chiếc xe máy màu đỏ.,1,Huỳnh Trung,E-006,13
+E0139,3107d8a1-f9ea-4ca4-aa51-c927f66e90fe,34,Các phương tiện liên quan trực tiếp đến vụ việc gồm những loại nào và màu sắc gì?,"Một chiếc xe ô tô màu đen , một xe máy chở hàng màu đỏ và một xe máy màu trắng.",1,Mai Linh,E-006,14
+E0140,3107d8a1-f9ea-4ca4-aa51-c927f66e90fe,34,Các phương tiện liên quan trực tiếp đến vụ việc gồm những loại nào và màu sắc gì?,"Một chiếc xe ô tô màu đen và một chiếc xe máy màu trắng, một chiếc xe máy màu đen.",1,Nhật Trường,E-006,15
+E0141,f923e925-5407-4c92-ba5f-b8cce789d0f5,35,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe máy màu trắng do phụ nữ áo đen chở 2 người và xe tải màu xanh,1,Tuấn Anh,E-006,16
+E0142,f923e925-5407-4c92-ba5f-b8cce789d0f5,35,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe tải ben màu xanh (biển số 84C-082.82) và xe máy màu trắng.,5,"Huỳnh Trung, Mai Linh, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-006,17
+E0143,f923e925-5407-4c92-ba5f-b8cce789d0f5,35,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe tải ben màu xanh và xe máy màu trắng.,1,Nhật Trường,E-006,18
+E0144,fb743c53-e5af-4060-be06-be89f53027c5,36,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô camera và một người đi xe máy mặc áo trắng.,1,Huỳnh Trung,E-006,19
+E0145,fb743c53-e5af-4060-be06-be89f53027c5,36,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô con có gắn camera hành trình và một người đi xe máy mặc áo trắng.,1,Tuấn Anh,E-006,20
+E0146,fb743c53-e5af-4060-be06-be89f53027c5,36,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô con màu trắng gắn camera hành trình và một người đi xe máy mặc áo trắng.,1,Mai Linh,E-006,21
+E0147,fb743c53-e5af-4060-be06-be89f53027c5,36,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô con màu trắng và một người đi xe máy mặc áo trắng.,2,"Tuyết Hạnh, Tuấn Hùng",E-006,22
+E0148,fb743c53-e5af-4060-be06-be89f53027c5,36,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe có camera hành trình và một người đi xe máy mặc áo trắng.,1,Nhật Trường,E-006,23
+E0149,bd29abb4-b4c5-41ad-9ae2-ae3f1c73ce68,37,Loại phương tiện và màu sắc của các bên liên quan là gì?,Hai chiếc xe tay ga màu trắng (một chiếc đang đỗ và một chiếc do người đội mũ bảo hiểm đỏ điều khiển).,1,Tuyết Hạnh,E-006,24
+E0150,bd29abb4-b4c5-41ad-9ae2-ae3f1c73ce68,37,Loại phương tiện và màu sắc của các bên liên quan là gì?,Hai chiếc xe tay ga màu trắng (một chiếc đang đỗ và một chiếc đang di chuyển ).,1,Đức Mạnh,E-006,25
+E0151,bd29abb4-b4c5-41ad-9ae2-ae3f1c73ce68,37,Loại phương tiện và màu sắc của các bên liên quan là gì?,Hai chiếc xe tay ga màu trắng (một chiếc đang đỗ và một chiếc đang di chuyển .,1,Huỳnh Trung,E-007,1
+E0152,bd29abb4-b4c5-41ad-9ae2-ae3f1c73ce68,37,Loại phương tiện và màu sắc của các bên liên quan là gì?,Hai chiếc xe tay ga màu trắng và màu tím (một chiếc đang đỗ và một chiếc đang di chuyển).,1,Tuấn Hùng,E-007,2
+E0153,bd29abb4-b4c5-41ad-9ae2-ae3f1c73ce68,37,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Hai chiếc xe tay ga màu trắng, một chiếc đang đỗ và một chiếc đang di chuyển.",1,Mai Linh,E-007,3
+E0154,bd29abb4-b4c5-41ad-9ae2-ae3f1c73ce68,37,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe máy màu xám đang đỗ và một chiếc xe màu trắng.,1,Nhật Trường,E-007,4
+E0155,bd29abb4-b4c5-41ad-9ae2-ae3f1c73ce68,37,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Một xe máy màu xám đang dừng, một xe máy màu hồng",1,Tuấn Anh,E-007,5
+E0156,dee4a291-262a-4dec-9885-455a498c56bc,38,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Gồm hai xe máy, một chiếc do một người mặc áo màu xanh điều khiển và một chiếc màu tối.",1,Tuyết Hạnh,E-007,6
+E0157,dee4a291-262a-4dec-9885-455a498c56bc,38,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Gồm hai xe máy, một chiếc do người mặc màu xanh điều khiển và một chiếc màu tối.",1,Huỳnh Trung,E-007,7
+E0158,dee4a291-262a-4dec-9885-455a498c56bc,38,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Gồm hai xe máy, một chiếc màu xanh và một chiếc màu tối.",3,"Nhật Trường, Tuấn Hùng, Đức Mạnh",E-007,8
+E0159,dee4a291-262a-4dec-9885-455a498c56bc,38,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Gồm hai xe máy, một chiếc màu đen và một chiếc màu tối.",1,Mai Linh,E-007,9
+E0160,dee4a291-262a-4dec-9885-455a498c56bc,38,Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?,"Một chiếc xe máy do người áo xanh điều khiển, một chiếc xe máy do người áo đen điều khiển.",1,Tuấn Anh,E-007,10
+E0161,a1265551-c2f6-4c2e-8758-04194e13ab3a,39,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe gắn camera hành trình và xe máy màu trắng.,1,Tuyết Hạnh,E-007,11
+E0162,a1265551-c2f6-4c2e-8758-04194e13ab3a,39,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe gắn camera hành trình, xe máy màu trắng do người mặc áo màu xanh điều khiển.",1,Tuấn Anh,E-007,12
+E0163,a1265551-c2f6-4c2e-8758-04194e13ab3a,39,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe gắn camera và xe máy màu trắng.,1,Tuấn Hùng,E-007,13
+E0164,a1265551-c2f6-4c2e-8758-04194e13ab3a,39,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe máy màu trắng đen và xe ô tô có camera hành trình,1,Huỳnh Trung,E-007,14
+E0165,a1265551-c2f6-4c2e-8758-04194e13ab3a,39,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe ô tô gắn camera và xe máy màu trắng đen.,1,Mai Linh,E-007,15
+E0166,a1265551-c2f6-4c2e-8758-04194e13ab3a,39,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe ô tô đang gắn camera hành trình và xe máy màu trắng.,1,Nhật Trường,E-007,16
+E0167,a1265551-c2f6-4c2e-8758-04194e13ab3a,39,Loại phương tiện và màu sắc của các bên liên quan là gì?,xe máy màu trắng và xe ô tô gắn camera hành trình.,1,Đức Mạnh,E-007,17
+E0168,6a32505e-af68-45da-a164-fbbf99af38cf,40,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một bé gái qua đường và một xe máy đi thẳng từ hướng phải qua trái.,1,Tuấn Hùng,E-007,18
+E0169,6a32505e-af68-45da-a164-fbbf99af38cf,40,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một bé gái đi bộ và một xe máy màu trắng.,1,Tuyết Hạnh,E-007,19
+E0170,6a32505e-af68-45da-a164-fbbf99af38cf,40,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe máy màu trắng trắng,1,Đức Mạnh,E-007,20
+E0171,6a32505e-af68-45da-a164-fbbf99af38cf,40,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe máy màu trắng và cô bé áo hồng.,1,Mai Linh,E-007,21
+E0172,6a32505e-af68-45da-a164-fbbf99af38cf,40,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe máy màu trắng và một bé nhỏ mặc đồ sáng,1,Huỳnh Trung,E-007,22
+E0173,6a32505e-af68-45da-a164-fbbf99af38cf,40,Các phương tiện chính liên quan đến vụ va chạm là gì?,Một chiếc xe máy màu trắng và một em bé.,1,Nhật Trường,E-007,23
+E0174,6a32505e-af68-45da-a164-fbbf99af38cf,40,Các phương tiện chính liên quan đến vụ va chạm là gì?,"Một em học sinh mặc áo vàng, xe máy màu đen.",1,Tuấn Anh,E-007,24
+E0175,2a3c09a0-0535-42e9-8cbc-7efffa20327b,41,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc xe máy màu trắng và xe ô tô có gắn camera hành trình.,1,Tuyết Hạnh,E-007,25
+E0176,2a3c09a0-0535-42e9-8cbc-7efffa20327b,41,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc xe máy màu trắng và ô tô gắn camera hành trình.,1,Đức Mạnh,E-008,1
+E0177,2a3c09a0-0535-42e9-8cbc-7efffa20327b,41,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,Một chiếc ô tô gắn camera hành trình và một chiếc xe mày trắng.,1,Nhật Trường,E-008,2
+E0178,2a3c09a0-0535-42e9-8cbc-7efffa20327b,41,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,Xe gắn camera hành trình và xe máy màu trắng,1,Tuấn Hùng,E-008,3
+E0179,2a3c09a0-0535-42e9-8cbc-7efffa20327b,41,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,"Xe gắn camera hành trình, xe máy màu trắng do phụ nữ điều khiển",1,Tuấn Anh,E-008,4
+E0180,2a3c09a0-0535-42e9-8cbc-7efffa20327b,41,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,Ô tô có gắn camera hành trình và xe máy trắng,1,Huỳnh Trung,E-008,5
+E0181,2a3c09a0-0535-42e9-8cbc-7efffa20327b,41,Các phương tiện chính liên quan đến vụ va chạm gồm những loại nào và màu sắc gì?,Ô tô gắn camera và xe máy màu trắng,1,Mai Linh,E-008,6
+E0182,e1991f74-21e5-4569-9667-8f2886e8e257,42,Các bên liên quan chính trong vụ việc là ai?,"Hai xe máy, một xe máy màu xám và một xe máy màu trắng",1,Tuấn Hùng,E-008,7
+E0183,e1991f74-21e5-4569-9667-8f2886e8e257,42,Các bên liên quan chính trong vụ việc là ai?,Một chiếc xe máy màu trắng và xe ô tô có gắn camera hành trình.,1,Tuyết Hạnh,E-008,8
+E0184,e1991f74-21e5-4569-9667-8f2886e8e257,42,Các bên liên quan chính trong vụ việc là ai?,"Một xe ô tô đang gắn camera hành trình, một xe máy màu xám và một xe máy màu trắng.",1,Nhật Trường,E-008,9
+E0185,e1991f74-21e5-4569-9667-8f2886e8e257,42,Các bên liên quan chính trong vụ việc là ai?,"Xe máy màu trắng do phụ nữ điều khiển, xe gắn camera hành trình, xe máy do người đàn ông áo đen điều khiển.",1,Tuấn Anh,E-008,10
+E0186,e1991f74-21e5-4569-9667-8f2886e8e257,42,Các bên liên quan chính trong vụ việc là ai?,"một xe tay ga màu bạc, xe máy màu trắng và ô tô có gắn camera",1,Huỳnh Trung,E-008,11
+E0187,e1991f74-21e5-4569-9667-8f2886e8e257,42,Các bên liên quan chính trong vụ việc là ai?,người đi xe máy màu xám( đi ngược chiều ) và người đi xe máy màu trắng,1,Đức Mạnh,E-008,12
+E0188,e1991f74-21e5-4569-9667-8f2886e8e257,42,Các bên liên quan chính trong vụ việc là ai?,"xe ô tô gắn camera và xe máy màu trắng, xe máy màu bạc",1,Mai Linh,E-008,13
+E0189,7d075326-174c-4cd8-947a-174fcfaeee5f,43,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một xe ô tô con màu trắng và một xe tải lớn màu tối và chiếc xe máy chở hai người mặc áo đen.,1,Tuyết Hạnh,E-008,14
+E0190,7d075326-174c-4cd8-947a-174fcfaeee5f,43,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một xe ô tô con màu trắng và một xe tải lớn màu tối và hai xe máy.,1,Tuấn Hùng,E-008,15
+E0191,7d075326-174c-4cd8-947a-174fcfaeee5f,43,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một xe ô tô con màu trắng và một xe tải lớn màu tối và xe máy chở 2 người,1,Mai Linh,E-008,16
+E0192,7d075326-174c-4cd8-947a-174fcfaeee5f,43,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Một xe ô tô con màu trắng và một xe tải lớn màu tối, người đi xe máy.",1,Đức Mạnh,E-008,17
+E0193,7d075326-174c-4cd8-947a-174fcfaeee5f,43,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Một xe ô tô con màu trắng, một xe máy màu đen và một xe tải lớn màu tối.",1,Nhật Trường,E-008,18
+E0194,7d075326-174c-4cd8-947a-174fcfaeee5f,43,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Một xe ô tô con màu trắng, xe máy chở 2 người màu tối và một xe tải lớn màu tối.",1,Huỳnh Trung,E-008,19
+E0195,7d075326-174c-4cd8-947a-174fcfaeee5f,43,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Một xe ô tô con màu trắng, xe tải lớn màu tối, xe máy màu đen do người áo đen điều khiển chở 2.",1,Tuấn Anh,E-008,20
+E0196,54fa2941-47d2-42c8-9fb6-98304d1731f9,44,Các phương tiện chính xuất hiện tại hiện trường vụ việc gồm những loại nào?,"Một xe bồn chở nhiên liệu màu trắng xanh, một xe ô tô con màu trắng",1,Mai Linh,E-008,21
+E0197,54fa2941-47d2-42c8-9fb6-98304d1731f9,44,Các phương tiện chính xuất hiện tại hiện trường vụ việc gồm những loại nào?,"Một xe bồn chở nhiên liệu màu trắng xanh, một xe ô tô con màu trắng và một xe tải.",1,Tuấn Hùng,E-008,22
+E0198,54fa2941-47d2-42c8-9fb6-98304d1731f9,44,Các phương tiện chính xuất hiện tại hiện trường vụ việc gồm những loại nào?,"Một xe bồn chở nhiên liệu màu trắng xanh, một xe ô tô con màu trắng.",3,"Nhật Trường, Tuyết Hạnh, Đức Mạnh",E-008,23
+E0199,54fa2941-47d2-42c8-9fb6-98304d1731f9,44,Các phương tiện chính xuất hiện tại hiện trường vụ việc gồm những loại nào?,"Một xe bồn chở nhiên liệu màu trắng xanh, một xe ô tô màu trắng và một xe tải nhỏ.",1,Huỳnh Trung,E-008,24
+E0200,54fa2941-47d2-42c8-9fb6-98304d1731f9,44,Các phương tiện chính xuất hiện tại hiện trường vụ việc gồm những loại nào?,"Một xe bồn chở nhiên liệu màu trắng, một xe ô tô con màu trắng.",1,Tuấn Anh,E-008,25
+E0201,0e11f5b3-95a1-47de-b859-51c5b1289548,45,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe bồn (màu trắng-đỏ) và xe máy (màu tối).,2,"Huỳnh Trung, Mai Linh",E-009,1
+E0202,0e11f5b3-95a1-47de-b859-51c5b1289548,45,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe bồn (màu xanh-đỏ) và xe máy (màu tối).,1,Đức Mạnh,E-009,2
+E0203,0e11f5b3-95a1-47de-b859-51c5b1289548,45,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe bồn màu trắng xanh và xe máy màu tối.,1,Tuyết Hạnh,E-009,3
+E0204,0e11f5b3-95a1-47de-b859-51c5b1289548,45,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe bồn màu xanh và xe máy màu tối.,1,Tuấn Hùng,E-009,4
+E0205,0e11f5b3-95a1-47de-b859-51c5b1289548,45,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe bồn và xe máy (màu tối).,1,Nhật Trường,E-009,5
+E0206,0e11f5b3-95a1-47de-b859-51c5b1289548,45,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe máy màu đen do người đàn ông mặc áo xám điều khiển, xe bồn màu trắng.",1,Tuấn Anh,E-009,6
+E0207,f91243c5-aa28-4add-81d5-3ee0a68e1569,46,Các phương tiện chính liên quan trong vụ việc gồm những loại nào và màu sắc gì?,Một xe SUV màu bạc và một xe máy người lái mặc áo mưa vàng.,2,"Tuyết Hạnh, Đức Mạnh",E-009,7
+E0208,f91243c5-aa28-4add-81d5-3ee0a68e1569,46,Các phương tiện chính liên quan trong vụ việc gồm những loại nào và màu sắc gì?,"Một xe SUV màu bạc, một xe sedan màu xanh và một xe máy người lái mặc áo mưa vàng.",1,Mai Linh,E-009,8
+E0209,f91243c5-aa28-4add-81d5-3ee0a68e1569,46,Các phương tiện chính liên quan trong vụ việc gồm những loại nào và màu sắc gì?,"Một xe SUV màu bạc, một xe ô tô có camera và một xe máy người lái mặc áo mưa vàng.",1,Huỳnh Trung,E-009,9
+E0210,f91243c5-aa28-4add-81d5-3ee0a68e1569,46,Các phương tiện chính liên quan trong vụ việc gồm những loại nào và màu sắc gì?,Một xe ô tô màu bạc và một xe máy người lái mặc áo mưa vàng.,1,Nhật Trường,E-009,10
+E0211,f91243c5-aa28-4add-81d5-3ee0a68e1569,46,Các phương tiện chính liên quan trong vụ việc gồm những loại nào và màu sắc gì?,"Một xe ô tô màu bạc, một xe máy người lái mặc áo mưa vàng.",1,Tuấn Hùng,E-009,11
+E0212,f91243c5-aa28-4add-81d5-3ee0a68e1569,46,Các phương tiện chính liên quan trong vụ việc gồm những loại nào và màu sắc gì?,"Xe máy màu đen do người mặc áo vàng điều khiển, xe ô tô màu nâu.",1,Tuấn Anh,E-009,12
+E0213,60c5c592-784a-4787-89f4-bb385340ee3c,47,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe tải màu xanh dương.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-009,13
+E0214,60c5c592-784a-4787-89f4-bb385340ee3c,47,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe tải nhỏ màu xám,1,Tuấn Anh,E-009,14
+E0215,2ca02918-04d5-41df-840d-213e26861988,48,Các bên liên quan trong vụ va chạm gồm những phương tiện nào?,Một xe ô tô con (xe gắn camera) và một học sinh đi xe đạp màu đỏ.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-009,15
+E0216,2ca02918-04d5-41df-840d-213e26861988,48,Các bên liên quan trong vụ va chạm gồm những phương tiện nào?,Xe gắn camera hành trình và xe đạp do học sinh điều khiển,1,Tuấn Anh,E-009,16
+E0217,58944428-c654-4de9-bb92-4d2c24b762e6,49,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe của camera hành trình (xe lớn), xe bồn màu trắng và xe khách 29 chỗ màu trắng.",3,"Mai Linh, Nhật Trường, Tuấn Hùng",E-009,17
+E0218,58944428-c654-4de9-bb92-4d2c24b762e6,49,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe của camera hành trình (xe lớn), xe bồn màu trắng và xe khách chỗ màu trắng.",1,Huỳnh Trung,E-009,18
+E0219,58944428-c654-4de9-bb92-4d2c24b762e6,49,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe của camera hành trình (xe lớn), xe khách 29 chỗ màu trắng.",1,Đức Mạnh,E-009,19
+E0220,58944428-c654-4de9-bb92-4d2c24b762e6,49,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe của camera hành trình và xe khách 29 chỗ màu vàng.,1,Tuyết Hạnh,E-009,20
+E0221,58944428-c654-4de9-bb92-4d2c24b762e6,49,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe gắn camera hành trình, xe khách màu vàng.",1,Tuấn Anh,E-009,21
+E0222,0f809f68-c5bf-45a4-b0e5-56aff0b20505,50,Loại phương tiện và màu sắc của các bên liên quan đến vụ tai nạn là gì?,Một chiếc xe máy màu tối và chiếc xe ô tô màu đen.,1,Nhật Trường,E-009,22
+E0223,0f809f68-c5bf-45a4-b0e5-56aff0b20505,50,Loại phương tiện và màu sắc của các bên liên quan đến vụ tai nạn là gì?,Một chiếc xe máy màu tối và một ô tô màu đen.,1,Tuyết Hạnh,E-009,23
+E0224,0f809f68-c5bf-45a4-b0e5-56aff0b20505,50,Loại phương tiện và màu sắc của các bên liên quan đến vụ tai nạn là gì?,Một chiếc xe máy màu tối và ô tô màu đen,1,Huỳnh Trung,E-009,24
+E0225,0f809f68-c5bf-45a4-b0e5-56aff0b20505,50,Loại phương tiện và màu sắc của các bên liên quan đến vụ tai nạn là gì?,Một chiếc xe máy màu tối và ô tô màu đen.,1,Tuấn Hùng,E-009,25
+E0226,0f809f68-c5bf-45a4-b0e5-56aff0b20505,50,Loại phương tiện và màu sắc của các bên liên quan đến vụ tai nạn là gì?,"Một chiếc xe máy màu tối, và SUV màu đen",1,Mai Linh,E-010,1
+E0227,0f809f68-c5bf-45a4-b0e5-56aff0b20505,50,Loại phương tiện và màu sắc của các bên liên quan đến vụ tai nạn là gì?,Một chiếc xe máy màu tối.,1,Đức Mạnh,E-010,2
+E0228,0f809f68-c5bf-45a4-b0e5-56aff0b20505,50,Loại phương tiện và màu sắc của các bên liên quan đến vụ tai nạn là gì?,"Xe máy màu tối, xe ô tô màu đen",1,Tuấn Anh,E-010,3
+E0229,8fd3a5cd-d2a6-44a0-b135-de23c88066f6,51,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe khách (màu trắng-vàng-đỏ) và một chiếc xe máy màu tối.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-010,4
+E0230,8fd3a5cd-d2a6-44a0-b135-de23c88066f6,51,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe bus và xe máy màu tối do người áo đen điều khiển,1,Tuấn Anh,E-010,5
+E0231,c3e3282b-822f-44ca-a069-2b839d14d181,52,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe tải ben màu xám/vàng và xe ô tô màu trắng.,1,Tuyết Hạnh,E-010,6
+E0232,c3e3282b-822f-44ca-a069-2b839d14d181,52,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe tải ben và ô tô con trắng.,1,Nhật Trường,E-010,7
+E0233,c3e3282b-822f-44ca-a069-2b839d14d181,52,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe tải màu xanh xám, ô tô con màu trắng",1,Mai Linh,E-010,8
+E0234,c3e3282b-822f-44ca-a069-2b839d14d181,52,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe tải thùng trắng-cam, ô tô con trắng",1,Đức Mạnh,E-010,9
+E0235,c3e3282b-822f-44ca-a069-2b839d14d181,52,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe tải thùng trắng-cam, ô tô con trắng.",1,Tuấn Hùng,E-010,10
+E0236,c3e3282b-822f-44ca-a069-2b839d14d181,52,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe tải thùng xám và ô tô con trắng,1,Huỳnh Trung,E-010,11
+E0237,c3e3282b-822f-44ca-a069-2b839d14d181,52,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô màu trắng, xe ben màu nâu.",1,Tuấn Anh,E-010,12
+E0238,15386f68-00be-4ed2-861a-25ff2ab103a3,53,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe máy màu trắng/bạc và một chiếc xe máy màu tối.,1,Nhật Trường,E-010,13
+E0239,15386f68-00be-4ed2-861a-25ff2ab103a3,53,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe tay ga màu sáng và một chiếc xe máy màu tối,1,Huỳnh Trung,E-010,14
+E0240,15386f68-00be-4ed2-861a-25ff2ab103a3,53,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe tay ga màu trắng/bạc và một chiếc xe máy màu tối chở 2 người,1,Mai Linh,E-010,15
+E0241,15386f68-00be-4ed2-861a-25ff2ab103a3,53,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe tay ga màu trắng/bạc và một chiếc xe máy màu tối chở theo 2 người.,1,Đức Mạnh,E-010,16
+E0242,15386f68-00be-4ed2-861a-25ff2ab103a3,53,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe tay ga màu trắng/bạc và một chiếc xe máy màu tối.,1,Tuấn Hùng,E-010,17
+E0243,15386f68-00be-4ed2-861a-25ff2ab103a3,53,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe tay ga màu vàng và một chiếc xe máy màu tối chở theo ba người.,1,Tuyết Hạnh,E-010,18
+E0244,15386f68-00be-4ed2-861a-25ff2ab103a3,53,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe máy màu nêu do đàn ông mặc áo màu đen điều khiển, xe máy màu đen chở 3.",1,Tuấn Anh,E-010,19
+E0245,1a7dc95c-9806-46fb-a520-84ca24f66473,54,Các phương tiện chính liên quan đến vụ va chạm là gì?,Xe camera và một chiếc xe tải lớn.,1,Nhật Trường,E-010,20
+E0246,1a7dc95c-9806-46fb-a520-84ca24f66473,54,Các phương tiện chính liên quan đến vụ va chạm là gì?,Xe tải lớn màu trắng,1,Tuấn Hùng,E-010,21
+E0247,1a7dc95c-9806-46fb-a520-84ca24f66473,54,Các phương tiện chính liên quan đến vụ va chạm là gì?,Xe tải lớn màu vàng và các xe ô tô màu trắng.,1,Tuyết Hạnh,E-010,22
+E0248,1a7dc95c-9806-46fb-a520-84ca24f66473,54,Các phương tiện chính liên quan đến vụ va chạm là gì?,Xe tải thùng màu bạc,1,Huỳnh Trung,E-010,23
+E0249,1a7dc95c-9806-46fb-a520-84ca24f66473,54,Các phương tiện chính liên quan đến vụ va chạm là gì?,Xe tải to,1,Mai Linh,E-010,24
+E0250,1a7dc95c-9806-46fb-a520-84ca24f66473,54,Các phương tiện chính liên quan đến vụ va chạm là gì?,Xe tải tô màu nâu.,1,Tuấn Anh,E-010,25
+E0251,40f8df3e-c82d-4b48-8444-3c05d5ba9d73,55,Các phương tiện chính xuất hiện trong vụ việc gồm những loại nào?,"Xe tải xanh, xe bồn bê tông xám và xe máy màu đỏ.",1,Tuyết Hạnh,E-011,1
+E0252,40f8df3e-c82d-4b48-8444-3c05d5ba9d73,55,Các phương tiện chính xuất hiện trong vụ việc gồm những loại nào?,"Xe tải xanh, xe bồn bê tông xám và xe máy màu.",1,Huỳnh Trung,E-011,2
+E0253,40f8df3e-c82d-4b48-8444-3c05d5ba9d73,55,Các phương tiện chính xuất hiện trong vụ việc gồm những loại nào?,"Xe tải xanh, xe bồn bê tông xám và xe máy.",2,"Nhật Trường, Tuấn Hùng",E-011,3
+E0254,40f8df3e-c82d-4b48-8444-3c05d5ba9d73,55,Các phương tiện chính xuất hiện trong vụ việc gồm những loại nào?,"Xe tải xanh, xe bồn bê tông xám, và xe máy.",1,Đức Mạnh,E-011,4
+E0255,40f8df3e-c82d-4b48-8444-3c05d5ba9d73,55,Các phương tiện chính xuất hiện trong vụ việc gồm những loại nào?,"Xe tải xanh, xe bồn bê tông xám, xe chở 2 nguoief",1,Mai Linh,E-011,5
+E0256,40f8df3e-c82d-4b48-8444-3c05d5ba9d73,55,Các phương tiện chính xuất hiện trong vụ việc gồm những loại nào?,"Xe tải xanh, xe bồn bê tông xám, xe máy màu đen do người áo trắng chở 2.",1,Tuấn Anh,E-011,6
+E0257,adeebce1-1f58-4ca5-b989-00ed4c4e8e01,56,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe máy do người đàn ông áo trắng điều khiển, xe có gắn camera hành trình",1,Tuấn Anh,E-011,7
+E0258,adeebce1-1f58-4ca5-b989-00ed4c4e8e01,56,Loại phương tiện và màu sắc của các bên liên quan là gì?,Xe ô tô (xe gắn camera) và xe máy màu tối.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-011,8
+E0259,b15ea7ca-66e6-4c98-8394-61f4ab45d750,57,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô SUV màu đỏ (nhãn hiệu Toyota) và một ô tô màu xám,1,Tuấn Hùng,E-011,9
+E0260,b15ea7ca-66e6-4c98-8394-61f4ab45d750,57,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô SUV màu đỏ (nhãn hiệu Toyota) và một ô tô mầu xám/bạc.,1,Tuyết Hạnh,E-011,10
+E0261,b15ea7ca-66e6-4c98-8394-61f4ab45d750,57,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô SUV màu đỏ (nhãn hiệu Toyota) và ô tô màu bạc.,1,Huỳnh Trung,E-011,11
+E0262,b15ea7ca-66e6-4c98-8394-61f4ab45d750,57,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô SUV màu đỏ (nhãn hiệu Toyota) và ô tô màu xám.,1,Đức Mạnh,E-011,12
+E0263,b15ea7ca-66e6-4c98-8394-61f4ab45d750,57,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô SUV màu đỏ và 1 chieecs ô tô con màu bạc,1,Mai Linh,E-011,13
+E0264,b15ea7ca-66e6-4c98-8394-61f4ab45d750,57,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô SUV màu đỏ và một xe ô tô màu nâu/ vàng.,1,Nhật Trường,E-011,14
+E0265,b15ea7ca-66e6-4c98-8394-61f4ab45d750,57,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô màu đỏ, xe ô tô màu nâu.",1,Tuấn Anh,E-011,15
+E0266,2b8f045f-01aa-40ef-bcdb-2db4b484b905,58,Phương tiện chính liên quan đến vụ việc là gì?,Một người phụ nữ điều khiển xe máy màu tối và một người đi xe máy mặc áo mưa màu cam.,1,Tuyết Hạnh,E-011,16
+E0267,2b8f045f-01aa-40ef-bcdb-2db4b484b905,58,Phương tiện chính liên quan đến vụ việc là gì?,Một người phụ nữ điều khiển xe máy màu tối và xe máy mặc áo mưa cam.,1,Huỳnh Trung,E-011,17
+E0268,2b8f045f-01aa-40ef-bcdb-2db4b484b905,58,Phương tiện chính liên quan đến vụ việc là gì?,Một người phụ nữ điều khiển xe máy màu tối và xe người mặc áo cam,1,Mai Linh,E-011,18
+E0269,2b8f045f-01aa-40ef-bcdb-2db4b484b905,58,Phương tiện chính liên quan đến vụ việc là gì?,Một người phụ nữ điều khiển xe máy màu tối.,3,"Nhật Trường, Tuấn Hùng, Đức Mạnh",E-011,19
+E0270,2b8f045f-01aa-40ef-bcdb-2db4b484b905,58,Phương tiện chính liên quan đến vụ việc là gì?,"Xe máy màu đen do người phụ nữ điều khiển, xe máy màu đen do người đàn ông điều khiển.",1,Tuấn Anh,E-011,20
+E0271,e53c6465-2eb9-467d-a6a1-bd47d05778b2,59,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô con màu đen và một chiếc xe tải ben màu xanh lá cây.,4,"Huỳnh Trung, Mai Linh, Tuấn Hùng, Đức Mạnh",E-011,21
+E0272,e53c6465-2eb9-467d-a6a1-bd47d05778b2,59,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô màu đen và một chiếc xe tải ben màu xanh lá cây.,1,Tuyết Hạnh,E-011,22
+E0273,e53c6465-2eb9-467d-a6a1-bd47d05778b2,59,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc ô tô đen và một chiếc xe tải ben màu xanh lá cây.,1,Nhật Trường,E-011,23
+E0274,e53c6465-2eb9-467d-a6a1-bd47d05778b2,59,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô màu đen, xe tải màu xanh.",1,Tuấn Anh,E-011,24
+E0275,3354c73e-ef71-4de3-8884-9061101f382f,60,Loại phương tiện và màu sắc của các bên liên quan là gì?,Một chiếc xe sedan màu đỏ và một chiếc xe SUV màu đen.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",E-011,25
+E0276,3354c73e-ef71-4de3-8884-9061101f382f,60,Loại phương tiện và màu sắc của các bên liên quan là gì?,"Xe ô tô màu đỏ, xe ô tô màu đen.",1,Tuấn Anh,E-012,1

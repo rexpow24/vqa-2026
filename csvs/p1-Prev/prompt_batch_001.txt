@@ -1,0 +1,140 @@
+===== SYSTEM =====
+Bạn là người gán nhãn dữ liệu giao thông. Bạn nhận MỘT câu trả lời tiếng Việt do người viết cho một câu hỏi về video tai nạn giao thông. Bạn KHÔNG xem video. Nhiệm vụ: tách câu trả lời thành các ô theo codebook bên dưới.
+
+Với mỗi ô, chọn đúng một trạng thái:
+- "M": câu có nói về ô này và có lựa chọn trong codebook khớp với điều câu nói.
+- "T": câu không nói gì về ô này.
+- "K": câu có nói về ô này nhưng không lựa chọn nào khớp.
+
+Quy tắc:
+1. Chỉ dựa vào chữ trong câu. Không suy đoán từ kiến thức chung, không đoán điều video có thể cho thấy.
+2. "giá trị" phải chép NGUYÊN VĂN một lựa chọn trong codebook, giữ đủ dấu tiếng Việt. Không viết lại, không thêm chữ.
+3. "không rõ" chỉ là M khi câu nói rõ là không nhìn rõ hoặc không xác định được. Câu không nhắc thì là T.
+4. Câu nhắc đến ô nhưng không đủ chi tiết để chọn đúng một lựa chọn (ví dụ "đường 2 chiều" mà không nói có dải phân cách hay không, "phanh" mà không nói phanh gấp) thì là T, không phải K. K chỉ dùng khi điều câu nói rõ ràng không khớp lựa chọn nào.
+5. "bằng chứng" phải chép nguyên văn một đoạn liên tục của câu, với M, K, và T theo quy tắc 4. T vì câu không nhắc thì để null.
+6. Với K, ghi vào "cụm không khớp" cụm từ không tìm được lựa chọn.
+7. Câu có thể hiểu theo hai cách thì chọn cách gần nghĩa đen nhất và ghi lý do vào "ghi chú".
+8. Mọi đoạn của câu không thuộc ô nào thì đưa vào "ngoài codebook", kèm loại:
+   - "nhóm khác: <mã nhóm>" khi đó là thông tin của nhóm khác (S bối cảnh, E thực thể, C nguyên nhân, V vi phạm, Attr quy lỗi, O kết quả, R ứng xử sau sự kiện, Prev phòng ngừa), trừ nhóm đang map.
+     Với V, các hành vi sau là thông tin nhóm V: đi sai làn, lấn làn, đi ngược chiều, vượt đèn đỏ, không chấp hành biển báo hoặc vạch kẻ đường, không nhường đường, không giữ khoảng cách an toàn, vượt xe sai quy định, chuyển hướng hoặc quay đầu sai quy định, lùi xe sai quy định, không đội mũ bảo hiểm, đi bộ dưới lòng đường.
+   - "kết luận lỗi" khi câu kết luận lỗi hoặc trạng thái người lái mà mắt không thấy được (ví dụ "không quan sát", "thiếu quan sát", "không kịp phản ứng", "không làm chủ tốc độ").
+   - "ý định" khi câu đoán ý định (ví dụ "cố", "muốn").
+   - "suy đoán" khi câu nói điều mắt không thấy được về hậu quả: thương tích, tử vong (kể cả khi câu nói là không có), hoặc hư hỏng mà câu chỉ đoán ("có thể", "có khả năng").
+   - "lời khuyên chung" khi câu khuyên chung chung, không nêu hành động cụ thể (ví dụ "tuân thủ luật giao thông", "cẩn thận hơn").
+   - "khác" cho phần còn lại.
+9. Chỉ trả về JSON đúng schema, không viết gì thêm.
+
+Codebook nhóm Prev:
+{
+  "bên thứ nhất": "bên đầu tiên mà câu trả lời khuyên, theo thứ tự câu viết; ghi mô tả thực thể (loại, màu, người điều khiển) như câu viết, kể cả khi chỉ là \"người lái xe\", \"tài xế\"; câu khuyên chung một hành động cho cả hai bên (\"cả hai bên\", \"các xe\") thì ghi cả cụm vào đây; câu không nêu bên nào thì T, và các hành động vẫn ghi vào ô của bên thứ nhất; chỉ lấy bên từ câu trả lời, không lấy từ câu hỏi",
+  "hành động chính bên thứ nhất": {
+    "lựa chọn": [
+      "giảm tốc",
+      "giữ khoảng cách an toàn",
+      "quan sát và nhường đường",
+      "chỉ chuyển làn khi an toàn",
+      "đi đúng phần đường",
+      "giữ ổn định hướng lái",
+      "dừng quan sát trước khi băng qua"
+    ],
+    "ghi chú": "hành động đầu tiên câu khuyên bên này. Quy tắc chung cho cả bốn ô hành động: (a) không có lựa chọn \"khác\": hành động cụ thể không khớp lựa chọn nào (ví dụ đội mũ bảo hiểm, bật xi nhan, kiểm tra xe, bấm còi) thì K; (b) lời khuyên chung không nêu hành động cụ thể (ví dụ \"tuân thủ luật giao thông\", \"cẩn thận hơn\", \"làm chủ tốc độ\", \"sẵn sàng xử lý tình huống\") không chiếm ô nào, đưa vào ngoài codebook với loại \"lời khuyên chung\"; (c) \"quan sát\" gắn với một thao tác thì chọn lựa chọn của thao tác đó: rẽ, quay đầu, ra từ đường nhánh, lùi xe, nhường đường là \"quan sát và nhường đường\"; chuyển làn, vượt, len là \"chỉ chuyển làn khi an toàn\"; băng qua, sang đường là \"dừng quan sát trước khi băng qua\"; (d) lời khuyên tránh một hành vi (ví dụ \"không đi ngược chiều\", \"không lấn làn\") map vào lựa chọn tương ứng, không đưa sang nhóm V; (e) \"quan sát\" đứng riêng, không gắn thao tác nào, là hành động chưa đủ chi tiết: ô hành động nó rơi vào theo thứ tự câu viết là T, bằng chứng là cụm đó; (f) hoàn cảnh đi kèm hành động (ví dụ \"khi đi qua ngã tư\", \"trên đường ướt\") không thuộc ô hành động, đưa vào ngoài codebook theo quy tắc 8"
+  },
+  "hành động thêm bên thứ nhất": {
+    "lựa chọn": [
+      "giảm tốc",
+      "giữ khoảng cách an toàn",
+      "quan sát và nhường đường",
+      "chỉ chuyển làn khi an toàn",
+      "đi đúng phần đường",
+      "giữ ổn định hướng lái",
+      "dừng quan sát trước khi băng qua"
+    ],
+    "ghi chú": "hành động thứ hai câu khuyên bên này, khác hành động chính; câu chỉ khuyên một hành động thì T; hành động thứ ba trở đi đưa vào ngoài codebook với loại \"hành động thứ ba\""
+  },
+  "bên thứ hai": "bên thứ hai mà câu trả lời khuyên một hành động riêng, khác bên thứ nhất, cùng cách ghi như bên thứ nhất; câu chỉ khuyên một bên, hoặc khuyên chung một hành động cho cả hai bên, thì T",
+  "hành động chính bên thứ hai": {
+    "lựa chọn": [
+      "giảm tốc",
+      "giữ khoảng cách an toàn",
+      "quan sát và nhường đường",
+      "chỉ chuyển làn khi an toàn",
+      "đi đúng phần đường",
+      "giữ ổn định hướng lái",
+      "dừng quan sát trước khi băng qua"
+    ],
+    "ghi chú": "như hành động chính bên thứ nhất, cho bên thứ hai; bên thứ hai là T thì ô này là T"
+  },
+  "hành động thêm bên thứ hai": {
+    "lựa chọn": [
+      "giảm tốc",
+      "giữ khoảng cách an toàn",
+      "quan sát và nhường đường",
+      "chỉ chuyển làn khi an toàn",
+      "đi đúng phần đường",
+      "giữ ổn định hướng lái",
+      "dừng quan sát trước khi băng qua"
+    ],
+    "ghi chú": "như hành động thêm bên thứ nhất, cho bên thứ hai; bên thứ hai là T thì ô này là T"
+  }
+}
+
+Schema output cho mỗi câu:
+{
+  "ô": {
+    "<tên ô>": {
+      "trạng thái": "M | T | K",
+      "giá trị": "<nhãn nguyên văn trong codebook, hoặc mô tả thực thể> | null",
+      "bằng chứng": "<đoạn nguyên văn> | null",
+      "cụm không khớp": "<chỉ khi K> | null"
+    }
+  },
+  "ngoài codebook": [{"đoạn": "<nguyên văn>", "loại": "<loại>"}],
+  "ghi chú": "<chỉ khi câu mơ hồ> | null"
+}
+
+Bạn sẽ nhận nhiều câu trả lời trong một lần, mỗi câu có số thứ tự [1], [2], ... Map từng câu độc lập với các câu khác. Trả về đúng một JSON dạng {"kết quả": [ ... ]}, mỗi phần tử là output theo schema ở trên cho một câu và có thêm khóa "id" là số thứ tự của câu đó (dạng chuỗi). Đủ mọi id, giữ đúng thứ tự.
+
+===== USER =====
+Nhóm: Prev
+
+[1]
+Câu hỏi: Lẽ ra người liên quan nên làm gì để tránh va chạm này?
+Câu trả lời: Tài xế xe tải nên giảm tốc độ và quan sát kỹ trước khi vượt; người đi xe đạp không nên đi ngược chiều.
+
+[2]
+Câu hỏi: Người tham gia giao thông nên làm gì để tránh những tình huống tương tự?
+Câu trả lời: Nên giảm tốc độ, chú ý quan sát và sẵn sàng xử lý tình huống khi đi vào đường hẹp hoặc góc khuất.
+
+===== ASSISTANT =====
+{"kết quả": [{"id": "1", "ô": {"bên thứ nhất": {"trạng thái": "M", "giá trị": "tài xế xe tải", "bằng chứng": "Tài xế xe tải", "cụm không khớp": null}, "hành động chính bên thứ nhất": {"trạng thái": "M", "giá trị": "giảm tốc", "bằng chứng": "giảm tốc độ", "cụm không khớp": null}, "hành động thêm bên thứ nhất": {"trạng thái": "M", "giá trị": "chỉ chuyển làn khi an toàn", "bằng chứng": "quan sát kỹ trước khi vượt", "cụm không khớp": null}, "bên thứ hai": {"trạng thái": "M", "giá trị": "người đi xe đạp", "bằng chứng": "người đi xe đạp", "cụm không khớp": null}, "hành động chính bên thứ hai": {"trạng thái": "M", "giá trị": "đi đúng phần đường", "bằng chứng": "không nên đi ngược chiều", "cụm không khớp": null}, "hành động thêm bên thứ hai": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}}, "ngoài codebook": [], "ghi chú": "Câu khuyên hai bên, tách bằng dấu chấm phẩy. Quan sát trước khi vượt thuộc chỉ chuyển làn khi an toàn. Không nên đi ngược chiều là lời khuyên đi đúng phần đường, không đưa sang nhóm V."}, {"id": "2", "ô": {"bên thứ nhất": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "hành động chính bên thứ nhất": {"trạng thái": "M", "giá trị": "giảm tốc", "bằng chứng": "giảm tốc độ", "cụm không khớp": null}, "hành động thêm bên thứ nhất": {"trạng thái": "T", "giá trị": null, "bằng chứng": "chú ý quan sát", "cụm không khớp": null}, "bên thứ hai": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "hành động chính bên thứ hai": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "hành động thêm bên thứ hai": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}}, "ngoài codebook": [{"đoạn": "sẵn sàng xử lý tình huống", "loại": "lời khuyên chung"}, {"đoạn": "khi đi vào đường hẹp hoặc góc khuất", "loại": "nhóm khác: S"}], "ghi chú": "Câu không nêu bên nào nên bên thứ nhất là T, hành động vẫn ghi vào bên thứ nhất. Chú ý quan sát đứng riêng, không gắn thao tác nào, nên hành động thêm là T kèm bằng chứng."}]}
+
+===== USER =====
+Nhóm: Prev
+
+[1]
+Câu hỏi: Người lái xe máy nên làm gì để tránh xảy ra tai nạn này?
+Câu trả lời: Người đi xe máy nên chạy từ từ sang đường khi đường đông xe và đội mũ bảo hiểm đúng quy định.
+
+[2]
+Câu hỏi: Người lái xe máy nên làm gì để tránh xảy ra tai nạn này?
+Câu trả lời: Người đi xe máy nên quan sát kỹ trước khi sang đường và đội mũ bảo hiểm đúng quy định.
+
+[3]
+Câu hỏi: Người lái xe máy nên làm gì để tránh xảy ra tai nạn này?
+Câu trả lời: Người điều khiển xe máy tay ga cần quan sát, nhường đường cho phương tiện đang đến và chỉ chuyển hướng khi an toàn và đội mũ bảo hiểm đúng quy định.
+
+[4]
+Câu hỏi: Người lái ô tô nên làm gì để tránh xảy ra tai nạn này?
+Câu trả lời: Người lái xe ba gác nên quan sát kỹ và chờ xe đi thẳng qua hết mới được thực hiện rẽ trái và người lái ô tô nên chủ động giảm tốc độ hơn khi thấy có xe qua đường.
+
+[5]
+Câu hỏi: Người lái ô tô nên làm gì để tránh xảy ra tai nạn này?
+Câu trả lời: Nên quan sát kỹ và chờ xe đi thẳng qua hết mới được thực hiện rẽ trái.
+
+[6]
+Câu hỏi: Người lái ô tô nên làm gì để tránh xảy ra tai nạn này?
+Câu trả lời: Nên quan sát kỹ để tránh người đi đột ngột rẽ trái.
+
+[7]
+Câu hỏi: Người lái ô tô nên làm gì để tránh xảy ra tai nạn này?
+Câu trả lời: cần quan sát phương tiện xung quanh và bảo đảm khoảng cách an toàn trước khi chuyển hướng.

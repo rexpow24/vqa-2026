@@ -1,0 +1,88 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hướng dẫn gán nhãn VQA giao thông</title><style>
+:root{--bg:#ffffff;--fg:#1f2328;--muted:#59636e;--line:#d1d9e0;--head:#f6f8fa;--link:#0969da}
+@media (prefers-color-scheme: dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--line:#3d444d;--head:#151b23;--link:#4493f8}}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:1.7em;border-bottom:1px solid var(--line);padding-bottom:.3em}
+h2{font-size:1.3em;margin-top:1.8em;border-bottom:1px solid var(--line);padding-bottom:.2em}
+table{border-collapse:collapse;width:100%;margin:1em 0;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--head)}
+code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:.92em}
+a{color:var(--link)}
+.nav{font-size:.9em;color:var(--muted);margin-bottom:1.5em}
+</style></head><body><main><h1>Hướng dẫn gán nhãn VQA giao thông</h1>
+<p>Bộ hướng dẫn cho annotator, cập nhật 2026-11-16.
+Mỗi nhóm câu hỏi có một file; mở bản <code>.html</code> để đọc dễ hơn, bản <code>.md</code> có cùng nội dung.</p>
+<h2>Thứ tự đọc</h2>
+<p>Đọc theo thứ tự dưới đây: các nhóm sau dùng tên các bên A, B, C khai báo ở E, và V, O, R, Attr, Prev dựa trên nguyên nhân ở C.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Nhóm</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td>Nhóm S: bối cảnh (Scene)</td>
+<td><a href="huong-dan/01-S-boi-canh.html">huong-dan/01-S-boi-canh.html</a></td>
+</tr>
+<tr>
+<td>02</td>
+<td>Nhóm E: thực thể (Entities)</td>
+<td><a href="huong-dan/02-E-thuc-the.html">huong-dan/02-E-thuc-the.html</a></td>
+</tr>
+<tr>
+<td>03</td>
+<td>Nhóm C: nguyên nhân trực tiếp (Causal)</td>
+<td><a href="huong-dan/03-C-nguyen-nhan.html">huong-dan/03-C-nguyen-nhan.html</a></td>
+</tr>
+<tr>
+<td>04</td>
+<td>Nhóm V: vi phạm (Violation)</td>
+<td><a href="huong-dan/04-V-vi-pham.html">huong-dan/04-V-vi-pham.html</a></td>
+</tr>
+<tr>
+<td>05</td>
+<td>Nhóm Attr: bên góp phần chính (Attribution)</td>
+<td><a href="huong-dan/05-Attr-ben-gop-phan.html">huong-dan/05-Attr-ben-gop-phan.html</a></td>
+</tr>
+<tr>
+<td>06</td>
+<td>Nhóm O: hậu quả (Outcome)</td>
+<td><a href="huong-dan/06-O-hau-qua.html">huong-dan/06-O-hau-qua.html</a></td>
+</tr>
+<tr>
+<td>07</td>
+<td>Nhóm R: ứng xử sau sự kiện (Response)</td>
+<td><a href="huong-dan/07-R-ung-xu.html">huong-dan/07-R-ung-xu.html</a></td>
+</tr>
+<tr>
+<td>08</td>
+<td>Nhóm Prev: phòng ngừa (Prevention)</td>
+<td><a href="huong-dan/08-Prev-phong-ngua.html">huong-dan/08-Prev-phong-ngua.html</a></td>
+</tr>
+<tr>
+<td>09</td>
+<td>Nhóm N: diễn biến (Narrative)</td>
+<td><a href="huong-dan/09-N-dien-bien.html">huong-dan/09-N-dien-bien.html</a></td>
+</tr>
+</tbody>
+</table>
+<h2>Tài liệu tham khảo cho C và V</h2>
+<ul>
+<li><a href="tham-khao-C/kieu-xung-dot.html">tham-khao-C/kieu-xung-dot.html</a>: 18 kiểu xung đột của nhóm C, nguồn gốc, và luật phân xử 4 cặp dễ nhầm (K11/K14, K04/K05, K08/K10, K18).
+  Số liệu trong trang là phân bố sơ bộ trên 40 video vòng đầu; bảng kiểu xung đột chính thức nằm trong hướng dẫn nhóm C.</li>
+<li><a href="tham-khao-V/doi-chieu-MMUCC.html">tham-khao-V/doi-chieu-MMUCC.html</a>: danh sách hành vi vi phạm nhóm V lấy từ đâu (MMUCC 5th Edition, NHTSA) và vì sao bỏ một số mục.</li>
+</ul>
+<h2>Sửa câu ghép</h2>
+<p>Sau khi chọn đủ các ô, form ghép câu trả lời; bấm "Sửa câu" để sửa câu đó cho mạch lạc hơn.
+Chỉ được thêm từ nối (ví dụ "chiếc", "rồi", "nên", "và"), đổi chữ hoa hoặc dấu câu.
+Không xóa, đổi hay đảo chữ nào của câu ghép; form báo lỗi và không lưu nếu thiếu chữ.
+Muốn đổi nội dung thì đổi ô; khi đổi ô, câu sửa tay bị bỏ và ghép lại từ đầu.
+Câu của nhóm E (danh sách các bên) không sửa được.</p>
+<h2>Khi hướng dẫn và tài liệu tham khảo khác nhau</h2>
+<p>File trong <code>huong-dan/</code> là bản chính thức. Tài liệu tham khảo chỉ giải thích thêm.</p></main></body></html>

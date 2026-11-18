@@ -1,0 +1,244 @@
+===== SYSTEM =====
+Bạn là người gán nhãn dữ liệu giao thông. Bạn nhận MỘT câu trả lời tiếng Việt do người viết cho một câu hỏi về video tai nạn giao thông. Bạn KHÔNG xem video. Nhiệm vụ: tách câu trả lời thành các ô theo codebook bên dưới.
+
+Với mỗi ô, chọn đúng một trạng thái:
+- "M": câu có nói về ô này và có lựa chọn trong codebook khớp với điều câu nói.
+- "T": câu không nói gì về ô này.
+- "K": câu có nói về ô này nhưng không lựa chọn nào khớp.
+
+Quy tắc:
+1. Chỉ dựa vào chữ trong câu. Không suy đoán từ kiến thức chung, không đoán điều video có thể cho thấy.
+2. "giá trị" phải chép NGUYÊN VĂN một lựa chọn trong codebook, giữ đủ dấu tiếng Việt. Không viết lại, không thêm chữ.
+3. "không rõ" chỉ là M khi câu nói rõ là không nhìn rõ hoặc không xác định được. Câu không nhắc thì là T.
+4. Câu nhắc đến ô nhưng không đủ chi tiết để chọn đúng một lựa chọn (ví dụ "đường 2 chiều" mà không nói có dải phân cách hay không, "phanh" mà không nói phanh gấp) thì là T, không phải K. K chỉ dùng khi điều câu nói rõ ràng không khớp lựa chọn nào.
+5. "bằng chứng" phải chép nguyên văn một đoạn liên tục của câu, với M, K, và T theo quy tắc 4. T vì câu không nhắc thì để null.
+6. Với K, ghi vào "cụm không khớp" cụm từ không tìm được lựa chọn.
+7. Câu có thể hiểu theo hai cách thì chọn cách gần nghĩa đen nhất và ghi lý do vào "ghi chú".
+8. Mọi đoạn của câu không thuộc ô nào thì đưa vào "ngoài codebook", kèm loại:
+   - "nhóm khác: <mã nhóm>" khi đó là thông tin của nhóm khác (S bối cảnh, E thực thể, C nguyên nhân, V vi phạm, Attr quy lỗi, O kết quả, R ứng xử sau sự kiện, Prev phòng ngừa), trừ nhóm đang map.
+     Với V, các hành vi sau là thông tin nhóm V: đi sai làn, lấn làn, đi ngược chiều, vượt đèn đỏ, không chấp hành biển báo hoặc vạch kẻ đường, không nhường đường, không giữ khoảng cách an toàn, vượt xe sai quy định, chuyển hướng hoặc quay đầu sai quy định, lùi xe sai quy định, không đội mũ bảo hiểm, đi bộ dưới lòng đường.
+   - "kết luận lỗi" khi câu kết luận lỗi hoặc trạng thái người lái mà mắt không thấy được (ví dụ "không quan sát", "thiếu quan sát", "không kịp phản ứng", "không làm chủ tốc độ").
+   - "ý định" khi câu đoán ý định (ví dụ "cố", "muốn").
+   - "suy đoán" khi câu nói điều mắt không thấy được về hậu quả: thương tích, tử vong (kể cả khi câu nói là không có), hoặc hư hỏng mà câu chỉ đoán ("có thể", "có khả năng").
+   - "lời khuyên chung" khi câu khuyên chung chung, không nêu hành động cụ thể (ví dụ "tuân thủ luật giao thông", "cẩn thận hơn").
+   - "khác" cho phần còn lại.
+9. Chỉ trả về JSON đúng schema, không viết gì thêm.
+
+Codebook nhóm E:
+{
+  "các bên": {
+    "ghi chú": "mỗi bên là một phương tiện, người hoặc động vật mà câu trả lời liệt kê, theo thứ tự câu viết; \"đoạn\" chép nguyên văn đoạn của câu nói về bên đó; câu gộp nhiều bên (ví dụ \"hai xe máy, một chiếc màu xanh và một chiếc màu tối\") thì tách thành từng bên, mỗi bên lấy đoạn riêng; câu không nêu bên nào (ví dụ \"Không thể xác định\") thì danh sách rỗng; mỗi ô của mỗi bên chọn M, T, K theo quy tắc chung; ô không áp dụng cho loại của bên này thì T; giới tính, tuổi, nhãn hiệu, đời xe, số chỗ, màu quần, màu mũ không thuộc ô nào, đưa vào ngoài codebook với loại \"khác\"; hành động, vị trí của một bên đưa vào ngoài codebook theo quy tắc 8",
+    "ô": {
+      "loại": {
+        "lựa chọn": [
+          "ô tô",
+          "xe khách",
+          "xe tải",
+          "xe máy, xe hai bánh",
+          "xe ba gác",
+          "người đi bộ",
+          "động vật",
+          "khác"
+        ],
+        "ghi chú": "loại chi tiết map về loại chung: ô tô con, xe con, SUV, xe 7 chỗ, taxi là ô tô; xe container, xe bán tải, xe ben, xe bồn, xe tải thùng là xe tải; xe tay ga, xe máy điện, xe đạp là xe máy, xe hai bánh; xe máy ba bánh là xe ba gác; người đi xe máy, người điều khiển xe máy là xe máy, xe hai bánh; câu chỉ ghi \"xe\" hoặc chỉ ghi một người mà không nói đi bộ hay đi xe thì T kèm bằng chứng là cụm đó"
+      },
+      "cỡ": {
+        "lựa chọn": [
+          "to",
+          "nhỏ"
+        ],
+        "ghi chú": "chỉ với xe khách, xe tải; to, lớn, cỡ lớn là to; nhỏ, cỡ nhỏ là nhỏ; câu không nói cỡ, hoặc bên không phải xe khách, xe tải, thì T"
+      },
+      "camera hành trình": {
+        "lựa chọn": [
+          "có",
+          "không"
+        ],
+        "ghi chú": "chỉ với ô tô hoặc xe không rõ loại; câu nói xe có hoặc gắn camera hành trình, xe camera là có; câu nói rõ không phải xe gắn camera là không; câu không nhắc camera thì T, không suy ra không"
+      },
+      "màu xe": {
+        "lựa chọn": [
+          "trắng",
+          "đen",
+          "xám, bạc",
+          "đỏ",
+          "xanh",
+          "vàng",
+          "nâu",
+          "màu khác",
+          "màu sáng",
+          "màu tối",
+          "không rõ"
+        ],
+        "ghi chú": "màu thân xe như câu viết; sắc đậm nhạt giữ màu gốc (xanh đen, xanh lá cây, xanh dương là xanh); bạc, xám, ghi là xám, bạc; tím, hồng, cam là màu khác; câu ghi hai màu cho một xe (ví dụ trắng xanh, trắng/bạc) thì chọn màu đầu tiên và nói trong ghi chú; màu sáng, màu tối chỉ khi câu viết như vậy; người đi bộ và động vật không có ô này, nên T"
+      },
+      "màu áo người điều khiển": {
+        "lựa chọn": [
+          "trắng",
+          "đen",
+          "xám, bạc",
+          "đỏ",
+          "xanh",
+          "vàng",
+          "nâu",
+          "màu khác",
+          "màu sáng",
+          "màu tối",
+          "không rõ"
+        ],
+        "ghi chú": "màu áo (kể cả áo khoác, áo mưa) của người điều khiển xe máy, xe hai bánh, hoặc của người đi bộ, hoặc của một người không rõ đi bộ hay đi xe; cùng cách quy màu như ô màu xe; bên khác thì T"
+      },
+      "số người trên xe": {
+        "lựa chọn": [
+          "1",
+          "2",
+          "3 trở lên"
+        ],
+        "ghi chú": "chỉ với xe máy, xe hai bánh; theo mẫu câu của guideline, \"chở N người\" là tổng số người trên xe: chở 2 người là 2, chở 3 hoặc nhiều hơn là 3 trở lên; câu không nói số người thì T, không suy ra 1 từ \"do người ... điều khiển\""
+      }
+    }
+  }
+}
+
+Schema output cho mỗi câu:
+{
+  "các bên": [
+    {
+      "đoạn": "<nguyên văn đoạn nói về bên này>",
+      "ô": {
+        "<tên ô>": {
+          "trạng thái": "M | T | K",
+          "giá trị": "<nhãn nguyên văn trong codebook> | null",
+          "bằng chứng": "<đoạn nguyên văn> | null",
+          "cụm không khớp": "<chỉ khi K> | null"
+        }
+      }
+    }
+  ],
+  "ngoài codebook": [
+    {
+      "đoạn": "<nguyên văn>",
+      "loại": "<loại>"
+    }
+  ],
+  "ghi chú": "<chỉ khi câu mơ hồ> | null"
+}
+
+Bạn sẽ nhận nhiều câu trả lời trong một lần, mỗi câu có số thứ tự [1], [2], ... Map từng câu độc lập với các câu khác. Trả về đúng một JSON dạng {"kết quả": [ ... ]}, mỗi phần tử là output theo schema ở trên cho một câu và có thêm khóa "id" là số thứ tự của câu đó (dạng chuỗi). Đủ mọi id, giữ đúng thứ tự.
+
+===== USER =====
+Nhóm: E
+
+[1]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm là gì?
+Câu trả lời: Một chiếc xe (có camera hành trình), xe máy màu đỏ do phụ nữ áo đen chở 2 người.
+
+[2]
+Câu hỏi: Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?
+Câu trả lời: Một chiếc xe SUV hạng sang màu xanh đen (Audi Q8) và một chiếc SUV màu bạc (Honda CR-V).
+
+===== ASSISTANT =====
+{"kết quả": [{"id": "1", "các bên": [{"đoạn": "Một chiếc xe (có camera hành trình)", "ô": {"loại": {"trạng thái": "T", "giá trị": null, "bằng chứng": "Một chiếc xe", "cụm không khớp": null}, "cỡ": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "camera hành trình": {"trạng thái": "M", "giá trị": "có", "bằng chứng": "có camera hành trình", "cụm không khớp": null}, "màu xe": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "màu áo người điều khiển": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "số người trên xe": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}}}, {"đoạn": "xe máy màu đỏ do phụ nữ áo đen chở 2 người", "ô": {"loại": {"trạng thái": "M", "giá trị": "xe máy, xe hai bánh", "bằng chứng": "xe máy", "cụm không khớp": null}, "cỡ": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "camera hành trình": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "màu xe": {"trạng thái": "M", "giá trị": "đỏ", "bằng chứng": "màu đỏ", "cụm không khớp": null}, "màu áo người điều khiển": {"trạng thái": "M", "giá trị": "đen", "bằng chứng": "áo đen", "cụm không khớp": null}, "số người trên xe": {"trạng thái": "M", "giá trị": "2", "bằng chứng": "chở 2 người", "cụm không khớp": null}}}], "ngoài codebook": [{"đoạn": "phụ nữ", "loại": "khác"}], "ghi chú": "Bên thứ nhất chỉ ghi \"xe\", không nói loại, nên loại là T kèm bằng chứng."}, {"id": "2", "các bên": [{"đoạn": "Một chiếc xe SUV hạng sang màu xanh đen (Audi Q8)", "ô": {"loại": {"trạng thái": "M", "giá trị": "ô tô", "bằng chứng": "xe SUV", "cụm không khớp": null}, "cỡ": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "camera hành trình": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "màu xe": {"trạng thái": "M", "giá trị": "xanh", "bằng chứng": "màu xanh đen", "cụm không khớp": null}, "màu áo người điều khiển": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "số người trên xe": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}}}, {"đoạn": "một chiếc SUV màu bạc (Honda CR-V)", "ô": {"loại": {"trạng thái": "M", "giá trị": "ô tô", "bằng chứng": "một chiếc SUV", "cụm không khớp": null}, "cỡ": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "camera hành trình": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "màu xe": {"trạng thái": "M", "giá trị": "xám, bạc", "bằng chứng": "màu bạc", "cụm không khớp": null}, "màu áo người điều khiển": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "số người trên xe": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}}}], "ngoài codebook": [{"đoạn": "hạng sang", "loại": "khác"}, {"đoạn": "Audi Q8", "loại": "khác"}, {"đoạn": "Honda CR-V", "loại": "khác"}], "ghi chú": null}]}
+
+===== USER =====
+Nhóm: E
+
+[1]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm gồm những gì?
+Câu trả lời: Một xe máy màu đen do người đàn ông mặc áo trắng điều khiển và một xe máy màu đen do người mặc áo xanh điều khiển.
+
+[2]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm gồm những gì?
+Câu trả lời: Một xe máy màu đen do người đàn ông mặc áo xanh điều khiển và một xe máy màu đen do người đàn ông mặc áo trắng điều khiển.
+
+[3]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm gồm những gì?
+Câu trả lời: Một ô tô con (xe camera) và hai xe máy màu đen do người đàn ông mặc áo trắng và áo xanh điều khiển.
+
+[4]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm gồm những gì?
+Câu trả lời: Một ô tô con (xe camera) và một xe máy màu đen do người đàn ông mặc áo trắng điều khiển và một xe máy màu đen do người đàn ông mặc áo xanh điều khiển
+
+[5]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm gồm những gì?
+Câu trả lời: Một ô tô con (xe camera), một xe máy màu đen do người đàn ông mặc áo trắng điều khiển, một người đàn ông áo xanh.
+
+[6]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm gồm những gì?
+Câu trả lời: Một ô tô con (xe camera), một xe máy màu đen do người đàn ông mặc áo trắng điều khiển, và một xe máy màu xám do người đàn ông mặc áo xanh điều khiển
+
+[7]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm gồm những gì?
+Câu trả lời: một xe máy màu đen do người đàn ông mặc áo trắng điều khiển và 1 người điều khiển xe 2 bánh mặc áo hoodie xanh lá đội mũ bảo hiểm màu sáng.
+
+[8]
+Câu hỏi: Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?
+Câu trả lời: Một chiếc ô tô con màu bạc (loại SUV) và một chiếc xe ba gác
+
+[9]
+Câu hỏi: Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?
+Câu trả lời: Một chiếc ô tô con màu bạc (loại SUV) và một chiếc xe ba gác máy.
+
+[10]
+Câu hỏi: Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?
+Câu trả lời: Một chiếc ô tô con màu bạc (loại SUV) và một chiếc xe máy thồ tự chế.
+
+[11]
+Câu hỏi: Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?
+Câu trả lời: Một chiếc ô tô con màu bạc (loại SUV) và một chiếc xe máy.
+
+[12]
+Câu hỏi: Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?
+Câu trả lời: Một chiếc ô tô con màu bạc và một chiếc xe máy ba bánh
+
+[13]
+Câu hỏi: Các phương tiện liên quan trực tiếp đến vụ va chạm gồm những loại nào và màu sắc gì?
+Câu trả lời: Một chiếc ô tô con màu trắng và một chiếc xe máy ba gác.
+
+[14]
+Câu hỏi: Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?
+Câu trả lời: Một chiếc xe ô tô gắn camera hành trình và một người đi xe máy.
+
+[15]
+Câu hỏi: Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?
+Câu trả lời: Một chiếc xe ô tô đang gắn camera hành trình và một người đi xe máy.
+
+[16]
+Câu hỏi: Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?
+Câu trả lời: Một chiếc ô tô do camera ghi hình và một người đi xe máy.
+
+[17]
+Câu hỏi: Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?
+Câu trả lời: Xe gắn camera và một người đi xe máy.
+
+[18]
+Câu hỏi: Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?
+Câu trả lời: Xe máy màu tối do người mặc quần trắng điều khiển và ô tô gắn camera
+
+[19]
+Câu hỏi: Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?
+Câu trả lời: Xe ô tô có gắn camera hành trình và một người đi xe máy mặc áo khoác màu đen.
+
+[20]
+Câu hỏi: Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?
+Câu trả lời: Xe ô tô gắn cam và một người đi xe máy.
+
+[21]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm là gì?
+Câu trả lời: Một xe tải lớn màu bạc và một người đi xe máy mặc áo xanh.
+
+[22]
+Câu hỏi: Các phương tiện chính liên quan đến vụ va chạm là gì?
+Câu trả lời: Một xe tải thùng kín và một người đi xe máy mặc áo xanh.
+
+[23]
+Câu hỏi: Các phương tiện chính xuất hiện trong tình huống này là gì?
+Câu trả lời: Một xe tải ben cabin màu xanh và một xe ô tô gắn camera
+
+[24]
+Câu hỏi: Các phương tiện chính xuất hiện trong tình huống này là gì?
+Câu trả lời: Một xe tải ben màu xanh (nhãn hiệu Howo) và một xe ô tô con màu đen đang dừng chờ đèn.
+
+[25]
+Câu hỏi: Các phương tiện chính xuất hiện trong tình huống này là gì?
+Câu trả lời: Một xe tải ben màu xanh (nhãn hiệu Howo) và một xe ô tô có camera.

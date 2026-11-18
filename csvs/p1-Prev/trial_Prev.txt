@@ -1,0 +1,31 @@
+CHẠY THỬ NHÓM Prev, model gemini-3.5-flash
+
+[1] Người đi xe máy nên quan sát kỹ và nhường đường cho xe đi thẳng; tài xế ô tô nên giảm tốc độ khi tới gần khu vực có vạch kẻ đường.
+Ô                             Mong muốn                   Model                       So    Bằng chứng mong muốn                         Bằng chứng model
+----------------------------  --------------------------  --------------------------  ----  -------------------------------------------  ---------------------------
+bên thứ nhất                  M:người đi xe máy           M:Người đi xe máy           khớp  Người đi xe máy                              Người đi xe máy
+hành động chính bên thứ nhất  M:quan sát và nhường đường  M:quan sát và nhường đường  khớp  quan sát kỹ và nhường đường cho xe đi thẳng  quan sát kỹ và nhường đường
+hành động thêm bên thứ nhất   T                           T                           khớp
+bên thứ hai                   M:tài xế ô tô               M:tài xế ô tô               khớp  tài xế ô tô                                  tài xế ô tô
+hành động chính bên thứ hai   M:giảm tốc                  M:giảm tốc                  khớp  giảm tốc độ                                  giảm tốc độ
+hành động thêm bên thứ hai    T                           T                           khớp
+Ngoài codebook, model: [{"đoạn": "cho xe đi thẳng", "loại": "nhóm khác: E"}, {"đoạn": "khi tới gần khu vực có vạch kẻ đường", "loại": "nhóm khác: S"}]
+Ngoài codebook, mong muốn: [{"đoạn": "khi tới gần khu vực có vạch kẻ đường", "loại": "nhóm khác: S"}]
+Ghi chú, model: None
+Lỗi kiểm tra: không có
+
+[2] Người lái xe tải nên giảm tốc độ và giữ khoảng cách an toàn khi thấy các phương tiện phía trước đang dừng.
+Ô                             Mong muốn                  Model                      So    Bằng chứng mong muốn     Bằng chứng model
+----------------------------  -------------------------  -------------------------  ----  -----------------------  -----------------------
+bên thứ nhất                  M:người lái xe tải         M:Người lái xe tải         khớp  Người lái xe tải         Người lái xe tải
+hành động chính bên thứ nhất  M:giảm tốc                 M:giảm tốc                 khớp  giảm tốc độ              giảm tốc độ
+hành động thêm bên thứ nhất   M:giữ khoảng cách an toàn  M:giữ khoảng cách an toàn  khớp  giữ khoảng cách an toàn  giữ khoảng cách an toàn
+bên thứ hai                   T                          T                          khớp
+hành động chính bên thứ hai   T                          T                          khớp
+hành động thêm bên thứ hai    T                          T                          khớp
+Ngoài codebook, model: [{"đoạn": "khi thấy các phương tiện phía trước đang dừng", "loại": "nhóm khác: S"}]
+Ngoài codebook, mong muốn: [{"đoạn": "khi thấy các phương tiện phía trước đang dừng", "loại": "nhóm khác: C"}]
+Ghi chú, model: None
+Lỗi kiểm tra: không có
+
+Token: {"promptTokenCount": 3012, "candidatesTokenCount": 898, "totalTokenCount": 4699, "promptTokensDetails": [{"modality": "TEXT", "tokenCount": 3012}], "thoughtsTokenCount": 789, "serviceTier": "standard"}

@@ -1,0 +1,31 @@
+CHẠY THỬ NHÓM R, model gemini-3.5-flash
+
+[1] cả 2 phương tiện vẫn tiếp tục di chuyển
+Ô                         Mong muốn                     Model                         So    Bằng chứng mong muốn    Bằng chứng model
+------------------------  ----------------------------  ----------------------------  ----  ----------------------  ---------------------------------------
+clip có đoạn sau sự kiện  M:có                          M:có                          khớp  vẫn tiếp tục di chuyển  cả 2 phương tiện vẫn tiếp tục di chuyển
+bên thứ nhất              M:cả 2 phương tiện            M:cả 2 phương tiện            khớp  cả 2 phương tiện        cả 2 phương tiện
+hành vi bên thứ nhất      M:tiếp tục di chuyển, rời đi  M:tiếp tục di chuyển, rời đi  khớp  vẫn tiếp tục di chuyển  vẫn tiếp tục di chuyển
+bên thứ hai               T                             T                             khớp
+hành vi bên thứ hai       T                             T                             khớp
+người, xe xung quanh      T                             T                             khớp
+Ngoài codebook, model: []
+Ngoài codebook, mong muốn: []
+Ghi chú, model: None
+Lỗi kiểm tra: không có
+
+[2] Những người xung quanh và nhân viên tiệm sửa xe nhanh chóng chạy ra hỗ trợ dựng xe và giúp đỡ người bị nạn.
+Ô                         Mong muốn                   Model                       So    Bằng chứng mong muốn                                                                                        Bằng chứng model
+------------------------  --------------------------  --------------------------  ----  ----------------------------------------------------------------------------------------------------------  -----------------------------------------------------------------------------------------------------------
+clip có đoạn sau sự kiện  M:có                        M:có                        khớp  nhanh chóng chạy ra hỗ trợ dựng xe                                                                          Những người xung quanh và nhân viên tiệm sửa xe nhanh chóng chạy ra hỗ trợ dựng xe và giúp đỡ người bị nạn.
+bên thứ nhất              T                           T                           khớp
+hành vi bên thứ nhất      T                           T                           khớp
+bên thứ hai               T                           T                           khớp
+hành vi bên thứ hai       T                           T                           khớp
+người, xe xung quanh      M:dừng lại hoặc đến hỗ trợ  M:dừng lại hoặc đến hỗ trợ  khớp  Những người xung quanh và nhân viên tiệm sửa xe nhanh chóng chạy ra hỗ trợ dựng xe và giúp đỡ người bị nạn  Những người xung quanh và nhân viên tiệm sửa xe nhanh chóng chạy ra hỗ trợ dựng xe và giúp đỡ người bị nạn.
+Ngoài codebook, model: []
+Ngoài codebook, mong muốn: []
+Ghi chú, model: Người bị nạn chỉ được nhắc đến như là đối tượng được nhận giúp đỡ, không kể hành vi nên không ghi vào bên thứ nhất hay bên thứ hai.
+Lỗi kiểm tra: không có
+
+Token: {"promptTokenCount": 2520, "candidatesTokenCount": 836, "totalTokenCount": 4541, "promptTokensDetails": [{"modality": "TEXT", "tokenCount": 2520}], "thoughtsTokenCount": 1185, "serviceTier": "standard"}

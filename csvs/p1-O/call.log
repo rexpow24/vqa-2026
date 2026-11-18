@@ -1,0 +1,88 @@
+O-001: xong, 0 câu lỗi
+O-002: xong, 0 câu lỗi
+O-003: xong, 0 câu lỗi
+O-004: xong, 0 câu lỗi
+O-005 lần 1: 7 câu không hợp lệ
+O-005 lần 2: 7 câu không hợp lệ
+O-005: xong, 7 câu lỗi
+O-006: xong, 0 câu lỗi
+O-007: xong, 0 câu lỗi
+O-008: xong, 0 câu lỗi
+O-009: xong, 0 câu lỗi
+O-010: xong, 0 câu lỗi
+O-011: xong, 0 câu lỗi
+O-012: xong, 0 câu lỗi
+O-013: xong, 0 câu lỗi
+O-014: xong, 0 câu lỗi
+O-015: xong, 0 câu lỗi
+O-016: xong, 0 câu lỗi
+O-017: xong, 0 câu lỗi
+O-018: xong, 0 câu lỗi
+O-019: xong, 0 câu lỗi
+O-020: xong, 0 câu lỗi
+O-021: xong, 0 câu lỗi
+O-022: xong, 0 câu lỗi
+O-023: xong, 0 câu lỗi
+O-024: xong, 0 câu lỗi
+O-025: xong, 0 câu lỗi
+O-026: xong, 0 câu lỗi
+O-027: xong, 0 câu lỗi
+O-028: xong, 0 câu lỗi
+O-029: xong, 0 câu lỗi
+O-030 lần 1: 7 câu không hợp lệ
+O-030: xong, 0 câu lỗi
+O-031: xong, 0 câu lỗi
+O-032: xong, 0 câu lỗi
+O-033: xong, 0 câu lỗi
+O-034: xong, 0 câu lỗi
+O-035: xong, 0 câu lỗi
+O-036: xong, 0 câu lỗi
+O-037 lần 1: 7 câu không hợp lệ
+O-037 lần 2: 7 câu không hợp lệ
+O-037: xong, 7 câu lỗi
+O-038: xong, 0 câu lỗi
+O-039 lần 1: 7 câu không hợp lệ
+O-039: xong, 0 câu lỗi
+O-040: xong, 0 câu lỗi
+O-041 lần 1: lỗi gọi API: HTTP 402: {
+  "error": {
+    "code": 402,
+    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",
+    "status": "RESOURCE_EXHAUSTED"
+  }
+}
+
+O-041: xong, 0 câu lỗi
+O-042 lần 1: lỗi gọi API: HTTP 402: {
+  "error": {
+    "code": 402,
+    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",
+    "status": "RESOURCE_EXHAUSTED"
+  }
+}
+
+O-042 lần 2: lỗi gọi API: HTTP 402: {
+  "error": {
+    "code": 402,
+    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",
+    "status": "RESOURCE_EXHAUSTED"
+  }
+}
+
+O-043 lần 1: lỗi gọi API: HTTP 402: {
+  "error": {
+    "code": 402,
+    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",
+    "status": "RESOURCE_EXHAUSTED"
+  }
+}
+
+O-043 lần 2: lỗi gọi API: HTTP 402: {
+  "error": {
+    "code": 402,
+    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",
+    "status": "RESOURCE_EXHAUSTED"
+  }
+}
+
+41/43 lô có output -> csvs\p1-O\outputs.jsonl

@@ -1,0 +1,934 @@
+BÁO CÁO ĐỘ PHỦ CODEBOOK, NHÓM V
+
+Câu trả lời khác nhau (đơn vị đếm): 271  | video: 60  | lượt viết của annotator: 409
+Map hợp lệ: 270  | lỗi, chưa tính: 1
+Độ phủ = M / n, n = M + K. Ô có n < 10: chưa đủ dữ liệu. Đạt khi độ phủ >= 80%.
+T chia hai: 'T thiếu chi tiết' (có nhắc nhưng không đủ để chọn) và 'T không nhắc'.
+
+1. ĐỘ PHỦ THEO Ô
+Ô            M    K   T    T thiếu chi tiết  T không nhắc  n = M + K  Độ phủ = M / n  Kết luận
+-----------  ---  --  ---  ----------------  ------------  ---------  --------------  --------
+kết quả      164  9   97   90                7             173        95%             đạt
+bên vi phạm  132  7   131  0                 131           139        95%             đạt
+hành vi      136  28  106  10                96            164        83%             đạt
+
+2. GIÁ TRỊ ĐƯỢC CHỌN (chỉ tính M)
+
+[kết quả]
+Giá trị              Số câu
+-------------------  ------
+có                   150
+không quan sát thấy  7
+không rõ             7
+
+[bên vi phạm]
+Giá trị                                                   Số câu
+--------------------------------------------------------  ------
+Xe máy                                                    17
+xe tải                                                    13
+Người đi xe máy                                           7
+Người điều khiển xe máy                                   4
+Xe tải ben                                                4
+Xe ô tô màu trắng                                         4
+Chủ vật nuôi                                              3
+Người đi xe đạp                                           3
+Xe ô tô con màu bạc                                       3
+người lái xe máy                                          2
+Xe bán tải                                                2
+Xe khách                                                  2
+Xe tải lớn màu xám đen                                    2
+Xe tải màu xanh                                           2
+Xe ô tô con                                               2
+Xe ô tô con màu trắng                                     2
+Xe ô tô trắng                                             2
+3 người trên xe máy                                       1
+bé gái                                                    1
+lái xe Ford Ranger                                        1
+Người lái xe ô tô màu nâu                                 1
+Người phụ nữ đi xe máy màu đen                            1
+Người phụ nữa áo đen lái xe máy màu trắng                 1
+Người đi xe máy do người đàn ông mắc áo trắng điều khiển  1
+Người đi xe máy màu trắng                                 1
+Người đi xe máy mặc áo trắng                              1
+Người điều khiển xe máy màu trắng                         1
+người điều khiển xe máy màu xám                           1
+Người điều khiển xe SUV đỏ                                1
+Người điều khiển xe taxi màu xanh                         1
+Tài xế xe taxi                                            1
+Tài xế xe tải màu xám                                     1
+Xe bán tải màu trắng                                      1
+Xe bảy chỗ màu trắng                                      1
+Xe bồn                                                    1
+Xe bồn chở nhiên liệu                                     1
+Xe con                                                    1
+Xe gắn camera                                             1
+Xe khách chiều                                            1
+Xe khách cạnh xe bồn                                      1
+Xe khách màu vàng                                         1
+Xe khách và xe bồn                                        1
+Xe màu bạc                                                1
+Xe máy do người mặc áo xanh                               1
+xe máy màu trắng                                          1
+Xe máy màu trắng do thanh niên                            1
+Xe máy màu tối                                            1
+Xe máy màu xám                                            1
+Xe máy màu đen do người áo trắng chở 2                    1
+Xe máy màu đen do người đàn ông mặc áo xám điều khiển     1
+xe máy trắng                                              1
+Xe SUV màu bạc                                            1
+Xe SUV màu gold                                           1
+Xe SUV màu nâu                                            1
+Xe taxi                                                   1
+Xe taxi xanh                                              1
+Xe tay ga màu bạc                                         1
+Xe tải ben màu xanh                                       1
+xe tải lớn                                                1
+Xe tải lớn màu trắng                                      1
+Xe tải lớn màu tối                                        1
+Xe tải màu vàng                                           1
+Xe tải màu xám                                            1
+Xe tải màu đen                                            1
+Xe tải thùng màu bạc                                      1
+Xe tải thùng màu trắng                                    1
+Xe tải to màu nâu                                         1
+Xe tải đen                                                1
+xe xám                                                    1
+Xe ô tô                                                   1
+Xe ô tô gắn camera hành trình                             1
+Xe ô tô màu đen                                           1
+xe ô tô SUV màu đỏ                                        1
+Xe ô tô xám                                               1
+ô tô đỏ                                                   1
+
+[hành vi]
+Giá trị                                  Số câu
+---------------------------------------  ------
+đi sai làn, lấn làn                      24
+đi ngược chiều                           21
+vượt đèn đỏ                              4
+không chấp hành biển báo, vạch kẻ đường  6
+không nhường đường                       27
+không giữ khoảng cách an toàn            28
+vượt xe sai quy định                     9
+chuyển hướng, quay đầu sai quy định      4
+lùi xe sai quy định                      0
+không đội mũ bảo hiểm                    13
+đi bộ dưới lòng đường                    0
+
+3. MỌI CỤM BỊ K (codebook thiếu lựa chọn)
+Ô            Cụm không khớp                                                                   Bằng chứng                                                                                          Video  Câu
+-----------  -------------------------------------------------------------------------------  --------------------------------------------------------------------------------------------------  -----  -----
+bên vi phạm  Người đi xe máy                                                                  Người đi xe máy                                                                                     #46    V0198
+bên vi phạm  Người đi xe máy                                                                  Người đi xe máy                                                                                     #46    V0199
+bên vi phạm  Người đi xe máy                                                                  Người đi xe máy                                                                                     #46    V0200
+bên vi phạm  Xe con                                                                           Xe con                                                                                              #44    V0187
+bên vi phạm  Xe máy                                                                           Xe máy                                                                                              #45    V0191
+bên vi phạm  cô bé áo hồng                                                                    cô bé áo hồng                                                                                       #40    V0166
+bên vi phạm  xe ô tô con màu trắng                                                            xe ô tô con màu trắng                                                                               #44    V0190
+hành vi      chuyền làn                                                                       chuyền làn                                                                                          #46    V0198
+hành vi      chuyển hướng đột ngột và không xin phép                                          chuyển hướng đột ngột và không xin phép                                                             #57    V0252
+hành vi      chuyển làn không si nhan                                                         chuyển làn không si nhan                                                                            #45    V0191
+hành vi      chuyển làn đường không đảm bảo an toàn                                           chuyển làn đường không đảm bảo an toàn                                                              #12    V0050
+hành vi      chuyển làn đường không đảm bảo an toàn                                           chuyển làn đường không đảm bảo an toàn                                                              #12    V0051
+hành vi      chuyển làn đường không đảm bảo an toàn                                           chuyển làn đường không đảm bảo an toàn                                                              #12    V0052
+hành vi      chuyển làn đường không đảm bảo an toàn                                           chuyển làn đường không đảm bảo an toàn                                                              #12    V0053
+hành vi      chở 2 người vượt lên trên đoạn đường hẹp                                         chở 2 người vượt lên trên đoạn đường hẹp                                                            #35    V0141
+hành vi      cố gắng tăng tốc vượt lên                                                        cố gắng tăng tốc vượt lên                                                                           #44    V0190
+hành vi      cố vượt chướng ngại vật không an toàn                                            cố vượt chướng ngại vật không an toàn                                                               #44    V0187
+hành vi      dừng giữa đường                                                                  dừng giữa đường                                                                                     #17    V0076
+hành vi      không dừng lại quan sát                                                          không dừng lại quan sát                                                                             #17    V0075
+hành vi      không xi nhan khi chuyển làn                                                     không xi nhan khi chuyển làn                                                                        #14    V0060
+hành vi      không đúng phần đường quy định                                                   không đúng phần đường quy định                                                                      #44    V0188
+hành vi      lao lên dải phân cách                                                            lao lên dải phân cách                                                                               #47    V0205
+hành vi      lạng lách                                                                        lạng lách                                                                                           #46    V0199
+hành vi      lạng lách                                                                        lạng lách                                                                                           #46    V0200
+hành vi      lạng lách                                                                        lạng lách                                                                                           #46    V0201
+hành vi      lạng lách, đi vào khoảng hẹp giữa các làn xe ô tô                                lạng lách, đi vào khoảng hẹp giữa các làn xe ô tô                                                   #46    V0202
+hành vi      phanh/dừng đột ngột không đảm bảo an toàn                                        phanh/dừng đột ngột không đảm bảo an toàn                                                           #14    V0057
+hành vi      sang đường sai quy định về giao thông                                            sang đường sai quy định về giao thông                                                               #40    V0166
+hành vi      sang đường đột ngột không đảm bảo an toàn                                        sang đường đột ngột không đảm bảo an toàn                                                           #14    V0062
+hành vi      tạt đầu                                                                          tạt đầu                                                                                             #3     V0011
+hành vi      đi vào khe giữa hai ô tô                                                         đi vào khe giữa hai ô tô                                                                            #55    V0244
+hành vi      để chó chạy rông, không có người dắt hoặc xích trên đường công cộng              để chó chạy rông, không có người dắt hoặc xích trên đường công cộng                                 #6     V0025
+hành vi      để chó chạy rông, không có người dắt hoặc xích trên đường công cộng              để chó chạy rông, không có người dắt hoặc xích trên đường công cộng                                 #6     V0026
+hành vi      để con chó màu đen chạy rông, không có người dắt hoặc xích trên đường công cộng  để con chó màu đen chạy rông, không có người dắt hoặc xích trên đường công cộng                     #6     V0027
+hành vi      đỗ xe dưới lòng đường hẹp gây cản trở giao thông                                 đỗ xe dưới lòng đường hẹp gây cản trở giao thông                                                    #55    V0247
+kết quả      chuyền làn                                                                       Người đi xe máy chuyền làn                                                                          #46    V0198
+kết quả      chuyển làn không si nhan                                                         Xe máy chuyển làn không si nhan                                                                     #45    V0191
+kết quả      chở 2 người vượt lên trên đoạn đường hẹp                                         chở 2 người vượt lên trên đoạn đường hẹp                                                            #35    V0141
+kết quả      cố gắng tăng tốc vượt lên                                                        cố gắng tăng tốc vượt lên                                                                           #44    V0190
+kết quả      cố vượt chướng ngại vật không an toàn                                            cố vượt chướng ngại vật không an toàn                                                               #44    V0187
+kết quả      dừng đột ngột giữa đường                                                         xe tải kéo đột ngột dừng giữa đường                                                                 #17    V0076
+kết quả      lạng lách                                                                        Người đi xe máy lạng lách                                                                           #46    V0199
+kết quả      lạng lách                                                                        Người đi xe máy lạng lách                                                                           #46    V0200
+kết quả      sang đường sai quy định về giao thông                                            cô bé áo hồng vi phạm giao thông đường bộ, xe máy giữa đường sang đường sai quy định về giao thông  #40    V0166
+
+4. MỌI T THIẾU CHI TIẾT
+Ô        Bằng chứng                                                                                                                Video  Câu
+-------  ------------------------------------------------------------------------------------------------------------------------  -----  -----
+hành vi  Vượt không đảm bảo khoảng cách                                                                                            #55    V0241
+hành vi  chuyển làn không an toàn                                                                                                  #46    V0203
+hành vi  cố tình vượt                                                                                                              #55    V0245
+hành vi  cố vượt khi không đảm bảo khoảng cách an toàn                                                                             #55    V0243
+hành vi  không chú ý quan sát                                                                                                      #50    V0216
+hành vi  không giảm tốc và quan sát                                                                                                #50    V0217
+hành vi  nhập làn                                                                                                                  #50    V0218
+hành vi  quay đầu xe                                                                                                               #52    V0223
+hành vi  thiếu quan sát khi qua giao lộ                                                                                            #52    V0225
+hành vi  để xe đi chệch khỏi làn đường                                                                                             #47    V0204
+kết quả  Chạy nhanh                                                                                                                #53    V0231
+kết quả  Chạy xe tốc độ cao                                                                                                        #11    V0044
+kết quả  Không giảm tốc                                                                                                            #24    V0096
+kết quả  Không giảm tốc độ và thiếu quan sát                                                                                       #18    V0077
+kết quả  Không làm chủ tay lái                                                                                                     #47    V0204
+kết quả  Không làm chủ tốc độ và thiếu quan sát                                                                                    #19    V0080
+kết quả  Không quan sát                                                                                                            #39    V0158
+kết quả  Không quan sát kỹ                                                                                                         #39    V0159
+kết quả  Không quan sát, giảm tốc độ                                                                                               #39    V0160
+kết quả  Người đi xe đạp dắt xe đạp đi qua đường không quan sát.                                                                   #8     V0034
+kết quả  Người đi xe đạp đi sang đường thiếu quan sát không đảm bảo an toàn.                                                       #8     V0036
+kết quả  Quay đầu xe thiếu quan sát và không đảm bảo an toàn                                                                       #58    V0258
+kết quả  Sang đường không quan sát                                                                                                 #48    V0207
+kết quả  Sang đường không quan sát và không có tín hiệu báo hướng rẽ                                                               #48    V0206
+kết quả  Thiếu quan sát và không giảm tốc độ                                                                                       #53    V0233
+kết quả  Thiếu quan sát và không giảm tốc độ đảm bảo an toàn                                                                       #23    V0094
+kết quả  Vượt không đảm bảo khoảng cách                                                                                            #55    V0241
+kết quả  Xe máy chạy nhanh                                                                                                         #11    V0046
+kết quả  Xe máy đi hơi nhanh bên phải xe tải lớn                                                                                   #7     V0031
+kết quả  Xe máy đi quá sát bên phải xe tải lớn                                                                                     #4     V0018
+kết quả  Xe máy đi quá sát bên phải xe tải lớn                                                                                     #7     V0032
+kết quả  Xe máy đi tốc độ cao                                                                                                      #11    V0048
+kết quả  Xe tải thiếu quan sát, không giảm tốc độ khi đi qua đoạn đường nhiều xe cộ và người đi xe đạp sang đường thiếu quan sát.  #8     V0037
+kết quả  Xe tải đi quá tốc độ                                                                                                      #8     V0038
+kết quả  chuyển hướng không đảm bảo an toàn và không có tín hiệu báo trước                                                         #36    V0148
+kết quả  chuyển làn không an toàn                                                                                                  #46    V0203
+kết quả  chuyển làn không đảm an toàn                                                                                              #28    V0120
+kết quả  chạy nhanh                                                                                                                #25    V0106
+kết quả  chạy quá tốc độ quy định                                                                                                  #5     V0019
+kết quả  chạy quá tốc độ quy định                                                                                                  #5     V0020
+kết quả  chạy quá tốc độ quy định                                                                                                  #5     V0021
+kết quả  chạy quá tốc độ quy định                                                                                                  #5     V0022
+kết quả  chạy vào làn đường thiếu quan sát                                                                                         #58    V0260
+kết quả  có ý định vượt nơi đường hẹp không đủ tầm nhìn an toàn                                                                    #35    V0142
+kết quả  cố vượt khi không đảm bảo khoảng cách an toàn                                                                             #55    V0243
+kết quả  không chú ý                                                                                                               #50    V0218
+kết quả  không chú ý quan sát                                                                                                      #44    V0189
+kết quả  không chú ý quan sát                                                                                                      #45    V0192
+kết quả  không chú ý quan sát                                                                                                      #50    V0216
+kết quả  không giảm tốc và quan sát                                                                                                #50    V0217
+kết quả  không giảm tốc độ và thiếu quan sát                                                                                       #18    V0078
+kết quả  không giữ khoảng cách với các phương tiện đi trước                                                                        #58    V0259
+kết quả  không kiêm soát được tốc độ                                                                                               #25    V0105
+kết quả  không làm chủ tốc độ                                                                                                      #10    V0042
+kết quả  không làm chủ tốc độ và hướng lái                                                                                         #10    V0043
+kết quả  không làm chủ được tốc độ                                                                                                 #21    V0085
+kết quả  không làm chủ được tốc độ và không xử lý được phương tiện giao thông                                                      #18    V0079
+kết quả  không làm chủ được tốc độ và tay lái                                                                                      #34    V0138
+kết quả  không làm chủ được tốc độ và tay lái                                                                                      #34    V0139
+kết quả  không làm chủ được tốc độ và tay lái                                                                                      #34    V0140
+kết quả  không nhìn đường và chạy nhanh                                                                                            #40    V0165
+kết quả  không quan sát                                                                                                            #21    V0086
+kết quả  không quan sát                                                                                                            #27    V0115
+kết quả  không quan sát                                                                                                            #28    V0122
+kết quả  không quan sát                                                                                                            #35    V0147
+kết quả  không quan sát                                                                                                            #42    V0176
+kết quả  không quan sát hay giảm tốc                                                                                               #39    V0162
+kết quả  không quan sát khi đi cắt ngang đường                                                                                     #52    V0224
+kết quả  không quan sát kĩ                                                                                                         #45    V0197
+kết quả  không quan sát kỹ                                                                                                         #15    V0069
+kết quả  không quan sát kỹ khi cố tình vượt                                                                                        #55    V0245
+kết quả  không quan sát trước khi quay đầu xe                                                                                      #52    V0223
+kết quả  không quan sát trước khi tăng tốc                                                                                         #25    V0108
+kết quả  không quan sát xung quanh trước khi di chuyển                                                                             #52    V0228
+kết quả  không đảm bảo an toàn                                                                                                     #28    V0123
+kết quả  không đảm bảo an toàn                                                                                                     #46    V0202
+kết quả  không đảm bảo tốc độ an toàn                                                                                              #36    V0150
+kết quả  nhập làn đường chính thiếu quan sát                                                                                       #58    V0256
+kết quả  quay đầu xe thiếu quan sát                                                                                                #57    V0254
+kết quả  thiếu quan sát                                                                                                            #37    V0151
+kết quả  thiếu quan sát                                                                                                            #40    V0164
+kết quả  thiếu quan sát                                                                                                            #45    V0195
+kết quả  thiếu quan sát                                                                                                            #45    V0196
+kết quả  thiếu quan sát các phương tiện xung quanh                                                                                 #57    V0250
+kết quả  thiếu quan sát các phương tiện xung quanh                                                                                 #57    V0251
+kết quả  thiếu quan sát các phương tiện xung quanh                                                                                 #57    V0253
+kết quả  thiếu quan sát khi chuyển làn hoặc mới chuyển hướng                                                                       #50    V0214
+kết quả  thiếu quan sát khi qua giao lộ                                                                                            #52    V0225
+kết quả  thiếu quan sát khi qua giao lộ                                                                                            #52    V0226
+kết quả  thiếu quan sát và không giảm tốc độ                                                                                       #53    V0234
+kết quả  thiếu quan sát và không làm chủ tốc độ                                                                                    #24    V0101
+kết quả  thiếu quan sát và người đi xe đi quá nhanh                                                                                #58    V0261
+kết quả  vi phạm tốc độ                                                                                                            #40    V0167
+kết quả  vượt phương tiện nhưng không đảm bảo an toàn                                                                              #35    V0143
+kết quả  vượt đường hẹp, không quan sát                                                                                            #35    V0144
+kết quả  vượt, không đảm bảo an toàn                                                                                               #59    V0264
+kết quả  Đi ra đường thiếu quan sát và không đảm bảo an toàn                                                                       #58    V0262
+kết quả  đi nhanh không đảm bảo an toàn                                                                                            #46    V0201
+kết quả  đi quá tốc độ cho phép                                                                                                    #58    V0257
+kết quả  đi vào khe giữa hai ô tô không an toàn                                                                                    #55    V0244
+
+5. NGOÀI CODEBOOK (gộp theo loại và đoạn)
+Loại             Đoạn                                                                                                      Số câu  Video
+---------------  --------------------------------------------------------------------------------------------------------  ------  -------------------------------------------------------
+khác             vượt ẩu                                                                                                   7       #33 #43
+khác             sang đường không đảm bảo an toàn                                                                          6       #20 #22 #26 #41
+khác             lấn làn đường                                                                                             4       #49
+khác             có,                                                                                                       3       #42 #43 #44
+khác             khi sang đường                                                                                            3       #38 #39 #45
+khác             lấn làn                                                                                                   3       #27 #33 #46
+khác             qua đường                                                                                                 3       #40 #42 #45
+khác             sang đường                                                                                                3       #39 #45
+khác             vi phạm lỗi                                                                                               3       #5 #51
+khác             khi qua đường                                                                                             2       #39 #45
+khác             quay đầu xe                                                                                               2       #57 #58
+khác             đã đi sai làn đường, lấn sang phần đường của phương tiện khác                                             2       #38
+khác             đỗ xe dưới lòng đường hẹp                                                                                 2       #55
+khác             băng qua đường                                                                                            1       #38
+khác             chuyển hướng                                                                                              1       #28
+khác             chuyển hướng không đảm bảo an toàn                                                                        1       #36
+khác             chuyển làn không xi nhan                                                                                  1       #27
+khác             chuyển làn không đảm an toàn                                                                              1       #28
+khác             chuyển làn và rẽ phải                                                                                     1       #28
+khác             chuyển đường đầu xe                                                                                       1       #58
+khác             chạy vào làn đường                                                                                        1       #58
+khác             chở 2 người                                                                                               1       #35
+khác             có                                                                                                        1       #50
+khác             di chuyển băng qua đường                                                                                  1       #35
+khác             giũa đường                                                                                                1       #40
+khác             hoặc mới chuyển hướng                                                                                     1       #50
+khác             khi chuyển hướng qua đường                                                                                1       #40
+khác             khi chuyển làn                                                                                            1       #50
+khác             khi nhập làn                                                                                              1       #60
+khác             khi vượt trên đường                                                                                       1       #15
+khác             khi xuống đường                                                                                           1       #39
+khác             không có tín hiệu báo trước                                                                               1       #36
+khác             không giữ khoảng cách an toàn với phương tiện đang dừng                                                   1       #43
+khác             không giữ khoảng cách an toàn với phương tiện đang lưu thông phía trước                                   1       #43
+khác             không giữ khoảng cách với các phương tiện đi trước                                                        1       #58
+khác             không nhường đường                                                                                        1       #44
+khác             không nhường đường cho phương tiện đi ngược chiều đang đi thẳng                                           1       #24
+khác             không xi nhan                                                                                             1       #16
+khác             không đội mũ                                                                                              1       #24
+khác             nhập làn đường chính                                                                                      1       #58
+khác             sang đường không đảm bảo an toànnh.                                                                       1       #20
+khác             sang đường đột ngột, không đảm bảo an toàn                                                                1       #20
+khác             trước khi di chuyển                                                                                       1       #52
+khác             tạt đuôi xe khác                                                                                          1       #28
+khác             tạt đầu xe khác                                                                                           1       #28
+khác             vi phạm giao thông đường bộ                                                                               1       #40
+khác             và tác động vật lí người khác                                                                             1       #1
+khác             vượt                                                                                                      1       #59
+khác             vượt nơi đường hẹp không đủ tầm nhìn an toàn                                                              1       #35
+khác             vượt phương tiện nhưng không đảm bảo an toàn                                                              1       #35
+khác             vượt đèn đỏ                                                                                               1       #43
+khác             vượt đường hẹp                                                                                            1       #35
+khác             đi                                                                                                        1       #42
+khác             đi ra đường                                                                                               1       #58
+khác             đi vào khe hẹp giữa hai xe                                                                                1       #27
+khác             đánh lái                                                                                                  1       #27
+khác             đè vạch kẻ vàng đôi phân cách                                                                             1       #29
+kết luận lỗi     thiếu quan sát                                                                                            26      #18 #19 #20 #23 #24 #35 #37 #40 #45 #50 #52 #53 #57 #58
+kết luận lỗi     không quan sát                                                                                            16      #21 #25 #26 #27 #28 #35 #38 #39 #42 #46 #52
+kết luận lỗi     chạy nhanh                                                                                                6       #17 #24 #25 #31 #40 #53
+kết luận lỗi     không đảm bảo an toàn                                                                                     6       #28 #46 #58 #59
+kết luận lỗi     không chú ý quan sát                                                                                      5       #25 #27 #44 #45 #50
+kết luận lỗi     không giảm tốc độ                                                                                         5       #18 #53
+kết luận lỗi     không làm chủ được tốc độ và tay lái                                                                      4       #34 #59
+kết luận lỗi     không quan sát kỹ                                                                                         4       #15 #26 #39 #55
+kết luận lỗi     không làm chủ tốc độ                                                                                      3       #10 #19 #24
+kết luận lỗi     thiếu quan sát các phương tiện xung quanh                                                                 3       #57
+kết luận lỗi     vi phạm lỗi chạy quá tốc độ quy định                                                                      3       #5
+kết luận lỗi     và chuyển hướng thiếu quan sát                                                                            3       #1
+kết luận lỗi     chuyển hướng thiếu quan sát                                                                               2       #1 #57
+kết luận lỗi     không an toàn                                                                                             2       #46 #55
+kết luận lỗi     không giảm tốc độ đảm bảo an toàn                                                                         2       #23
+kết luận lỗi     không làm chủ được tốc độ                                                                                 2       #18 #21
+kết luận lỗi     không quan sát kĩ                                                                                         2       #15 #45
+kết luận lỗi     sang đường không quan sát                                                                                 2       #48
+kết luận lỗi     thiếu quan sát và                                                                                         2       #3
+kết luận lỗi     tốc độ cao                                                                                                2       #40 #59
+kết luận lỗi     băng qua đường không quan sát                                                                             1       #24
+kết luận lỗi     chạy xe tốc độ cao                                                                                        1       #11
+kết luận lỗi     giảm tốc                                                                                                  1       #39
+kết luận lỗi     giảm tốc độ                                                                                               1       #39
+kết luận lỗi     không chú ý                                                                                               1       #50
+kết luận lỗi     không giảm tốc                                                                                            1       #50
+kết luận lỗi     không giảm tốc khi đi qua giao lộ                                                                         1       #24
+kết luận lỗi     không giữ tốc độ                                                                                          1       #17
+kết luận lỗi     không giữ tốc độ trong khu đô thị                                                                         1       #25
+kết luận lỗi     không kiêm soát được tốc độ                                                                               1       #25
+kết luận lỗi     không làm chủ tay lái                                                                                     1       #47
+kết luận lỗi     không làm chủ tốc độ và hướng lái                                                                         1       #10
+kết luận lỗi     không nhìn đường                                                                                          1       #40
+kết luận lỗi     không quan sát khi chuyển hướng khi qua ngã tư                                                            1       #53
+kết luận lỗi     không quan sát xung quanh                                                                                 1       #52
+kết luận lỗi     không quan sát.                                                                                           1       #8
+kết luận lỗi     không thắng kịp thời                                                                                      1       #31
+kết luận lỗi     không xử lý được phương tiện giao thông                                                                   1       #18
+kết luận lỗi     không đảm bảo khoảng cách                                                                                 1       #55
+kết luận lỗi     không đảm bảo khoảng cách an toàn                                                                         1       #55
+kết luận lỗi     không đảm bảo tốc độ an toàn                                                                              1       #36
+kết luận lỗi     quan sát                                                                                                  1       #50
+kết luận lỗi     sang đường không nhìn đường                                                                               1       #22
+kết luận lỗi     sang đường thiếu quan sát                                                                                 1       #50
+kết luận lỗi     thiếu quan sát không đảm bảo an toàn.                                                                     1       #8
+kết luận lỗi     thiếu quan sát, không giảm tốc độ                                                                         1       #8
+kết luận lỗi     thiếu quan sát.                                                                                           1       #8
+kết luận lỗi     trước khi tăng tốc                                                                                        1       #25
+kết luận lỗi     vi phạm chạy quá tốc độ quy định                                                                          1       #5
+kết luận lỗi     vi phạm khi đi quá tốc độ                                                                                 1       #40
+kết luận lỗi     vi phạm tốc độ                                                                                            1       #40
+kết luận lỗi     và chạy quá tốc độ quy định                                                                               1       #5
+kết luận lỗi     và không quan sát kỹ phương tiện đang đi tới.                                                             1       #8
+kết luận lỗi     và phóng nhanh                                                                                            1       #1
+kết luận lỗi     xe máy chạy nhanh                                                                                         1       #11
+kết luận lỗi     xe máy đi hơi nhanh bên phải xe tải lớn                                                                   1       #7
+kết luận lỗi     xe máy đi tốc độ cao                                                                                      1       #11
+kết luận lỗi     xe tải đi quá tốc độ                                                                                      1       #8
+kết luận lỗi     đi nhanh                                                                                                  1       #59
+kết luận lỗi     đi nhanh không kiểm soát được tốc độ                                                                      1       #13
+kết luận lỗi     đi nhanh không đảm bảo an toàn                                                                            1       #46
+kết luận lỗi     đi quá nhanh qua giao lộ                                                                                  1       #58
+kết luận lỗi     đi quá tốc độ cho phép                                                                                    1       #58
+kết luận lỗi     đã không giảm tốc độ                                                                                      1       #38
+nhóm khác: Attr  không đảm bảo khoảng cách an toàn                                                                         1       #15
+nhóm khác: C     khi bắt đầu khởi hành từ vị trí dừng đèn đỏ                                                               2       #57
+nhóm khác: C     cho phương tiện đang đi trên đường ưu tiên                                                                1       #56
+nhóm khác: C     cho phương tiện đang đi trên đường ưu tiên hoặc đường chính khi băng qua đường                            1       #16
+nhóm khác: C     cho phương tiện đã vào trong ngã tư trước                                                                 1       #17
+nhóm khác: C     dẫn đến va chạm với xe xanh                                                                               1       #21
+nhóm khác: C     khi đi từ đường không ưu tiên ra đường ưu tiên                                                            1       #31
+nhóm khác: C     khi đã có tín hiệu xin chuyển làn                                                                         1       #51
+nhóm khác: C     khi đường trơn trượt                                                                                      1       #8
+nhóm khác: C     với xe chạy liền trước                                                                                    1       #60
+nhóm khác: E     xe máy                                                                                                    15      #24 #35 #39 #45 #50 #55
+nhóm khác: E     người đi xe máy                                                                                           6       #34 #36 #46 #50
+nhóm khác: E     xe tải ben                                                                                                3       #28 #52 #59
+nhóm khác: E     ô tô trắng                                                                                                3       #55
+nhóm khác: E     người phụ nữ                                                                                              2       #58
+nhóm khác: E     người điều khiển xe máy                                                                                   2       #46 #50
+nhóm khác: E     người điều khiển xe máy màu trắng                                                                         2       #40
+nhóm khác: E     xe máy điện                                                                                               2       #18
+nhóm khác: E     xe tải ben màu đỏ                                                                                         2       #28
+nhóm khác: E     xe tải màu xám                                                                                            2       #10
+nhóm khác: E     xe ô tô màu trắng                                                                                         2       #21 #52
+nhóm khác: E     xe ô tô trắng                                                                                             2       #27 #36
+nhóm khác: E     bé gái                                                                                                    1       #40
+nhóm khác: E     em học sinh mặc áo vàng                                                                                   1       #40
+nhóm khác: E     người lái xe                                                                                              1       #37
+nhóm khác: E     người lái xe máy màu hồng                                                                                 1       #37
+nhóm khác: E     người lái xe máy màu tối                                                                                  1       #50
+nhóm khác: E     người lái xe ô tô con màu bạc                                                                             1       #57
+nhóm khác: E     người lái xe ô tô màu xám                                                                                 1       #57
+nhóm khác: E     người lái xe ô tô suv                                                                                     1       #57
+nhóm khác: E     người áo cam                                                                                              1       #58
+nhóm khác: E     người đi xe                                                                                               1       #58
+nhóm khác: E     người đi xe máy màu xám                                                                                   1       #42
+nhóm khác: E     người đi xe máy màu đỏ                                                                                    1       #34
+nhóm khác: E     người đi xe tair                                                                                          1       #52
+nhóm khác: E     người đi xe tải                                                                                           1       #52
+nhóm khác: E     người đi xe ô tô con trắng                                                                                1       #52
+nhóm khác: E     người đi xe đạp dắt xe đạp đi qua đường                                                                   1       #8
+nhóm khác: E     người đi ô tô                                                                                             1       #25
+nhóm khác: E     người đi ô tô trắng                                                                                       1       #52
+nhóm khác: E     người điều khiển xe ô tô màu nâu                                                                          1       #57
+nhóm khác: E     tài xế xe con                                                                                             1       #59
+nhóm khác: E     tài xế điều khiển xe ô tô con màu trắng                                                                   1       #27
+nhóm khác: E     từ các bên liên quan                                                                                      1       #42
+nhóm khác: E     và người đi xe đạp sang đường                                                                             1       #8
+nhóm khác: E     xe bồn chở nhiên liệu màu trắng                                                                           1       #44
+nhóm khác: E     xe máy giữa đường                                                                                         1       #40
+nhóm khác: E     xe máy màu tối                                                                                            1       #53
+nhóm khác: E     xe máy màu đỏ                                                                                             1       #55
+nhóm khác: E     xe máy trắng                                                                                              1       #35
+nhóm khác: E     xe taxi                                                                                                   1       #25
+nhóm khác: E     xe taxi màu xanh                                                                                          1       #25
+nhóm khác: E     xe trắng                                                                                                  1       #21
+nhóm khác: E     xe tải                                                                                                    1       #8
+nhóm khác: E     xe tải thùng xám                                                                                          1       #52
+nhóm khác: E     xe ô tô                                                                                                   1       #47
+nhóm khác: E     xe đi thẳng                                                                                               1       #58
+nhóm khác: O     gây tai nạn                                                                                               1       #25
+nhóm khác: O     va chạm phương tiện khác                                                                                  1       #43
+nhóm khác: O     va chạm vào dải phân cách                                                                                 1       #47
+nhóm khác: S     khi đi qua nơi giao nhau                                                                                  5       #3 #53
+nhóm khác: S     trên đường lưu thông                                                                                      5       #14
+nhóm khác: S     khi qua giao lộ                                                                                           4       #5 #39 #52
+nhóm khác: S     khi đi qua nơi đường giao nhau                                                                            4       #18 #23
+nhóm khác: S     tại đoạn đường cong có vạch kẻ liền                                                                       4       #49
+nhóm khác: S     cho xe đang đi trên đường chính                                                                           3       #26
+nhóm khác: S     khi tham gia giao thông                                                                                   3       #6 #7 #44
+nhóm khác: S     trong điều kiện đường trơn trượt                                                                          3       #58
+nhóm khác: S     ở nơi có tầm nhìn bị hạn chế                                                                              3       #33
+nhóm khác: S     cho xe đi thẳng                                                                                           2       #41 #45
+nhóm khác: S     khi thực hiện chuyển hướng                                                                                2       #21
+nhóm khác: S     khi đi qua khu vực có xe đang dừng.                                                                       2       #10
+nhóm khác: S     khi đi vào khu vực giao lộ                                                                                2       #34
+nhóm khác: S     rơi vào điểm mù nguy hiểm.                                                                                2       #7
+nhóm khác: S     trong khu dân cư                                                                                          2       #18
+nhóm khác: S     tại nơi giao nhau.                                                                                        2       #11
+nhóm khác: S     băng qua giao lộ                                                                                          1       #17
+nhóm khác: S     cho xe đi ngược chiều khi rẽ trái                                                                         1       #2
+nhóm khác: S     giữa các xe đang lưu thông                                                                                1       #30
+nhóm khác: S     giữa khúc cua                                                                                             1       #59
+nhóm khác: S     giữa làn đường                                                                                            1       #42
+nhóm khác: S     khi bắt đầu khởi hành từ vị trí dừng đèn đỏ                                                               1       #57
+nhóm khác: S     khi chuyển hướng                                                                                          1       #15
+nhóm khác: S     khi di chuyển gần xe đạp                                                                                  1       #25
+nhóm khác: S     khi di chuyển trong ngõ hẹp                                                                               1       #19
+nhóm khác: S     khi nhập làn/chuyển hướng                                                                                 1       #29
+nhóm khác: S     khi qua giao lộ và góc khuất                                                                              1       #53
+nhóm khác: S     khi qua khúc cua.                                                                                         1       #11
+nhóm khác: S     khi qua ngã tư                                                                                            1       #17
+nhóm khác: S     khi rẽ trái                                                                                               1       #21
+nhóm khác: S     khi rẽ trái tại khu vực ngã ba không có đèn tín hiệu giao thông                                           1       #15
+nhóm khác: S     khi rẽ ở ngã tư                                                                                           1       #50
+nhóm khác: S     khi thấy xe ô tô đỏ đi chậm sang đường                                                                    1       #15
+nhóm khác: S     khi thực hiện rẽ trái tại nơi giao nhau                                                                   1       #24
+nhóm khác: S     khi vượt                                                                                                  1       #4
+nhóm khác: S     khi đi cắt ngang đường                                                                                    1       #52
+nhóm khác: S     khi đi giữa hai xe ô tô                                                                                   1       #15
+nhóm khác: S     khi đi qua giao lộ                                                                                        1       #11
+nhóm khác: S     khi đi qua đoạn đường nhiều xe cộ                                                                         1       #8
+nhóm khác: S     khi đi trong khu dân cư                                                                                   1       #40
+nhóm khác: S     khi đi vào khu vực ngã rẽ                                                                                 1       #34
+nhóm khác: S     người đi xe đạp đi sang đường                                                                             1       #8
+nhóm khác: S     phương tiện đang dừng đỗ                                                                                  1       #37
+nhóm khác: S     qua đường                                                                                                 1       #1
+nhóm khác: S     trong khu vực giao thông đang ùn tắc                                                                      1       #27
+nhóm khác: S     trong không gian hẹp                                                                                      1       #4
+nhóm khác: S     trong tầm nhìn hạn chế                                                                                    1       #45
+nhóm khác: S     trong điều kiện đường trơn                                                                                1       #59
+nhóm khác: S     trong điểm mù của xe tải                                                                                  1       #4
+nhóm khác: S     tại giao lộ                                                                                               1       #5
+nhóm khác: S     tại nơi đường giao nhau                                                                                   1       #32
+nhóm khác: S     tại đoạn đường cong                                                                                       1       #49
+nhóm khác: S     vào giao lộ                                                                                               1       #24
+nhóm khác: S     với các xe phía trước                                                                                     1       #33
+nhóm khác: S     với các xe đang lưu thông trên đường                                                                      1       #27
+nhóm khác: S     với người đứng trên đường                                                                                 1       #27
+nhóm khác: S     với phương tiện khác                                                                                      1       #39
+nhóm khác: S     với phương tiện đang dừng đỗ                                                                              1       #37
+nhóm khác: S     với phương tiện đang lưu thông phía trước                                                                 1       #43
+nhóm khác: S     với xe con màu bạc làn bên phải                                                                           1       #28
+nhóm khác: S     với xe ngược chiều                                                                                        1       #35
+nhóm khác: S     với xe đạp                                                                                                1       #25
+nhóm khác: S     xe máy đi quá sát bên phải xe tải lớn tại khu vực hẹp, rơi vào điểm mù nguy hiểm                          1       #4
+nhóm khác: S     xe máy đi quá sát bên phải xe tải lớn tại khu vực hẹp, rơi vào điểm mù nguy hiểm.                         1       #7
+nhóm khác: S     đi vào phần đường hẹp                                                                                     1       #35
+nhóm khác: S     ở nơi đoạn đường hẹp                                                                                      1       #33
+nhóm khác: V     ngược chiều trái phép để vượt                                                                             5       #54
+nhóm khác: V     không đảm bảo khoảng cách an toàn                                                                         4       #4
+nhóm khác: V     và nhường đường                                                                                           3       #7 #42 #44
+nhóm khác: V     vượt                                                                                                      3       #55
+nhóm khác: V     gây cản trở giao thông                                                                                    2       #55
+nhóm khác: V     ngược chiều                                                                                               2       #59
+nhóm khác: V     sang đường không đảm bảo an toàn                                                                          2       #56
+nhóm khác: V     với xe chạy liền trước                                                                                    2       #51
+nhóm khác: V     , không xi nhan                                                                                           1       #1
+nhóm khác: V     cho xe đang đi thẳng                                                                                      1       #55
+nhóm khác: V     chở quá người qui định                                                                                    1       #53
+nhóm khác: V     chủ vật nuôi vi phạm quy định khi để chó chạy rông, không có người dắt hoặc xích trên đường công cộng và  1       #6
+nhóm khác: V     không có tín hiệu báo hướng rẽ                                                                            1       #48
+nhóm khác: V     không giữ khoảng cách an toàn                                                                             1       #44
+nhóm khác: V     không giữa khoảng cách an toàn với phương tiện khác                                                       1       #44
+nhóm khác: V     không xi nhan                                                                                             1       #42
+nhóm khác: V     lấn làn                                                                                                   1       #59
+nhóm khác: V     người điều khiền xe máy mặc áo caro không đội mũ bảo hiểm                                                 1       #6
+nhóm khác: V     nhường đường cho phương tiện khác                                                                         1       #38
+nhóm khác: V     rẽ trái                                                                                                   1       #11
+nhóm khác: V     tăng tốc để vượt lên                                                                                      1       #59
+nhóm khác: V     tạt đầu xe tải                                                                                            1       #4
+nhóm khác: V     và chuyển làn không đảm bảo an toàn.                                                                      1       #9
+nhóm khác: V     và nhường đường cho xe đi thẳng                                                                           1       #45
+ý định           cố                                                                                                        2       #44 #55
+ý định           có ý định                                                                                                 1       #35
+ý định           cố gắng                                                                                                   1       #44
+ý định           cố tình                                                                                                   1       #55
+
+6. GHI CHÚ CỦA MODEL
+Video  Câu    Ghi chú
+-----  -----  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#7     V0031  Câu chỉ nêu tốc độ và trạng thái (đi hơi nhanh), không nêu hành vi vi phạm nhìn thấy được trong codebook, nên kết quả là T kèm bằng chứng.
+#8     V0034  Câu chỉ nêu trạng thái người lái (không quan sát) và bối cảnh, không có hành vi vi phạm thuộc codebook.
+#8     V0036  Câu chỉ nêu trạng thái người lái (thiếu quan sát) và bối cảnh (đi sang đường), không có hành vi vi phạm nào trong codebook.
+#8     V0037  Câu chỉ nêu kết luận lỗi và trạng thái người lái, không có hành vi vi phạm thuộc codebook.
+#8     V0038  Câu chỉ nêu tốc độ/kết luận lỗi, không có hành vi vi phạm thuộc codebook.
+#10    V0042  Câu chỉ nêu kết luận lỗi, không có hành vi vi phạm thuộc codebook.
+#10    V0043  Câu chỉ nêu kết luận lỗi, không có hành vi vi phạm thuộc codebook.
+#11    V0044  Câu chỉ nêu tốc độ, không có hành vi vi phạm thuộc codebook.
+#11    V0046  Câu chỉ nêu tốc độ, không có hành vi vi phạm thuộc codebook.
+#11    V0048  Câu chỉ nêu tốc độ, không có hành vi vi phạm thuộc codebook.
+#14    V0062  Cụm 'sang đường' được hiểu theo nghĩa đen là di chuyển sang đường, không đủ căn cứ xác định là rẽ hoặc chuyển hướng sai quy định.
+#15    V0069  Câu chỉ kết luận người lái không quan sát kỹ khi chuyển hướng, không khẳng định thao tác chuyển hướng sai quy định.
+#16    V0071  Câu nêu hai hành vi; không xi nhan không có lựa chọn tương ứng nên ghi ngoài codebook, lấn làn là hành vi đầu tiên khớp lựa chọn.
+#17    V0075  Cụm 'không dừng lại quan sát' được hiểu là hành động không dừng lại để quan sát, không có lựa chọn tương ứng trong codebook nhóm V.
+#18    V0077  Câu chỉ nêu trạng thái người lái và tốc độ, không nêu hành vi vi phạm thuộc codebook.
+#18    V0078  Không giảm tốc độ và thiếu quan sát là kết luận lỗi, không phải hành vi thuộc danh sách codebook.
+#18    V0079  Câu chỉ nêu trạng thái và khả năng xử lý của người điều khiển, không nêu hành vi vi phạm cụ thể.
+#19    V0080  Câu chỉ nêu kết luận lỗi và trạng thái người lái, không nêu hành vi vi phạm thuộc codebook.
+#21    V0086  Câu chỉ nói người lái không quan sát khi rẽ trái, không khẳng định hành vi chuyển hướng sai quy định.
+#23    V0094  Câu chỉ nêu trạng thái người lái và tốc độ, không nêu hành vi vi phạm thuộc codebook.
+#24    V0096  Câu chỉ nêu việc không giảm tốc, không nêu hành vi vi phạm cụ thể thuộc codebook.
+#24    V0101  Câu chỉ nêu trạng thái người lái và tốc độ. Cụm 'giữ khoảng cách an toàn' không có từ phủ định nên không thể xem là hành vi vi phạm.
+#25    V0105  Câu chỉ nêu kết luận về khả năng kiểm soát tốc độ, không nêu hành vi vi phạm thuộc codebook.
+#25    V0106  Câu chỉ nêu tốc độ và kết quả tai nạn, không nêu hành vi vi phạm khớp với lựa chọn trong codebook.
+#25    V0108  Câu chỉ nêu trạng thái quan sát và thao tác tăng tốc, không nêu hành vi vi phạm thuộc codebook.
+#26    V0109  Cụm 'Sang đường không đảm bảo an toàn' không phải lựa chọn hành vi cụ thể trong codebook; hành vi khớp rõ ràng là 'không nhường đường'.
+#27    V0115  Cụm 'đánh lái' không nêu rõ chuyển hướng hoặc quay đầu sai quy định; 'không quan sát' là kết luận về trạng thái người lái.
+#27    V0117  Câu nêu hai phương tiện và hai hành động. Hành vi khớp codebook là 'không giữ khoảng cách an toàn', do lái xe Ford Ranger thực hiện.
+#28    V0119  Cụm 'chuyển hướng không đảm bảo an toàn' được hiểu theo nghĩa gần nhất với hành vi chuyển hướng sai quy định trong codebook.
+#28    V0120  Câu nêu việc chuyển làn không đảm bảo an toàn nhưng không nói rõ đi sai làn hoặc lấn làn; do đó chưa đủ chi tiết để chọn hành vi trong codebook.
+#28    V0122  Câu chỉ nêu thao tác chuyển hướng kèm trạng thái không quan sát; không khẳng định chuyển hướng sai quy định.
+#28    V0123  Cụm 'tạt đuôi xe khác' mô tả một thao tác nhưng không khớp lựa chọn hành vi nào trong codebook; câu không nêu hành vi vi phạm thuộc danh sách.
+#29    V0124  Hành vi 'không nhường đường' xuất hiện trước và được chọn. Hành vi đè vạch kẻ đường là hành vi khớp codebook thứ hai nên được đưa vào ngoài codebook theo quy tắc chọn hành vi đầu tiên.
+#33    V0135  Câu nêu nhiều hành vi; chọn hành vi đầu tiên khớp codebook là đè vạch kẻ liền.
+#34    V0138  Câu chỉ nêu kết luận về tốc độ và khả năng điều khiển, không nêu hành vi vi phạm khớp codebook.
+#35    V0141  Cụm 'vượt lên trên đoạn đường hẹp' mô tả hành động vượt nhưng không nói rõ vượt xe sai quy định; chọn K theo cách hiểu đây là hành động vượt được nêu rõ nhưng không khớp lựa chọn cụ thể.
+#35    V0142  Câu chỉ nêu ý định vượt, không khẳng định hành vi vượt đã xảy ra.
+#35    V0143  Câu nêu hành động vượt nhưng không khẳng định vượt sai quy định; cụm 'không đảm bảo an toàn' chưa đủ để chọn hành vi vượt xe sai quy định.
+#35    V0144  Câu nêu hành động vượt nhưng không khẳng định vượt sai quy định; 'không quan sát' là kết luận lỗi.
+#35    V0147  Câu chỉ nêu hành động băng qua đường và trạng thái không quan sát, không khẳng định hành vi đi bộ dưới lòng đường hoặc hành vi vi phạm khác trong codebook.
+#36    V0148  Câu mô tả chuyển hướng không an toàn và không có tín hiệu báo trước nhưng không nói rõ chuyển hướng sai quy định theo lựa chọn trong codebook.
+#36    V0150  Câu chỉ nêu tốc độ, không nêu hành vi vi phạm thuộc codebook.
+#37    V0151  Câu chỉ nêu trạng thái thiếu quan sát, không nêu hành vi vi phạm thuộc lựa chọn của codebook.
+#38    V0154  Câu nêu nhiều hành vi; chọn hành vi đi ngược chiều xuất hiện đầu tiên, hành vi đi sai làn được đưa vào ngoài codebook theo quy tắc chọn một hành vi.
+#38    V0156  Câu nêu cả đi ngược chiều và đi sai làn; chọn hành vi đầu tiên.
+#39    V0158  Câu chỉ nêu trạng thái không quan sát, không nêu hành vi vi phạm thuộc codebook.
+#39    V0159  Câu chỉ nêu trạng thái người tham gia không quan sát kỹ, không nêu hành vi vi phạm thuộc codebook.
+#39    V0160  Câu chỉ nêu trạng thái quan sát và tốc độ, không nêu hành vi vi phạm thuộc codebook.
+#39    V0162  Câu chỉ nêu trạng thái quan sát và tốc độ, không nêu hành vi vi phạm thuộc codebook.
+#40    V0164  Câu chỉ nêu trạng thái thiếu quan sát, không nêu hành vi vi phạm thuộc codebook.
+#40    V0165  Câu chỉ nêu trạng thái không nhìn đường và tốc độ, không nêu hành vi vi phạm thuộc codebook.
+#40    V0166  Câu mô tả rõ việc sang đường sai quy định nhưng không chỉ rõ lỗi thuộc một lựa chọn hành vi cụ thể; phần quy tốc độ cho xe máy màu trắng là kết luận lỗi.
+#40    V0167  Câu chỉ nêu vi phạm tốc độ, không nêu hành vi vi phạm thuộc lựa chọn của codebook.
+#42    V0174  Cụm 'đi và làm ngược chiều' diễn đạt không tự nhiên; hiểu theo nghĩa gần nhất là xe máy di chuyển ngược chiều.
+#42    V0176  Cụm 'nhường đường' không nói rõ là không nhường đường; câu chỉ nêu trạng thái không quan sát.
+#43    V0178  Hiểu 'tính hiệu đèn giao thông' là lỗi gõ của 'tín hiệu đèn giao thông', tức không chấp hành tín hiệu đèn.
+#43    V0180  Câu nêu nhiều hành vi; chọn hành vi đầu tiên khớp codebook là lấn làn.
+#43    V0182  Câu nêu hai hành vi; chọn hành vi vượt đèn đỏ xuất hiện trước.
+#43    V0183  Câu nêu hai hành vi; chọn hành vi vượt đèn đỏ xuất hiện trước.
+#44    V0185  Câu chỉ mô tả một phương tiện, không nêu hành vi vi phạm.
+#44    V0186  Câu nêu hai hành vi; chọn vượt ẩu là hành vi đầu tiên khớp codebook.
+#44    V0187  Câu mô tả hành động vượt chướng ngại vật không an toàn, không thuộc lựa chọn hành vi nào trong codebook.
+#44    V0188  Cụm 'không đúng phần đường quy định' mô tả hành vi vi phạm nhưng không đủ thông tin để xác định là đi sai làn hay đi ngược chiều; câu có thêm hành vi không giữ khoảng cách an toàn nhưng chọn cụm đầu tiên theo thứ tự câu.
+#44    V0189  Cụm 'nhường đường' không nói rõ là không nhường đường; câu chỉ nêu trạng thái không chú ý quan sát.
+#44    V0190  Câu mô tả hành động tăng tốc vượt lên nhưng không nêu rõ vượt xe sai quy định; cụm 'không giữa khoảng cách an toàn' có thể là lỗi gõ của 'không giữ khoảng cách an toàn', nhưng giữ nguyên cách viết nên không map vào lựa chọn.
+#45    V0191  Chuyển làn không xi nhan là hành vi được nêu rõ nhưng không có lựa chọn tương ứng trong codebook.
+#45    V0192  Cụm 'nhường đường' không nói rõ là không nhường đường; câu chỉ nêu trạng thái không chú ý quan sát.
+#45    V0194  Câu nêu thiếu quan sát và không đội mũ bảo hiểm; chọn hành vi không đội mũ bảo hiểm vì đây là hành vi đầu tiên khớp codebook.
+#45    V0195  Câu chỉ nêu trạng thái thiếu quan sát, không nêu hành vi vi phạm thuộc codebook.
+#45    V0196  Câu chỉ nêu trạng thái thiếu quan sát, không nêu hành vi vi phạm thuộc codebook.
+#45    V0197  Câu chỉ nêu trạng thái không quan sát kỹ, không nêu hành vi vi phạm thuộc codebook.
+#46    V0198  Hiểu 'chuyền làn' theo nghĩa đen là chuyển làn; câu không nêu lấn làn hay đi sai làn.
+#46    V0200  Câu nêu lạng lách và lấn làn; chọn hành vi lạng lách vì xuất hiện trước và không có lựa chọn tương ứng trong codebook.
+#46    V0203  Câu có nêu việc chuyển làn nhưng không nói rõ hành vi cụ thể như lấn làn hoặc không chấp hành vạch kẻ đường, nên chưa đủ chi tiết để chọn nhãn.
+#47    V0204  Câu mô tả xe đi chệch khỏi làn đường nhưng không xác định rõ là đi sai làn hay lấn làn; chưa đủ chi tiết để chọn nhãn hành vi.
+#47    V0205  Câu chỉ mô tả xe lao lên dải phân cách, không nêu rõ một hành vi vi phạm thuộc các lựa chọn.
+#48    V0206  Câu nêu việc sang đường nhưng không đủ chi tiết để xác định là chuyển hướng sai quy định hay một hành vi khác; việc không có tín hiệu báo hướng rẽ không có lựa chọn tương ứng trong codebook.
+#49    V0209  Câu nêu cả đi ngược chiều và lấn làn đường; chọn hành vi đầu tiên khớp codebook là đi ngược chiều.
+#49    V0211  Câu nêu cả đi ngược chiều và lấn làn đường; chọn hành vi đầu tiên khớp codebook là đi ngược chiều.
+#49    V0212  Câu nêu cả đi ngược chiều và lấn làn đường; chọn hành vi đầu tiên khớp codebook là đi ngược chiều.
+#49    V0213  Câu nêu cả đi ngược chiều và lấn làn đường; chọn hành vi đầu tiên khớp codebook là đi ngược chiều.
+#50    V0214  Câu chỉ nêu thiếu quan sát; chuyển làn hoặc chuyển hướng không được mô tả là hành vi vi phạm cụ thể.
+#50    V0218  Câu nêu việc nhập làn nhưng không nói rõ có lấn làn hoặc không chấp hành vạch kẻ đường.
+#52    V0223  Câu chỉ nói quay đầu xe nhưng không nêu quay đầu sai quy định; không quan sát là kết luận lỗi, không phải hành vi thuộc codebook.
+#52    V0224  Câu chỉ nêu trạng thái không quan sát khi đi cắt ngang đường, không nêu hành vi vi phạm cụ thể.
+#53    V0232  Câu nêu nhiều thông tin vi phạm; hành vi đầu tiên khớp codebook là không đội mũ bảo hiểm.
+#55    V0241  Câu nói vượt nhưng không nêu rõ vượt xe sai quy định; đồng thời không nói rõ khoảng cách an toàn giữa hai xe, nên chưa đủ chi tiết để chọn nhãn.
+#55    V0243  Câu mô tả ý định cố vượt nhưng không khẳng định hành vi vượt đã diễn ra; không đủ căn cứ chọn hành vi vượt xe sai quy định.
+#55    V0245  Câu nêu hành vi vượt nhưng không nói rõ vượt xe sai quy định; phần cố tình vượt thể hiện ý định, không khẳng định hành vi vi phạm cụ thể thuộc codebook.
+#55    V0247  Câu mô tả việc đỗ xe gây cản trở giao thông; đây là hành vi cụ thể nhưng không có lựa chọn tương ứng trong codebook.
+#57    V0251  Câu chỉ nêu trạng thái thiếu quan sát khi khởi hành, không nêu hành vi vi phạm thuộc codebook.
+#57    V0252  Câu nêu hành vi chuyển hướng đột ngột và không xin phép, nhưng không đủ căn cứ để xác định là chuyển hướng sai quy định theo lựa chọn trong codebook.
+#57    V0253  Câu chỉ nêu trạng thái thiếu quan sát khi khởi hành, không nêu hành vi vi phạm thuộc codebook.
+#57    V0254  Câu có nhắc đến quay đầu xe nhưng không nói rõ quay đầu sai quy định; thiếu quan sát là kết luận lỗi.
+#58    V0256  Câu có nhắc đến nhập làn nhưng không nói rõ hành vi lấn làn hoặc đi sai làn; thiếu quan sát không phải hành vi trong codebook.
+#58    V0257  Câu chỉ nêu tốc độ vượt quá giới hạn, không nêu hành vi vi phạm thuộc codebook.
+#58    V0258  Câu chỉ nêu việc quay đầu xe và các nhận định về quan sát, an toàn; không nói rõ quay đầu sai quy định.
+#58    V0259  Câu nói không giữ khoảng cách nhưng không nêu rõ là không giữ khoảng cách an toàn.
+#58    V0260  Câu nói chạy vào làn đường nhưng không xác định rõ là đi sai làn hoặc lấn làn.
+#58    V0261  Cụm 'chuyển đường đầu xe' không rõ nghĩa; các phần còn lại chỉ nêu thiếu quan sát và tốc độ.
+#58    V0262  Câu không nêu rõ hành vi đi sai làn, lấn làn hoặc một hành vi khác thuộc codebook.
+#59    V0264  Câu có nhắc đến vượt nhưng không nói rõ là vượt sai quy định hoặc vượt ẩu.
+#59    V0267  Cụm 'vượt không an toàn' được hiểu là vượt xe sai quy định.
+
+7. LỖI (không tính vào độ phủ)
+Video  Câu    Lô     Lỗi
+-----  -----  -----  ----------------------------------------------------------------------
+#24    V0095  V-004  bên vi phạm: bằng chứng 'Người điều khiển ô tô con' không có trong câu
+
+8. TỪNG CÂU TRẢ LỜI
+Câu    Video  Số người  kết quả                bên vi phạm                                                 hành vi                                    Câu trả lời
+-----  -----  --------  ---------------------  ----------------------------------------------------------  -----------------------------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+V0001  #1     1         M:có                   M:Người đi xe máy do người đàn ông mắc áo trắng điều khiển  M:không đội mũ bảo hiểm                    Người đi xe máy do người đàn ông mắc áo trắng điều khiển không đội mũ bảo hiểm và chuyển hướng thiếu quan sát.
+V0002  #1     3         M:có                   M:Người đi xe máy                                           M:không đội mũ bảo hiểm                    Người đi xe máy không đội mũ bảo hiểm và chuyển hướng thiếu quan sát.
+V0003  #1     1         M:có                   M:Người đi xe máy                                           M:không đội mũ bảo hiểm                    Người đi xe máy không đội mũ bảo hiểm và phóng nhanh qua đường
+V0004  #1     1         M:có                   M:Người đi xe máy                                           M:không đội mũ bảo hiểm                    Người đi xe máy không đội mũ bảo hiểm, không xi nhan và chuyển hướng thiếu quan sát
+V0005  #1     1         M:có                   M:Người đi xe máy mặc áo trắng                              M:không đội mũ bảo hiểm                    Người đi xe máy mặc áo trắng không đội mũ bảo hiểm chuyển hướng thiếu quan sát và tác động vật lí người khác.
+V0006  #2     3         M:có                   T                                                           M:không nhường đường                       Có, vi phạm quy tắc nhường đường cho xe đi ngược chiều khi rẽ trái.
+V0007  #2     1         M:không quan sát thấy  T                                                           T                                          Không
+V0008  #2     1         M:không rõ             T                                                           T                                          Không thể xác định
+V0009  #2     2         M:không quan sát thấy  T                                                           T                                          Không.
+V0010  #3     5         M:có                   T                                                           M:không nhường đường                       Thiếu quan sát và không nhường đường khi đi qua nơi giao nhau.
+V0011  #3     1         M:có                   M:Xe máy                                                    K                                          Xe máy thiếu quan sát và tạt đầu ô tô khi đi qua nơi giao nhau.
+V0012  #4     1         M:không rõ             T                                                           T                                          Không thể xác định
+V0013  #4     1         M:có                   M:Người đi xe máy                                           M:vượt xe sai quy định                     Người đi xe máy vượt ẩu không đảm bảo khoảng cách an toàn.
+V0014  #4     1         M:có                   M:Người đi xe máy                                           M:vượt xe sai quy định                     Người đi xe máy vượt ẩu trong không gian hẹp không đảm bảo khoảng cách an toàn.
+V0015  #4     1         M:có                   M:Người đi xe máy                                           M:vượt xe sai quy định                     Người đi xe máy vượt ẩu trong điểm mù của xe tải không đảm bảo khoảng cách an toàn.
+V0016  #4     1         M:có                   M:Người đi xe máy                                           M:vượt xe sai quy định                     Người đi xe máy vượt ẩu tạt đầu xe tải không đảm bảo khoảng cách an toàn.
+V0017  #4     1         M:có                   M:Xe máy                                                    M:không giữ khoảng cách an toàn            Xe máy không đảm bảo khoảng cách an toàn khi vượt
+V0018  #4     1         T                      T                                                           T                                          Xe máy đi quá sát bên phải xe tải lớn tại khu vực hẹp, rơi vào điểm mù nguy hiểm.
+V0019  #5     1         T                      T                                                           T                                          Vi phạm chạy quá tốc độ quy định.
+V0020  #5     1         T                      T                                                           T                                          Vi phạm lỗi chạy quá tốc độ quy định khi qua giao lộ.
+V0021  #5     1         T                      T                                                           T                                          Vi phạm lỗi chạy quá tốc độ quy định tại giao lộ.
+V0022  #5     2         T                      T                                                           T                                          Vi phạm lỗi chạy quá tốc độ quy định.
+V0023  #5     2         M:có                   T                                                           M:vượt đèn đỏ                              Vi phạm lỗi vượt đèn đỏ và chạy quá tốc độ quy định.
+V0024  #6     1         M:có                   M:người lái xe máy                                          M:không đội mũ bảo hiểm                    Chủ vật nuôi vi phạm quy định khi để chó chạy rông, không có người dắt hoặc xích trên đường công cộng và người lái xe máy không đội mũ bảo hiểm khi tham gia giao thông.
+V0025  #6     4         M:có                   M:Chủ vật nuôi                                              K                                          Chủ vật nuôi vi phạm quy định khi để chó chạy rông, không có người dắt hoặc xích trên đường công cộng.
+V0026  #6     1         M:có                   M:Chủ vật nuôi                                              K                                          Chủ vật nuôi vi phạm quy định khi để chó chạy rông, không có người dắt hoặc xích trên đường công cộng. Người điều khiền xe máy mặc áo caro không đội mũ bảo hiểm
+V0027  #6     1         M:có                   M:Chủ vật nuôi                                              K                                          Chủ vật nuôi vi phạm quy định khi để con chó màu đen chạy rông, không có người dắt hoặc xích trên đường công cộng.
+V0028  #7     1         M:có                   T                                                           M:không giữ khoảng cách an toàn            Không giữ khoảng cách và nhường đường khi tham gia giao thông.
+V0029  #7     1         M:không rõ             T                                                           T                                          Không xác định
+V0030  #7     1         M:có                   M:Xe máy                                                    M:không nhường đường                       Xe máy không nhường đượng cho xe tải lớn màu xanh đang di chuyển, rơi vào điểm mù nguy hiểm.
+V0031  #7     1         T                      T                                                           T                                          Xe máy đi hơi nhanh bên phải xe tải lớn, rơi vào điểm mù nguy hiểm.
+V0032  #7     3         T                      T                                                           T                                          Xe máy đi quá sát bên phải xe tải lớn tại khu vực hẹp, rơi vào điểm mù nguy hiểm.
+V0033  #8     1         M:không rõ             T                                                           T                                          Không thể xác định
+V0034  #8     1         T                      T                                                           T                                          Người đi xe đạp dắt xe đạp đi qua đường không quan sát.
+V0035  #8     1         M:có                   M:Người đi xe đạp                                           M:đi ngược chiều                           Người đi xe đạp đi ngược chiều đường và không quan sát kỹ phương tiện đang đi tới.
+V0036  #8     1         T                      T                                                           T                                          Người đi xe đạp đi sang đường thiếu quan sát không đảm bảo an toàn.
+V0037  #8     1         T                      T                                                           T                                          Xe tải thiếu quan sát, không giảm tốc độ khi đi qua đoạn đường nhiều xe cộ và người đi xe đạp sang đường thiếu quan sát.
+V0038  #8     1         T                      T                                                           T                                          Xe tải đi quá tốc độ khi đường trơn trượt
+V0039  #8     1         M:có                   M:xe tải                                                    M:không giữ khoảng cách an toàn            xe tải không giữ khoảng cách an toàn.
+V0040  #9     1         M:không quan sát thấy  T                                                           T                                          Không vi phạm
+V0041  #9     4         M:có                   M:Xe tải                                                    M:đi sai làn, lấn làn                      Xe tải không giữ đúng làn đường và chuyển làn không đảm bảo an toàn.
+V0042  #10    1         T                      T                                                           T                                          Xe tải màu xám không làm chủ tốc độ khi đi qua khu vực có xe đang dừng.
+V0043  #10    6         T                      T                                                           T                                          Xe tải màu xám không làm chủ tốc độ và hướng lái khi đi qua khu vực có xe đang dừng.
+V0044  #11    1         T                      T                                                           T                                          Chạy xe tốc độ cao khi qua khúc cua.
+V0045  #11    1         M:không rõ             T                                                           T                                          Không thể xác định
+V0046  #11    1         T                      T                                                           T                                          Xe máy chạy nhanh khi đi qua giao lộ
+V0047  #11    1         M:có                   M:Xe máy                                                    M:không giữ khoảng cách an toàn            Xe máy di chuyển không giữ khoảng cách an toàn.
+V0048  #11    1         T                      T                                                           T                                          Xe máy đi tốc độ cao tại nơi giao nhau.
+V0049  #11    2         M:có                   M:Xe ô tô                                                   M:không nhường đường                       Xe ô tô rẽ trái không nhường đường cho phương tiện đi thẳng tại nơi giao nhau.
+V0050  #12    4         M:có                   M:Xe SUV màu bạc                                            K                                          Xe SUV màu bạc vi phạm quy tắc chuyển làn đường không đảm bảo an toàn.
+V0051  #12    1         M:có                   M:Xe SUV màu gold                                           K                                          Xe SUV màu gold vi phạm quy tắc chuyển làn đường không đảm bảo an toàn.
+V0052  #12    1         M:có                   M:Xe SUV màu nâu                                            K                                          Xe SUV màu nâu vi phạm quy tắc chuyển làn đường không đảm bảo an toàn.
+V0053  #12    1         M:có                   M:Xe màu bạc                                                K                                          Xe màu bạc vi phạm quy tắc chuyển làn đường không đảm bảo an toàn.
+V0054  #13    1         M:có                   M:xe máy màu trắng                                          M:đi sai làn, lấn làn                      Có, xe máy màu trắng đi sai phần đường, làn đường quy định.
+V0055  #13    1         M:có                   M:xe máy                                                    M:đi sai làn, lấn làn                      Có, xe máy đi sai phần đường, làn đường quy định, đi nhanh không kiểm soát được tốc độ
+V0056  #13    5         M:có                   M:xe máy                                                    M:đi sai làn, lấn làn                      Có, xe máy đi sai phần đường, làn đường quy định.
+V0057  #14    1         M:có                   M:Xe tải thùng màu trắng                                    K                                          Xe tải thùng màu trắng phanh/dừng đột ngột không đảm bảo an toàn trên đường lưu thông.
+V0058  #14    1         M:có                   M:Xe ô tô con                                               M:chuyển hướng, quay đầu sai quy định      Xe ô tô con chuyển hướng di chuyển đột ngột không đảm bảo an toàn trên đường lưu thông.
+V0059  #14    1         M:có                   M:Xe ô tô con                                               M:đi sai làn, lấn làn                      Xe ô tô con lấn làn đột ngột không đảm bảo an toàn trên đường lưu thông.
+V0060  #14    1         M:có                   M:Xe ô tô con màu bạc                                       K                                          Xe ô tô con màu bạc không xi nhan khi chuyển làn
+V0061  #14    1         M:có                   M:Xe ô tô con màu bạc                                       M:chuyển hướng, quay đầu sai quy định      Xe ô tô con màu bạc rẽ sang đường đột ngột không đảm bảo an toàn trên đường lưu thông.
+V0062  #14    1         M:có                   M:Xe ô tô con màu bạc                                       K                                          Xe ô tô con màu bạc sang đường đột ngột không đảm bảo an toàn trên đường lưu thông.
+V0063  #14    1         M:có                   M:Xe ô tô con màu trắng                                     M:chuyển hướng, quay đầu sai quy định      Xe ô tô con màu trắng quay đầu đột ngột không xin đường
+V0064  #15    1         M:có                   T                                                           M:không giữ khoảng cách an toàn            Không đảm bảo khoảng cách an toàn khi vượt trên đường.
+V0065  #15    1         M:có                   M:Người điều khiển xe SUV đỏ                                M:không giữ khoảng cách an toàn            Người điều khiển xe SUV đỏ không quan sát kĩ, không giữ khoảng cách an toàn khi rẽ trái tại khu vực ngã ba không có đèn tín hiệu giao thông
+V0066  #15    1         M:có                   M:Người điều khiển xe máy                                   M:vượt xe sai quy định                     Người điều khiển xe máy vượt ẩu, không đảm bảo khoảng cách an toàn khi đi giữa hai xe ô tô.
+V0067  #15    1         M:có                   M:Xe tải                                                    M:không nhường đường                       Xe tải không nhường đường khi thấy xe ô tô đỏ đi chậm sang đường
+V0068  #15    1         M:có                   M:xe ô tô SUV màu đỏ                                        M:không giữ khoảng cách an toàn            xe ô tô SUV màu đỏ không giữ đúng khoảng các với các phương tiện phía trước
+V0069  #15    1         T                      M:ô tô đỏ                                                   T                                          ô tô đỏ không quan sát kỹ khi chuyển hướng.
+V0070  #16    6         M:có                   T                                                           M:không nhường đường                       Không nhường đường cho phương tiện đang đi trên đường ưu tiên hoặc đường chính khi băng qua đường.
+V0071  #16    1         M:có                   T                                                           M:đi sai làn, lấn làn                      vi phạm do không xi nhan và lấn làn.
+V0072  #17    1         M:có                   M:Xe tải ben                                                M:không giữ khoảng cách an toàn            Xe tải ben không giữ tốc độ và khoảng cách an toàn.
+V0073  #17    3         M:có                   M:Xe tải ben                                                M:không nhường đường                       Xe tải ben không nhường đường cho phương tiện đã vào trong ngã tư trước.
+V0074  #17    1         M:có                   M:Xe tải ben màu xanh                                       M:đi ngược chiều                           Xe tải ben màu xanh chạy nhanh khi qua ngã tư và đi ngược chiều.
+V0075  #17    1         M:có                   M:Xe tải ben                                                K                                          Xe tải ben vì băng qua giao lộ không dừng lại quan sát
+V0076  #17    1         K                      T                                                           K                                          xe tải kéo đột ngột dừng giữa đường.
+V0077  #18    5         T                      T                                                           T                                          Không giảm tốc độ và thiếu quan sát khi đi qua nơi đường giao nhau trong khu dân cư.
+V0078  #18    1         T                      T                                                           T                                          Xe máy điện không giảm tốc độ và thiếu quan sát khi đi qua nơi đường giao nhau trong khu dân cư.
+V0079  #18    1         T                      T                                                           T                                          Xe máy điện không làm chủ được tốc độ và không xử lý được phương tiện giao thông.
+V0080  #19    7         T                      T                                                           T                                          Không làm chủ tốc độ và thiếu quan sát khi di chuyển trong ngõ hẹp.
+V0081  #20    5         M:có                   M:Xe máy                                                    M:không nhường đường                       Xe máy sang đường không đảm bảo an toàn và không nhường đường cho phương tiện đi thẳng.
+V0082  #20    1         M:có                   M:Xe máy                                                    M:không nhường đường                       Xe máy sang đường không đảm bảo an toànnh. thiếu quan sát và không nhường đường cho phương tiện đi thẳng.
+V0083  #20    1         M:có                   M:Xe máy                                                    M:không nhường đường                       Xe máy sang đường đột ngột, không đảm bảo an toàn và không nhường đường cho phương tiện đi thẳng.
+V0084  #21    1         M:có                   M:Xe bảy chỗ màu trắng                                      M:đi sai làn, lấn làn                      Xe bảy chỗ màu trắng không đi đúng làn đường.
+V0085  #21    1         T                      T                                                           T                                          Xe trắng không làm chủ được tốc độ dẫn đến va chạm với xe xanh
+V0086  #21    1         T                      T                                                           T                                          Xe ô tô màu trắng khi rẽ trái không quan sát.
+V0087  #21    1         M:có                   M:Xe ô tô màu trắng                                         M:không nhường đường                       Xe ô tô màu trắng không nhường đường cho phương tiện đang đi thẳng khi thực hiện chuyển hướng.
+V0088  #21    1         M:có                   M:Xe ô tô màu trắng                                         M:đi sai làn, lấn làn                      Xe ô tô màu trắng lấn sang làn đường của chiều ngược lại.
+V0089  #21    1         M:có                   M:Xe ô tô màu trắng                                         M:đi sai làn, lấn làn                      Xe ô tô màu trắng đi sai làn đường khi thực hiện chuyển hướng.
+V0090  #21    1         M:có                   M:Xe ô tô trắng                                             M:đi ngược chiều                           Xe ô tô trắng chạy ngược chiều.
+V0091  #22    1         M:có                   M:Người đi xe đạp                                           M:không nhường đường                       Người đi xe đạp sang đường không nhìn đường và không nhường đường cho xe đi trên đường thẳng.
+V0092  #22    6         M:có                   M:Người đi xe đạp                                           M:không nhường đường                       Người đi xe đạp sang đường không đảm bảo an toàn và không nhường đường cho xe đi trên đường thẳng.
+V0093  #23    1         M:có                   T                                                           M:không đội mũ bảo hiểm                    Thiếu quan sát và không giảm tốc độ đảm bảo an toàn khi đi qua nơi đường giao nhau và không đội mũ bảo hiểm khi tham gia giao thông
+V0094  #23    6         T                      T                                                           T                                          Thiếu quan sát và không giảm tốc độ đảm bảo an toàn khi đi qua nơi đường giao nhau.
+V0095  #24    1         lỗi                    lỗi                                                         lỗi                                        Có, không đội mũ bảo hiểm, chạy vượt ẩu
+V0096  #24    1         T                      T                                                           T                                          Không giảm tốc khi đi qua giao lộ.
+V0097  #24    1         M:không quan sát thấy  T                                                           T                                          Không.
+V0098  #24    1         M:có                   M:Người lái xe máy                                          M:không đội mũ bảo hiểm                    Người lái xe máy không đội mũ bảo hiểm và không nhường đường cho phương tiện đi ngược chiều đang đi thẳng khi thực hiện rẽ trái tại nơi giao nhau.
+V0099  #24    1         M:có                   M:Người đi xe máy màu trắng                                 M:không đội mũ bảo hiểm                    Người đi xe máy màu trắng không đội mũ bảo hiểm, băng qua đường không quan sát.
+V0100  #24    1         M:có                   M:Xe máy màu trắng do thanh niên                            M:không nhường đường                       Xe máy màu trắng do thanh niên không đội mũ điều khiển chạy nhanh không nhường đường cho xe đi thẳng.
+V0101  #24    1         T                      T                                                           T                                          Xe máy vào giao lộ thiếu quan sát và không làm chủ tốc độ và giữ khoảng cách an toàn.
+V0102  #25    1         M:có                   M:Người điều khiển xe taxi màu xanh                         M:không giữ khoảng cách an toàn            Người điều khiển xe taxi màu xanh, không giữ tốc độ trong khu đô thị và không giữ khoảng cách an toàn.
+V0103  #25    1         M:có                   M:Tài xế xe taxi                                            M:không giữ khoảng cách an toàn            Tài xế xe taxi không chú ý quan sát, không giữ khoảng cách an toàn khi di chuyển gần xe đạp.
+V0104  #25    1         M:có                   M:Xe taxi                                                   M:không giữ khoảng cách an toàn            Xe taxi không giữ khoảng cách an toàn
+V0105  #25    1         T                      T                                                           T                                          Xe taxi không kiêm soát được tốc độ.
+V0106  #25    1         T                      T                                                           T                                          Xe taxi màu xanh chạy nhanh gây tai nạn.
+V0107  #25    1         M:có                   M:Xe taxi xanh                                              M:không giữ khoảng cách an toàn            Xe taxi xanh không giữ khoảng cách an toàn với xe đạp
+V0108  #25    1         T                      T                                                           T                                          người đi ô tô không quan sát trước khi tăng tốc.
+V0109  #26    5         M:có                   T                                                           M:không nhường đường                       Sang đường không đảm bảo an toàn và không nhường đường cho xe đang đi trên đường chính.
+V0110  #26    1         M:có                   T                                                           M:không nhường đường                       Sang đường không đảm bảo an toàn, không quan sát kỹ và không nhường đường cho xe đang đi trên đường chính.
+V0111  #26    1         M:có                   T                                                           M:không nhường đường                       Sang đường không đảm bảo an toàn, không quan sát và không nhường đường cho xe đang đi trên đường chính.
+V0112  #27    1         M:không quan sát thấy  T                                                           T                                          Không có vi phạm giao thông nào.
+V0113  #27    1         M:không rõ             T                                                           T                                          Không thể xác định
+V0114  #27    1         M:có                   M:Tài xế xe tải màu xám                                     M:vượt xe sai quy định                     Tài xế xe tải màu xám không chú ý quan sát, vượt lên sai quy định và lấn làn trong khu vực giao thông đang ùn tắc.
+V0115  #27    1         T                      T                                                           T                                          Tài xế điều khiển xe ô tô con màu trắng đánh lái không quan sát.
+V0116  #27    1         M:có                   M:Xe ô tô màu trắng                                         M:không giữ khoảng cách an toàn            Xe ô tô màu trắng không giữ khoảng cách an toàn với các xe đang lưu thông trên đường.
+V0117  #27    1         M:có                   M:lái xe Ford Ranger                                        M:không giữ khoảng cách an toàn            Xe ô tô trắng đi vào khe hẹp giữa hai xe; lái xe Ford Ranger không giữ khoảng cách an toàn với người đứng trên đường.
+V0118  #27    1         M:có                   M:xe ô tô con màu trắng                                     M:đi sai làn, lấn làn                      xe ô tô con màu trắng chuyển làn không xi nhan, chen lấn làn.
+V0119  #28    3         M:có                   M:Xe con                                                    M:chuyển hướng, quay đầu sai quy định      Xe con chuyển hướng không đảm bảo an toàn và tạt đầu xe khác.
+V0120  #28    1         T                      T                                                           T                                          Xe tải ben chuyển làn không đảm an toàn.
+V0121  #28    1         M:có                   M:Xe tải ben                                                M:không giữ khoảng cách an toàn            Xe tải ben chuyển làn và rẽ phải khi không đảm bảo khoảng cách an toàn với xe con màu bạc làn bên phải.
+V0122  #28    1         T                      T                                                           T                                          Xe tải ben màu đỏ chuyển hướng không quan sát.
+V0123  #28    1         T                      T                                                           T                                          Xe tải ben màu đỏ không đảm bảo an toàn và tạt đuôi xe khác.
+V0124  #29    5         M:có                   M:Xe bán tải                                                M:không nhường đường                       Xe bán tải vi phạm lỗi không nhường đường khi nhập làn/chuyển hướng và đè vạch kẻ vàng đôi phân cách.
+V0125  #29    1         M:có                   M:Xe bán tải                                                M:đi ngược chiều                           Xe bán tải vi phạm lỗi đi ngược chiều.
+V0126  #29    1         M:có                   M:Xe ô tô màu đen                                           M:đi ngược chiều                           Xe ô tô màu đen đi ngược chiều.
+V0127  #30    7         M:có                   T                                                           M:không giữ khoảng cách an toàn            Không giữ khoảng cách an toàn giữa các xe đang lưu thông.
+V0128  #31    6         M:có                   M:Xe bồn                                                    M:không nhường đường                       Xe bồn vi phạm quy tắc nhường đường khi đi từ đường không ưu tiên ra đường ưu tiên.
+V0129  #31    1         M:có                   M:Xe ô tô gắn camera hành trình                             M:đi ngược chiều                           Xe ô tô gắn camera hành trình chạy nhanh không thắng kịp thời đi vào làn đường ngược chiều.
+V0130  #32    7         M:có                   T                                                           M:không nhường đường                       Không tuân thủ quy tắc nhường đường tại nơi đường giao nhau.
+V0131  #33    1         M:có                   M:Xe tải                                                    M:không giữ khoảng cách an toàn            Xe tải không giữ khoảng cách an toàn với các xe phía trước
+V0132  #33    1         M:có                   M:Xe tải lớn màu xám đen                                    M:không chấp hành biển báo, vạch kẻ đường  Xe tải lớn màu xám đen đè vạch kẻ liền và vượt ẩu ở nơi có tầm nhìn bị hạn chế.
+V0133  #33    1         M:có                   M:Xe tải lớn màu xám đen                                    M:không chấp hành biển báo, vạch kẻ đường  Xe tải lớn màu xám đen đè vạch kẻ liền và vượt ẩu.
+V0134  #33    1         M:có                   M:Xe tải màu xám                                            M:đi sai làn, lấn làn                      Xe tải màu xám lấn làn vượt ẩu
+V0135  #33    1         M:có                   M:Xe tải màu đen                                            M:không chấp hành biển báo, vạch kẻ đường  Xe tải màu đen đè vạch kẻ liền lấn làn và vượt ẩu ở nơi đoạn đường hẹp.
+V0136  #33    1         M:có                   M:Xe tải đen                                                M:không chấp hành biển báo, vạch kẻ đường  Xe tải đen đè vạch kẻ liền và vượt ẩu ở nơi có tầm nhìn bị hạn chế.
+V0137  #33    1         M:có                   M:Xe tải                                                    M:không chấp hành biển báo, vạch kẻ đường  Xe tải đè vạch kẻ liền và vượt ẩu ở nơi có tầm nhìn bị hạn chế.
+V0138  #34    5         T                      T                                                           T                                          Người đi xe máy không làm chủ được tốc độ và tay lái khi đi vào khu vực giao lộ.
+V0139  #34    1         T                      T                                                           T                                          Người đi xe máy không làm chủ được tốc độ và tay lái khi đi vào khu vực ngã rẽ.
+V0140  #34    1         T                      T                                                           T                                          Người đi xe máy màu đỏ không làm chủ được tốc độ và tay lái khi đi vào khu vực giao lộ.
+V0141  #35    1         K                      M:Người phụ nữa áo đen lái xe máy màu trắng                 K                                          Người phụ nữa áo đen lái xe máy màu trắng chở 2 người vượt lên trên đoạn đường hẹp.
+V0142  #35    1         T                      T                                                           T                                          Xe máy có ý định vượt nơi đường hẹp không đủ tầm nhìn an toàn.
+V0143  #35    1         T                      T                                                           T                                          Xe máy vượt phương tiện nhưng không đảm bảo an toàn.
+V0144  #35    1         T                      T                                                           T                                          Xe máy vượt đường hẹp, không quan sát.
+V0145  #35    1         M:có                   M:Xe máy                                                    M:vượt xe sai quy định                     Xe máy vượt ẩu thiếu quan sát.
+V0146  #35    1         M:có                   M:Xe máy                                                    M:không giữ khoảng cách an toàn            Xe máy đi vào phần đường hẹp mà không đảm bảo khoảng cách an toàn với xe ngược chiều.
+V0147  #35    1         T                      T                                                           T                                          xe máy trắng di chuyển băng qua đường không quan sát
+V0148  #36    2         T                      T                                                           T                                          Người đi xe máy chuyển hướng không đảm bảo an toàn và không có tín hiệu báo trước.
+V0149  #36    1         M:có                   M:Xe gắn camera                                             M:không giữ khoảng cách an toàn            Xe gắn camera di chuyển không giữ khoảng cách an toàn
+V0150  #36    1         T                      T                                                           T                                          Xe ô tô trắng không đảm bảo tốc độ an toàn.
+V0151  #37    1         T                      T                                                           T                                          Người lái xe máy màu hồng thiếu quan sát phương tiện đang dừng đỗ.
+V0152  #37    6         M:có                   T                                                           M:không giữ khoảng cách an toàn            Người lái xe thiếu quan sát và không giữ khoảng cách an toàn với phương tiện đang dừng đỗ.
+V0153  #38    1         M:có                   M:Xe máy do người mặc áo xanh                               M:đi ngược chiều                           Xe máy do người mặc áo xanh đi ngược chiều, băng qua đường không quan sát
+V0154  #38    1         M:có                   M:Xe máy màu tối                                            M:đi ngược chiều                           Xe máy màu tối khi sang đường đi ngược chiều đã đi sai làn đường, lấn sang phần đường của phương tiện khác.
+V0155  #38    1         M:có                   M:Xe máy                                                    M:đi ngược chiều                           Xe máy đi ngược chiều đã không giảm tốc độ nhường đường cho phương tiện khác.
+V0156  #38    3         M:có                   M:Xe máy                                                    M:đi ngược chiều                           Xe máy đi ngược chiều đã đi sai làn đường, lấn sang phần đường của phương tiện khác.
+V0157  #39    1         M:có                   T                                                           M:không giữ khoảng cách an toàn            Không giữ khoảng cách an toàn với phương tiện khác.
+V0158  #39    1         T                      T                                                           T                                          Không quan sát khi sang đường.
+V0159  #39    1         T                      T                                                           T                                          Không quan sát kỹ khi qua đường.
+V0160  #39    1         T                      T                                                           T                                          Không quan sát, giảm tốc độ khi qua giao lộ.
+V0161  #39    1         M:không rõ             T                                                           T                                          Không thể xác định
+V0162  #39    1         T                      T                                                           T                                          Xe máy khi xuống đường không quan sát hay giảm tốc
+V0163  #39    1         M:có                   T                                                           M:không giữ khoảng cách an toàn            Xe máy sang đường không quan sát, không giữ khoảng cách an toàn với phương tiện khác.
+V0164  #40    1         T                      T                                                           T                                          Bé gái qua đường thiếu quan sát.
+V0165  #40    1         T                      T                                                           T                                          Em học sinh mặc áo vàng không nhìn đường và chạy nhanh giũa đường.
+V0166  #40    1         K                      K                                                           K                                          Người điều khiển xe máy màu trắng vi phạm khi đi quá tốc độ và cô bé áo hồng vi phạm giao thông đường bộ, xe máy giữa đường sang đường sai quy định về giao thông.
+V0167  #40    1         T                      T                                                           T                                          Người điều khiển xe máy màu trắng vi phạm tốc độ khi đi trong khu dân cư.
+V0168  #40    1         M:có                   M:bé gái                                                    M:không nhường đường                       bé gái vi phạm quy tắc nhường đường khi chuyển hướng qua đường.
+V0169  #40    1         M:có                   M:xe máy trắng                                              M:đi ngược chiều                           xe máy trắng chạy ngược chiều và tốc độ cao
+V0170  #41    5         M:có                   M:Người điều khiển xe máy màu trắng                         M:không nhường đường                       Người điều khiển xe máy màu trắng sang đường không đảm bảo an toàn và không nhường đường cho xe đi thẳng.
+V0171  #42    1         M:có                   M:người điều khiển xe máy màu xám                           M:đi ngược chiều                           Có, người điều khiển xe máy màu xám vi phạm đi ngược chiều
+V0172  #42    1         M:không quan sát thấy  T                                                           T                                          Không phát hiện vi phạm quy tắc giao thông rõ rệt từ các bên liên quan.
+V0173  #42    1         M:có                   M:Người phụ nữ đi xe máy màu đen                            M:đi ngược chiều                           Người phụ nữ đi xe máy màu đen di chuyển ngược chiều giữa làn đường.
+V0174  #42    1         M:có                   M:Xe máy màu xám                                            M:đi ngược chiều                           Xe máy màu xám đi và làm ngược chiều
+V0175  #42    1         M:có                   M:Xe tay ga màu bạc                                         M:đi ngược chiều                           Xe tay ga màu bạc đi ngược chiều
+V0176  #42    1         T                      T                                                           T                                          người đi xe máy màu xám qua đường không quan sát và nhường đường
+V0177  #42    1         M:có                   M:xe xám                                                    M:đi sai làn, lấn làn                      xe xám lấn làn không xi nhan
+V0178  #43    1         M:có                   M:xe tải lớn                                                M:không chấp hành biển báo, vạch kẻ đường  Có, xe tải lớn không chấp hành tính hiệu đèn giao thông.
+V0179  #43    2         M:có                   M:Xe tải                                                    M:không giữ khoảng cách an toàn            Xe tải không giữ khoảng cách an toàn với phương tiện đang lưu thông phía trước.
+V0180  #43    1         M:có                   M:Xe tải                                                    M:đi sai làn, lấn làn                      Xe tải lấn làn, vượt ẩu, vượt đèn đỏ.
+V0181  #43    1         M:có                   M:Xe tải lớn màu tối                                        M:vượt đèn đỏ                              Xe tải lớn màu tối vượt đèn đỏ, va chạm phương tiện khác.
+V0182  #43    1         M:có                   M:Xe tải                                                    M:vượt đèn đỏ                              Xe tải vượt đèn đỏ và không giữ khoảng cách an toàn với phương tiện đang lưu thông phía trước.
+V0183  #43    1         M:có                   M:Xe tải                                                    M:vượt đèn đỏ                              Xe tải vượt đèn đỏ, không giữ khoảng cách an toàn với phương tiện đang dừng.
+V0184  #44    1         M:có                   T                                                           M:không giữ khoảng cách an toàn            Có, không đảm bảo khoảng cách an toàn.
+V0185  #44    1         T                      T                                                           T                                          Xe bồn chở nhiên liệu màu trắng .
+V0186  #44    1         M:có                   M:Xe bồn chở nhiên liệu                                     M:vượt xe sai quy định                     Xe bồn chở nhiên liệu vượt ẩu, không nhường đường.
+V0187  #44    1         K                      K                                                           K                                          Xe con cố vượt chướng ngại vật không an toàn
+V0188  #44    1         M:có                   M:Xe ô tô trắng                                             K                                          Xe ô tô trắng đi không đúng phần đường quy định, không giữ khoảng cách an toàn
+V0189  #44    1         T                      T                                                           T                                          không chú ý quan sát và nhường đường khi tham gia giao thông.
+V0190  #44    1         K                      K                                                           K                                          xe ô tô con màu trắng khi di chuyển cố gắng tăng tốc vượt lên không giữa khoảng cách an toàn với phương tiện khác
+V0191  #45    1         K                      K                                                           K                                          Xe máy chuyển làn không si nhan trong tầm nhìn hạn chế.
+V0192  #45    1         T                      T                                                           T                                          Xe máy không chú ý quan sát khi qua đường, và nhường đường cho xe đi thẳng
+V0193  #45    1         M:có                   M:Xe máy màu đen do người đàn ông mặc áo xám điều khiển     M:không nhường đường                       Xe máy màu đen do người đàn ông mặc áo xám điều khiển không nhường đường cho xe đi thẳng.
+V0194  #45    1         M:có                   T                                                           M:không đội mũ bảo hiểm                    Xe máy qua đường thiếu quan sát, không đội mũ bảo hiểm
+V0195  #45    1         T                      T                                                           T                                          Xe máy sang đường thiếu quan sát.
+V0196  #45    1         T                      T                                                           T                                          Xe máy thiếu quan sát khi sang đường.
+V0197  #45    1         T                      T                                                           T                                          xe máy khi sang đường không quan sát kĩ.
+V0198  #46    1         K                      K                                                           K                                          Người đi xe máy chuyền làn không quan sát.
+V0199  #46    1         K                      K                                                           K                                          Người đi xe máy lạng lách
+V0200  #46    1         K                      K                                                           K                                          Người đi xe máy lạng lách, lấn làn.
+V0201  #46    1         T                      T                                                           K                                          Người đi xe máy lạng lách, đi nhanh không đảm bảo an toàn.
+V0202  #46    2         T                      T                                                           K                                          Người đi xe máy lạng lách, đi vào khoảng hẹp giữa các làn xe ô tô không đảm bảo an toàn.
+V0203  #46    1         T                      T                                                           T                                          Người điều khiển xe máy chuyển làn không an toàn.
+V0204  #47    6         T                      T                                                           T                                          Không làm chủ tay lái, để xe đi chệch khỏi làn đường và va chạm vào dải phân cách.
+V0205  #47    1         T                      T                                                           K                                          Xe ô tô lao lên dải phân cách.
+V0206  #48    6         T                      T                                                           T                                          Sang đường không quan sát và không có tín hiệu báo hướng rẽ.
+V0207  #48    1         T                      T                                                           T                                          Sang đường không quan sát.
+V0208  #49    1         M:có                   M:Xe khách chiều                                            M:đi sai làn, lấn làn                      Xe khách chiều lấn làn đường tại đoạn đường cong có vạch kẻ liền.
+V0209  #49    1         M:có                   M:Xe khách cạnh xe bồn                                      M:đi ngược chiều                           Xe khách cạnh xe bồn đi ngược chiều lấn làn đường tại đoạn đường cong có vạch kẻ liền.
+V0210  #49    1         M:có                   M:Xe khách                                                  M:đi sai làn, lấn làn                      Xe khách lấn làn đường.
+V0211  #49    1         M:có                   M:Xe khách màu vàng                                         M:đi ngược chiều                           Xe khách màu vàng đi ngược chiều lấn làn đường tại đoạn đường cong có vạch kẻ liền.
+V0212  #49    2         M:có                   M:Xe khách và xe bồn                                        M:đi ngược chiều                           Xe khách và xe bồn đi ngược chiều lấn làn đường tại đoạn đường cong có vạch kẻ liền.
+V0213  #49    1         M:có                   M:Xe khách                                                  M:đi ngược chiều                           Xe khách đi ngược chiều lấn làn đường tại đoạn đường cong.
+V0214  #50    1         T                      T                                                           T                                          Có, thiếu quan sát khi chuyển làn hoặc mới chuyển hướng.
+V0215  #50    1         T                      T                                                           T                                          Người lái xe máy màu tối.
+V0216  #50    1         T                      T                                                           T                                          Người điều khiển xe máy không chú ý quan sát
+V0217  #50    1         T                      T                                                           T                                          Xe máy không giảm tốc và quan sát khi rẽ ở ngã tư
+V0218  #50    1         T                      T                                                           T                                          Xe máy nhập làn không chú ý.
+V0219  #50    1         M:có                   M:Xe máy                                                    M:không nhường đường                       Xe máy sang đường thiếu quan sát, không nhường đường.
+V0220  #50    1         T                      T                                                           T                                          người đi xe máy.
+V0221  #51    1         M:có                   M:Người điều khiển xe máy                                   M:không giữ khoảng cách an toàn            Người điều khiển xe máy vi phạm lỗi không giữ khoảng cách an toàn với xe chạy liền trước khi đã có tín hiệu xin chuyển làn.
+V0222  #51    6         M:có                   M:Người điều khiển xe máy                                   M:không giữ khoảng cách an toàn            Người điều khiển xe máy vi phạm lỗi không giữ khoảng cách an toàn với xe chạy liền trước.
+V0223  #52    1         T                      T                                                           T                                          Người đi xe tair không quan sát trước khi quay đầu xe
+V0224  #52    1         T                      T                                                           T                                          Người đi xe tải không quan sát khi đi cắt ngang đường.
+V0225  #52    1         T                      T                                                           T                                          Người đi xe ô tô con trắng thiếu quan sát khi qua giao lộ.
+V0226  #52    1         T                      T                                                           T                                          Người đi ô tô trắng thiếu quan sát khi qua giao lộ.
+V0227  #52    1         T                      T                                                           T                                          Xe tải ben.
+V0228  #52    1         T                      T                                                           T                                          Xe tải thùng xám không quan sát xung quanh trước khi di chuyển
+V0229  #52    1         T                      T                                                           T                                          Xe ô tô màu trắng.
+V0230  #53    1         M:có                   M:3 người trên xe máy                                       M:không đội mũ bảo hiểm                    3 người trên xe máy không đội mũ bảo hiểm, không quan sát khi chuyển hướng khi qua ngã tư.
+V0231  #53    1         T                      T                                                           T                                          Chạy nhanh khi qua giao lộ và góc khuất.
+V0232  #53    1         M:có                   M:người điều khiển xe máy                                   M:không đội mũ bảo hiểm                    Thiếu quan sát và không giảm tốc độ khi đi qua nơi giao nhau, chở quá người qui định và không đội mũ bảo hiểm khi điểu khiển xe máy.
+V0233  #53    3         T                      T                                                           T                                          Thiếu quan sát và không giảm tốc độ khi đi qua nơi giao nhau.
+V0234  #53    1         T                      T                                                           T                                          Xe máy màu tối thiếu quan sát và không giảm tốc độ khi đi qua nơi giao nhau.
+V0235  #54    1         M:có                   M:Xe bán tải màu trắng                                      M:đi sai làn, lấn làn                      Xe bán tải màu trắng lấn làn đường ngược chiều trái phép để vượt.
+V0236  #54    2         M:có                   M:Xe tải                                                    M:đi sai làn, lấn làn                      Xe tải lấn làn đường ngược chiều trái phép để vượt.
+V0237  #54    1         M:có                   M:Xe tải lớn màu trắng                                      M:đi sai làn, lấn làn                      Xe tải lớn màu trắng lấn làn đường ngược chiều trái phép để vượt.
+V0238  #54    1         M:có                   M:Xe tải màu vàng                                           M:đi sai làn, lấn làn                      Xe tải màu vàng lấn làn đường ngược chiều trái phép để vượt.
+V0239  #54    1         M:có                   M:Xe tải thùng màu bạc                                      M:đi sai làn, lấn làn                      Xe tải thùng màu bạc lấn làn đường ngược chiều trái phép để vượt.
+V0240  #54    1         M:có                   M:Xe tải to màu nâu                                         M:đi ngược chiều                           Xe tải to màu nâu chạy ngược chiều.
+V0241  #55    1         T                      T                                                           T                                          Vượt không đảm bảo khoảng cách.
+V0242  #55    1         M:có                   M:Xe máy màu đen do người áo trắng chở 2                    M:không nhường đường                       Xe máy màu đen do người áo trắng chở 2 không nhường đường cho xe đang đi thẳng.
+V0243  #55    1         T                      T                                                           T                                          Xe máy màu đỏ cố vượt khi không đảm bảo khoảng cách an toàn.
+V0244  #55    1         T                      T                                                           K                                          Xe máy đi vào khe giữa hai ô tô không an toàn.
+V0245  #55    1         T                      T                                                           T                                          Ô tô trắng đỗ xe dưới lòng đường hẹp gây cản trở giao thông, xe máy không quan sát kỹ khi cố tình vượt.
+V0246  #55    1         M:có                   M:xe máy                                                    M:đi sai làn, lấn làn                      Ô tô trắng đỗ xe dưới lòng đường hẹp gây cản trở giao thông, xe máy lấn làn
+V0247  #55    1         T                      T                                                           K                                          Ô tô trắng đỗ xe dưới lòng đường hẹp gây cản trở giao thông.
+V0248  #56    6         M:có                   M:Xe máy                                                    M:không nhường đường                       Xe máy sang đường không đảm bảo an toàn và không nhường đường cho phương tiện đang đi trên đường ưu tiên.
+V0249  #56    1         M:có                   M:Xe máy                                                    M:không đội mũ bảo hiểm                    Xe máy sang đường không đảm bảo an toàn và không đội mũ bảo hiểm,
+V0250  #57    2         T                      T                                                           T                                          Người lái xe ô tô SUV thiếu quan sát các phương tiện xung quanh khi bắt đầu khởi hành từ vị trí dừng đèn đỏ.
+V0251  #57    1         T                      T                                                           T                                          Người lái xe ô tô con màu bạc thiếu quan sát các phương tiện xung quanh khi bắt đầu khởi hành từ vị trí dừng đèn đỏ.
+V0252  #57    1         M:có                   M:Người lái xe ô tô màu nâu                                 K                                          Người lái xe ô tô màu nâu chuyển hướng đột ngột và không xin phép
+V0253  #57    1         T                      T                                                           T                                          Người lái xe ô tô màu xám thiếu quan sát các phương tiện xung quanh khi bắt đầu khởi hành từ vị trí dừng đèn đỏ.
+V0254  #57    1         T                      T                                                           T                                          Người điều khiển xe ô tô màu nâu quay đầu xe thiếu quan sát.
+V0255  #57    1         M:có                   M:Xe ô tô xám                                               M:không nhường đường                       Xe ô tô xám chuyển hướng thiếu quan sát, không nhường đường cho xe đi thẳng.
+V0256  #58    1         T                      T                                                           T                                          Người phụ nữ nhập làn đường chính thiếu quan sát.
+V0257  #58    1         T                      T                                                           T                                          Người áo cam đi quá tốc độ cho phép
+V0258  #58    1         T                      T                                                           T                                          Quay đầu xe thiếu quan sát và không đảm bảo an toàn trong điều kiện đường trơn trượt.
+V0259  #58    1         T                      T                                                           T                                          Xe đi thẳng không giữ khoảng cách với các phương tiện đi trước.
+V0260  #58    1         T                      T                                                           T                                          chạy vào làn đường thiếu quan sát và không đảm bảo an toàn trong điều kiện đường trơn trượt.
+V0261  #58    1         T                      T                                                           T                                          người phụ nữ chuyển đường đầu xe thiếu quan sát và người đi xe đi quá nhanh qua giao lộ.
+V0262  #58    1         T                      T                                                           T                                          Đi ra đường thiếu quan sát và không đảm bảo an toàn trong điều kiện đường trơn trượt.
+V0263  #59    1         M:không quan sát thấy  T                                                           T                                          Không quan sát thấy vi phạm rõ ràng, nhưng tài xế xe con đã không làm chủ được tốc độ và tay lái trong điều kiện đường trơn.
+V0264  #59    1         T                      T                                                           T                                          Xe tải ben vượt, không đảm bảo an toàn.
+V0265  #59    1         M:có                   M:Xe tải màu xanh                                           M:đi sai làn, lấn làn                      Xe tải màu xanh lấn làn ngược chiều.
+V0266  #59    1         M:có                   M:Xe tải màu xanh                                           M:đi sai làn, lấn làn                      Xe tải màu xanh lấn làn.
+V0267  #59    1         M:có                   M:Xe tải                                                    M:vượt xe sai quy định                     Xe tải vượt không an toàn.
+V0268  #59    1         M:có                   M:Xe tải                                                    M:đi ngược chiều                           Xe tải đi ngược chiều lấn làn, tốc độ cao
+V0269  #59    1         M:có                   M:xe tải                                                    M:đi sai làn, lấn làn                      xe tải đi nhanh lấn làn ngược chiều tăng tốc để vượt lên giữa khúc cua .
+V0270  #60    1         M:có                   T                                                           M:không giữ khoảng cách an toàn            Không giữ khoảng cách an toàn khi nhập làn.
+V0271  #60    6         M:có                   T                                                           M:không giữ khoảng cách an toàn            Không giữ khoảng cách an toàn với xe chạy liền trước.

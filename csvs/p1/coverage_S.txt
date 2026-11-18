@@ -1,0 +1,580 @@
+BÁO CÁO ĐỘ PHỦ CODEBOOK, NHÓM S
+
+Câu trả lời khác nhau (đơn vị đếm): 209  | video: 60  | lượt viết của annotator: 391
+Map hợp lệ: 209  | lỗi, chưa tính: 0
+Độ phủ = M / n, n = M + K. Ô có n < 10: chưa đủ dữ liệu. Đạt khi độ phủ >= 80%.
+T chia hai: 'T thiếu chi tiết' (có nhắc nhưng không đủ để chọn) và 'T không nhắc'.
+
+1. ĐỘ PHỦ THEO Ô
+Ô           M    K   T    T thiếu chi tiết  T không nhắc  n = M + K  Độ phủ = M / n  Kết luận
+----------  ---  --  ---  ----------------  ------------  ---------  --------------  ---------------------
+thời tiết   156  22  31   13                18            178        88%             đạt
+ánh sáng    195  6   8    2                 6             201        97%             đạt
+loại đường  12   3   194  62                132           15         80%             đạt
+mặt đường   174  4   31   3                 28            178        98%             đạt
+mật độ xe   37   12  160  0                 160           49         76%             không đạt, phải sửa ô
+đoạn đường  43   1   165  0                 165           44         98%             đạt
+
+2. GIÁ TRỊ ĐƯỢC CHỌN (chỉ tính M)
+
+[thời tiết]
+Giá trị   Số câu
+--------  ------
+nắng      101
+âm u      46
+mưa       7
+sương mù  2
+không rõ  0
+
+[ánh sáng]
+Giá trị   Số câu
+--------  ------
+ban ngày  176
+ban đêm   19
+không rõ  0
+
+[loại đường]
+Giá trị                           Số câu
+--------------------------------  ------
+hai chiều có dải phân cách        8
+hai chiều không có dải phân cách  4
+một chiều                         0
+không rõ                          0
+
+[mặt đường]
+Giá trị   Số câu
+--------  ------
+khô       155
+ướt       19
+không rõ  0
+
+[mật độ xe]
+Giá trị   Số câu
+--------  ------
+thưa      17
+đông      20
+ùn tắc    0
+không rõ  0
+
+[đoạn đường]
+Giá trị   Số câu
+--------  ------
+thẳng     0
+khúc cua  7
+giao lộ   36
+không rõ  0
+
+3. MỌI CỤM BỊ K (codebook thiếu lựa chọn)
+Ô           Cụm không khớp      Bằng chứng                 Video  Câu
+----------  ------------------  -------------------------  -----  -----
+loại đường  đường đô thị        đường đô thị               #60    S0207
+loại đường  đường đô thị        đường đô thị               #60    S0208
+loại đường  đường đô thị        đường đô thị               #60    S0209
+mật độ xe   cao                 mật độ cao                 #52    S0178
+mật độ xe   dày                 mật độ giao thông dày      #52    S0177
+mật độ xe   dầy                 mật độ phương tiện dầy     #45    S0155
+mật độ xe   mật độ thấp         mật độ thấp                #48    S0165
+mật độ xe   mật độ trung bình   mật độ trung bình          #42    S0140
+mật độ xe   mật độ trung bình   mật độ trung bình          #45    S0152
+mật độ xe   mật độ trung bình   mật độ trung bình          #54    S0185
+mật độ xe   mật độ trung bình   mật độ trung bình          #57    S0196
+mật độ xe   trung bình          mật độ trung bình          #46    S0158
+mật độ xe   trung bình          mật độ trung bình          #47    S0161
+mật độ xe   trung bình          mật độ trung bình          #53    S0182
+mật độ xe   trung bình          mật độ trung bình          #60    S0208
+mặt đường   dơ sau cơn mưa      mặt đường dơ sau cơn mưa   #52    S0177
+mặt đường   hơi bẩn             mặt đường hơi bẩn          #52    S0178
+mặt đường   hơi bẩn             mặt đường hơi bẩn          #52    S0179
+mặt đường   trơn trượt          mặt đường nhựa trơn trượt  #40    S0130
+thời tiết   khô ráo             Thời tiết khô ráo          #7     S0022
+thời tiết   khô ráo             Thời tiết khô ráo          #7     S0023
+thời tiết   khô ráo             Thời tiết khô ráo          #7     S0024
+thời tiết   khô ráo             Thời tiết khô ráo          #7     S0025
+thời tiết   không ráo           trời không ráo             #45    S0155
+thời tiết   nhiều mây           Trời nhiều mây             #6     S0018
+thời tiết   nhiều mây           Trời nhiều mây             #6     S0019
+thời tiết   nhiều mây           Trời nhiều mây             #6     S0020
+thời tiết   nhiều mây           Trời nhiều mây             #60    S0207
+thời tiết   nhiều mây           Trời nhiều mây             #60    S0208
+thời tiết   nhiều mây           Trời nhiều mây             #60    S0209
+thời tiết   nhiều mây           nhiều mây                  #13    S0045
+thời tiết   nhiều mây           nhiều mây                  #54    S0184
+thời tiết   nhiều mây           nhiều mây                  #54    S0185
+thời tiết   nhiều mây           nhiều mây                  #54    S0186
+thời tiết   nhiều mây           trời nhiều mây             #24    S0081
+thời tiết   nhiều mây           trời nhiều mây             #4     S0011
+thời tiết   nhiều mây           trời nhiều mây             #51    S0176
+thời tiết   trời quang          trời quang                 #9     S0032
+thời tiết   trời sáng           trời sáng                  #25    S0088
+thời tiết   trời sáng           trời sáng                  #25    S0089
+thời tiết   trời sáng           trời sáng                  #25    S0090
+ánh sáng    ánh sáng tốt        ánh sáng tốt               #48    S0163
+ánh sáng    ánh sáng tốt        ánh sáng tốt               #48    S0164
+ánh sáng    ánh sáng tốt        ánh sáng tốt               #48    S0165
+ánh sáng    ánh sáng tốt        ánh sáng tốt               #48    S0166
+ánh sáng    ánh sáng tốt        ánh sáng tốt               #48    S0167
+ánh sáng    ánh sáng tốt        ánh sáng tốt               #49    S0168
+đoạn đường  khu vực chia luồng  khu vực chia luồng         #3     S0008
+
+4. MỌI T THIẾU CHI TIẾT
+Ô           Bằng chứng                                  Video  Câu
+----------  ------------------------------------------  -----  -----
+loại đường  có dải phân cách                            #16    S0055
+loại đường  có dải phân cách                            #16    S0056
+loại đường  có dải phân cách                            #20    S0068
+loại đường  có dải phân cách                            #24    S0081
+loại đường  có dải phân cách                            #41    S0134
+loại đường  có dải phân cách                            #41    S0135
+loại đường  có dải phân cách                            #41    S0136
+loại đường  có dải phân cách                            #41    S0138
+loại đường  có dải phân cách                            #41    S0139
+loại đường  có dải phân cách cứng                       #28    S0099
+loại đường  có dải phân cách cứng                       #28    S0100
+loại đường  có dải phân cách cứng                       #28    S0103
+loại đường  có dải phân cách cứng                       #28    S0104
+loại đường  hai chiều                                   #13    S0045
+loại đường  hai chiều                                   #13    S0046
+loại đường  hai chiều                                   #13    S0047
+loại đường  hai chiều                                   #21    S0071
+loại đường  hai chiều                                   #21    S0072
+loại đường  hai chiều                                   #38    S0127
+loại đường  hai chiều                                   #7     S0022
+loại đường  hai chiều                                   #7     S0023
+loại đường  hai chiều                                   #7     S0025
+loại đường  hai chiều                                   #7     S0026
+loại đường  hai chiều có vạch kẻ vàng đôi               #29    S0105
+loại đường  hai làn                                     #22    S0076
+loại đường  hai làn                                     #51    S0174
+loại đường  hai làn                                     #51    S0175
+loại đường  hai làn xe                                  #36    S0124
+loại đường  hai làn xe                                  #36    S0125
+loại đường  đường 2 chiều                               #8     S0027
+loại đường  đường cao tốc có dải phân cách cỏ           #47    S0160
+loại đường  đường cao tốc có dải phân cách cỏ           #47    S0161
+loại đường  đường cao tốc có dải phân cách cỏ           #47    S0162
+loại đường  đường giao thông nội thành                  #4     S0012
+loại đường  đường hai chiều                             #11    S0037
+loại đường  đường nhựa 1 làn                            #44    S0147
+loại đường  đường nhựa 2 làn có dài phân cách           #43    S0143
+loại đường  đường nhựa 2 làn có dài phân cách           #45    S0155
+loại đường  đường nhựa hai chiều                        #10    S0035
+loại đường  đường nhựa hai chiều                        #31    S0111
+loại đường  đường nhựa hai chiều                        #44    S0146
+loại đường  đường nhựa hai chiều                        #44    S0148
+loại đường  đường nhựa hai chiều                        #44    S0149
+loại đường  đường nhựa hai chiều                        #44    S0150
+loại đường  đường nhựa hai làn                          #48    S0164
+loại đường  đường nhựa hai làn                          #48    S0165
+loại đường  đường nhựa hai làn                          #48    S0166
+loại đường  đường nhựa hai làn                          #51    S0176
+loại đường  đường nhựa hai làn                          #59    S0203
+loại đường  đường nhựa hai làn có dài phân cách         #48    S0163
+loại đường  đường nhựa không có dài phân cách           #42    S0141
+loại đường  đường nhựa ngoại thành hai chiều            #31    S0112
+loại đường  đường nhựa nhiều làn có dải phân cách cứng  #28    S0098
+loại đường  đường đô thị có dài phân cách               #24    S0087
+loại đường  đường đô thị có dài phân cách               #26    S0094
+loại đường  đường đô thị có dải phân cách               #25    S0089
+loại đường  đường đô thị nhiều làn                      #4     S0011
+loại đường  đường đô thị nhiều làn                      #43    S0144
+loại đường  đường đô thị nhiều làn                      #43    S0145
+loại đường  đường đô thị nhiều làn xe                   #46    S0157
+loại đường  đường đô thị nhiều làn xe                   #46    S0158
+loại đường  đường đô thị nhiều làn xe                   #46    S0159
+mặt đường   mặt đường bằng phẳng                        #56    S0192
+mặt đường   mặt đường bằng phẳng                        #56    S0193
+mặt đường   mặt đường bằng phẳng                        #56    S0194
+thời tiết   thời tiết tạnh ráo                          #44    S0146
+thời tiết   thời tiết tạnh ráo                          #44    S0147
+thời tiết   thời tiết tạnh ráo                          #44    S0148
+thời tiết   thời tiết tạnh ráo                          #44    S0149
+thời tiết   thời tiết tạnh ráo                          #44    S0150
+thời tiết   trời khô ráo                                #45    S0151
+thời tiết   trời khô ráo                                #45    S0152
+thời tiết   trời khô ráo                                #45    S0153
+thời tiết   trời khô ráo                                #45    S0154
+thời tiết   trời khô ráo                                #56    S0191
+thời tiết   trời khô ráo                                #56    S0192
+thời tiết   trời khô ráo                                #56    S0193
+thời tiết   trời khô ráo                                #56    S0194
+ánh sáng    ánh sáng tốt                                #49    S0169
+ánh sáng    ánh sáng tốt                                #49    S0170
+
+5. NGOÀI CODEBOOK (gộp theo loại và đoạn)
+Loại          Đoạn                                   Số câu  Video
+------------  -------------------------------------  ------  -----------------------------------------------------------------------
+khác          đường nhựa                             49      #4 #5 #6 #7 #12 #13 #14 #16 #17 #18 #21 #22 #28 #29 #36 #38 #51 #52 #53
+khác          tốt                                    19      #2 #5 #18 #21 #23 #34 #40 #57
+khác          đường phố đô thị                       11      #6 #23 #27 #42
+khác          đường đô thị                           10      #1 #12 #25 #39
+khác          tầm nhìn tốt                           9       #11 #12
+khác          trong khu dân cư                       8       #7 #13 #21
+khác          đường nhựa đô thị                      8       #12 #20 #25 #41
+khác          trời sáng                              7       #28
+khác          đô thị                                 5       #11 #53
+khác          đường hẻm nhỏ                          5       #18
+khác          đường ngoài đô thị                     5       #16 #17 #28 #32 #33
+khác          đường nhựa bằng phẳng                  5       #4 #26
+khác          đường nhựa có đèn đường                5       #45
+khác          bằng phẳng                             4       #4 #51
+khác          nhựa                                   4       #58
+khác          tầm nhìn rõ ràng                       4       #29
+khác          và trơn trượt                          4       #58
+khác          đường nhựa hẹp                         4       #35 #55
+khác          đường nhựa nhiều làn                   4       #28
+khác          đường đô thị có đèn đường              4       #56
+khác          ở khu vực nông thôn                    4       #48
+khác          có đèn đường                           3       #46
+khác          trải nhựa                              3       #60
+khác          tầm nhìn rõ                            3       #42
+khác          ánh sáng nhân tạo từ đèn đường         3       #43
+khác          đường cao tốc                          3       #9
+khác          đường nhựa hai làn                     3       #59
+khác          đường nhựa hai làn xe                  3       #54
+khác          đường phố có cầu vượt                  3       #50
+khác          đường sắt trên cao                     3       #41
+khác          đường đèo núi                          3       #49
+khác          đường đô thị trải nhựa phẳng           3       #57
+khác          rõ ràng                                2       #32
+khác          tầm nhìn hạn chế                       2       #33
+khác          tốt với bóng đổ dài                    2       #40
+khác          đường nhựa hẹp cạnh bờ sông            2       #35
+khác          đường nhựa phố đô thị                  2       #23 #27
+khác          đường quốc lộ                          2       #2 #28
+khác          đường đô thị trải nhựa bằng phẳng      2       #15
+khác          có đèn tín hiệu                        1       #5
+khác          cạnh bờ sông                           1       #35
+khác          khu dân cư                             1       #44
+khác          không có vạch kẻ đường                 1       #13
+khác          nhiều làn                              1       #28
+khác          qua khu dân cư                         1       #22
+khác          trong hẻm nhỏ                          1       #18
+khác          trơn                                   1       #39
+khác          trước một tiệm sửa xe                  1       #37
+khác          trời tối                               1       #9
+khác          từ đường nhỏ ra                        1       #58
+khác          và trong khu dân cư                    1       #24
+khác          vạch kẻ đường màu vàng                 1       #38
+khác          ánh sáng tốt                           1       #38
+khác          đô thị có đèn giao thông               1       #57
+khác          đường bê tông trong ngõ hẹp            1       #19
+khác          đường cao tốc trên cầu                 1       #30
+khác          đường giao thông ngoài đô thị          1       #8
+khác          đường huyện                            1       #2
+khác          đường khu dân cư                       1       #40
+khác          đường ngoài đô thị có vạch kẻ đường    1       #29
+khác          đường ngoại đô                         1       #8
+khác          đường nhựa hẹp không có vạch kẻ đường  1       #55
+khác          đường nhựa làng quê                    1       #22
+khác          đường nhựa ngoài đô thị                1       #48
+khác          đường nhựa đô thị nhiều làn            1       #41
+khác          đường nhựa đô thị, bằng phẳng          1       #26
+khác          đường trong thôn                       1       #8
+khác          đường trên cao                         1       #41
+khác          đường trải nhựa phẳng                  1       #57
+khác          đường đô thị nhiều làn                 1       #24
+khác          đưởng trong đô thị                     1       #7
+nhóm khác: V  có xe đỗ gây cản trở giao thông        3       #55
+
+6. GHI CHÚ CỦA MODEL
+Video  Câu    Ghi chú
+-----  -----  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#3     S0008  Đoạn đường: 'khu vực chia luồng' không khớp với thẳng, khúc cua hay giao lộ nên là K.
+#4     S0011  Thời tiết: 'nhiều mây' không có trong codebook nên là K. Loại đường: 'đường đô thị nhiều làn' không nêu rõ số chiều hay có dải phân cách không nên là T theo quy tắc 4.
+#4     S0012  Loại đường: 'đường giao thông nội thành' không nêu rõ số chiều hay dải phân cách nên là T theo quy tắc 4.
+#7     S0022  Loại đường: câu nói hai chiều nhưng không nói rõ có dải phân cách hay không nên là T; thời tiết 'khô ráo' không khớp lựa chọn nào trong codebook nên là K.
+#7     S0023  Loại đường: câu nói hai chiều nhưng không nói rõ có dải phân cách hay không nên là T; thời tiết 'khô ráo' không khớp lựa chọn nào trong codebook nên là K.
+#7     S0024  Thời tiết 'khô ráo' không khớp lựa chọn nào trong codebook nên là K.
+#7     S0025  Loại đường: câu nói hai chiều nhưng không nói rõ có dải phân cách hay không nên là T; thời tiết 'khô ráo' không khớp lựa chọn nào trong codebook nên là K.
+#7     S0026  Loại đường: câu nói hai chiều nhưng không nói rõ có dải phân cách hay không nên là T theo quy tắc 4.
+#8     S0027  Loại đường: câu nói 2 chiều nhưng không nói có dải phân cách hay không, nên là T.
+#10    S0035  Loại đường: câu nói hai chiều nhưng không nói rõ có hay không có dải phân cách nên là T theo quy tắc 4.
+#11    S0037  Loại đường: câu nói 'đường hai chiều' nhưng không nêu rõ có dải phân cách hay không nên chọn T theo quy tắc 4.
+#13    S0045  Loại đường câu nói hai chiều nhưng không nêu có dải phân cách hay không nên là T. Thời tiết nói 'nhiều mây' không khớp lựa chọn nào nên là K.
+#13    S0046  Loại đường câu nói hai chiều nhưng không nêu có dải phân cách hay không nên là T.
+#13    S0047  Loại đường câu nói hai chiều nhưng không nêu có dải phân cách hay không nên là T.
+#16    S0055  Loại đường: câu chỉ nói 'có dải phân cách' mà không nói rõ một chiều hay hai chiều nên áp dụng quy tắc 4 gán T.
+#16    S0056  Loại đường: câu chỉ nói 'có dải phân cách' mà không nói rõ một chiều hay hai chiều nên áp dụng quy tắc 4 gán T.
+#20    S0068  Loại đường: câu chỉ nói có dải phân cách, không rõ một chiều hay hai chiều nên theo quy tắc 4 là T.
+#21    S0071  Loại đường: câu nói hai chiều nhưng không nói có dải phân cách hay không, nên là T theo quy tắc 4.
+#21    S0072  Loại đường: câu nói hai chiều nhưng không nói có dải phân cách hay không, nên là T theo quy tắc 4.
+#22    S0076  Loại đường: câu nói hai làn không đủ chi tiết để xác định loại đường, nên là T theo quy tắc 4.
+#24    S0081  Loại đường: câu nhắc 'có dải phân cách' nhưng không nói rõ một chiều hay hai chiều nên là T.
+#24    S0087  Câu nhắc đến dải phân cách nhưng không nêu rõ đường một chiều hay hai chiều nên loại đường là T theo quy tắc 4.
+#25    S0088  'trời sáng' được dùng để mô tả thời tiết nhưng không khớp lựa chọn nào trong codebook.
+#25    S0089  'trời sáng' được dùng để mô tả thời tiết nhưng không khớp lựa chọn nào trong codebook; câu nhắc đến dải phân cách nhưng không nêu rõ một chiều hay hai chiều nên loại đường là T theo quy tắc 4.
+#25    S0090  'trời sáng' được dùng để mô tả thời tiết nhưng không khớp lựa chọn nào trong codebook.
+#26    S0094  Loại đường: 'đường đô thị có dài phân cách' không nói rõ là một chiều hay hai chiều nên theo quy tắc 4 là T.
+#28    S0098  Loại đường: 'đường nhựa nhiều làn có dải phân cách cứng' không nói rõ một chiều hay hai chiều nên theo quy tắc 4 là T. 'trời sáng' chỉ ánh sáng/thời tiết chung nhưng không khớp nhãn thời tiết nào.
+#28    S0099  Loại đường có nhắc tới dải phân cách nhưng không nói rõ một chiều hay hai chiều nên theo quy tắc 4 là T.
+#28    S0100  Loại đường có nhắc tới dải phân cách nhưng không nói rõ một chiều hay hai chiều nên theo quy tắc 4 là T.
+#28    S0103  Loại đường có nhắc tới dải phân cách nhưng không nói rõ một chiều hay hai chiều nên theo quy tắc 4 là T.
+#28    S0104  Loại đường có nhắc tới dải phân cách nhưng không nói rõ một chiều hay hai chiều nên theo quy tắc 4 là T.
+#29    S0105  Loại đường nói hai chiều và có vạch kẻ vàng đôi nhưng không nêu rõ có dải phân cách hay không có dải phân cách nên theo quy tắc 4 là T.
+#29    S0106  Vạch kẻ vàng đôi phân chia hai chiều xe chạy, không có dải phân cách cứng.
+#29    S0107  Vạch kẻ vàng đôi phân chia hai chiều xe chạy, không có dải phân cách cứng.
+#29    S0108  Vạch kẻ vàng đôi phân chia hai chiều xe chạy, không có dải phân cách cứng.
+#31    S0111  Loại đường: chỉ nói 'hai chiều', không nói có dải phân cách hay không nên chọn T.
+#31    S0112  Loại đường: chỉ nói 'hai chiều', không nói có dải phân cách hay không nên chọn T.
+#36    S0124  Loại đường: câu nhắc đến số làn xe nhưng không nêu rõ là đường một chiều hay hai chiều (có/không dải phân cách), theo quy tắc 4 là T.
+#36    S0125  Loại đường: câu nhắc đến số làn xe nhưng không nêu rõ là đường một chiều hay hai chiều (có/không dải phân cách), theo quy tắc 4 là T.
+#38    S0127  Loại đường: 'hai chiều' nhưng không nói rõ có hay không có dải phân cách nên là T theo quy tắc 4.
+#41    S0134  Loại đường: câu nói có dải phân cách nhưng không nói hai chiều hay một chiều, nên là T theo quy tắc 4.
+#41    S0135  Loại đường: câu nói có dải phân cách nhưng không nói hai chiều hay một chiều, nên là T theo quy tắc 4.
+#41    S0136  Loại đường: câu nói có dải phân cách nhưng không nói hai chiều hay một chiều, nên là T theo quy tắc 4.
+#41    S0138  Loại đường: câu nói có dải phân cách nhưng không nói hai chiều hay một chiều, nên là T theo quy tắc 4.
+#41    S0139  Loại đường: câu nói có dải phân cách nhưng không nói hai chiều hay một chiều, nên là T theo quy tắc 4.
+#42    S0141  Loại đường 'đường nhựa không có dài phân cách' không nói rõ là một chiều hay hai chiều nên là T.
+#43    S0143  Loại đường 'đường nhựa 2 làn có dài phân cách' không nói rõ là một chiều hay hai chiều nên là T.
+#43    S0144  Loại đường 'đường đô thị nhiều làn' không nêu rõ một chiều hay hai chiều có/không dải phân cách nên là T.
+#43    S0145  Loại đường 'đường đô thị nhiều làn' không nêu rõ một chiều hay hai chiều có/không dải phân cách nên là T.
+#44    S0146  Thời tiết 'tạnh ráo' không rõ là nắng hay âm u nên là T. Loại đường 'hai chiều' không nêu dải phân cách nên là T.
+#44    S0147  Thời tiết 'tạnh ráo' không rõ nắng hay âm u nên là T. Loại đường '1 làn' không đủ để xác định một chiều hay hai chiều nên là T.
+#44    S0148  Thời tiết tạnh ráo không đủ để xác định nắng/âm u (quy tắc 4 -> T). Đường hai chiều không rõ có dải phân cách hay không (quy tắc 4 -> T).
+#44    S0149  Thời tiết tạnh ráo không rõ nắng/âm u (quy tắc 4 -> T). Đường hai chiều không rõ dải phân cách (quy tắc 4 -> T).
+#44    S0150  Thời tiết tạnh ráo không rõ nắng/âm u (quy tắc 4 -> T). Đường hai chiều không rõ dải phân cách (quy tắc 4 -> T).
+#45    S0151  Trời khô ráo không đủ thông tin chọn nắng/âm u/mưa... nên là T theo quy tắc 4. 'mặt đường ước' hiểu là mặt đường ướt.
+#45    S0152  Trời khô ráo không rõ nắng/âm u (quy tắc 4 -> T). 'mật độ trung bình' không khớp thưa/đông/ùn tắc nên là K.
+#45    S0153  Trời khô ráo không đủ chi tiết để xác định nắng/âm u nên là T theo quy tắc 4.
+#45    S0154  Trời khô ráo không đủ chi tiết để xác định nắng/âm u nên là T theo quy tắc 4.
+#45    S0155  Loại đường không nói rõ là đường một chiều hay hai chiều nên để T.
+#46    S0157  Loại đường không nói rõ một chiều hay hai chiều nên để T.
+#46    S0158  Loại đường không nói rõ một chiều hay hai chiều nên để T.
+#46    S0159  Loại đường không nói rõ một chiều hay hai chiều nên để T.
+#47    S0160  Loại đường không nói rõ một chiều hay hai chiều nên để T.
+#47    S0161  Loại đường không nói rõ một chiều hay hai chiều nên để T.
+#47    S0162  Loại đường: 'đường cao tốc có dải phân cách cỏ' không nói rõ một chiều hay hai chiều nên áp dụng quy tắc 4 (trạng thái T).
+#48    S0163  Loại đường: 'hai làn có dài phân cách' không xác định rõ là một chiều hay hai chiều nên là T theo quy tắc 4.
+#48    S0164  Loại đường: 'đường nhựa hai làn' không đủ chi tiết để xác định loại đường theo codebook (quy tắc 4).
+#48    S0165  Loại đường: 'đường nhựa hai làn' không đủ chi tiết để xác định (quy tắc 4).
+#48    S0166  Loại đường: 'đường nhựa hai làn' không đủ chi tiết để xác định (quy tắc 4).
+#49    S0169  Ánh sáng: câu nói 'ánh sáng tốt' nhưng không đủ chi tiết xác định ban ngày hay ban đêm nên để T theo quy tắc 4.
+#49    S0170  Ánh sáng: câu nói 'ánh sáng tốt' nhưng không đủ chi tiết xác định ban ngày hay ban đêm nên để T theo quy tắc 4.
+#50    S0171  'trời râm' được hiểu tương đương thời tiết 'âm u'.
+#50    S0172  'trời râm' được hiểu tương đương thời tiết 'âm u'.
+#50    S0173  'trời râm' được hiểu tương đương thời tiết 'âm u'.
+#51    S0174  'trời nhiều mây' được hiểu tương đương thời tiết 'âm u'; 'hai làn' không nêu rõ một chiều hay hai chiều nên loại đường là T.
+#51    S0175  'trời nhiều mây' được hiểu tương đương thời tiết 'âm u'; 'hai làn' không nêu rõ một chiều hay hai chiều nên loại đường là T.
+#51    S0176  Loại đường: câu chỉ nêu 'hai làn', không nêu chiều lưu thông hay dải phân cách nên là T theo quy tắc 4.
+#54    S0184  Thời tiết 'nhiều mây' không có trong codebook và câu nêu 'Trời sáng' nên không khớp với 'âm u'.
+#54    S0185  Thời tiết 'nhiều mây' và mật độ xe 'trung bình' không có lựa chọn phù hợp trong codebook.
+#54    S0186  Thời tiết 'nhiều mây' không có trong codebook và câu nêu 'Trời sáng' nên không khớp với 'âm u'.
+#58    S0200  mật độ xe: 'mật độ thấp' đồng nghĩa với 'thưa'.
+#58    S0201  đoạn đường: 'ngã 3' là 'giao lộ'.
+#59    S0203  Loại đường: 'đường nhựa hai làn' không nói rõ một chiều hay hai chiều, có dải phân cách hay không, nên là T theo quy tắc 4.
+
+7. LỖI (không tính vào độ phủ)
+(không có)
+
+8. TỪNG CÂU TRẢ LỜI
+Câu    Video  Số người  thời tiết   ánh sáng    loại đường                          mặt đường  mật độ xe  đoạn đường  Câu trả lời
+-----  -----  --------  ----------  ----------  ----------------------------------  ---------  ---------  ----------  ----------------------------------------------------------------------------------------------------------------------------------
+S0001  #1     1         M:nắng      M:ban ngày  T                                   M:khô      M:đông     T           Thời tiết nắng ráo, ánh sáng ban ngày, mặt đường nhựa khô ráo, đường đô thị có mật độ giao thông cao.
+S0002  #1     1         M:nắng      M:ban ngày  T                                   M:khô      M:đông     T           Thời tiết nắng ráo, ánh sáng ban ngày, đường đô thị có mật độ giao thông cao, mặt đường khô ráo
+S0003  #1     3         M:nắng      M:ban ngày  T                                   M:khô      M:đông     T           Thời tiết nắng ráo, ánh sáng ban ngày, đường đô thị có mật độ giao thông cao, mặt đường nhựa khô ráo.
+S0004  #1     2         M:nắng      M:ban ngày  T                                   T          M:đông     T           Thời tiết nắng ráo, ánh sáng ban ngày, đường đô thị có mật độ giao thông cao.
+S0005  #2     5         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng ráo, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo.
+S0006  #2     1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường huyện, mặt đường nhựa khô ráo.
+S0007  #2     1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường quốc lộ, mặt đường nhựa khô ráo.
+S0008  #3     1         M:nắng      M:ban ngày  T                                   M:khô      T          K           Thời tiết nắng ráo, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo tại khu vực chia luồng.
+S0009  #3     5         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo tại khu vực nút giao.
+S0010  #3     1         M:nắng      M:ban ngày  T                                   M:khô      M:đông     M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường xá giao thông đông đúc, mặt đường nhựa khô ráo tại khu vực nút giao.
+S0011  #4     1         K           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nhiều mây; đường đô thị nhiều làn, mặt đường nhựa khô ráo.
+S0012  #4     1         M:âm u      M:ban ngày  T                                   T          T          T           Trời âm u nhiều mây, ánh sáng ban ngày, đường giao thông nội thành, đường nhựa bằng phẳng
+S0013  #4     1         M:âm u      M:ban ngày  T                                   M:khô      T          M:giao lộ   Trời âm u, ánh sáng ban ngày, đường nhựa bằng phẳng tại khu vực ngã tư, mặt đường khô ráo.
+S0014  #4     2         M:âm u      M:ban ngày  T                                   T          T          M:giao lộ   Trời âm u, ánh sáng ban ngày, đường nhựa bằng phẳng tại khu vực ngã tư.
+S0015  #4     1         M:âm u      M:ban ngày  T                                   M:khô      T          M:giao lộ   Trời âm u, ánh sáng ban ngày, đường nhựa khô bằng phẳng tại khu vực ngã tư.
+S0016  #4     1         M:âm u      M:ban ngày  T                                   M:khô      T          M:giao lộ   Trời âm u, ánh sáng ban ngày, đường nhựa khô ráo tại khu vực ngã tư.
+S0017  #5     7         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Trời nắng, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo tại một ngã tư có đèn tín hiệu.
+S0018  #6     4         K           M:ban ngày  T                                   M:khô      T          T           Trời nhiều mây, ban ngày, đường phố đô thị với mặt đường khô ráo.
+S0019  #6     1         K           M:ban ngày  T                                   M:khô      T          T           Trời nhiều mây, ban ngày, đường phố đô thị với mặt đường nhựa khô ráo.
+S0020  #6     1         K           M:ban ngày  T                                   M:ướt      T          T           Trời nhiều mây, ban ngày, đường phố đô thị với mặt đường ẩm ướt
+S0021  #6     1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ban ngày, đường phố đô thị với mặt đường khô ráo.
+S0022  #7     1         K           M:ban ngày  T                                   M:khô      T          T           Thời tiết khô ráo, ánh sáng ban ngày rõ ràng, đường nhựa hai chiều trong khu dân cư, mặt đường khô ráo.
+S0023  #7     3         K           M:ban ngày  T                                   T          T          T           Thời tiết khô ráo, ánh sáng ban ngày rõ ràng, đường nhựa hai chiều trong khu dân cư.
+S0024  #7     1         K           M:ban ngày  T                                   M:khô      T          T           Thời tiết khô ráo, ánh sáng ban ngày rõ ràng, đường nhựa khô ráo.
+S0025  #7     1         K           M:ban ngày  T                                   T          T          T           Thời tiết khô ráo, ánh sáng ban ngày rõ ràng, đưởng trong đô thị, đường nhựa hai chiều trong khu dân cư.
+S0026  #7     1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng, ánh sáng ban ngày rõ ràng, đường nhựa hai chiều trong khu dân cư, mặt đường khô ráo.
+S0027  #8     1         M:mưa       M:ban ngày  T                                   M:ướt      T          T           Trời mưa, ban ngày, mặt đường nhựa ướt và trơn trượt, đường 2 chiều.
+S0028  #8     3         M:mưa       M:ban ngày  T                                   M:ướt      T          T           Trời mưa, ban ngày, mặt đường nhựa ướt và trơn trượt.
+S0029  #8     1         M:mưa       M:ban ngày  T                                   M:ướt      T          T           Trời mưa, ban ngày, đường giao thông ngoài đô thị, mặt đường nhựa ướt và trơn trượt.
+S0030  #8     1         M:mưa       M:ban ngày  T                                   M:ướt      T          T           Trời mưa, ban ngày, đường ngoại đô, mặt đường nhựa ướt và trơn trượt.
+S0031  #8     1         M:mưa       M:ban ngày  T                                   M:ướt      T          T           Trời mưa, ban ngày, đường trong thôn, mặt đường nhựa ướt và trơn trượt.
+S0032  #9     5         K           M:ban đêm   T                                   M:khô      T          T           Ban đêm, trời quang, đường cao tốc, mặt đường khô ráo.
+S0033  #9     1         T           M:ban đêm   T                                   M:khô      T          T           Ban đêm, trời tối, đường cao tốc, mặt đường khô ráo.
+S0034  #9     1         T           M:ban đêm   T                                   M:khô      T          T           Ban đêm, đường cao tốc, mặt đường khô ráo.
+S0035  #10    7         M:âm u      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời âm u, đường nhựa hai chiều, mặt đường khô ráo.
+S0036  #11    5         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Ban ngày, trời nắng ráo, tầm nhìn tốt, mặt đường nhựa khô ráo tại một ngã tư đô thị.
+S0037  #11    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng ráo, tầm nhìn tốt, mặt đường nhựa khô ráo tại một đường hai chiều đô thị.
+S0038  #11    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng ráo, tầm nhìn tốt, mặt đường nhựa khô ráo.
+S0039  #12    1         M:nắng      M:ban ngày  T                                   T          T          T           Ban ngày, trời nắng ráo, tầm nhìn tốt trên đường nhựa đô thị.
+S0040  #12    2         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng ráo, tầm nhìn tốt trên đường đô thị, mặt đường khô ráo.
+S0041  #12    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng ráo, tầm nhìn tốt trên đường đô thị, mặt đường nhựa khô
+S0042  #12    1         M:nắng      M:ban ngày  T                                   T          T          T           Ban ngày, trời nắng ráo, tầm nhìn tốt trên đường đô thị.
+S0043  #12    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng ráo, tầm nhìn tốt, đường nhựa khô ráo.
+S0044  #12    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng, tầm nhìn tốt trên đường đô thị, đường khô ráo
+S0045  #13    1         K           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng nhiều mây, đường nhựa hai chiều khô ráo trong khu dân cư.
+S0046  #13    5         T           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng, đường nhựa hai chiều khô ráo trong khu dân cư.
+S0047  #13    1         T           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng, đường nhựa hai chiều không có vạch kẻ đường khô ráo trong khu dân cư.
+S0048  #14    1         M:nắng      M:ban ngày  M:hai chiều có dải phân cách        M:khô      T          T           Ban ngày, trời nắng, đường nhựa hai chiều có dải phân cách cứng, mặt đường khô ráo.
+S0049  #14    1         M:nắng      M:ban ngày  M:hai chiều có dải phân cách        M:khô      T          T           Ban ngày, trời nắng, đường nhựa hai chiều có dải phân cách cứng, đường khô ráo.
+S0050  #14    3         M:nắng      M:ban ngày  M:hai chiều có dải phân cách        T          T          T           Ban ngày, trời nắng, đường nhựa hai chiều có dải phân cách cứng.
+S0051  #14    1         M:nắng      M:ban ngày  M:hai chiều có dải phân cách        T          T          T           Ban ngày, trời nắng, đường nhựa hai chiều trong đô thị có dải phân cách cứng.
+S0052  #14    1         M:nắng      M:ban ngày  M:hai chiều có dải phân cách        M:khô      T          T           Ban ngày, trời nắng, đường nhựa khô ráo hai chiều có dải phân cách cứng.
+S0053  #15    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, ngã 3 đường đô thị trải nhựa bằng phẳng và khô ráo.
+S0054  #15    6         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường đô thị trải nhựa bằng phẳng và khô ráo.
+S0055  #16    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng, ban ngày, đường ngoài đô thị, đường nhựa có dải phân cách và mặt đường khô ráo.
+S0056  #16    6         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng, ban ngày, đường nhựa có dải phân cách và mặt đường khô ráo.
+S0057  #17    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày rõ ràng, mặt đường nhựa khô ráo tại khu vực ngã ba
+S0058  #17    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày rõ ràng, mặt đường nhựa khô ráo tại khu vực ngã ba.
+S0059  #17    4         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày rõ ràng, mặt đường nhựa khô ráo tại khu vực ngã tư.
+S0060  #17    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày rõ ràng, đường ngoài đô thị, mặt đường nhựa khô ráo tại khu vực ngã ba.
+S0061  #18    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, tại một ngã tư đường hẻm nhỏ mặt đường nhựa khô ráo.
+S0062  #18    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, tại một ngã tư đường hẻm nhỏ, mặt đường khô ráo.
+S0063  #18    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, tại một ngã tư đường hẻm nhỏ, đường nhựa khô ráo.
+S0064  #18    2         M:nắng      M:ban ngày  T                                   T          T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, tại một ngã tư đường hẻm nhỏ.
+S0065  #18    1         M:nắng      M:ban ngày  T                                   T          T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, tại một ngã tư đường nhựa, trong hẻm nhỏ.
+S0066  #18    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng, đường khô ráo, ánh sáng ban ngày tốt, tại một ngã tư đường hẻm nhỏ.
+S0067  #19    7         M:âm u      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời âm u, đường bê tông trong ngõ hẹp và khô ráo.
+S0068  #20    7         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng, ban ngày, đường nhựa đô thị khô ráo, có dải phân cách.
+S0069  #21    1         M:nắng      M:ban ngày  M:hai chiều có dải phân cách        M:khô      T          T           Trời nắng ráo, ánh sáng ban ngày tốt, đường nhựa hai chiều có dải phân cách, mặt đường khô ráo.
+S0070  #21    1         M:nắng      M:ban ngày  M:hai chiều không có dải phân cách  T          T          T           Trời nắng ráo, ánh sáng ban ngày tốt, đường nhựa hai chiều ngoài đô thị không có dải phân cách.
+S0071  #21    1         M:nắng      M:ban ngày  T                                   M:ướt      T          T           Trời nắng ráo, ánh sáng ban ngày tốt, đường nhựa hai chiều trong khu dân cư ẩm ướt
+S0072  #21    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng ráo, ánh sáng ban ngày tốt, đường nhựa hai chiều, mặt đường khô ráo.
+S0073  #21    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng ráo, ánh sáng ban ngày tốt, đường nhựa khô ráo.
+S0074  #21    1         M:nắng      M:ban ngày  M:hai chiều có dải phân cách        T          T          M:khúc cua  Trời nắng ráo, ánh sáng ban ngày tốt, đường vào cua, đường nhựa hai chiều có dải phân cách.
+S0075  #21    1         M:nắng      M:ban ngày  M:hai chiều có dải phân cách        M:khô      T          T           Trời nắng, ánh sáng ban ngày tốt, đường nhựa hai chiều có dải phân cách, mặt đường khô ráo.
+S0076  #22    6         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ánh sáng ban ngày, đường nhựa hai làn khô ráo qua khu dân cư.
+S0077  #22    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ánh sáng ban ngày, đường nhựa làng quê khô ráo.
+S0078  #23    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng, ánh sáng ban ngày tốt, đường nhựa phố đô thị khô ráo.
+S0079  #23    5         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng, ánh sáng ban ngày tốt, đường phố đô thị khô ráo.
+S0080  #23    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng, ánh sáng ban ngày tốt, đường phố đô thị mặt đường khô ráo.
+S0081  #24    1         K           M:ban ngày  T                                   M:khô      T          M:giao lộ   Ban ngày, trời nhiều mây; giao lộ đường đô thị nhiều làn có dải phân cách, mặt đường nhựa khô.
+S0082  #24    1         M:âm u      M:ban ngày  T                                   M:khô      M:đông     M:giao lộ   Ban ngày, trời âm u, giao lộ đông đúc, mặt đường khô ráo.
+S0083  #24    1         M:âm u      M:ban ngày  T                                   M:khô      M:đông     T           Ban ngày, trời âm u, mặt đường khô ráo và trong khu dân cư đông đúc.
+S0084  #24    1         M:âm u      M:ban ngày  T                                   M:khô      T          M:giao lộ   Ban ngày, trời âm u, mặt đường khô ráo,ngã tư giao lộ.
+S0085  #24    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời âm u, mặt đường khô ráo.
+S0086  #24    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời âm u, mặt đường đô thị khô ráo.
+S0087  #24    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời âm u, đường đô thị có dài phân cách, mặt đường khô ráo.
+S0088  #25    1         K           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng, đường nhựa đô thị khô ráo.
+S0089  #25    1         K           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng, đường đô thị có dải phân cách, đường khô ráo.
+S0090  #25    5         K           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng, đường đô thị khô ráo.
+S0091  #26    1         M:âm u      M:ban ngày  T                                   M:khô      T          M:giao lộ   Ban ngày, trời âm u, giao lộ khô ráo.
+S0092  #26    4         M:âm u      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời âm u, đường nhựa bằng phẳng và khô ráo.
+S0093  #26    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời âm u, đường nhựa đô thị, bằng phẳng và khô ráo.
+S0094  #26    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời âm u, đường đô thị có dài phân cách, đường nhựa bằng phẳng và khô ráo.
+S0095  #27    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng, ánh sáng ban ngày, đường nhựa phố đô thị, mặt đường khô ráo.
+S0096  #27    1         M:nắng      M:ban ngày  T                                   M:khô      M:đông     T           Thời tiết nắng, ánh sáng ban ngày, đường phố đô thị mật độ giao thông cao, mặt đường khô ráo.
+S0097  #27    5         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng, ánh sáng ban ngày, đường phố đô thị, mặt đường khô ráo.
+S0098  #28    1         T           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng, đường nhựa nhiều làn có dải phân cách cứng, mặt đường khô ráo.
+S0099  #28    1         T           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng, đường nhựa nhiều làn có dải phân cách cứng, đường khô ráo.
+S0100  #28    1         T           M:ban ngày  T                                   T          T          T           Ban ngày, trời sáng, đường nhựa nhiều làn có dải phân cách cứng.
+S0101  #28    1         T           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng, đường nhựa nhiều làn, mặt đường khô ráo.
+S0102  #28    1         T           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng, đường nhựa, khô ráo.
+S0103  #28    1         T           M:ban ngày  T                                   T          T          T           Ban ngày, trời sáng, đường quốc lộ, đường nhựa nhiều làn có dải phân cách cứng.
+S0104  #28    1         T           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời sáng,đường ngoài đô thị, đường nhựa khô ráo nhiều làn có dải phân cách cứng.
+S0105  #29    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng , tầm nhìn rõ ràng trên đường nhựa hai chiều có vạch kẻ vàng đôi khô ráo
+S0106  #29    1         M:nắng      M:ban ngày  M:hai chiều không có dải phân cách  M:khô      T          T           Ban ngày, trời nắng ráo, tầm nhìn rõ ràng trên đường nhựa hai chiều có vạch kẻ vàng đôi, khô ráo.
+S0107  #29    2         M:nắng      M:ban ngày  M:hai chiều không có dải phân cách  M:khô      T          T           Ban ngày, trời nắng ráo, tầm nhìn rõ ràng trên đường nhựa hai chiều có vạch kẻ vàng đôi, mặt đường khô ráo.
+S0108  #29    2         M:nắng      M:ban ngày  M:hai chiều không có dải phân cách  T          T          T           Ban ngày, trời nắng ráo, tầm nhìn rõ ràng trên đường nhựa hai chiều có vạch kẻ vàng đôi.
+S0109  #29    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng ráo, đường ngoài đô thị có vạch kẻ đường, mặt đường khô ráo
+S0110  #30    7         M:âm u      M:ban ngày  T                                   M:khô      T          T           Thời tiết âm u, ánh sáng ban ngày, đường cao tốc trên cầu, mặt đường khô ráo.
+S0111  #31    6         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ánh sáng ban ngày, đường nhựa hai chiều khô ráo.
+S0112  #31    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ánh sáng ban ngày, đường nhựa ngoại thành hai chiều khô ráo.
+S0113  #32    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Trời nắng, ánh sáng ban ngày rõ ràng, đường ngoài đô thị, đường nhựa khô ráo tại khu vực ngã tư.
+S0114  #32    6         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Trời nắng, ánh sáng ban ngày rõ ràng, đường nhựa khô ráo tại khu vực ngã tư.
+S0115  #33    6         M:sương mù  M:ban ngày  T                                   M:ướt      T          T           Ban ngày, trời sương mù dày đặc, tầm nhìn hạn chế và mặt đường ướt.
+S0116  #33    1         M:sương mù  M:ban ngày  T                                   M:ướt      T          T           Ban ngày, trời sương mù dày đặc, đường ngoài đô thị, tầm nhìn hạn chế và mặt đường ướt.
+S0117  #34    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:khúc cua  Thời tiết nắng ráo, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo tại khúc cua cong.
+S0118  #34    1         M:nắng      M:ban ngày  T                                   M:khô      T          M:khúc cua  Thời tiết nắng ráo, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo tại khúc cua.
+S0119  #34    2         M:nắng      M:ban ngày  T                                   M:khô      T          M:khúc cua  Thời tiết nắng ráo, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo tại một khúc cua.
+S0120  #34    3         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo tại một ngã tư.
+S0121  #35    4         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng, ánh sáng ban ngày, đường nhựa hẹp cạnh bờ sông, mặt đường khô ráo.
+S0122  #35    2         M:nắng      M:ban ngày  T                                   T          T          T           Thời tiết nắng, ánh sáng ban ngày, đường nhựa hẹp cạnh bờ sông.
+S0123  #35    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng, ánh sáng ban ngày, đường nhựa hẹp khô ráo cạnh bờ sông.
+S0124  #36    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ánh sáng ban ngày, đường nhựa hai làn xe, mặt đường khu dân cư khô ráo.
+S0125  #36    6         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ánh sáng ban ngày, đường nhựa hai làn xe, mặt đường khô ráo.
+S0126  #37    7         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường nhựa khô ráo trước một tiệm sửa xe.
+S0127  #38    7         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng, ánh sáng tốt, đường nhựa hai chiều khô ráo với vạch kẻ đường màu vàng.
+S0128  #39    7         M:mưa       M:ban ngày  T                                   M:ướt      T          T           Trời mưa, ánh sáng ban ngày, đường đô thị có mặt đường ướt và trơn.
+S0129  #40    3         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng ráo, ánh sáng ban ngày tốt với bóng đổ dài và mặt đường nhựa khô ráo.
+S0130  #40    1         M:nắng      M:ban ngày  T                                   K          T          T           Trời nắng ráo, ánh sáng ban ngày tốt với bóng đổ dài và mặt đường nhựa trơn trượt.
+S0131  #40    1         M:nắng      M:ban ngày  T                                   M:ướt      M:đông     T           Trời nắng ráo, ánh sáng ban ngày tốt, đường giao thông đông đúc, mặt đường hơi ướt.
+S0132  #40    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng ráo, ánh sáng ban ngày tốt, đường khu dân cư và mặt đường nhựa khô ráo.
+S0133  #40    1         M:nắng      M:ban ngày  T                                   M:khô      M:đông     T           Trời nắng ráo, ánh sáng ban ngày, đường mật độ giao thông cao, mặt đường nhựa khô ráo.
+S0134  #41    1         M:nắng      M:ban ngày  T                                   T          T          T           Trời nắng, ánh sáng ban ngày rõ ràng, đường nhựa đô thị có dải phân cách và đường trên cao.
+S0135  #41    1         M:nắng      M:ban ngày  T                                   M:khô      M:thưa     T           Trời nắng, ánh sáng ban ngày rõ ràng, đường nhựa đô thị có dải phân cách, mặt đường khô ráo và mật độ thấp
+S0136  #41    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng, ánh sáng ban ngày rõ ràng, đường nhựa đô thị khô ráo có dải phân cách và đường sắt trên cao.
+S0137  #41    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Trời nắng, ánh sáng ban ngày rõ ràng, đường nhựa đô thị nhiều làn, mặt đường khô ráo.
+S0138  #41    1         M:âm u      M:ban ngày  T                                   T          T          T           Trời âm u , ánh sáng ban ngày rõ ràng, đường nhựa đô thị có dải phân cách và đường sắt trên cao.
+S0139  #41    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ánh sáng ban ngày rõ ràng, đường nhựa đô thị có dải phân cách và đường sắt trên cao, mặt đường khô ráo
+S0140  #42    1         M:nắng      T           T                                   M:khô      K          T           Trời nắng, tầm nhìn rõ, đường phố đô thị với mặt đường khô ráo, mật độ trung bình
+S0141  #42    1         M:nắng      T           T                                   M:khô      M:đông     T           Trời nắng, tầm nhìn rõ, đường phố đô thị với mặt đường khô ráo, đường nhựa không có dài phân cách, mật độ phương tiện dầy.
+S0142  #42    4         M:nắng      T           T                                   M:khô      T          T           Trời nắng, tầm nhìn rõ, đường phố đô thị với mặt đường khô ráo.
+S0143  #43    1         T           M:ban đêm   T                                   M:khô      M:đông     M:giao lộ   Ban đêm, ánh sáng nhân tạo từ đèn đường, đường nhựa 2 làn có dài phân cách ngay ngã tư, mặt đường khô ráo, mật độ phương tiện dầy.
+S0144  #43    1         T           M:ban đêm   T                                   M:khô      M:đông     T           Ban đêm, ánh sáng nhân tạo từ đèn đường, đường đô thị nhiều làn, mặt đường khô ráo, mật độ khá cao.
+S0145  #43    4         T           M:ban đêm   T                                   M:khô      T          T           Ban đêm, ánh sáng nhân tạo từ đèn đường, đường đô thị nhiều làn, mặt đường khô ráo.
+S0146  #44    1         T           M:ban ngày  T                                   M:khô      T          T           Trời sáng, thời tiết tạnh ráo, khu dân cư, đường nhựa hai chiều khô ráo.
+S0147  #44    1         T           M:ban ngày  T                                   T          M:thưa     T           Trời sáng, thời tiết tạnh ráo, đường nhựa 1 làn, mật độ giao thông thưa.
+S0148  #44    1         T           M:ban ngày  T                                   M:khô      M:đông     T           Trời sáng, thời tiết tạnh ráo, đường nhựa hai chiều khô ráo, mật độ giao thông khá cao.
+S0149  #44    2         T           M:ban ngày  T                                   M:khô      T          T           Trời sáng, thời tiết tạnh ráo, đường nhựa hai chiều khô ráo.
+S0150  #44    1         T           M:ban ngày  T                                   M:khô      T          T           Trời sáng, thời tiết tạnh ráo, đường nhựa hai chiều mặt đường khô ráo
+S0151  #45    1         T           M:ban đêm   T                                   M:ướt      T          T           Ban đêm, trời khô ráo, đường nhựa có đèn đường mặt đường ước.
+S0152  #45    1         T           M:ban đêm   T                                   T          K          T           Ban đêm, trời khô ráo, đường nhựa có đèn đường, mật độ trung bình
+S0153  #45    1         T           M:ban đêm   T                                   M:khô      T          T           Ban đêm, trời khô ráo, đường nhựa có đèn đường, mặt đường khô ráo.
+S0154  #45    1         T           M:ban đêm   T                                   T          T          T           Ban đêm, trời khô ráo, đường nhựa có đèn đường.
+S0155  #45    1         K           M:ban đêm   T                                   M:ướt      K          T           Ban đêm, trời không ráo, đường nhựa 2 làn có dài phân cách, bề mặt đường ẩm ướt, mật độ phương tiện dầy.
+S0156  #45    1         T           M:ban đêm   T                                   M:khô      T          T           Ban đêm, trời tối, mặt đường khô ráo, đường nhựa có đèn đường.
+S0157  #46    1         T           M:ban đêm   T                                   M:khô      M:thưa     T           Trời tối, có đèn đường, đường đô thị nhiều làn xe, mặt đường khô ráo, mật độ giao thông thưa.
+S0158  #46    1         T           M:ban đêm   T                                   M:khô      K          T           Trời tối, có đèn đường, đường đô thị nhiều làn xe, mặt đường khô ráo, mật độ trung bình.
+S0159  #46    4         T           M:ban đêm   T                                   M:khô      T          T           Trời tối, có đèn đường, đường đô thị nhiều làn xe, mặt đường khô ráo.
+S0160  #47    1         M:âm u      M:ban ngày  T                                   M:khô      M:thưa     T           Trời âm u, ban ngày, đường cao tốc có dải phân cách cỏ, mặt đường khô ráo, mật đô giao thông thưa.
+S0161  #47    1         M:âm u      M:ban ngày  T                                   M:khô      K          T           Trời âm u, ban ngày, đường cao tốc có dải phân cách cỏ, mặt đường khô ráo, mật độ trung bình
+S0162  #47    4         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ban ngày, đường cao tốc có dải phân cách cỏ, mặt đường khô ráo.
+S0163  #48    1         M:nắng      K           T                                   T          M:thưa     T           Trời nắng, ánh sáng tốt, đường nhựa hai làn có dài phân cách ở khu vực nông thôn, mật độ giao thông thưa.
+S0164  #48    1         M:nắng      K           T                                   M:khô      T          T           Trời nắng, ánh sáng tốt, đường nhựa hai làn ở khu vực nông thôn mặt đường khô ráo.
+S0165  #48    1         M:nắng      K           T                                   M:khô      K          T           Trời nắng, ánh sáng tốt, đường nhựa hai làn ở khu vực nông thôn, khô ráo, mật độ thấp
+S0166  #48    2         M:nắng      K           T                                   T          T          T           Trời nắng, ánh sáng tốt, đường nhựa hai làn ở khu vực nông thôn.
+S0167  #48    1         M:nắng      K           T                                   M:khô      T          T           Trời nắng, ánh sáng tốt, đường nhựa ngoài đô thị, mặt đường khô ráo.
+S0168  #49    1         M:nắng      K           T                                   M:khô      M:thưa     M:khúc cua  Trời nắng, ánh sáng tốt, đường đèo núi quanh co, mặt đường nhựa khô ráo, mật độ giao thông thưa.
+S0169  #49    1         M:nắng      T           T                                   M:khô      M:thưa     M:khúc cua  Trời nắng, ánh sáng tốt, đường đèo núi quanh co, mặt đường nhựa khô ráo, mật độ thấp
+S0170  #49    4         M:nắng      T           T                                   M:khô      T          M:khúc cua  Trời nắng, ánh sáng tốt, đường đèo núi quanh co, mặt đường nhựa khô ráo.
+S0171  #50    1         M:âm u      M:ban ngày  T                                   M:khô      M:đông     T           Ban ngày, trời râm, đường phố có cầu vượt, mặt đường khô ráo, mật độ giao thông dày.
+S0172  #50    1         M:âm u      M:ban ngày  T                                   M:khô      M:đông     T           Ban ngày, trời râm, đường phố có cầu vượt, mặt đường khô ráo, mật độ khá cao.
+S0173  #50    3         M:âm u      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời râm, đường phố có cầu vượt, mặt đường khô ráo.
+S0174  #51    1         M:âm u      M:ban ngày  T                                   M:khô      M:thưa     T           Ban ngày, trời nhiều mây, đường nhựa hai làn bằng phẳng và khô ráo, mật độ giao thông thưa.
+S0175  #51    1         M:âm u      M:ban ngày  T                                   M:khô      M:thưa     T           Ban ngày, trời nhiều mây, đường nhựa hai làn bằng phẳng và khô ráo,mật độ thấp
+S0176  #51    4         K           M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nhiều mây, đường nhựa hai làn bằng phẳng và khô ráo.
+S0177  #52    1         M:âm u      M:ban ngày  T                                   K          K          M:giao lộ   Trời âm u, ánh sáng ban ngày, đường nhựa tại ngã ba, mặt đường dơ sau cơn mưa, mật độ giao thông dày.
+S0178  #52    1         M:âm u      M:ban ngày  T                                   K          K          M:giao lộ   Trời âm u, ánh sáng ban ngày, đường nhựa tại ngã ba, mặt đường hơi bẩn, mật độ cao
+S0179  #52    3         M:âm u      M:ban ngày  T                                   K          T          M:giao lộ   Trời âm u, ánh sáng ban ngày, đường nhựa tại ngã ba, mặt đường hơi bẩn.
+S0180  #52    1         M:âm u      M:ban ngày  T                                   M:ướt      T          M:giao lộ   Trời âm u, ánh sáng ban ngày, đường nhựa tại ngã ba, mặt đường ẩm ướt.
+S0181  #53    1         M:nắng      M:ban ngày  T                                   M:khô      M:thưa     M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày, đường nhựa khô ráo tại một ngã tư đô thị, mật độ giao thông thưa.
+S0182  #53    1         M:nắng      M:ban ngày  T                                   M:khô      K          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày, đường nhựa khô ráo tại một ngã tư đô thị, mật độ trung bình.
+S0183  #53    3         M:nắng      M:ban ngày  T                                   M:khô      T          M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày, đường nhựa khô ráo tại một ngã tư đô thị.
+S0184  #54    1         K           M:ban ngày  T                                   M:khô      M:thưa     T           Trời sáng, nhiều mây, đường nhựa hai làn xe khô ráo, mật độ giao thông thưa.
+S0185  #54    1         K           M:ban ngày  T                                   M:khô      K          T           Trời sáng, nhiều mây, đường nhựa hai làn xe khô ráo, mật độ trung bình.
+S0186  #54    3         K           M:ban ngày  T                                   M:khô      T          T           Trời sáng, nhiều mây, đường nhựa hai làn xe khô ráo.
+S0187  #55    1         M:nắng      M:ban ngày  T                                   T          M:đông     T           Ban ngày, trời nắng, đường nhựa hẹp không có vạch kẻ đường, mật độ giao thông dày.
+S0188  #55    1         M:nắng      M:ban ngày  T                                   M:khô      M:đông     T           Ban ngày, trời nắng, đường nhựa hẹp và có xe đỗ gây cản trở giao thông, khô ráo và mật độ cao.
+S0189  #55    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Ban ngày, trời nắng, đường nhựa hẹp và có xe đỗ gây cản trở giao thông, mặt đường khô ráo.
+S0190  #55    2         M:nắng      M:ban ngày  T                                   T          T          T           Ban ngày, trời nắng, đường nhựa hẹp và có xe đỗ gây cản trở giao thông.
+S0191  #56    1         T           M:ban đêm   T                                   M:khô      T          T           Ban đêm, trời khô ráo, đường đô thị có đèn đường, mặt đường bằng phẳng khô ráo.
+S0192  #56    1         T           M:ban đêm   T                                   T          M:thưa     T           Ban đêm, trời khô ráo, đường đô thị có đèn đường, mặt đường bằng phẳng, mật độ giao thông thưa.
+S0193  #56    1         T           M:ban đêm   T                                   T          M:thưa     T           Ban đêm, trời khô ráo, đường đô thị có đèn đường, mặt đường bằng phẳng, mật độ thấp
+S0194  #56    2         T           M:ban đêm   T                                   T          T          T           Ban đêm, trời khô ráo, đường đô thị có đèn đường, mặt đường bằng phẳng.
+S0195  #57    1         M:nắng      M:ban ngày  T                                   T          M:đông     M:giao lộ   Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường ngã 3 đô thị có đèn giao thông, đường trải nhựa phẳng, mật độ giao thông dày.
+S0196  #57    1         M:nắng      M:ban ngày  T                                   M:khô      K          T           Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường đô thị trải nhựa phẳng, khô ráo, mật độ trung bình.
+S0197  #57    1         M:nắng      M:ban ngày  T                                   M:khô      T          T           Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường đô thị trải nhựa phẳng, mặt đường khô ráo.
+S0198  #57    2         M:nắng      M:ban ngày  T                                   T          T          T           Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường đô thị trải nhựa phẳng.
+S0199  #58    2         M:mưa       T           T                                   M:ướt      T          T           Trời mưa, mặt đường nhựa ướt và trơn trượt.
+S0200  #58    1         M:âm u      T           T                                   M:ướt      M:thưa     T           Trời âm u, mặt đường nhựa ướt và trơn trượt, mật độ thấp.
+S0201  #58    1         M:âm u      T           T                                   M:ướt      M:thưa     M:giao lộ   Trời âm u, mặt đường nhựa ướt và trơn trượt, đường ngã 3 từ đường nhỏ ra, mật độ giao thông thưa..
+S0202  #58    1         M:âm u      M:ban ngày  T                                   M:ướt      T          T           Trời âm u,ban ngày mặt đường nhựa ướt và trơn trượt.
+S0203  #59    1         M:âm u      M:ban ngày  T                                   M:khô      M:thưa     T           Trời âm u, ánh sáng ban ngày, đường nhựa hai làn và mặt đường khô ráo, mật độ giao thông thưa.
+S0204  #59    1         M:âm u      M:ban ngày  T                                   M:khô      T          T           Trời âm u, ánh sáng ban ngày, đường nhựa hai làn và mặt đường khô ráo.
+S0205  #59    2         M:âm u      M:ban ngày  T                                   M:ướt      T          T           Trời âm u, ánh sáng ban ngày, đường nhựa hai làn và mặt đường đang bị ướt.
+S0206  #59    1         M:âm u      M:ban ngày  T                                   M:khô      M:thưa     T           Trời âm u, ánh sáng ban ngày, đường nhựa hai làn và mặt đường đang khô ráo, mật độ thấp.
+S0207  #60    1         K           M:ban ngày  K                                   M:khô      M:đông     T           Trời nhiều mây, ánh sáng ban ngày, đường đô thị trải nhựa và mặt đường khô ráo, mật độ giao thông dầy.
+S0208  #60    1         K           M:ban ngày  K                                   M:khô      K          T           Trời nhiều mây, ánh sáng ban ngày, đường đô thị trải nhựa và mặt đường khô ráo, mật độ trung bình.
+S0209  #60    3         K           M:ban ngày  K                                   M:khô      T          T           Trời nhiều mây, ánh sáng ban ngày, đường đô thị trải nhựa và mặt đường khô ráo.

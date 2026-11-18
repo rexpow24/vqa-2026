@@ -1,0 +1,37 @@
+CHẠY THỬ NHÓM C, model gemini-3.8-flash
+
+[1] Xe tải ben màu xám đậm di chuyển quá sát bên trái ô tô màu trắng và xe ô tô Ford quá sát bên phải trong khoảng đường hẹp.
+Ô              Mong muốn                 Model                     So    Bằng chứng mong muốn                       Bằng chứng model
+-------------  ------------------------  ------------------------  ----  -----------------------------------------  --------------------------------------------------------------------------
+loại sự kiện   T                         T                         khớp
+chủ thể        M:xe tải ben màu xám đậm  M:xe tải ben màu xám đậm  khớp  Xe tải ben màu xám đậm                     Xe tải ben màu xám đậm
+đối tượng      K                         K                         khớp  ô tô màu trắng và xe ô tô Ford             ô tô màu trắng và xe ô tô Ford
+kiểu xung đột  M:K05                     K                         LỆCH  di chuyển quá sát bên trái ô tô màu trắng  di chuyển quá sát bên trái ô tô màu trắng và xe ô tô Ford quá sát bên phải
+hành động      K                         T                         LỆCH  di chuyển quá sát bên trái
+tốc độ         T                         T                         khớp
+bên né         T                         T                         khớp
+cách né        T                         T                         khớp
+kết quả né     T                         T                         khớp
+Ngoài codebook, model: [{"đoạn": "trong khoảng đường hẹp", "loại": "nhóm khác: S"}]
+Ngoài codebook, mong muốn: [{"đoạn": "trong khoảng đường hẹp", "loại": "nhóm khác: S"}]
+Ghi chú, model: Câu nêu hai đối tượng (ô tô màu trắng và xe ô tô Ford) nhưng không rõ thứ tự bên nào bị chạm hoặc phải né trước nên đối tượng là K.
+Lỗi kiểm tra: không có
+
+[2] Xe máy bất ngờ băng qua đường ngay trước đầu xe ô tô đang di chuyển.
+Ô              Mong muốn  Model      So    Bằng chứng mong muốn           Bằng chứng model
+-------------  ---------  ---------  ----  -----------------------------  ----------------
+loại sự kiện   T          T          khớp
+chủ thể        M:xe máy   M:xe máy   khớp  Xe máy                         Xe máy
+đối tượng      M:xe ô tô  M:xe ô tô  khớp  xe ô tô đang di chuyển         xe ô tô
+kiểu xung đột  M:K14      M:K14      khớp  băng qua đường ngay trước đầu  băng qua đường
+hành động      T          T          khớp  băng qua đường                 băng qua đường
+tốc độ         T          T          khớp
+bên né         T          T          khớp
+cách né        T          T          khớp
+kết quả né     T          T          khớp
+Ngoài codebook, model: [{"đoạn": "bất ngờ", "loại": "khác"}, {"đoạn": "ngay trước đầu xe ô tô đang di chuyển", "loại": "khác"}]
+Ngoài codebook, mong muốn: [{"đoạn": "bất ngờ", "loại": "khác"}]
+Ghi chú, model: Hành động của K14 là T vì câu chỉ nói 'băng qua đường' mà không nêu hướng từ trái sang phải hay từ phải sang trái.
+Lỗi kiểm tra: không có
+
+Token: {"promptTokenCount": 3408, "candidatesTokenCount": 1243, "totalTokenCount": 6179, "promptTokensDetails": [{"modality": "TEXT", "tokenCount": 3408}], "thoughtsTokenCount": 1528, "serviceTier": "standard"}

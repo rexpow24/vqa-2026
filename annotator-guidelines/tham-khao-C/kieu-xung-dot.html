@@ -1,0 +1,173 @@
+<title>Kiểu xung đột hai thực thể</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: summary, then 18 type cards grouped by family (each with a lane sketch), the 40-video distribution, tie-break rules, and the slot mapping. */
+:root {
+  --bg: #f7f7f5; --fg: #1d2026; --muted: #646a74; --line: #dcdcd6; --card: #ffffff; --road: #e6e5df;
+  --subj: #d0452b; --obj: #4a5260; --accent: #2b62c9; --warn: #b7791f;
+  --f1: #2b62c9; --f2: #7a52c7; --f3: #c0392b; --f4: #c27c0e; --f5: #2e8b57; --f6: #6b7280;
+  --sans: "Geist", system-ui, sans-serif; --mono: "Geist Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121418; --fg: #e7e9ec; --muted: #9298a2; --line: #2a2e35; --card: #1a1d22; --road: #262a31;
+  --subj: #f07a5f; --obj: #aab2bf; --accent: #6f9cf0; --warn: #e0a84a;
+  --f1: #6f9cf0; --f2: #a98af0; --f3: #f07a6c; --f4: #e7a53a; --f5: #5fc28d; --f6: #9aa1ab; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121418; --fg: #e7e9ec; --muted: #9298a2; --line: #2a2e35; --card: #1a1d22; --road: #262a31;
+  --subj: #f07a5f; --obj: #aab2bf; --accent: #6f9cf0; --warn: #e0a84a;
+  --f1: #6f9cf0; --f2: #a98af0; --f3: #f07a6c; --f4: #e7a53a; --f5: #5fc28d; --f6: #9aa1ab; color-scheme: dark }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14.5px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 56px; }
+main { max-width: 1180px; margin: 0 auto; display: grid; gap: 34px; }
+h1 { font-size: 1.9rem; font-weight: 600; letter-spacing: -.01em; margin: 0; text-wrap: balance; }
+h2 { font-size: 1.15rem; font-weight: 600; margin: 0 0 4px; }
+.sub { color: var(--muted); margin: 0; max-width: 74ch; }
+.stats { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 14px; }
+.stats div { display: grid; }
+.stats b { font-size: 1.6rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stats span { color: var(--muted); font-size: 12.5px; }
+.fam { display: grid; gap: 10px; }
+.famhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; border-top: 2px solid var(--fc); padding-top: 8px; }
+.famhead .tag { font-family: var(--mono); font-size: 12px; color: var(--fc); font-weight: 500; }
+.famhead h3 { font-size: 1rem; margin: 0; font-weight: 600; }
+.famhead small { color: var(--muted); font-size: 12.5px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; align-items: start; }
+.card svg { width: 96px; height: 80px; display: block; }
+.card .code { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.card .name { font-weight: 600; font-size: 13.5px; line-height: 1.35; }
+.card .who { font-size: 12.5px; margin-top: 4px; }
+.card .who b { color: var(--subj); font-weight: 600; }
+.card .ref { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+.card .n { font-family: var(--mono); font-size: 12px; margin-top: 6px; display: inline-block; padding: 1px 7px; border-radius: 5px; background: var(--road); }
+.card .n.zero { color: var(--muted); }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; color: var(--muted); font-size: 12.5px; align-items: center; }
+.legend i { display: inline-block; width: 22px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+.bars { display: grid; gap: 5px; }
+.bar { display: grid; grid-template-columns: 220px minmax(0, 1fr) 36px; gap: 10px; align-items: center; font-size: 13px; }
+@media (max-width: 560px) { .bar { grid-template-columns: 120px minmax(0, 1fr) 30px; font-size: 12px; } }
+.bar .lab { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar .track { height: 14px; background: var(--road); border-radius: 4px; overflow: hidden; }
+.bar .fill { height: 100%; border-radius: 4px; }
+.bar .v { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.note { font-size: 12.5px; color: var(--muted); margin-top: 8px; max-width: 80ch; }
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.rule { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 6px; }
+.rule .pair { font-family: var(--mono); font-size: 12.5px; color: var(--warn); }
+.rule p { margin: 0; font-size: 13.5px; }
+.rule .vids { font-size: 12px; color: var(--muted); }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 13.5px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+td .x { color: var(--muted); }
+</style>
+
+<main>
+  <header>
+    <h1>Kiểu xung đột hai thực thể cho nhóm C</h1>
+    <p class="sub">Một ô "kiểu xung đột" mô tả hình học của sự kiện: ai đi hướng nào so với ai. Danh sách lấy khung từ 31 kịch bản hai xe của NHTSA và 7 nhóm Unfalltyp của Đức. Những phân biệt không nhìn thấy trên video (có đèn hay không, ai có quyền ưu tiên) bị gộp lại và chuyển sang nhóm V. Ba kiểu riêng của giao thông Việt Nam được thêm vào.</p>
+    <div class="stats">
+      <div><b>6</b><span>nhóm</span></div>
+      <div><b>18</b><span>kiểu</span></div>
+      <div><b>15/18</b><span>kiểu có mặt trong 40 video</span></div>
+      <div><b>17/40</b><span>video rơi vào một trong bốn cặp dễ nhầm</span></div>
+    </div>
+  </header>
+
+  <section class="fam-wrap" id="families" style="display:grid;gap:26px">
+    <div class="legend"><span><i style="background:var(--subj)"></i>chủ thể (bên bắt đầu thay đổi chuyển động)</span><span><i style="background:var(--obj)"></i>đối tượng</span><span>Số trên thẻ: số video trong 40 video vòng 1-2, gán sơ bộ từ câu trả lời.</span></div>
+  </section>
+
+  <section>
+    <h2>Phân bố trên 40 video hiện có</h2>
+    <p class="sub">Mình gán sơ bộ từ câu trả lời C của các annotator, chưa xem lại video. Video mà các annotator mô tả theo hai kiểu khác nhau được tính vào kiểu của đa số.</p>
+    <div class="bars" id="bars" style="margin-top:14px"></div>
+    <p class="note">"Xe phía trước dừng" là kịch bản số 1 của NHTSA (khoảng 20% vụ hai xe), nhưng ở đây là 0. Dataset là các đoạn tổng hợp tai nạn kịch tính, nên lệch về giao lộ và băng ngang. Đây là lý do danh sách vẫn giữ đủ 18 kiểu dù hiện chỉ thấy 15.</p>
+  </section>
+
+  <section>
+    <h2>Bốn cặp dễ nhầm và luật phân xử</h2>
+    <p class="sub">Đây là các video mà câu trả lời của annotator rơi vào hai kiểu khác nhau. Guideline cần đúng một câu cho mỗi cặp.</p>
+    <div class="rules" style="margin-top:14px">
+      <div class="rule"><span class="pair">K11 giao lộ ↔ K14 giữa đoạn</span><p>Thấy nút giao trong khung hình thì chọn K11, không thấy thì chọn K14. Nếu nhóm S thêm ô "đoạn đường" (thẳng, khúc cua, giao lộ), ô này tự suy ra được.</p><span class="vids">#24, #38, #39</span></div>
+      <div class="rule"><span class="pair">K04 chuyển làn ↔ K05 vượt, len</span><p>Chủ thể vượt lên trước đối tượng trước mốc End thì chọn K05. Chỉ sang làn của đối tượng thì chọn K04.</p><span class="vids">#4, #7, #27, #28, #36</span></div>
+      <div class="rule"><span class="pair">K08 lấn làn ngược chiều ↔ K10 rẽ trái</span><p>Chủ thể đổi hướng (rẽ, quay đầu) thì chọn K10. Vẫn theo hướng cũ nhưng sang phần đường ngược chiều thì chọn K08.</p><span class="vids">#2, #15, #21, #29, #35</span></div>
+      <div class="rule"><span class="pair">K18 mất kiểm soát ↔ mọi kiểu khác</span><p>Chỉ chọn K18 khi bên kia không có thay đổi chuyển động nào trước lúc chủ thể trượt hoặc văng. Có thì chọn kiểu của bên kia, còn trượt ghi vào ô kết quả né.</p><span class="vids">#8, #9, #10, #34</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Gắn vào form nhóm C</h2>
+    <p class="sub">Kiểu xung đột thay cho ô "quan hệ" và thu hẹp ô "hành động". Mỗi kiểu chỉ còn một hai lựa chọn chi tiết, nên số ô annotator phải chọn giảm, và câu ghép vẫn đủ ý.</p>
+    <div class="tablewrap" style="margin-top:14px"><table>
+      <thead><tr><th>Kiểu</th><th>Quan hệ (tự điền)</th><th>Hành động còn phải chọn</th><th>Ví dụ câu ghép</th></tr></thead>
+      <tbody>
+        <tr><td>K04 chuyển làn</td><td>đi vào đường đi của</td><td>sang trái · sang phải</td><td>Xe ô tô con màu bạc chuyển sang làn bên phải, đi vào đường đi của xe ghi hình.</td></tr>
+        <tr><td>K10 rẽ trái cắt đầu</td><td>cắt ngang phía trước</td><td>rẽ trái · quay đầu</td><td>Xe ba gác rẽ trái, cắt ngang phía trước xe ô tô con màu bạc đi ngược chiều.</td></tr>
+        <tr><td>K14 băng ngang giữa đoạn</td><td>cắt ngang phía trước</td><td>trái sang phải · phải sang trái <span class="x">(theo camera)</span></td><td>Xe máy màu đỏ băng qua đường từ phải sang trái, cắt ngang phía trước xe ghi hình.</td></tr>
+        <tr><td>K02 xe trước phanh</td><td>ở ngay phía trước</td><td>phanh gấp · dừng đột ngột</td><td>Xe tải màu trắng phanh gấp ở ngay phía trước xe ghi hình.</td></tr>
+        <tr><td>K18 mất kiểm soát</td><td>không có</td><td>trượt · văng khỏi làn · nổ lốp</td><td>Xe tải màu xám trượt bánh, lao vào xe ô tô con màu trắng.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Đồng thuận đo ở hai mức: nhóm (6 lựa chọn) và kiểu (18 lựa chọn). Hai người cùng nhóm nhưng khác kiểu là lệch nhẹ, đúng chỗ cần thêm luật phân xử. Khác nhóm là lệch thật.</p>
+  </section>
+</main>
+
+<script>
+const FAM = [
+  { id: "f1", tag: "N1", name: "Cùng chiều, phía trước", hint: "đâm đuôi; NHTSA lead vehicle" },
+  { id: "f2", tag: "N2", name: "Cùng chiều, bên cạnh", hint: "đổi làn, vượt, rẽ, xe đỗ" },
+  { id: "f3", tag: "N3", name: "Ngược chiều", hint: "đối đầu và rẽ cắt đầu xe ngược chiều" },
+  { id: "f4", tag: "N4", name: "Cắt ngang hướng đi", hint: "giao lộ, đường nhánh, giữa đoạn" },
+  { id: "f5", tag: "N5", name: "Người đi bộ, động vật", hint: "băng qua hoặc lao ra" },
+  { id: "f6", tag: "N6", name: "Khác", hint: "lùi, mất kiểm soát" },
+];
+// sketch primitives: road kinds and paths in a 96x80 box
+const R = {
+  v: `<rect x="28" y="0" width="40" height="80" fill="var(--road)"/><line x1="48" y1="0" x2="48" y2="80" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1"/>`,
+  x: `<rect x="28" y="0" width="40" height="80" fill="var(--road)"/><rect x="0" y="26" width="96" height="22" fill="var(--road)"/><line x1="48" y1="48" x2="48" y2="80" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1"/><line x1="48" y1="0" x2="48" y2="26" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1"/>`,
+  t: `<rect x="28" y="0" width="40" height="80" fill="var(--road)"/><rect x="68" y="26" width="28" height="18" fill="var(--road)"/><line x1="48" y1="0" x2="48" y2="80" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1"/>`,
+};
+const car = (x, y, c, dash) => `<rect x="${x - 5}" y="${y - 7}" width="10" height="14" rx="2.5" fill="var(--card)" stroke="${c}" stroke-width="1.8" ${dash ? 'stroke-dasharray="2 2"' : ""}/>`;
+const arr = (d, c) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linecap="round" marker-end="url(#m${c === "var(--subj)" ? "s" : "o"})"/>`;
+const S = "var(--subj)", O = "var(--obj)";
+const TYPES = [
+  ["K01", "f1", "Xe phía trước dừng hoặc đứng yên", "xe phía sau", "Lead vehicle stopped", 0, R.v + car(58, 22, S) + arr("M58 76 V36", O)],
+  ["K02", "f1", "Xe phía trước phanh, giảm tốc", "xe phía trước", "Lead vehicle decelerating", 1, R.v + arr("M58 34 V20", S) + `<line x1="52" y1="38" x2="64" y2="38" stroke="${S}" stroke-width="2"/>` + arr("M58 76 V46", O)],
+  ["K03", "f1", "Tiến sát xe phía trước chạy chậm", "xe phía sau", "Lead vehicle lower constant speed", 1, R.v + car(58, 22, O) + arr("M58 76 V34", S)],
+  ["K04", "f2", "Chuyển làn, nhập làn cùng chiều", "xe đổi làn", "Changing lanes / drifting – same direction", 3, R.v + arr("M38 74 C38 48 58 48 58 22", S) + arr("M58 76 V44", O)],
+  ["K05", "f2", "Vượt, len giữa các xe", "xe vượt hoặc len", "Following vehicle making a maneuver", 3, R.v + car(36, 30, O) + car(60, 30, O) + arr("M48 76 V14", S)],
+  ["K06", "f2", "Rẽ cắt qua xe đi cùng chiều bên cạnh", "xe rẽ", "Vehicle(s) turning – same direction", 1, R.t + arr("M44 76 V44 Q44 34 92 34", S) + arr("M60 76 V18", O)],
+  ["K07", "f2", "Xe đỗ ven đường, mở cửa, ra khỏi chỗ đỗ", "xe đỗ hoặc xe ra", "Vehicle(s) parking – same direction", 2, R.v + car(74, 34, S, true) + `<line x1="69" y1="30" x2="64" y2="24" stroke="${S}" stroke-width="2"/>` + arr("M58 76 V14", O)],
+  ["K08", "f3", "Lấn sang phần đường ngược chiều (vượt, vào cua)", "xe lấn làn", "Vehicle(s) making / not making a maneuver – opposite direction", 3, R.v + arr("M58 76 C58 52 38 52 38 30", S) + arr("M38 4 V22", O)],
+  ["K09", "f3", "Đi ngược chiều trên làn của người khác", "xe đi ngược chiều", "Không có tách riêng; kiểu VN", 1, R.v + arr("M58 6 V30", S) + arr("M58 76 V46", O)],
+  ["K10", "f3", "Rẽ trái hoặc quay đầu cắt đầu xe ngược chiều", "xe rẽ", "LTAP/OD (signalized + non-signalized)", 3, R.x + arr("M58 76 V44 Q58 36 6 36", S) + arr("M38 2 V20", O)],
+  ["K11", "f4", "Hai hướng cắt nhau tại giao lộ, cùng đi thẳng", "bên vào giao lộ sau", "Straight crossing paths; running red light / stop sign", 8, R.x + arr("M4 38 H40", S) + arr("M58 76 V52", O)],
+  ["K12", "f4", "Ra từ đường nhánh, hẻm, bãi xe vào đường chính", "xe từ đường nhánh", "Vehicle(s) turning at non-signalized junctions", 3, R.t + arr("M94 36 H68 Q58 36 58 18", S) + arr("M58 76 V50", O)],
+  ["K13", "f4", "Quay đầu giữa đường", "xe quay đầu", "Gộp trong turning; kiểu VN", 0, R.v + arr("M58 76 V30 Q58 14 48 14 Q38 14 38 34", S) + arr("M58 78 V60", O)],
+  ["K14", "f4", "Băng ngang đường giữa đoạn, không ở giao lộ", "xe băng ngang", "Không có tách riêng; kiểu VN", 6, R.v + arr("M90 34 H34", S) + arr("M58 76 V46", O)],
+  ["K15", "f5", "Người đi bộ băng qua hoặc đi dưới lòng đường", "người đi bộ", "Pedestrian crash with/without prior vehicle maneuver", 1, R.v + `<circle cx="84" cy="34" r="4" fill="var(--card)" stroke="${S}" stroke-width="2"/>` + arr("M78 34 H62", S) + arr("M50 76 V46", O)],
+  ["K16", "f5", "Động vật lao ra đường", "động vật", "Animal crash without prior vehicle maneuver", 1, R.v + `<path d="M84 30 l4 4 l-4 4 l-4 -4 z" fill="var(--card)" stroke="${S}" stroke-width="2"/>` + arr("M78 34 H62", S) + arr("M50 76 V46", O)],
+  ["K17", "f6", "Lùi xe vào bên khác", "xe lùi", "Backing up into another vehicle", 0, R.v + arr("M58 16 V40", S) + `<text x="66" y="22" font-size="10" fill="${S}" font-family="var(--mono)">R</text>` + car(58, 62, O)],
+  ["K18", "f6", "Một bên mất kiểm soát, không do bên kia", "xe trượt, văng", "Control loss without prior vehicle action; vehicle failure", 3, R.v + arr("M54 78 Q68 62 46 50 Q28 40 44 26", S) + car(38, 12, O)],
+];
+const defs = `<defs><marker id="ms" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--subj)"/></marker><marker id="mo" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--obj)"/></marker></defs>`;
+const fams = document.getElementById("families");
+FAM.forEach(f => {
+  const ts = TYPES.filter(t => t[1] === f.id);
+  const sum = ts.reduce((a, t) => a + t[5], 0);
+  const el = document.createElement("div");
+  el.className = "fam"; el.style.setProperty("--fc", `var(--${f.id})`);
+  el.innerHTML = `<div class="famhead"><span class="tag">${f.tag}</span><h3>${f.name}</h3><small>${f.hint} · ${sum} video</small></div>
+    <div class="cards">${ts.map(t => `<div class="card"><svg viewBox="0 0 96 80" role="img" aria-label="${t[2]}">${defs}${t[6]}</svg>
+      <div><div class="code">${t[0]}</div><div class="name">${t[2]}</div><div class="who">Chủ thể: <b>${t[3]}</b></div>
+      <div class="ref">NHTSA: ${t[4]}</div><span class="n${t[5] ? "" : " zero"}">${t[5]} video</span></div></div>`).join("")}</div>`;
+  fams.appendChild(el);
+});
+const max = Math.max(...TYPES.map(t => t[5]));
+document.getElementById("bars").innerHTML = [...TYPES].sort((a, b) => b[5] - a[5]).map(t =>
+  `<div class="bar"><span class="lab" title="${t[2]}">${t[0]} · ${t[2]}</span><span class="track"><span class="fill" style="display:block;width:${t[5] / max * 100}%;background:var(--${t[1]})"></span></span><span class="v">${t[5]}</span></div>`).join("");
+</script>

@@ -1,0 +1,122 @@
+===== SYSTEM =====
+Bạn là người gán nhãn dữ liệu giao thông. Bạn nhận MỘT câu trả lời tiếng Việt do người viết cho một câu hỏi về video tai nạn giao thông. Bạn KHÔNG xem video. Nhiệm vụ: tách câu trả lời thành các ô theo codebook bên dưới.
+
+Với mỗi ô, chọn đúng một trạng thái:
+- "M": câu có nói về ô này và có lựa chọn trong codebook khớp với điều câu nói.
+- "T": câu không nói gì về ô này.
+- "K": câu có nói về ô này nhưng không lựa chọn nào khớp.
+
+Quy tắc:
+1. Chỉ dựa vào chữ trong câu. Không suy đoán từ kiến thức chung, không đoán điều video có thể cho thấy.
+2. "giá trị" phải chép NGUYÊN VĂN một lựa chọn trong codebook, giữ đủ dấu tiếng Việt. Không viết lại, không thêm chữ.
+3. "không rõ" chỉ là M khi câu nói rõ là không nhìn rõ hoặc không xác định được. Câu không nhắc thì là T.
+4. Câu nhắc đến ô nhưng không đủ chi tiết để chọn đúng một lựa chọn (ví dụ "đường 2 chiều" mà không nói có dải phân cách hay không, "phanh" mà không nói phanh gấp) thì là T, không phải K. K chỉ dùng khi điều câu nói rõ ràng không khớp lựa chọn nào.
+5. "bằng chứng" phải chép nguyên văn một đoạn liên tục của câu, với M, K, và T theo quy tắc 4. T vì câu không nhắc thì để null.
+6. Với K, ghi vào "cụm không khớp" cụm từ không tìm được lựa chọn.
+7. Câu có thể hiểu theo hai cách thì chọn cách gần nghĩa đen nhất và ghi lý do vào "ghi chú".
+8. Mọi đoạn của câu không thuộc ô nào thì đưa vào "ngoài codebook", kèm loại:
+   - "nhóm khác: <mã nhóm>" khi đó là thông tin của nhóm khác (S bối cảnh, E thực thể, V vi phạm, Attr quy lỗi, O kết quả).
+   - "kết luận lỗi" khi câu kết luận lỗi (ví dụ "không quan sát", "không giữ khoảng cách an toàn").
+   - "ý định" khi câu đoán ý định (ví dụ "cố", "muốn").
+   - "khác" cho phần còn lại.
+9. Chỉ trả về JSON đúng schema, không viết gì thêm.
+
+Codebook nhóm S:
+{
+  "thời tiết": [
+    "nắng",
+    "âm u",
+    "mưa",
+    "sương mù",
+    "không rõ"
+  ],
+  "ánh sáng": [
+    "ban ngày",
+    "ban đêm",
+    "không rõ"
+  ],
+  "loại đường": [
+    "hai chiều có dải phân cách",
+    "hai chiều không có dải phân cách",
+    "một chiều",
+    "không rõ"
+  ],
+  "mặt đường": [
+    "khô",
+    "ướt",
+    "không rõ"
+  ],
+  "mật độ xe": [
+    "thưa",
+    "đông",
+    "ùn tắc",
+    "không rõ"
+  ],
+  "đoạn đường": [
+    "thẳng",
+    "khúc cua",
+    "giao lộ",
+    "không rõ"
+  ]
+}
+
+Schema output cho mỗi câu:
+{
+  "ô": {
+    "<tên ô>": {
+      "trạng thái": "M | T | K",
+      "giá trị": "<nhãn nguyên văn trong codebook, hoặc mô tả thực thể> | null",
+      "bằng chứng": "<đoạn nguyên văn> | null",
+      "cụm không khớp": "<chỉ khi K> | null"
+    }
+  },
+  "ngoài codebook": [{"đoạn": "<nguyên văn>", "loại": "<loại>"}],
+  "ghi chú": "<chỉ khi câu mơ hồ> | null"
+}
+
+Bạn sẽ nhận nhiều câu trả lời trong một lần, mỗi câu có số thứ tự [1], [2], ... Map từng câu độc lập với các câu khác. Trả về đúng một JSON dạng {"kết quả": [ ... ]}, mỗi phần tử là output theo schema ở trên cho một câu và có thêm khóa "id" là số thứ tự của câu đó (dạng chuỗi). Đủ mọi id, giữ đúng thứ tự.
+
+===== USER =====
+Nhóm: S
+
+[1]
+Câu hỏi: Thời tiết, ánh sáng, loại đường, tình trạng mặt đường ra sao?
+Câu trả lời: Trời mưa, ban ngày, mặt đường nhựa ướt và trơn trượt, đường 2 chiều.
+
+[2]
+Câu hỏi: Thời tiết, ánh sáng, loại đường, tình trạng mặt đường ra sao?
+Câu trả lời: Ban ngày, trời nắng, đường nhựa hai chiều có dải phân cách cứng.
+
+===== ASSISTANT =====
+{"kết quả": [{"id": "1", "ô": {"thời tiết": {"trạng thái": "M", "giá trị": "mưa", "bằng chứng": "Trời mưa", "cụm không khớp": null}, "ánh sáng": {"trạng thái": "M", "giá trị": "ban ngày", "bằng chứng": "ban ngày", "cụm không khớp": null}, "loại đường": {"trạng thái": "T", "giá trị": null, "bằng chứng": "đường 2 chiều", "cụm không khớp": null}, "mặt đường": {"trạng thái": "M", "giá trị": "ướt", "bằng chứng": "mặt đường nhựa ướt và trơn trượt", "cụm không khớp": null}, "mật độ xe": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "đoạn đường": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}}, "ngoài codebook": [], "ghi chú": "Loại đường: câu nói 2 chiều nhưng không nói có dải phân cách hay không, nên là T."}, {"id": "2", "ô": {"thời tiết": {"trạng thái": "M", "giá trị": "nắng", "bằng chứng": "trời nắng", "cụm không khớp": null}, "ánh sáng": {"trạng thái": "M", "giá trị": "ban ngày", "bằng chứng": "Ban ngày", "cụm không khớp": null}, "loại đường": {"trạng thái": "M", "giá trị": "hai chiều có dải phân cách", "bằng chứng": "hai chiều có dải phân cách cứng", "cụm không khớp": null}, "mặt đường": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "mật độ xe": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "đoạn đường": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}}, "ngoài codebook": [{"đoạn": "đường nhựa", "loại": "khác"}], "ghi chú": null}]}
+
+===== USER =====
+Nhóm: S
+
+[1]
+Câu hỏi: Bối cảnh thời tiết, ánh sáng và loại đường trong video như thế nào?
+Câu trả lời: Thời tiết nắng ráo, ánh sáng ban ngày, mặt đường nhựa khô ráo, đường đô thị có mật độ giao thông cao.
+
+[2]
+Câu hỏi: Bối cảnh thời tiết, ánh sáng và loại đường trong video như thế nào?
+Câu trả lời: Thời tiết nắng ráo, ánh sáng ban ngày, đường đô thị có mật độ giao thông cao, mặt đường khô ráo
+
+[3]
+Câu hỏi: Bối cảnh thời tiết, ánh sáng và loại đường trong video như thế nào?
+Câu trả lời: Thời tiết nắng ráo, ánh sáng ban ngày, đường đô thị có mật độ giao thông cao, mặt đường nhựa khô ráo.
+
+[4]
+Câu hỏi: Bối cảnh thời tiết, ánh sáng và loại đường trong video như thế nào?
+Câu trả lời: Thời tiết nắng ráo, ánh sáng ban ngày, đường đô thị có mật độ giao thông cao.
+
+[5]
+Câu hỏi: Thời tiết, ánh sáng và tình trạng mặt đường trong video như thế nào?
+Câu trả lời: Thời tiết nắng ráo, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo.
+
+[6]
+Câu hỏi: Thời tiết, ánh sáng và tình trạng mặt đường trong video như thế nào?
+Câu trả lời: Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường huyện, mặt đường nhựa khô ráo.
+
+[7]
+Câu hỏi: Thời tiết, ánh sáng và tình trạng mặt đường trong video như thế nào?
+Câu trả lời: Thời tiết nắng ráo, ánh sáng ban ngày tốt, đường quốc lộ, mặt đường nhựa khô ráo.

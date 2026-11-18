@@ -1,0 +1,17 @@
+{
+  "model": "gemini-3.5-flash",
+  "text": "{\n  \"kết quả\": [\n    {\n      \"id\": \"1\",\n      \"ô\": {\n        \"clip có đoạn sau sự kiện\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"có\",\n          \"bằng chứng\": \"cả 2 phương tiện vẫn tiếp tục di chuyển\",\n          \"cụm không khớp\": null\n        },\n        \"bên thứ nhất\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"cả 2 phương tiện\",\n          \"bằng chứng\": \"cả 2 phương tiện\",\n          \"cụm không khớp\": null\n        },\n        \"hành vi bên thứ nhất\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"tiếp tục di chuyển, rời đi\",\n          \"bằng chứng\": \"vẫn tiếp tục di chuyển\",\n          \"cụm không khớp\": null\n        },\n        \"bên thứ hai\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        },\n        \"hành vi bên thứ hai\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        },\n        \"người, xe xung quanh\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        }\n      },\n      \"ngoài codebook\": [],\n      \"ghi chú\": null\n    },\n    {\n      \"id\": \"2\",\n      \"ô\": {\n        \"clip có đoạn sau sự kiện\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"có\",\n          \"bằng chứng\": \"Những người xung quanh và nhân viên tiệm sửa xe nhanh chóng chạy ra hỗ trợ dựng xe và giúp đỡ người bị nạn.\",\n          \"cụm không khớp\": null\n        },\n        \"bên thứ nhất\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        },\n        \"hành vi bên thứ nhất\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        },\n        \"bên thứ hai\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        },\n        \"hành vi bên thứ hai\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        },\n        \"người, xe xung quanh\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"dừng lại hoặc đến hỗ trợ\",\n          \"bằng chứng\": \"Những người xung quanh và nhân viên tiệm sửa xe nhanh chóng chạy ra hỗ trợ dựng xe và giúp đỡ người bị nạn.\",\n          \"cụm không khớp\": null\n        }\n      },\n      \"ngoài codebook\": [],\n      \"ghi chú\": \"Người bị nạn chỉ được nhắc đến như là đối tượng được nhận giúp đỡ, không kể hành vi nên không ghi vào bên thứ nhất hay bên thứ hai.\"\n    }\n  ]\n}",
+  "usage": {
+    "promptTokenCount": 2520,
+    "candidatesTokenCount": 836,
+    "totalTokenCount": 4541,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 2520
+      }
+    ],
+    "thoughtsTokenCount": 1185,
+    "serviceTier": "standard"
+  }
+}

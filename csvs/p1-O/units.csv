@@ -1,0 +1,296 @@
+﻿unit,draft_id,seq,question,answer,n_annotators,annotators,batch,item
+O0001,2ffac9e7-37e0-4dee-805b-0d50a4b03049,1,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,Xe máy bị đổ,1,Mai Linh,O-001,1
+O0002,2ffac9e7-37e0-4dee-805b-0d50a4b03049,1,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Xe máy bị đổ, người lái xe máy bị ngã nhưng có thể tự đứng dậy ngay lập tức.",5,"Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",O-001,2
+O0003,2ffac9e7-37e0-4dee-805b-0d50a4b03049,1,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,hai xe 2 bánh va chạm vừa,1,Huỳnh Trung,O-001,3
+O0004,50fd79cb-2e7b-44eb-b459-06e039da563a,2,Hậu quả của vụ va chạm quan sát được là gì?,Không có hư hại nào.,1,Đức Mạnh,O-001,4
+O0005,50fd79cb-2e7b-44eb-b459-06e039da563a,2,Hậu quả của vụ va chạm quan sát được là gì?,Không quan sát thấy va chạm hoặc hư hỏng phương tiện.,1,Huỳnh Trung,O-001,5
+O0006,50fd79cb-2e7b-44eb-b459-06e039da563a,2,Hậu quả của vụ va chạm quan sát được là gì?,Suýt va chạm.,1,Nhật Trường,O-001,6
+O0007,50fd79cb-2e7b-44eb-b459-06e039da563a,2,Hậu quả của vụ va chạm quan sát được là gì?,Xe ba gác suýt đâm vào đầu ô tô con màu bạc,1,Mai Linh,O-001,7
+O0008,50fd79cb-2e7b-44eb-b459-06e039da563a,2,Hậu quả của vụ va chạm quan sát được là gì?,Xe máy ba gác không va chạm xe ô tô con màu trắng,1,Tuấn Anh,O-002,1
+O0009,50fd79cb-2e7b-44eb-b459-06e039da563a,2,Hậu quả của vụ va chạm quan sát được là gì?,"Xe máy thồ suýt va chạm vào hông ô tô, ô tô phải phanh gấp",1,Tuấn Hùng,O-002,2
+O0010,50fd79cb-2e7b-44eb-b459-06e039da563a,2,Hậu quả của vụ va chạm quan sát được là gì?,Xe ô tô phải dừng lại đánh lái vào sát lề để tránh va chạm với xe ba gác. Sau đó hai xe vẫn tiếp tục di chuyển không có va chạm hay thương tích gì.,1,Tuyết Hạnh,O-002,3
+O0011,1005a14e-6a3e-43aa-a6e8-60e8d3522e2a,3,Hậu quả của vụ va chạm quan sát được là gì?,"Xe máy bị đổ, người lái xe máy bị ngã xuống đường nhưng sau đó đã tự đứng dậy được.",7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",O-002,4
+O0012,a4ac9a42-c4e2-4c84-adbd-7bc504f24c9d,4,Hậu quả quan sát được của vụ va chạm là gì?,Người điều khiển và xe máy ngã xuống đường sát gầm xe tải và bị cán qua,1,Huỳnh Trung,O-002,5
+O0013,a4ac9a42-c4e2-4c84-adbd-7bc504f24c9d,4,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy bị đổ xuống đường, người đi xe máy không may ngã vào vị trí bánh xe tải và bị bánh xe cán qua.",1,Tuyết Hạnh,O-002,6
+O0014,a4ac9a42-c4e2-4c84-adbd-7bc504f24c9d,4,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy bị đổ, người lái nằm trên đường ngay sát bánh trước xe tải lớn.",1,Mai Linh,O-002,7
+O0015,a4ac9a42-c4e2-4c84-adbd-7bc504f24c9d,4,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy bị đổ, người lái nằm trên đường và bị xe tải cán qua người.",1,Tuấn Hùng,O-003,1
+O0016,a4ac9a42-c4e2-4c84-adbd-7bc504f24c9d,4,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy bị đổ, người lái nằm và xe máy nằm dưới gầm xe tải thùng kín",1,Tuấn Anh,O-003,2
+O0017,a4ac9a42-c4e2-4c84-adbd-7bc504f24c9d,4,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy bị đổ, người lái xe máy bị cuốn vào gầm xe tải, xe tải dừng lại ngay sau đó.",1,Đức Mạnh,O-003,3
+O0018,a4ac9a42-c4e2-4c84-adbd-7bc504f24c9d,4,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy bị đổ, người lái xe nằm dưới gầm xe tải lớn.",1,Nhật Trường,O-003,4
+O0019,51b387bd-e761-4bad-b1b4-32f21d95e4f7,5,Hậu quả của tình huống này được quan sát thấy là gì?,"Không có va chạm trực tiếp nào được quan sát thấy, nhưng xe tải ben tạo ra đám bụi lớn và gây nguy hiểm cực độ.",6,"Huỳnh Trung, Mai Linh, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",O-003,5
+O0020,51b387bd-e761-4bad-b1b4-32f21d95e4f7,5,Hậu quả của tình huống này được quan sát thấy là gì?,Không có va chạm trực tiếp nào được quan sát thấy.,1,Nhật Trường,O-003,6
+O0021,ef7cc2f5-ea55-464f-889f-063d18d61fcb,6,Hậu quả của vụ va chạm đối với con chó là gì?,Con chó bị xe máy đâm trúng bị xe máy đè lên người,1,Mai Linh,O-003,7
+O0022,ef7cc2f5-ea55-464f-889f-063d18d61fcb,6,Hậu quả của vụ va chạm đối với con chó là gì?,"Con chó bị xe đâm trúng và cuốn vào gầm, có khả năng bị thương nặng hoặc tử vong.",2,"Tuấn Hùng, Đức Mạnh",O-004,1
+O0023,ef7cc2f5-ea55-464f-889f-063d18d61fcb,6,Hậu quả của vụ va chạm đối với con chó là gì?,"Con chó bị xe đâm trúng, xe máy và người điều khiển mặc áo caro ngã xuống đường",1,Huỳnh Trung,O-004,2
+O0024,ef7cc2f5-ea55-464f-889f-063d18d61fcb,6,Hậu quả của vụ va chạm đối với con chó là gì?,Con chó bị xe đâm trúng.,1,Tuyết Hạnh,O-004,3
+O0025,ef7cc2f5-ea55-464f-889f-063d18d61fcb,6,Hậu quả của vụ va chạm đối với con chó là gì?,Con chó màu đen bị xe máy đâm trúng và người đàn ông điểu khiển xe máy bị té giữa đường.,1,Tuấn Anh,O-004,4
+O0026,ef7cc2f5-ea55-464f-889f-063d18d61fcb,6,Hậu quả của vụ va chạm đối với con chó là gì?,Người điều xe máy đâm trúng con chó và bị ngã xuống đường.,1,Nhật Trường,O-004,5
+O0027,c7ab8210-09b6-4a17-8bfb-4aadd60ac8da,7,Hậu quả quan sát được của vụ va chạm là gì?,Xe máy bị đổ và bị xe tải đè lên.,1,Tuyết Hạnh,O-004,6
+O0028,c7ab8210-09b6-4a17-8bfb-4aadd60ac8da,7,Hậu quả quan sát được của vụ va chạm là gì?,Xe máy bị đổ và xe tải đã cán qua 1 phần trước của xe máy,1,Huỳnh Trung,O-004,7
+O0029,c7ab8210-09b6-4a17-8bfb-4aadd60ac8da,7,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy bị đổ, người lái xe máy bị cuốn vào gầm xe tải, xe tải dừng lại ngay sau đó.",1,Tuấn Hùng,O-005,1
+O0030,c7ab8210-09b6-4a17-8bfb-4aadd60ac8da,7,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy bị đổ, người lái xe máy kịp nhảy ra khỏi xe và xe máy bị cuốn vào gầm xe tải, xe tải dừng lại ngay sau đó.",1,Nhật Trường,O-005,2
+O0031,c7ab8210-09b6-4a17-8bfb-4aadd60ac8da,7,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy bị đổ, xe máy bị cuốn vào gầm xe tải, xe tải dừng lại ngay sau đó.",1,Mai Linh,O-005,3
+O0032,c7ab8210-09b6-4a17-8bfb-4aadd60ac8da,7,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy cuốn vào bánh xe, người đàn ông nhảy ra khỏi xe máy, xe tải dừng lại ngay sau đó.",1,Tuấn Anh,O-005,4
+O0033,c7ab8210-09b6-4a17-8bfb-4aadd60ac8da,7,Hậu quả quan sát được của vụ va chạm là gì?,"Xe máy đổ bị xe tải cán qua, xe tải dừng lại ngay sau đó.",1,Đức Mạnh,O-005,5
+O0034,2706a5ae-30ac-4933-ac30-990bd8bc36ed,8,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Người đi xe đạp bị tông ngã cả người và xe xuống đường.,1,Tuyết Hạnh,O-005,6
+O0035,2706a5ae-30ac-4933-ac30-990bd8bc36ed,8,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Người đi xe đạp bị tông ngã xuống đường, xe đạp bị hư hỏng.",4,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Anh",O-005,7
+O0036,2706a5ae-30ac-4933-ac30-990bd8bc36ed,8,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Người đi xe đạp bị tông ngã xuống đường.,1,Đức Mạnh,O-006,1
+O0037,2706a5ae-30ac-4933-ac30-990bd8bc36ed,8,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Người đi xe đạp và xe đạp bị tông ngã xuống đường.,1,Tuấn Hùng,O-006,2
+O0038,2490e9a5-be4b-4ffa-86bf-fb7dcee489c3,9,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Va chạm giữa hai xe khiến xe tải bị đổ, nguy hiểm cho 2 bên",1,Mai Linh,O-006,3
+O0039,2490e9a5-be4b-4ffa-86bf-fb7dcee489c3,9,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe tải bị lật và nằm ngang với mặt đường,1,Nhật Trường,O-006,4
+O0040,2490e9a5-be4b-4ffa-86bf-fb7dcee489c3,9,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe tải bị lật, xoay vòng trượt trên mặt đường.",1,Tuyết Hạnh,O-006,5
+O0041,2490e9a5-be4b-4ffa-86bf-fb7dcee489c3,9,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe tải mất lái, lảng lách đổ xuống đường.",1,Tuấn Anh,O-006,6
+O0042,2490e9a5-be4b-4ffa-86bf-fb7dcee489c3,9,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe tải mất lái, lật ngay giữa đường và tóe lửa mạnh.",1,Tuấn Hùng,O-006,7
+O0043,2490e9a5-be4b-4ffa-86bf-fb7dcee489c3,9,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe tải thùng kín lật ngang, nằm chắn một phần mặt đường; mức độ hư hỏng không thể xác định.",1,Huỳnh Trung,O-007,1
+O0044,2490e9a5-be4b-4ffa-86bf-fb7dcee489c3,9,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe tải đổ xuống đường.,1,Đức Mạnh,O-007,2
+O0045,78eb7e34-86a7-4af0-a9b4-7e032b473d3b,10,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe tải màu xám lật nghiêng hoàn toàn xuống lề đường ngược chiều xe.,1,Tuấn Anh,O-007,3
+O0046,78eb7e34-86a7-4af0-a9b4-7e032b473d3b,10,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe tải màu xám lật nghiêng hoàn toàn xuống rãnh bên đường.,5,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Hùng, Đức Mạnh",O-007,4
+O0047,78eb7e34-86a7-4af0-a9b4-7e032b473d3b,10,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe tải màu xám lật nghiêng hoàn toàn xuống vỉa hè bên đường.,1,Tuyết Hạnh,O-007,5
+O0048,0e8b8c02-7a85-435f-9994-bc2790e46052,11,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy bị đổ, người lái xe máy ngã xuống đường, người đi xe đạp và xe đạp cug bị ngã xuống đường.",1,Tuyết Hạnh,O-007,6
+O0049,0e8b8c02-7a85-435f-9994-bc2790e46052,11,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy bị đổ, người lái xe máy ngã xuống đường, va chạm nhẹ với người đi xe đạp",1,Mai Linh,O-007,7
+O0050,0e8b8c02-7a85-435f-9994-bc2790e46052,11,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy bị đổ, người lái xe máy ngã xuống đường, và va chạm với một người đi xe đạp.",1,Nhật Trường,O-008,1
+O0051,0e8b8c02-7a85-435f-9994-bc2790e46052,11,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy bị đổ, người lái xe máy ngã xuống đường, xe đạp và người điều khiển ngã xuống đường",1,Tuấn Hùng,O-008,2
+O0052,0e8b8c02-7a85-435f-9994-bc2790e46052,11,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy bị đổ, người lái xe máy ngã xuống đường.",1,Đức Mạnh,O-008,3
+O0053,0e8b8c02-7a85-435f-9994-bc2790e46052,11,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy và người lái xe máy té trượt dài dưới đường và người đi xe đạp té xuống đường.,1,Tuấn Anh,O-008,4
+O0054,0e8b8c02-7a85-435f-9994-bc2790e46052,11,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy và người điều khiển ngã, trượt trên đường va vào người đi xe đạp ngã theo",1,Huỳnh Trung,O-008,5
+O0055,5de1baff-0824-4a84-8328-746cc8cb9232,12,Hậu quả của vụ va chạm quan sát được trong video là gì?,Chưa có va chạm.,1,Đức Mạnh,O-008,6
+O0056,5de1baff-0824-4a84-8328-746cc8cb9232,12,Hậu quả của vụ va chạm quan sát được trong video là gì?,Không xảy ra va chạm.,1,Tuấn Anh,O-008,7
+O0057,5de1baff-0824-4a84-8328-746cc8cb9232,12,Hậu quả của vụ va chạm quan sát được trong video là gì?,Va chạm nhẹ (quẹt hông) giữa hai xe ô tô.,1,Tuyết Hạnh,O-009,1
+O0058,5de1baff-0824-4a84-8328-746cc8cb9232,12,Hậu quả của vụ va chạm quan sát được trong video là gì?,"Va chạm nhẹ (quẹt hông), có thể gây trầy xước hoặc móp nhẹ bề mặt vỏ xe của cả hai phương tiện.",4,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Hùng",O-009,2
+O0059,e656523e-0f95-46f6-a1fb-108c53d866fd,13,Hậu quả của vụ va chạm quan sát được là gì?,"Chưa có va chạm gì, hai bên điều khiển giao thông đã kịp thời phanh xe lại.",1,Tuyết Hạnh,O-009,3
+O0060,e656523e-0f95-46f6-a1fb-108c53d866fd,13,Hậu quả của vụ va chạm quan sát được là gì?,"Hai xe phải phanh gấp, không có va chạm xảy ra",1,Tuấn Hùng,O-009,4
+O0061,e656523e-0f95-46f6-a1fb-108c53d866fd,13,Hậu quả của vụ va chạm quan sát được là gì?,Không va chạm trực diện,1,Đức Mạnh,O-009,5
+O0062,e656523e-0f95-46f6-a1fb-108c53d866fd,13,Hậu quả của vụ va chạm quan sát được là gì?,Suýt va chạm.,1,Nhật Trường,O-009,6
+O0063,e656523e-0f95-46f6-a1fb-108c53d866fd,13,Hậu quả của vụ va chạm quan sát được là gì?,Xe máy phanh gấp suýt đâm vào xe ô tô,1,Mai Linh,O-009,7
+O0064,e656523e-0f95-46f6-a1fb-108c53d866fd,13,Hậu quả của vụ va chạm quan sát được là gì?,Xe ô tô có camera hành trình và xe máy màu trắng dừng lại tránh va chạm.,1,Tuấn Anh,O-010,1
+O0065,e656523e-0f95-46f6-a1fb-108c53d866fd,13,Hậu quả của vụ va chạm quan sát được là gì?,"không va chạm, cả 2 phương tiện kịp thời phanh lại.",1,Huỳnh Trung,O-010,2
+O0066,8798418d-9dc4-4036-aef6-d352cbfaa9b9,14,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe tải trắng phanh gấp khiến xe ô tô con màu xanh tông phải,1,Mai Linh,O-010,3
+O0067,8798418d-9dc4-4036-aef6-d352cbfaa9b9,14,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe ô tô màu đen sau cùng tông nhẹ vào đuôi xe tải.,1,Tuyết Hạnh,O-010,4
+O0068,8798418d-9dc4-4036-aef6-d352cbfaa9b9,14,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe ô tô màu đen va chạm đuôi xe tải.,1,Tuấn Anh,O-010,5
+O0069,8798418d-9dc4-4036-aef6-d352cbfaa9b9,14,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe ô tô đen đâm vào đuôi xe tải, phương tiện có thể hư hỏng, móp méo.",1,Tuấn Hùng,O-010,6
+O0070,8798418d-9dc4-4036-aef6-d352cbfaa9b9,14,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,xe ô tô đen bị trầy nhẹ ở đầu xe và xe tải bị trầy xe ở đuôi xe,1,Nhật Trường,O-010,7
+O0071,8798418d-9dc4-4036-aef6-d352cbfaa9b9,14,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Ô tô màu đen đâm đít xe tải, phương tiện hư hỏng nhẹ.",1,Đức Mạnh,O-011,1
+O0072,8798418d-9dc4-4036-aef6-d352cbfaa9b9,14,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"ô tô màu tối đâm đít xe tải thùng, phương tiện hư hỏng nhẹ.",1,Huỳnh Trung,O-011,2
+O0073,e6502772-ed25-4806-8ddc-7515ccba6cf3,15,Hậu quả của vụ va chạm quan sát được trên video là gì?,"Hai xe va chạm , có hư hỏng nhẹ.",1,Đức Mạnh,O-011,3
+O0074,e6502772-ed25-4806-8ddc-7515ccba6cf3,15,Hậu quả của vụ va chạm quan sát được trên video là gì?,Hai xe ô tô phanh gấp và dừng tạm thời trên đường,1,Tuấn Hùng,O-011,4
+O0075,e6502772-ed25-4806-8ddc-7515ccba6cf3,15,Hậu quả của vụ va chạm quan sát được trên video là gì?,Xe SUV bị vỡ đầu xe,1,Mai Linh,O-011,5
+O0076,e6502772-ed25-4806-8ddc-7515ccba6cf3,15,Hậu quả của vụ va chạm quan sát được trên video là gì?,"Xe máy bị đổ, hai người trên xe ngã xuống đường, xe ô tô đỏ có thể bị trầy xước nhẹ bên hông.",1,Huỳnh Trung,O-011,6
+O0077,e6502772-ed25-4806-8ddc-7515ccba6cf3,15,Hậu quả của vụ va chạm quan sát được trên video là gì?,Xe tải và xe ô tô va quẹt nhẹ ở thành xe.,1,Tuyết Hạnh,O-011,7
+O0078,e6502772-ed25-4806-8ddc-7515ccba6cf3,15,Hậu quả của vụ va chạm quan sát được trên video là gì?,Đầu xe ô tô đỏ va chạm với đuôi xe bên trái của xe tải thùng.,1,Nhật Trường,O-012,1
+O0079,28c2a967-b445-4c0f-b141-6a9471613baa,16,Hậu quả của vụ va chạm mà ta có thể quan sát được là gì?,Hai xe tránh được va chạm nên vẫn tiếp tục di chuyển bình thường.,1,Tuyết Hạnh,O-012,2
+O0080,28c2a967-b445-4c0f-b141-6a9471613baa,16,Hậu quả của vụ va chạm mà ta có thể quan sát được là gì?,"Không có va chạm , hư hại không có.",1,Đức Mạnh,O-012,3
+O0081,28c2a967-b445-4c0f-b141-6a9471613baa,16,Hậu quả của vụ va chạm mà ta có thể quan sát được là gì?,Suýt va chạm.,1,Nhật Trường,O-012,4
+O0082,28c2a967-b445-4c0f-b141-6a9471613baa,16,Hậu quả của vụ va chạm mà ta có thể quan sát được là gì?,Xe ô tô có gắn camera phanh kịp thời,1,Tuấn Anh,O-012,5
+O0083,28c2a967-b445-4c0f-b141-6a9471613baa,16,Hậu quả của vụ va chạm mà ta có thể quan sát được là gì?,Đầu xe camera suýt đâm vào hông xe tải,1,Huỳnh Trung,O-012,6
+O0084,28c2a967-b445-4c0f-b141-6a9471613baa,16,Hậu quả của vụ va chạm mà ta có thể quan sát được là gì?,"Đầu xe camera suýt đâm vào hông xe tải, dẫn đến suýt va chạm giao thông",1,Mai Linh,O-012,7
+O0085,28c2a967-b445-4c0f-b141-6a9471613baa,16,Hậu quả của vụ va chạm mà ta có thể quan sát được là gì?,Đầu xe gắn camera suýt đâm vào hông xe tải.,1,Tuấn Hùng,O-013,1
+O0086,0e5f62d0-cbc2-4c35-8af4-a9a6375267fd,17,Hậu quả của vụ va chạm đối với các phương tiện là gì?,"Xe SUV bị hư hỏng nặng phần đầu xe, xe tải ben bị hư hỏng phần hông và đầu xe.",1,Tuyết Hạnh,O-013,2
+O0087,0e5f62d0-cbc2-4c35-8af4-a9a6375267fd,17,Hậu quả của vụ va chạm đối với các phương tiện là gì?,"Xe SUV bị móp méo và hư hỏng nặng phần hông và đầu xe bên trái, xe tải ben bị hư hỏng phần đầu.",1,Huỳnh Trung,O-013,3
+O0088,0e5f62d0-cbc2-4c35-8af4-a9a6375267fd,17,Hậu quả của vụ va chạm đối với các phương tiện là gì?,"Xe SUV bị móp méo và hư hỏng nặng phần đầu xe, xe tải ben bị hư hỏng phần hông bên trái.",1,Tuấn Hùng,O-013,4
+O0089,0e5f62d0-cbc2-4c35-8af4-a9a6375267fd,17,Hậu quả của vụ va chạm đối với các phương tiện là gì?,"Xe SUV bị móp méo và hư hỏng nặng phần đầu, xe ben xanh đen bị hư hỏng phần đầu.",1,Mai Linh,O-013,5
+O0090,0e5f62d0-cbc2-4c35-8af4-a9a6375267fd,17,Hậu quả của vụ va chạm đối với các phương tiện là gì?,"Xe SUV bị móp méo và hư hỏng nặng đầu xe bên, xe tải ben bị hư hỏng phần hông bên phải.",1,Nhật Trường,O-013,6
+O0091,0e5f62d0-cbc2-4c35-8af4-a9a6375267fd,17,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Xe màu đen bị móp méo và hư hỏng nặng đầu xe,1,Tuấn Anh,O-013,7
+O0092,0e5f62d0-cbc2-4c35-8af4-a9a6375267fd,17,Hậu quả của vụ va chạm đối với các phương tiện là gì?,"xe tải benbị móp méo và hư hỏng nặng phần hông và đầu xe bên trái, Xe SUV bị hư hỏng phần đầu.",1,Đức Mạnh,O-014,1
+O0093,3fa78f48-e9e6-4df1-8aa8-6008403034bc,18,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Hai người lái xe bị ngã xuống đường, phương tiện bị đổ nhưng không thấy hư hỏng nặng.",5,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Hùng, Đức Mạnh",O-014,2
+O0094,3fa78f48-e9e6-4df1-8aa8-6008403034bc,18,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Người lái xe đạp màu bạc bị ngã xuống đường, phương tiện bị đổ nhưng không thấy hư hỏng nặng.",1,Tuyết Hạnh,O-014,3
+O0095,3fa78f48-e9e6-4df1-8aa8-6008403034bc,18,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Người đi xe đạp bị té xuống đường.,1,Tuấn Anh,O-014,4
+O0096,631c6f0e-b179-483a-afcc-8a3a781efaf3,19,Hậu quả của vụ việc đối với người và phương tiện là gì?,Người điều khiển xe máy hơi mất thăng bằng nhưng không có va chạm mạnh nên tiếp tục di chuyển.,1,Tuyết Hạnh,O-014,5
+O0097,631c6f0e-b179-483a-afcc-8a3a781efaf3,19,Hậu quả của vụ việc đối với người và phương tiện là gì?,Va chạm với phần đâu xe gắn camera hành trình.,1,Nhật Trường,O-014,6
+O0098,631c6f0e-b179-483a-afcc-8a3a781efaf3,19,Hậu quả của vụ việc đối với người và phương tiện là gì?,"Xe máy bị đổ, người lái ngã mất thăng bằng nhưng có thể tự đứng dậy ngay sau đó.",1,Mai Linh,O-014,7
+O0099,631c6f0e-b179-483a-afcc-8a3a781efaf3,19,Hậu quả của vụ việc đối với người và phương tiện là gì?,"Xe máy bị đổ, người lái ngã xuống đường nhưng có thể tự đứng dậy ngay sau đó.",1,Huỳnh Trung,O-015,1
+O0100,631c6f0e-b179-483a-afcc-8a3a781efaf3,19,Hậu quả của vụ việc đối với người và phương tiện là gì?,"Xe máy màu xanh đen mất thâng bằng, người lái ngã xuống đường nhưng có thể tự đứng dậy ngay sau đó.",1,Tuấn Anh,O-015,2
+O0101,631c6f0e-b179-483a-afcc-8a3a781efaf3,19,Hậu quả của vụ việc đối với người và phương tiện là gì?,Xe máy mất thăng bằng nhưng không đổ xuống đường.,1,Tuấn Hùng,O-015,3
+O0102,631c6f0e-b179-483a-afcc-8a3a781efaf3,19,Hậu quả của vụ việc đối với người và phương tiện là gì?,Xe máy và ô tô không sao có thể tự đứng dậy ngay sau đó.,1,Đức Mạnh,O-015,4
+O0103,d9ae1c96-b6e8-42d9-9725-0bc634de141f,20,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có bất kì va chạm nào xảy ra,1,Tuấn Hùng,O-015,5
+O0104,d9ae1c96-b6e8-42d9-9725-0bc634de141f,20,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có va chạm xảy ra.,1,Tuyết Hạnh,O-015,6
+O0105,d9ae1c96-b6e8-42d9-9725-0bc634de141f,20,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có va chạm.,1,Đức Mạnh,O-015,7
+O0106,d9ae1c96-b6e8-42d9-9725-0bc634de141f,20,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Suýt va chạm.,1,Nhật Trường,O-016,1
+O0107,d9ae1c96-b6e8-42d9-9725-0bc634de141f,20,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy và xe ô tô gắn camera không xảy ra va chạm giao thông.,1,Mai Linh,O-016,2
+O0108,d9ae1c96-b6e8-42d9-9725-0bc634de141f,20,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy đi ngang qua mặt xe ô tô camera,1,Tuấn Anh,O-016,3
+O0109,d9ae1c96-b6e8-42d9-9725-0bc634de141f,20,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,hậu quả không có thật,1,Huỳnh Trung,O-016,4
+O0110,4c0c71a6-9cdc-4fd3-8b4e-ccdc7313b654,21,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Phần đầu của cả xe ô tô trắng bị hư hỏng và phần hông xe màu xanh bị hư hỏng.,1,Tuấn Anh,O-016,5
+O0111,4c0c71a6-9cdc-4fd3-8b4e-ccdc7313b654,21,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Phần đầu của cả xe ô tô trắng và xe taxi xanh đều bị hư hỏng do lực đâm mạnh.,6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Hùng, Đức Mạnh",O-016,6
+O0112,f12c22ff-9252-41ea-9fc1-3a5599744f99,22,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không quan sát thấy va chạm hoặc hư hỏng phương tiện,1,Huỳnh Trung,O-016,7
+O0113,f12c22ff-9252-41ea-9fc1-3a5599744f99,22,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe ô tô suýt va chạm với xe đạp,1,Mai Linh,O-017,1
+O0114,f12c22ff-9252-41ea-9fc1-3a5599744f99,22,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,hai xe dừng lại đột ngột và không xảy ra va chạm.,1,Tuấn Hùng,O-017,2
+O0115,937d19fc-74bb-4455-9c37-b7aea2689f92,23,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Cả hai xe máy đều bị đổ, xe máy màu tối và người điều khiển văng xuống mặt đường.",1,Tuấn Hùng,O-017,3
+O0116,937d19fc-74bb-4455-9c37-b7aea2689f92,23,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Người điều khiển xe tay ga vẫn tiếp tục di chuyển, người và xe máy màu tối ngã xuống đường.",1,Tuyết Hạnh,O-017,4
+O0117,937d19fc-74bb-4455-9c37-b7aea2689f92,23,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,Xe máy màu đen do người đàn ông mặc áo sọc điều khiển té giữa đường.,1,Tuấn Anh,O-017,5
+O0118,937d19fc-74bb-4455-9c37-b7aea2689f92,23,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,người lái và xe máy tối màu bị ngã.,1,Đức Mạnh,O-017,6
+O0119,937d19fc-74bb-4455-9c37-b7aea2689f92,23,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"xe máy màu tối bị đổ, người lái xe ngã văng xuống mặt đường.",1,Mai Linh,O-017,7
+O0120,937d19fc-74bb-4455-9c37-b7aea2689f92,23,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,xe máy màu đen bị ngã xuống mặt đường.,1,Nhật Trường,O-018,1
+O0121,937d19fc-74bb-4455-9c37-b7aea2689f92,23,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,xe và người điểu khiển xe máy ngã xuống đường,1,Huỳnh Trung,O-018,2
+O0122,332808d4-d57e-43fb-b966-74fdec24459a,24,Hậu quả quan sát được sau vụ va chạm là gì?,"Xe máy loạng choạng, xe ô tô bạc bị trầy xước phần đầu, không quan sát thấy hư hỏng ở xe máy",1,Huỳnh Trung,O-018,3
+O0123,332808d4-d57e-43fb-b966-74fdec24459a,24,Hậu quả quan sát được sau vụ va chạm là gì?,"Xe máy lệch hướng, mất thăng bằng.",1,Tuyết Hạnh,O-018,4
+O0124,332808d4-d57e-43fb-b966-74fdec24459a,24,Hậu quả quan sát được sau vụ va chạm là gì?,Xe máy màu trắng do thanh niên không đội mũ điều khiển bị mất thăng bằng tại vị trí va chạm; Xe ô tô màu xám bị trầy.,1,Tuấn Anh,O-018,5
+O0125,332808d4-d57e-43fb-b966-74fdec24459a,24,Hậu quả quan sát được sau vụ va chạm là gì?,Xe máy mất thằng bằng nhưng không bị đổ.,1,Tuấn Hùng,O-018,6
+O0126,332808d4-d57e-43fb-b966-74fdec24459a,24,Hậu quả quan sát được sau vụ va chạm là gì?,Xe máy và ô tô bị hư hại do va chạm.,1,Đức Mạnh,O-018,7
+O0127,332808d4-d57e-43fb-b966-74fdec24459a,24,Hậu quả quan sát được sau vụ va chạm là gì?,"Xe máy đâm nhẹ đầu ô tô gắn camera, sau liên hoàn đâm móp nhẹ phần hông xe ô tô con màu bạc, xe máy không giữ được thăng bằng.",1,Mai Linh,O-019,1
+O0128,332808d4-d57e-43fb-b966-74fdec24459a,24,Hậu quả quan sát được sau vụ va chạm là gì?,xe ô tô con màu bạc bị trầy xước bên hông xe.,1,Nhật Trường,O-019,2
+O0129,12ccbadf-e791-4991-8905-40da2a9f5b4b,25,Hậu quả của vụ va chạm quan sát được trong video là gì?,"Người đi xe đạp bị ngã xuống đường, không thấy hư hỏng nặng cho các phương tiện.",7,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",O-019,3
+O0130,f532d53b-5c0d-4dde-8d29-8ca3bd448505,26,Hậu quả của vụ va chạm quan sát được là gì?,Hai xe dừng lại kịp thời nên không có hậu quả gì quan sát được.,1,Tuyết Hạnh,O-019,4
+O0131,f532d53b-5c0d-4dde-8d29-8ca3bd448505,26,Hậu quả của vụ va chạm quan sát được là gì?,Không quan sát thấy va chạm hoặc hư hỏng giữa xe máy màu đỏ và ô tô có camera hành trình.,1,Huỳnh Trung,O-019,5
+O0132,f532d53b-5c0d-4dde-8d29-8ca3bd448505,26,Hậu quả của vụ va chạm quan sát được là gì?,Một chiếc xe ô tô (có camera hành trình) và xe máy màu đỏ do phụ nữ áo đen chở 2 người dừng lại kịp thời không va chạm.,1,Tuấn Anh,O-019,6
+O0133,f532d53b-5c0d-4dde-8d29-8ca3bd448505,26,Hậu quả của vụ va chạm quan sát được là gì?,Suýt va chạm.,1,Nhật Trường,O-019,7
+O0134,f532d53b-5c0d-4dde-8d29-8ca3bd448505,26,Hậu quả của vụ va chạm quan sát được là gì?,hai xe phanh gặp dừng lại tại chỗ và không có va chạm xảy ra,1,Tuấn Hùng,O-020,1
+O0135,f532d53b-5c0d-4dde-8d29-8ca3bd448505,26,Hậu quả của vụ va chạm quan sát được là gì?,không có hư hại.,1,Đức Mạnh,O-020,2
+O0136,f532d53b-5c0d-4dde-8d29-8ca3bd448505,26,Hậu quả của vụ va chạm quan sát được là gì?,"xe máy và xe ô tô gắn camera phải dừng đột ngột, không xảy ra va chạm.",1,Mai Linh,O-020,3
+O0137,4c0ab819-31ac-4b34-965b-a610f1a6f659,27,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Va chạm nhẹ, có khả năng méo móp, xước sơn của xe ô tô màu trắng và xe bán tải Ford Ranger màu đen",1,Tuấn Hùng,O-020,4
+O0138,4c0ab819-31ac-4b34-965b-a610f1a6f659,27,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Va chạm nhẹ, không có hư hỏng phương tiện hay thương tích nghiêm trọng quan sát được.",6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Đức Mạnh",O-020,5
+O0139,d5864ca8-89c8-46d6-9c2a-5ac1afbdf16c,28,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe con bị đâm móp hông trái và bị đẩy lên dải phân cách, xe tải để lại vết phanh dài.",6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng",O-020,6
+O0140,d5864ca8-89c8-46d6-9c2a-5ac1afbdf16c,28,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe con bị đẩy lên dải phân cách, xe tải để lại vết phanh dài.",1,Đức Mạnh,O-020,7
+O0141,3e63e806-6589-4e4f-8976-f965d4512c12,29,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Cả 2 xe không va chạm nhau.,1,Tuấn Anh,O-021,1
+O0142,3e63e806-6589-4e4f-8976-f965d4512c12,29,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Hai ô tô tránh được va chạm, không quan sát thấy hư hỏng phương tiện.",1,Huỳnh Trung,O-021,2
+O0143,3e63e806-6589-4e4f-8976-f965d4512c12,29,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,hai xe tránh được nhau và không xảy ra hư hỏng.,1,Mai Linh,O-021,3
+O0144,3e63e806-6589-4e4f-8976-f965d4512c12,29,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,không có chạm xảy ra nhưng xe bán tải màu đen đi lệch khỏi đường,1,Tuấn Hùng,O-021,4
+O0145,3e63e806-6589-4e4f-8976-f965d4512c12,29,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,xe bán tải đi thẳng ra lề đường .,1,Đức Mạnh,O-021,5
+O0146,283e7194-70e4-4753-a67c-b35f49bd0e60,30,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Va chạm đuôi xe gây hư hỏng phần đầu xe camera hành trình và phần đuôi xe ô tô con màu trắng.,1,Tuấn Anh,O-021,6
+O0147,283e7194-70e4-4753-a67c-b35f49bd0e60,30,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Va chạm đuôi xe gây hư hỏng phần đầu xe camera và phần đuôi xe Kia trắng.,5,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Hùng, Đức Mạnh",O-021,7
+O0148,86e9e7f8-c45c-48c9-8f10-773dd1648939,31,Hậu quả và mức độ hư hỏng sau va chạm được quan sát thấy là gì?,"Hai xe không xảy ra va chạm, nhưng xe gắn camera phải lần làn trái để tránh va chạm.",1,Tuấn Hùng,O-022,1
+O0149,86e9e7f8-c45c-48c9-8f10-773dd1648939,31,Hậu quả và mức độ hư hỏng sau va chạm được quan sát thấy là gì?,Không quan sát thấy va chạm hoặc hư hỏng phương tiện.,1,Huỳnh Trung,O-022,2
+O0150,86e9e7f8-c45c-48c9-8f10-773dd1648939,31,Hậu quả và mức độ hư hỏng sau va chạm được quan sát thấy là gì?,Xe camera suýt đâm vào đầu xe bồn trắng,1,Mai Linh,O-022,3
+O0151,86e9e7f8-c45c-48c9-8f10-773dd1648939,31,Hậu quả và mức độ hư hỏng sau va chạm được quan sát thấy là gì?,Xe ô tô gắn camera hành trình lách qua đường ngược chiều nên không va chạm.,1,Tuấn Anh,O-022,4
+O0152,86e9e7f8-c45c-48c9-8f10-773dd1648939,31,Hậu quả và mức độ hư hỏng sau va chạm được quan sát thấy là gì?,không có hư hại nào.,1,Đức Mạnh,O-022,5
+O0153,86e9e7f8-c45c-48c9-8f10-773dd1648939,31,Hậu quả và mức độ hư hỏng sau va chạm được quan sát thấy là gì?,suýt va chạm.,1,Nhật Trường,O-022,6
+O0154,803c37dd-673c-46ec-95be-5a65d3e6167f,32,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Hai phương tiện không xảy ra va chạm.,1,Tuấn Anh,O-022,7
+O0155,803c37dd-673c-46ec-95be-5a65d3e6167f,32,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Không quan sát thấy va chạm hoặc hư hỏng phương tiện.,1,Tuyết Hạnh,O-023,1
+O0156,803c37dd-673c-46ec-95be-5a65d3e6167f,32,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Không thể xác định khi,1,Huỳnh Trung,O-023,2
+O0157,803c37dd-673c-46ec-95be-5a65d3e6167f,32,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Suýt va chạm.,1,Nhật Trường,O-023,3
+O0158,803c37dd-673c-46ec-95be-5a65d3e6167f,32,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Xe gắn camera phải chuyển làn xử lý nên không xảy ra va chạm,1,Tuấn Hùng,O-023,4
+O0159,803c37dd-673c-46ec-95be-5a65d3e6167f,32,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Xe ô tô cammera phải né và di chuyển sang phía làn bên phải để né xe tải trắng cùng tiến vào giao ngã tư.,1,Mai Linh,O-023,5
+O0160,803c37dd-673c-46ec-95be-5a65d3e6167f,32,Hậu quả của vụ va chạm đối với các phương tiện là gì?,không hư hại nào,1,Đức Mạnh,O-023,6
+O0161,e3f633c5-0881-4d5c-b7c4-2c5012df2cef,33,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Va chạm gây hư hỏng phần đầu xe tải và đuôi xe ô tô màu đen,1,Huỳnh Trung,O-023,7
+O0162,e3f633c5-0881-4d5c-b7c4-2c5012df2cef,33,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Va chạm hư phần sau của xe ô tô màu đen.,1,Nhật Trường,O-024,1
+O0163,e3f633c5-0881-4d5c-b7c4-2c5012df2cef,33,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Va chạm mạnh gây hư hỏng phần đuôi xe hatchback.,1,Tuấn Hùng,O-024,2
+O0164,e3f633c5-0881-4d5c-b7c4-2c5012df2cef,33,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Va chạm mạnh gây hư hỏng phần đuôi xe ô tô màu đen.,1,Tuấn Anh,O-024,3
+O0165,e3f633c5-0881-4d5c-b7c4-2c5012df2cef,33,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Va chạm nhẹ gây hư hỏng phần đuôi xe hatchback.,1,Đức Mạnh,O-024,4
+O0166,e3f633c5-0881-4d5c-b7c4-2c5012df2cef,33,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Va chạm nhẹ vào xe ô tô màu đen dẫn đến hư hỏng hông xe.,1,Tuyết Hạnh,O-024,5
+O0167,e3f633c5-0881-4d5c-b7c4-2c5012df2cef,33,Hậu quả của vụ va chạm đối với các phương tiện là gì?,Va chạm nhẹ ở đầu xe tải xám đen và xe ô tô con đen,1,Mai Linh,O-024,6
+O0168,33d93fe0-680c-4d03-ae3b-d1f04dab759a,34,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Hai xee máy bị đổ và trầy xước nhẹ, người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.",1,Tuấn Hùng,O-024,7
+O0169,33d93fe0-680c-4d03-ae3b-d1f04dab759a,34,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Xe máy bị đổ và trầy xước nhẹ, 2 người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.",1,Huỳnh Trung,O-025,1
+O0170,33d93fe0-680c-4d03-ae3b-d1f04dab759a,34,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Xe máy bị đổ và trầy xước nhẹ, người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.",1,Đức Mạnh,O-025,2
+O0171,33d93fe0-680c-4d03-ae3b-d1f04dab759a,34,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Xe máy bị đổ và trầy xước nhẹ, người lái xe máy đỏ bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.",1,Mai Linh,O-025,3
+O0172,33d93fe0-680c-4d03-ae3b-d1f04dab759a,34,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Xe máy bị đổ văng ra xa, người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó, người và xe máy màu đỏ ngã xuống đường.",1,Tuyết Hạnh,O-025,4
+O0173,33d93fe0-680c-4d03-ae3b-d1f04dab759a,34,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Xe máy bị đổ, trượt trúng người đi xe máy màu đen đi cùng chiều với ô tô màu đen và trầy xước nhẹ, người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.",1,Nhật Trường,O-025,5
+O0174,33d93fe0-680c-4d03-ae3b-d1f04dab759a,34,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Xe máy màu trắng bị trượt dài, người lái xe máy màu trắng bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó. Xe máy màu trắng trượt dài va chạm với xe máy màu đỏ giao hàng làm người cả điều khiển và xe máy màu đỏ té xuống đường.",1,Tuấn Anh,O-025,6
+O0175,c4e1c248-fa37-4025-b209-46e8f93f9a4c,35,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có va chạm và hư hỏng nhưng xe tải ben mất lái xoay chắn ngang đường.,1,Tuyết Hạnh,O-025,7
+O0176,c4e1c248-fa37-4025-b209-46e8f93f9a4c,35,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không quan sát thấy xảy ra va chạm,1,Huỳnh Trung,O-026,1
+O0177,c4e1c248-fa37-4025-b209-46e8f93f9a4c,35,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không va chạm,1,Tuấn Anh,O-026,2
+O0178,c4e1c248-fa37-4025-b209-46e8f93f9a4c,35,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Suýt va chạm.,1,Nhật Trường,O-026,3
+O0179,c4e1c248-fa37-4025-b209-46e8f93f9a4c,35,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy và xe tải ben không xảy ra va chạm, xe tải ben trượt do phanh gấp dẫn đến cản trở giao thông.",1,Mai Linh,O-026,4
+O0180,c4e1c248-fa37-4025-b209-46e8f93f9a4c,35,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe tải ben mất lại và vẫn kịp dừng lại an toàn.,1,Tuấn Hùng,O-026,5
+O0181,c4e1c248-fa37-4025-b209-46e8f93f9a4c,35,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,không có hư hại đáng kể nào.,1,Đức Mạnh,O-026,6
+O0182,8f90f03c-340d-4989-bc1d-d6ba2735334d,36,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không,1,Mai Linh,O-026,7
+O0183,8f90f03c-340d-4989-bc1d-d6ba2735334d,36,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không thể xác định,1,Huỳnh Trung,O-027,1
+O0184,8f90f03c-340d-4989-bc1d-d6ba2735334d,36,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Suýt va chạm.,1,Nhật Trường,O-027,2
+O0185,8f90f03c-340d-4989-bc1d-d6ba2735334d,36,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe ô tô trắng va chạm với xe máy chưa va chạm với nhau.,1,Tuấn Hùng,O-027,3
+O0186,5440465d-5c9a-4590-b5d8-e2bc2891cb35,37,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Cả hai xe máy bị đổ, cả hai người điều khiển trên xe ngã xuống đường, phương tiện có thể bị trầy xước nhẹ.",1,Huỳnh Trung,O-027,4
+O0187,5440465d-5c9a-4590-b5d8-e2bc2891cb35,37,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Cả hai xe máy bị đổ, hai người trên xe ngã xuống đường, phương tiện có thể bị trầy xước nhẹ.",6,"Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng, Đức Mạnh",O-027,5
+O0188,7d2d3e2e-c56c-4e9c-8d5b-31dc12cf21b9,38,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Hai xe máy va chạm, xe máy màu tối đang lưu thông bị đổ, người lái xe này bị ngã ra đường.",1,Huỳnh Trung,O-027,6
+O0189,7d2d3e2e-c56c-4e9c-8d5b-31dc12cf21b9,38,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Hai xe máy va chạm, xe máy đen bị đổ, người lái xe này bị ngã ra đường.",1,Mai Linh,O-027,7
+O0190,7d2d3e2e-c56c-4e9c-8d5b-31dc12cf21b9,38,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"Hai xe máy va chạm, xe máy đi ngược chiều bị đổ, người lái xe này bị ngã ra đường.",4,"Nhật Trường, Tuyết Hạnh, Tuấn Anh, Tuấn Hùng",O-028,1
+O0191,7d2d3e2e-c56c-4e9c-8d5b-31dc12cf21b9,38,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,người lái xe này bị ngã ra đường.,1,Đức Mạnh,O-028,2
+O0192,2fd40037-b2e8-4c8c-82c5-913d62c795cd,39,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Hai xe đã kịp phanh và dừng lại trước khi xảy ra va chạm,1,Tuấn Hùng,O-028,3
+O0193,2fd40037-b2e8-4c8c-82c5-913d62c795cd,39,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có va chạm và hư hỏng phương tiện.,1,Tuyết Hạnh,O-028,4
+O0194,2fd40037-b2e8-4c8c-82c5-913d62c795cd,39,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có va chạm.,1,Tuấn Anh,O-028,5
+O0195,2fd40037-b2e8-4c8c-82c5-913d62c795cd,39,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không quan sát thấy va chạm hoặc hư hỏng,1,Huỳnh Trung,O-028,6
+O0196,2fd40037-b2e8-4c8c-82c5-913d62c795cd,39,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Suýt va chạm với xe gắn camera hành trình.,1,Nhật Trường,O-028,7
+O0197,2fd40037-b2e8-4c8c-82c5-913d62c795cd,39,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,không có hư hại đáng kể,1,Đức Mạnh,O-029,1
+O0198,2fd40037-b2e8-4c8c-82c5-913d62c795cd,39,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Ô tô gắn camera suýt đâm vào xe máy,1,Mai Linh,O-029,2
+O0199,06f87da1-c037-4835-b849-e533edde4ebb,40,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,Bé gái ngã xuống đường.,1,Tuyết Hạnh,O-029,3
+O0200,06f87da1-c037-4835-b849-e533edde4ebb,40,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,Em học sinh mặc áo vàng bị va chạm nằm dưới đất.,1,Tuấn Anh,O-029,4
+O0201,06f87da1-c037-4835-b849-e533edde4ebb,40,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,Tông trúng em bé đang sang đường và ngã xuống mặt đất.,1,Nhật Trường,O-029,5
+O0202,06f87da1-c037-4835-b849-e533edde4ebb,40,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,bé gái nằm bất động giữa đường sau khi xảy ra va chạm.,1,Tuấn Hùng,O-029,6
+O0203,06f87da1-c037-4835-b849-e533edde4ebb,40,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,"bé mặc đồ sáng bị tông trúng và ngã xuống đất, xe máy trắng vẫn chạy đi",1,Huỳnh Trung,O-029,7
+O0204,06f87da1-c037-4835-b849-e533edde4ebb,40,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,cô bé áo hồng bị đâm tai nạn nghiêm trọng và xe máy trắng tiếp tục di chuyển vượt quá tốc độ an toàn khi tham gia giao thông.,1,Mai Linh,O-030,1
+O0205,06f87da1-c037-4835-b849-e533edde4ebb,40,Hậu quả của vụ va chạm đối với người và phương tiện là gì?,em bé bị xe máy đâm phải nằm ra đường.,1,Đức Mạnh,O-030,2
+O0206,ab0e3e26-d071-42ce-ae88-172902af14b2,41,Hậu quả của vụ va chạm quan sát được trên video là gì?,chưa có va chạm.,1,Đức Mạnh,O-030,3
+O0207,4d027dd0-f927-423f-a3fc-402851939b44,42,Hậu quả quan sát được sau khi người đi xe đạp ngã là gì?,Người và xe máy trắng ngã xuống đường,1,Huỳnh Trung,O-030,4
+O0208,4d027dd0-f927-423f-a3fc-402851939b44,42,Hậu quả quan sát được sau khi người đi xe đạp ngã là gì?,Người đi xe máy màu trắng bị ngã ra đường.,1,Đức Mạnh,O-030,5
+O0209,4d027dd0-f927-423f-a3fc-402851939b44,42,Hậu quả quan sát được sau khi người đi xe đạp ngã là gì?,Người đi xe máy ngã xuống đường và xe ô tô gắn camera phải dừng lại đột ngột.,1,Tuyết Hạnh,O-030,6
+O0210,4d027dd0-f927-423f-a3fc-402851939b44,42,Hậu quả quan sát được sau khi người đi xe đạp ngã là gì?,"Người đi xe máy trắng ngã xuống đường, va vào ô tô gắn camera",1,Mai Linh,O-030,7
+O0211,4d027dd0-f927-423f-a3fc-402851939b44,42,Hậu quả quan sát được sau khi người đi xe đạp ngã là gì?,Người đi xem máy màu xám bị ngã xuống mặt đường và xe gắn camera hành trình bị trầy xước nhẹ ở đầu xe bên phải.,1,Nhật Trường,O-031,1
+O0212,4d027dd0-f927-423f-a3fc-402851939b44,42,Hậu quả quan sát được sau khi người đi xe đạp ngã là gì?,Xe máy do người đàn ông áo đen điều khiển va chạm với xe gắn camera hành trình ngã xuống đường.,1,Tuấn Anh,O-031,2
+O0213,ba175e3f-186f-4477-a189-672fa5c40a38,43,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Va chạm , gây trầy xước hoặc móp méo phần đầu xe và va quẹt làm xe máy chở 2 người ngã",1,Huỳnh Trung,O-031,3
+O0214,ba175e3f-186f-4477-a189-672fa5c40a38,43,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Va chạm nhẹ với hông đuôi xe ô tô màu trắng và làm hai người trên xe máy cùng phương tiện ngã xuống đường.,1,Tuyết Hạnh,O-031,4
+O0215,ba175e3f-186f-4477-a189-672fa5c40a38,43,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Va chạm nhẹ, gây trầy xước hoặc móp méo phần vỏ xe tại điểm tiếp xúc giữa đầu xe tải và đuôi xe ô tô con và xe máy.",1,Đức Mạnh,O-031,5
+O0216,ba175e3f-186f-4477-a189-672fa5c40a38,43,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Va chạm nhẹ, gây trầy xước hoặc móp méo phần vỏ xe tại điểm tiếp xúc giữa đầu xe tải và đuôi xe ô tô con, xe máy chở 2 người bị ngã",1,Mai Linh,O-031,6
+O0217,ba175e3f-186f-4477-a189-672fa5c40a38,43,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe ô tô con màu trắng bị trầy bên phải xe, xe máy màu đen do người áo đen điều khiển chở 2 ngã xuống đường.",1,Tuấn Anh,O-031,7
+O0218,ba175e3f-186f-4477-a189-672fa5c40a38,43,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Đuôi xe ô tô trắng bị trầy xước, người đi xe máy bị ngã xuống mặt đường",1,Nhật Trường,O-032,1
+O0219,f7629d7a-de0a-4ed0-98b4-a6cb96899f27,44,Hậu quả của vụ va chạm quan sát được qua video là gì?,"Các phương tiện dừng lại, và trầy xước đuôi ô tô trắng.",1,Nhật Trường,O-032,2
+O0220,f7629d7a-de0a-4ed0-98b4-a6cb96899f27,44,Hậu quả của vụ va chạm quan sát được qua video là gì?,Một phần vỏ phía sau của xe ô tô bị văng ra.,1,Tuyết Hạnh,O-032,3
+O0221,f7629d7a-de0a-4ed0-98b4-a6cb96899f27,44,Hậu quả của vụ va chạm quan sát được qua video là gì?,Xe ô tô con màu trắng bị va chạm rớt thanh chắn phía sau xe.,1,Tuấn Anh,O-032,4
+O0222,f7629d7a-de0a-4ed0-98b4-a6cb96899f27,44,Hậu quả của vụ va chạm quan sát được qua video là gì?,phần sau của xe ô tô con bị hư hại.,1,Đức Mạnh,O-032,5
+O0223,f7629d7a-de0a-4ed0-98b4-a6cb96899f27,44,Hậu quả của vụ va chạm quan sát được qua video là gì?,phẩn cảng sau của xe ô tô màu trắng văng ra,1,Huỳnh Trung,O-032,6
+O0224,f7629d7a-de0a-4ed0-98b4-a6cb96899f27,44,Hậu quả của vụ va chạm quan sát được qua video là gì?,xe ô tô con bị rụng đuôi xe,1,Mai Linh,O-032,7
+O0225,696270ef-5e18-470f-91bd-d28d9fefdd70,45,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy ngã xuống đường.,1,Tuyết Hạnh,O-033,1
+O0226,696270ef-5e18-470f-91bd-d28d9fefdd70,45,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy ngã, người lái ngã xuống đường, phương tiện bị hư hỏng nhẹ.",2,"Tuấn Anh, Đức Mạnh",O-033,2
+O0227,696270ef-5e18-470f-91bd-d28d9fefdd70,45,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy ngã, người lái nhảy xuống xe, giao thông hỗn loạn.",1,Huỳnh Trung,O-033,3
+O0228,696270ef-5e18-470f-91bd-d28d9fefdd70,45,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy ngã, người lái nhảy xuống đường, phương tiện bị hư hỏng nhẹ.",1,Mai Linh,O-033,4
+O0229,696270ef-5e18-470f-91bd-d28d9fefdd70,45,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy ngã, phương tiện bị hư hỏng nhẹ.",1,Nhật Trường,O-033,5
+O0230,ad505cb2-b1ef-4d81-8d71-6c0eeda5d96e,46,Hậu quả trực tiếp của vụ va chạm quan sát được là gì?,"Xe máy bị đổ, người lái ngã xuống đường, không thấy hư hỏng nặng cho các phương tiện khác.",6,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuyết Hạnh, Tuấn Anh, Đức Mạnh",O-033,6
+O0231,50228be0-9864-43a7-bbc1-8ea263237b49,47,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe tải leo lên dải phân cách cỏ, hư hỏng nhẹ phần gầm và lốp.",5,"Huỳnh Trung, Mai Linh, Nhật Trường, Tuấn Anh, Đức Mạnh",O-033,7
+O0232,50228be0-9864-43a7-bbc1-8ea263237b49,47,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe tải leo lên dải phân cách cỏ.,1,Tuyết Hạnh,O-034,1
+O0233,2c039da6-bb0b-4f4e-b708-286a78bb474c,48,Hậu quả của vụ va chạm quan sát được là gì?,Không có gì xảy ra,1,Mai Linh,O-034,2
+O0234,2c039da6-bb0b-4f4e-b708-286a78bb474c,48,Hậu quả của vụ va chạm quan sát được là gì?,Không có va chạm.,1,Tuấn Anh,O-034,3
+O0235,2c039da6-bb0b-4f4e-b708-286a78bb474c,48,Hậu quả của vụ va chạm quan sát được là gì?,Suýt va chạm.,1,Nhật Trường,O-034,4
+O0236,2c039da6-bb0b-4f4e-b708-286a78bb474c,48,Hậu quả của vụ va chạm quan sát được là gì?,Xe ô tô phải phanh gấp. Không có va chạm và hư hỏng.,1,Tuyết Hạnh,O-034,5
+O0237,2c039da6-bb0b-4f4e-b708-286a78bb474c,48,Hậu quả của vụ va chạm quan sát được là gì?,không có hư hại.,1,Đức Mạnh,O-034,6
+O0238,2c039da6-bb0b-4f4e-b708-286a78bb474c,48,Hậu quả của vụ va chạm quan sát được là gì?,suýt va chạm,1,Huỳnh Trung,O-034,7
+O0239,8a03fddf-6e90-4fd2-8430-0d8d62b2ed78,49,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có va chạm,1,Mai Linh,O-035,1
+O0240,8a03fddf-6e90-4fd2-8430-0d8d62b2ed78,49,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có van chạm.,1,Tuấn Anh,O-035,2
+O0241,8a03fddf-6e90-4fd2-8430-0d8d62b2ed78,49,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không quan sát thấy va chạm hoặc hư hỏng phương tiện.,1,Huỳnh Trung,O-035,3
+O0242,8a03fddf-6e90-4fd2-8430-0d8d62b2ed78,49,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Suýt va chạm.,1,Nhật Trường,O-035,4
+O0243,8a03fddf-6e90-4fd2-8430-0d8d62b2ed78,49,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,không hư hại đáng kể nào.,1,Đức Mạnh,O-035,5
+O0244,495a9225-cc44-4fa9-879c-f77ab4980023,50,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Người và xe máy ngã xuống đường,1,Huỳnh Trung,O-035,6
+O0245,495a9225-cc44-4fa9-879c-f77ab4980023,50,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Người điều khiển xe máy và phương tiện bị ngã xuống đường.,1,Tuyết Hạnh,O-035,7
+O0246,495a9225-cc44-4fa9-879c-f77ab4980023,50,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy bị đổ .,1,Đức Mạnh,O-036,1
+O0247,495a9225-cc44-4fa9-879c-f77ab4980023,50,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy bị đổ nằm trên mặt đường sát dải phân cách.,1,Mai Linh,O-036,2
+O0248,495a9225-cc44-4fa9-879c-f77ab4980023,50,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe máy bị đổ nằm trên mặt đường, xe ô tô đen bị trầy nhẹ ở phần đầu xe.",1,Nhật Trường,O-036,3
+O0249,495a9225-cc44-4fa9-879c-f77ab4980023,50,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy bị đổ nằm trên trước đầu xe ô tô màu đen.,1,Tuấn Anh,O-036,4
+O0250,47e548d7-6635-4776-8633-8130f71738e6,51,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Người lái xe máy bị lạng tay lái,1,Mai Linh,O-036,5
+O0251,47e548d7-6635-4776-8633-8130f71738e6,51,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy bị loạn choạn tay lái.,1,Nhật Trường,O-036,6
+O0252,47e548d7-6635-4776-8633-8130f71738e6,51,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy bị mất thăng bằng.,1,Tuyết Hạnh,O-036,7
+O0253,47e548d7-6635-4776-8633-8130f71738e6,51,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy mất thăng bằng.,1,Tuấn Anh,O-037,1
+O0254,47e548d7-6635-4776-8633-8130f71738e6,51,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe máy suýt ngã.,1,Huỳnh Trung,O-037,2
+O0255,47e548d7-6635-4776-8633-8130f71738e6,51,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,không có hư hại,1,Đức Mạnh,O-037,3
+O0256,e1d69992-d2a5-4579-b835-fcc45b8bd85c,52,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Hai xe phải dừng lại, không quan sát thấy hư hỏng phương tiện.",1,Tuyết Hạnh,O-037,4
+O0257,e1d69992-d2a5-4579-b835-fcc45b8bd85c,52,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Xe ô tô màu trắng trầy sơn phía duôi, xe ben màu nâu trầy mặt trước.",1,Tuấn Anh,O-037,5
+O0258,e1d69992-d2a5-4579-b835-fcc45b8bd85c,52,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe ô tô trắng bị hư nhẹ phần bên trái xe.,1,Nhật Trường,O-037,6
+O0259,e1d69992-d2a5-4579-b835-fcc45b8bd85c,52,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,cả 2 xe bị hư hại nhẹ.,1,Đức Mạnh,O-037,7
+O0260,e1d69992-d2a5-4579-b835-fcc45b8bd85c,52,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,va chạm vừa,1,Huỳnh Trung,O-038,1
+O0261,e1d69992-d2a5-4579-b835-fcc45b8bd85c,52,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Đầu xe tải đâm vào đầu xe ô tô con trắng gây hư hỏng nhẹ,1,Mai Linh,O-038,2
+O0262,cb7be488-cd4f-47b8-a444-f6193f10eb39,53,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Hai xe bị đổ và người điều khiển xe tay ga bị ngã xuống đường.,1,Tuyết Hạnh,O-038,3
+O0263,cb7be488-cd4f-47b8-a444-f6193f10eb39,53,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Hai xe máy bị đổ, 3 người bị ngã xe, các phương tiện bị trầy xước nhẹ.",1,Mai Linh,O-038,4
+O0264,cb7be488-cd4f-47b8-a444-f6193f10eb39,53,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Hai xe máy bị đổ, các phương tiện bị trầy xước nhẹ.",1,Huỳnh Trung,O-038,5
+O0265,cb7be488-cd4f-47b8-a444-f6193f10eb39,53,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Hai xe máy bị đổ,, các phương tiện bị trầy xước nhẹ.",1,Đức Mạnh,O-038,6
+O0266,cb7be488-cd4f-47b8-a444-f6193f10eb39,53,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Hai xe máy bị đổ.,1,Tuấn Anh,O-038,7
+O0267,c88a4206-6262-4cc3-ac43-1d976534297b,54,Hậu quả của vụ va chạm mà bạn quan sát được là gì?,Không quan sát thấy va chạm hoặc hư hỏng phương tiện.,1,Huỳnh Trung,O-039,1
+O0268,c88a4206-6262-4cc3-ac43-1d976534297b,54,Hậu quả của vụ va chạm mà bạn quan sát được là gì?,Không quan sát thấy va chạm và hư hỏng phương tiện.,1,Tuyết Hạnh,O-039,2
+O0269,c88a4206-6262-4cc3-ac43-1d976534297b,54,Hậu quả của vụ va chạm mà bạn quan sát được là gì?,Không xác định,1,Mai Linh,O-039,3
+O0270,c88a4206-6262-4cc3-ac43-1d976534297b,54,Hậu quả của vụ va chạm mà bạn quan sát được là gì?,Không xảy ra va chạm.,1,Tuấn Anh,O-039,4
+O0271,a038bdb1-54d8-4dc1-be25-6b60c23240ae,55,Hậu quả của vụ va chạm được quan sát thấy là gì?,"Va chạm nhẹ, các phương tiện phải dừng lại, người ngồi sau xe máy bị thương nhẹ.",1,Tuyết Hạnh,O-039,5
+O0272,a038bdb1-54d8-4dc1-be25-6b60c23240ae,55,Hậu quả của vụ va chạm được quan sát thấy là gì?,"Va chạm nhẹ, người đi xe máy dừng lại kiểm tra.",1,Đức Mạnh,O-039,6
+O0273,a038bdb1-54d8-4dc1-be25-6b60c23240ae,55,Hậu quả của vụ va chạm được quan sát thấy là gì?,Va chạm nhẹ.,1,Huỳnh Trung,O-039,7
+O0274,a038bdb1-54d8-4dc1-be25-6b60c23240ae,55,Hậu quả của vụ va chạm được quan sát thấy là gì?,Xe máy chở 2 người bị kẹt giữa 2 xe người ngồi sau bị trầy da do cọ xát vào bánh xe bồn,1,Mai Linh,O-040,1
+O0275,a038bdb1-54d8-4dc1-be25-6b60c23240ae,55,Hậu quả của vụ va chạm được quan sát thấy là gì?,Xe máy màu đen do người áo trắng chở 2 bị kẹt giữa 2 xe khác.,1,Tuấn Anh,O-040,2
+O0276,7c8618e3-6287-4771-867f-d95e5c24b10f,56,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có va chạm,1,Mai Linh,O-040,3
+O0277,7c8618e3-6287-4771-867f-d95e5c24b10f,56,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không có va chạm.,1,Tuấn Anh,O-040,4
+O0278,7c8618e3-6287-4771-867f-d95e5c24b10f,56,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không quan sát thấy va chạm hoặc hư hỏng phương tiện.,1,Huỳnh Trung,O-040,5
+O0279,7c8618e3-6287-4771-867f-d95e5c24b10f,56,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,không có hư hại.,1,Đức Mạnh,O-040,6
+O0280,56b89548-356c-4eac-a164-ef9c7b3a83e0,57,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,2 xe va chạm vừa,1,Huỳnh Trung,O-040,7
+O0281,56b89548-356c-4eac-a164-ef9c7b3a83e0,57,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,2 xe ô tô va chạm có xước ở đầu,1,Đức Mạnh,O-041,1
+O0282,56b89548-356c-4eac-a164-ef9c7b3a83e0,57,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,"Hai xe phải dừng lại, không quan sát thấy hư hỏng phương tiện.",1,Tuyết Hạnh,O-041,2
+O0283,56b89548-356c-4eac-a164-ef9c7b3a83e0,57,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe ô tô màu nâu bị xe ô tô màu đỏ va chạm trước đầu xe.,1,Tuấn Anh,O-041,3
+O0284,56b89548-356c-4eac-a164-ef9c7b3a83e0,57,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Đầu xe của cả 2 e do va chạm bị trâyd nhẹ,1,Mai Linh,O-041,4
+O0285,bbf5a1a6-30bd-4c5e-b405-83d04eebe3d1,58,Hậu quả của vụ việc đối với người và xe là gì?,"Xe máy bị đổ nghiêng ra đường, người điều khiển bị ngã xuống mặt đường nhưng sau đó đã tự đứng dậy được.",2,"Huỳnh Trung, Mai Linh",O-041,5
+O0286,bbf5a1a6-30bd-4c5e-b405-83d04eebe3d1,58,Hậu quả của vụ việc đối với người và xe là gì?,"Xe máy bị đổ nghiêng ra đường, người điều khiển gần bị ngã xuống mặt đường nhưng sau đó đã tự đứng dậy được.",1,Đức Mạnh,O-041,6
+O0287,bbf5a1a6-30bd-4c5e-b405-83d04eebe3d1,58,Hậu quả của vụ việc đối với người và xe là gì?,"Xe máy bị đổ nghiêng ra đường, người điều khiển mất thăng bằng và sau đó đứng thẳng lên được.",1,Tuấn Anh,O-041,7
+O0288,bbf5a1a6-30bd-4c5e-b405-83d04eebe3d1,58,Hậu quả của vụ việc đối với người và xe là gì?,"Xe máy bị đổ ra đường, người điều khiển bị mất thăng bằng.",1,Tuyết Hạnh,O-042,1
+O0289,620369f7-2883-44ac-af23-7096a312ae4c,59,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không quan sát thấy va chạm hoặc hư hỏng phương tiện.,1,Huỳnh Trung,O-042,2
+O0290,620369f7-2883-44ac-af23-7096a312ae4c,59,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Không xảy ra va chạm.,1,Tuấn Anh,O-042,3
+O0291,620369f7-2883-44ac-af23-7096a312ae4c,59,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe con lao vào bụi cây và rãnh thoát nước ven đường,1,Mai Linh,O-042,4
+O0292,620369f7-2883-44ac-af23-7096a312ae4c,59,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Xe con phải lao vào lề cỏ ven đường và dừng lại.,1,Tuyết Hạnh,O-042,5
+O0293,620369f7-2883-44ac-af23-7096a312ae4c,59,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,không có hư hại đáng kể,1,Đức Mạnh,O-042,6
+O0294,e185b1d5-cae3-42bb-8e5d-64102416f078,60,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Va chạm nhẹ gây trầy phía trước xe ô tô màu đỏ và trầy phía sau xe ô tô màu đen.,1,Tuấn Anh,O-042,7
+O0295,e185b1d5-cae3-42bb-8e5d-64102416f078,60,Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?,Va chạm đuôi xe gây hư hỏng phần đầu xe sedan đỏ và phần đuôi xe SUV đen.,3,"Huỳnh Trung, Mai Linh, Đức Mạnh",O-043,1

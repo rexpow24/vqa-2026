@@ -1,0 +1,17 @@
+{
+  "model": "gemini-3.5-flash",
+  "text": "{\n  \"kết quả\": [\n    {\n      \"id\": \"1\",\n      \"ô\": {\n        \"mức độ\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"va chạm vừa\",\n          \"bằng chứng\": \"bị đổ, cả hai người điều khiển trên xe ngã xuống đường\",\n          \"cụm không khớp\": null\n        },\n        \"dấu hiệu nhìn thấy\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"người ngã\",\n          \"bằng chứng\": \"ngã xuống đường\",\n          \"cụm không khớp\": null\n        }\n      },\n      \"ngoài codebook\": [\n        {\n          \"đoạn\": \"Cả hai xe máy\",\n          \"loại\": \"nhóm khác: E\"\n        },\n        {\n          \"đoạn\": \"phương tiện có thể bị trầy xước nhẹ\",\n          \"loại\": \"suy đoán\"\n        }\n      ],\n      \"ghi chú\": \"Chọn dấu hiệu 'người ngã' vì cùng mức va chạm vừa với 'xe ngã' và đứng sau trong danh sách codebook.\"\n    },\n    {\n      \"id\": \"2\",\n      \"ô\": {\n        \"mức độ\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"va chạm mạnh\",\n          \"bằng chứng\": \"lật nghiêng hoàn toàn\",\n          \"cụm không khớp\": null\n        },\n        \"dấu hiệu nhìn thấy\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"bị lật\",\n          \"bằng chứng\": \"lật nghiêng hoàn toàn\",\n          \"cụm không khớp\": null\n        }\n      },\n      \"ngoài codebook\": [\n        {\n          \"đoạn\": \"Xe tải màu xám\",\n          \"loại\": \"nhóm khác: E\"\n        },\n        {\n          \"đoạn\": \"xuống rãnh bên đường\",\n          \"loại\": \"nhóm khác: S\"\n        }\n      ],\n      \"ghi chú\": null\n    }\n  ]\n}",
+  "usage": {
+    "promptTokenCount": 2191,
+    "candidatesTokenCount": 511,
+    "totalTokenCount": 5322,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 2191
+      }
+    ],
+    "thoughtsTokenCount": 2620,
+    "serviceTier": "standard"
+  }
+}

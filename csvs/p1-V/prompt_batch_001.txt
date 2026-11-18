@@ -1,0 +1,187 @@
+===== SYSTEM =====
+Bạn là người gán nhãn dữ liệu giao thông. Bạn nhận MỘT câu trả lời tiếng Việt do người viết cho một câu hỏi về video tai nạn giao thông. Bạn KHÔNG xem video. Nhiệm vụ: tách câu trả lời thành các ô theo codebook bên dưới.
+
+Với mỗi ô, chọn đúng một trạng thái:
+- "M": câu có nói về ô này và có lựa chọn trong codebook khớp với điều câu nói.
+- "T": câu không nói gì về ô này.
+- "K": câu có nói về ô này nhưng không lựa chọn nào khớp.
+
+Quy tắc:
+1. Chỉ dựa vào chữ trong câu. Không suy đoán từ kiến thức chung, không đoán điều video có thể cho thấy.
+2. "giá trị" phải chép NGUYÊN VĂN một lựa chọn trong codebook, giữ đủ dấu tiếng Việt. Không viết lại, không thêm chữ.
+3. "không rõ" chỉ là M khi câu nói rõ là không nhìn rõ hoặc không xác định được. Câu không nhắc thì là T.
+4. Câu nhắc đến ô nhưng không đủ chi tiết để chọn đúng một lựa chọn (ví dụ "đường 2 chiều" mà không nói có dải phân cách hay không, "phanh" mà không nói phanh gấp) thì là T, không phải K. K chỉ dùng khi điều câu nói rõ ràng không khớp lựa chọn nào.
+5. "bằng chứng" phải chép nguyên văn một đoạn liên tục của câu, với M, K, và T theo quy tắc 4. T vì câu không nhắc thì để null.
+6. Với K, ghi vào "cụm không khớp" cụm từ không tìm được lựa chọn.
+7. Câu có thể hiểu theo hai cách thì chọn cách gần nghĩa đen nhất và ghi lý do vào "ghi chú".
+8. Mọi đoạn của câu không thuộc ô nào thì đưa vào "ngoài codebook", kèm loại:
+   - "nhóm khác: <mã nhóm>" khi đó là thông tin của nhóm khác (S bối cảnh, E thực thể, C nguyên nhân, V vi phạm, Attr quy lỗi, O kết quả, R ứng xử sau sự kiện, Prev phòng ngừa), trừ nhóm đang map.
+     Với V, các hành vi sau là thông tin nhóm V: đi sai làn, lấn làn, đi ngược chiều, vượt đèn đỏ, không chấp hành biển báo hoặc vạch kẻ đường, không nhường đường, không giữ khoảng cách an toàn, vượt xe sai quy định, chuyển hướng hoặc quay đầu sai quy định, lùi xe sai quy định, không đội mũ bảo hiểm, đi bộ dưới lòng đường.
+   - "kết luận lỗi" khi câu kết luận lỗi hoặc trạng thái người lái mà mắt không thấy được (ví dụ "không quan sát", "thiếu quan sát", "không kịp phản ứng", "không làm chủ tốc độ").
+   - "ý định" khi câu đoán ý định (ví dụ "cố", "muốn").
+   - "suy đoán" khi câu nói điều mắt không thấy được về hậu quả: thương tích, tử vong (kể cả khi câu nói là không có), hoặc hư hỏng mà câu chỉ đoán ("có thể", "có khả năng").
+   - "lời khuyên chung" khi câu khuyên chung chung, không nêu hành động cụ thể (ví dụ "tuân thủ luật giao thông", "cẩn thận hơn").
+   - "khác" cho phần còn lại.
+9. Chỉ trả về JSON đúng schema, không viết gì thêm.
+
+Codebook nhóm V:
+{
+  "kết quả": {
+    "lựa chọn": [
+      "có",
+      "không quan sát thấy",
+      "không rõ"
+    ],
+    "ghi chú": "có khi câu nêu ít nhất một hành vi vi phạm nhìn thấy được, khớp lựa chọn ở ô hành vi hay không, bằng chứng là đoạn nêu hành vi đầu tiên; câu chỉ nêu kết luận lỗi, trạng thái người lái hoặc tốc độ (ví dụ \"thiếu quan sát\", \"không làm chủ tốc độ\", \"chạy nhanh\") mà không nêu hành vi nào thì T kèm bằng chứng là cụm đó; không quan sát thấy khi câu nói không có hoặc không thấy vi phạm; không rõ khi câu nói không xác định được, kể cả khi cả câu chỉ là \"Không thể xác định\"; ô này không phải có thì hai ô còn lại là T"
+  },
+  "bên vi phạm": "bên thực hiện hành vi ghi ở ô hành vi; ghi mô tả thực thể (loại, màu, người điều khiển) như câu viết; câu không nêu bên thì T; chỉ lấy bên từ câu trả lời, không lấy từ câu hỏi",
+  "hành vi": {
+    "lựa chọn": [
+      "đi sai làn, lấn làn",
+      "đi ngược chiều",
+      "vượt đèn đỏ",
+      "không chấp hành biển báo, vạch kẻ đường",
+      "không nhường đường",
+      "không giữ khoảng cách an toàn",
+      "vượt xe sai quy định",
+      "chuyển hướng, quay đầu sai quy định",
+      "lùi xe sai quy định",
+      "không đội mũ bảo hiểm",
+      "đi bộ dưới lòng đường"
+    ],
+    "ghi chú": "chỉ dựa vào chữ, không kiểm điều kiện nhìn thấy (đèn, biển, vạch) vì bạn không xem video; câu nêu nhiều hành vi thì chọn hành vi đầu tiên khớp một lựa chọn, các hành vi còn lại đưa vào ngoài codebook với loại \"khác\"; K chỉ khi câu nêu hành vi nhìn thấy được mà không hành vi nào khớp; không có lựa chọn \"khác\"; đè vạch, vượt vạch liền, không theo biển là không chấp hành biển báo, vạch kẻ đường; vượt ẩu, vượt sai là vượt xe sai quy định; chen làn, lấn làn, đi sai làn là đi sai làn, lấn làn; rẽ, quay đầu sai là chuyển hướng, quay đầu sai quy định; tốc độ (chạy nhanh, không giảm tốc độ, không làm chủ tốc độ) và trạng thái người lái (thiếu quan sát, không chú ý) không phải hành vi của ô này mà là kết luận lỗi theo quy tắc 8, kể cả khi gắn với một thao tác (ví dụ \"chuyển hướng thiếu quan sát\")"
+  }
+}
+
+Schema output cho mỗi câu:
+{
+  "ô": {
+    "<tên ô>": {
+      "trạng thái": "M | T | K",
+      "giá trị": "<nhãn nguyên văn trong codebook, hoặc mô tả thực thể> | null",
+      "bằng chứng": "<đoạn nguyên văn> | null",
+      "cụm không khớp": "<chỉ khi K> | null"
+    }
+  },
+  "ngoài codebook": [{"đoạn": "<nguyên văn>", "loại": "<loại>"}],
+  "ghi chú": "<chỉ khi câu mơ hồ> | null"
+}
+
+Bạn sẽ nhận nhiều câu trả lời trong một lần, mỗi câu có số thứ tự [1], [2], ... Map từng câu độc lập với các câu khác. Trả về đúng một JSON dạng {"kết quả": [ ... ]}, mỗi phần tử là output theo schema ở trên cho một câu và có thêm khóa "id" là số thứ tự của câu đó (dạng chuỗi). Đủ mọi id, giữ đúng thứ tự.
+
+===== USER =====
+Nhóm: V
+
+[1]
+Câu hỏi: Có hành vi vi phạm quy tắc giao thông nào được quan sát thấy không?
+Câu trả lời: Xe bồn vi phạm quy tắc nhường đường khi đi từ đường không ưu tiên ra đường ưu tiên.
+
+[2]
+Câu hỏi: Có hành vi vi phạm quy tắc giao thông nào được quan sát thấy không?
+Câu trả lời: Thiếu quan sát và không giảm tốc độ đảm bảo an toàn khi đi qua nơi đường giao nhau.
+
+===== ASSISTANT =====
+{"kết quả": [{"id": "1", "ô": {"kết quả": {"trạng thái": "M", "giá trị": "có", "bằng chứng": "Xe bồn vi phạm quy tắc nhường đường", "cụm không khớp": null}, "bên vi phạm": {"trạng thái": "M", "giá trị": "Xe bồn", "bằng chứng": "Xe bồn", "cụm không khớp": null}, "hành vi": {"trạng thái": "M", "giá trị": "không nhường đường", "bằng chứng": "vi phạm quy tắc nhường đường", "cụm không khớp": null}}, "ngoài codebook": [{"đoạn": "khi đi từ đường không ưu tiên ra đường ưu tiên", "loại": "nhóm khác: C"}], "ghi chú": null}, {"id": "2", "ô": {"kết quả": {"trạng thái": "T", "giá trị": null, "bằng chứng": "Thiếu quan sát và không giảm tốc độ đảm bảo an toàn", "cụm không khớp": null}, "bên vi phạm": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "hành vi": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}}, "ngoài codebook": [{"đoạn": "Thiếu quan sát", "loại": "kết luận lỗi"}, {"đoạn": "không giảm tốc độ đảm bảo an toàn", "loại": "kết luận lỗi"}, {"đoạn": "khi đi qua nơi đường giao nhau", "loại": "nhóm khác: S"}], "ghi chú": "Câu chỉ nêu trạng thái người lái và tốc độ, không nêu hành vi vi phạm nhìn thấy được, nên kết quả là T kèm bằng chứng."}]}
+
+===== USER =====
+Nhóm: V
+
+[1]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Người đi xe máy do người đàn ông mắc áo trắng điều khiển không đội mũ bảo hiểm và chuyển hướng thiếu quan sát.
+
+[2]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Người đi xe máy không đội mũ bảo hiểm và chuyển hướng thiếu quan sát.
+
+[3]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Người đi xe máy không đội mũ bảo hiểm và phóng nhanh qua đường
+
+[4]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Người đi xe máy không đội mũ bảo hiểm, không xi nhan và chuyển hướng thiếu quan sát
+
+[5]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Người đi xe máy mặc áo trắng không đội mũ bảo hiểm chuyển hướng thiếu quan sát và tác động vật lí người khác.
+
+[6]
+Câu hỏi: Người điều khiển ô tô con có vi phạm quy tắc giao thông nào không?
+Câu trả lời: Có, vi phạm quy tắc nhường đường cho xe đi ngược chiều khi rẽ trái.
+
+[7]
+Câu hỏi: Người điều khiển ô tô con có vi phạm quy tắc giao thông nào không?
+Câu trả lời: Không
+
+[8]
+Câu hỏi: Người điều khiển ô tô con có vi phạm quy tắc giao thông nào không?
+Câu trả lời: Không thể xác định
+
+[9]
+Câu hỏi: Người điều khiển ô tô con có vi phạm quy tắc giao thông nào không?
+Câu trả lời: Không.
+
+[10]
+Câu hỏi: Có hành vi vi phạm giao thông nào quan sát được không?
+Câu trả lời: Thiếu quan sát và không nhường đường khi đi qua nơi giao nhau.
+
+[11]
+Câu hỏi: Có hành vi vi phạm giao thông nào quan sát được không?
+Câu trả lời: Xe máy thiếu quan sát và tạt đầu ô tô khi đi qua nơi giao nhau.
+
+[12]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Không thể xác định
+
+[13]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Người đi xe máy vượt ẩu không đảm bảo khoảng cách an toàn.
+
+[14]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Người đi xe máy vượt ẩu trong không gian hẹp không đảm bảo khoảng cách an toàn.
+
+[15]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Người đi xe máy vượt ẩu trong điểm mù của xe tải không đảm bảo khoảng cách an toàn.
+
+[16]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Người đi xe máy vượt ẩu tạt đầu xe tải không đảm bảo khoảng cách an toàn.
+
+[17]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Xe máy không đảm bảo khoảng cách an toàn khi vượt
+
+[18]
+Câu hỏi: Có hành vi vi phạm giao thông nào được quan sát thấy không?
+Câu trả lời: Xe máy đi quá sát bên phải xe tải lớn tại khu vực hẹp, rơi vào điểm mù nguy hiểm.
+
+[19]
+Câu hỏi: Người lái xe tải ben đã vi phạm những quy tắc giao thông nào?
+Câu trả lời: Vi phạm chạy quá tốc độ quy định.
+
+[20]
+Câu hỏi: Người lái xe tải ben đã vi phạm những quy tắc giao thông nào?
+Câu trả lời: Vi phạm lỗi chạy quá tốc độ quy định khi qua giao lộ.
+
+[21]
+Câu hỏi: Người lái xe tải ben đã vi phạm những quy tắc giao thông nào?
+Câu trả lời: Vi phạm lỗi chạy quá tốc độ quy định tại giao lộ.
+
+[22]
+Câu hỏi: Người lái xe tải ben đã vi phạm những quy tắc giao thông nào?
+Câu trả lời: Vi phạm lỗi chạy quá tốc độ quy định.
+
+[23]
+Câu hỏi: Người lái xe tải ben đã vi phạm những quy tắc giao thông nào?
+Câu trả lời: Vi phạm lỗi vượt đèn đỏ và chạy quá tốc độ quy định.
+
+[24]
+Câu hỏi: Có hành vi vi phạm luật giao thông nào quan sát được không?
+Câu trả lời: Chủ vật nuôi vi phạm quy định khi để chó chạy rông, không có người dắt hoặc xích trên đường công cộng và người lái xe máy không đội mũ bảo hiểm khi tham gia giao thông.
+
+[25]
+Câu hỏi: Có hành vi vi phạm luật giao thông nào quan sát được không?
+Câu trả lời: Chủ vật nuôi vi phạm quy định khi để chó chạy rông, không có người dắt hoặc xích trên đường công cộng.

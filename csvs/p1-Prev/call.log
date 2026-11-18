@@ -1,0 +1,44 @@
+Prev-001: xong, 0 câu lỗi
+Prev-002: xong, 0 câu lỗi
+Prev-003: xong, 0 câu lỗi
+Prev-004: xong, 0 câu lỗi
+Prev-005: xong, 0 câu lỗi
+Prev-006: xong, 0 câu lỗi
+Prev-007 lần 1: 1 câu không hợp lệ
+Prev-007: xong, 0 câu lỗi
+Prev-008: xong, 0 câu lỗi
+Prev-009: xong, 0 câu lỗi
+Prev-010: xong, 0 câu lỗi
+Prev-011: xong, 0 câu lỗi
+Prev-012: xong, 0 câu lỗi
+Prev-013: xong, 0 câu lỗi
+Prev-014: xong, 0 câu lỗi
+Prev-015: xong, 0 câu lỗi
+Prev-016 lần 1: 7 câu không hợp lệ
+Prev-016: xong, 0 câu lỗi
+Prev-017: xong, 0 câu lỗi
+Prev-018: xong, 0 câu lỗi
+Prev-019: xong, 0 câu lỗi
+Prev-020: xong, 0 câu lỗi
+Prev-021: xong, 0 câu lỗi
+Prev-022 lần 1: 1 câu không hợp lệ
+Prev-022: xong, 0 câu lỗi
+Prev-023: xong, 0 câu lỗi
+Prev-024 lần 1: 7 câu không hợp lệ
+Prev-024: xong, 0 câu lỗi
+Prev-025: xong, 0 câu lỗi
+Prev-026 lần 1: 1 câu không hợp lệ
+Prev-026: xong, 0 câu lỗi
+Prev-027: xong, 0 câu lỗi
+Prev-028: xong, 0 câu lỗi
+Prev-029 lần 1: 5 câu không hợp lệ
+Prev-029 lần 2: lỗi gọi API: HTTP 402: {
+  "error": {
+    "code": 402,
+    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",
+    "status": "RESOURCE_EXHAUSTED"
+  }
+}
+
+Prev-029: xong, 5 câu lỗi
+29/29 lô có output -> csvs\p1-Prev\outputs.jsonl

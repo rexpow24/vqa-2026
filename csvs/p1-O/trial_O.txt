@@ -1,0 +1,23 @@
+CHẠY THỬ NHÓM O, model gemini-3.5-flash
+
+[1] Cả hai xe máy bị đổ, cả hai người điều khiển trên xe ngã xuống đường, phương tiện có thể bị trầy xước nhẹ.
+Ô                   Mong muốn      Model          So    Bằng chứng mong muốn                             Bằng chứng model
+------------------  -------------  -------------  ----  -----------------------------------------------  ------------------------------------------------------
+mức độ              M:va chạm vừa  M:va chạm vừa  khớp  cả hai người điều khiển trên xe ngã xuống đường  bị đổ, cả hai người điều khiển trên xe ngã xuống đường
+dấu hiệu nhìn thấy  M:người ngã    M:người ngã    khớp  cả hai người điều khiển trên xe ngã xuống đường  ngã xuống đường
+Ngoài codebook, model: [{"đoạn": "Cả hai xe máy", "loại": "nhóm khác: E"}, {"đoạn": "phương tiện có thể bị trầy xước nhẹ", "loại": "suy đoán"}]
+Ngoài codebook, mong muốn: [{"đoạn": "phương tiện có thể bị trầy xước nhẹ", "loại": "suy đoán"}]
+Ghi chú, model: Chọn dấu hiệu 'người ngã' vì cùng mức va chạm vừa với 'xe ngã' và đứng sau trong danh sách codebook.
+Lỗi kiểm tra: không có
+
+[2] Xe tải màu xám lật nghiêng hoàn toàn xuống rãnh bên đường.
+Ô                   Mong muốn       Model           So    Bằng chứng mong muốn                  Bằng chứng model
+------------------  --------------  --------------  ----  ------------------------------------  ---------------------
+mức độ              M:va chạm mạnh  M:va chạm mạnh  khớp  Xe tải màu xám lật nghiêng hoàn toàn  lật nghiêng hoàn toàn
+dấu hiệu nhìn thấy  M:bị lật        M:bị lật        khớp  Xe tải màu xám lật nghiêng hoàn toàn  lật nghiêng hoàn toàn
+Ngoài codebook, model: [{"đoạn": "Xe tải màu xám", "loại": "nhóm khác: E"}, {"đoạn": "xuống rãnh bên đường", "loại": "nhóm khác: S"}]
+Ngoài codebook, mong muốn: [{"đoạn": "xuống rãnh bên đường", "loại": "khác"}]
+Ghi chú, model: None
+Lỗi kiểm tra: không có
+
+Token: {"promptTokenCount": 2191, "candidatesTokenCount": 511, "totalTokenCount": 5322, "promptTokensDetails": [{"modality": "TEXT", "tokenCount": 2191}], "thoughtsTokenCount": 2620, "serviceTier": "standard"}

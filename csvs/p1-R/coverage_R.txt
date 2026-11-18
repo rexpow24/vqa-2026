@@ -1,0 +1,617 @@
+BÁO CÁO ĐỘ PHỦ CODEBOOK, NHÓM R
+
+Câu trả lời khác nhau (đơn vị đếm): 228  | video: 59  | lượt viết của annotator: 354
+Map hợp lệ: 228  | lỗi, chưa tính: 0
+Độ phủ = M / n, n = M + K. Ô có n < 10: chưa đủ dữ liệu. Đạt khi độ phủ >= 80%.
+T chia hai: 'T thiếu chi tiết' (có nhắc nhưng không đủ để chọn) và 'T không nhắc'.
+
+1. ĐỘ PHỦ THEO Ô
+Ô                         M    K   T    T thiếu chi tiết  T không nhắc  n = M + K  Độ phủ = M / n  Kết luận
+------------------------  ---  --  ---  ----------------  ------------  ---------  --------------  --------
+clip có đoạn sau sự kiện  228  0   0    0                 0             228        100%            đạt
+bên thứ nhất              207  0   21   0                 21            207        100%            đạt
+hành vi bên thứ nhất      196  11  21   0                 21            207        95%             đạt
+bên thứ hai               67   0   161  0                 161           67         100%            đạt
+hành vi bên thứ hai       59   8   161  0                 161           67         88%             đạt
+người, xe xung quanh      30   6   192  0                 192           36         83%             đạt
+
+2. GIÁ TRỊ ĐƯỢC CHỌN (chỉ tính M)
+
+[clip có đoạn sau sự kiện]
+Giá trị  Số câu
+-------  ------
+có       219
+không    9
+
+[bên thứ nhất]
+Giá trị                                                            Số câu
+-----------------------------------------------------------------  ------
+Cả hai phương tiện                                                 15
+Người lái xe máy                                                   12
+xe ô tô                                                            11
+các phương tiện                                                    10
+Xe tải                                                             9
+tài xế xe tải                                                      8
+Ô tô                                                               8
+các bên liên quan                                                  7
+Tài xế                                                             7
+Các phương tiện liên quan                                          5
+người đi xe máy                                                    5
+Hai xe                                                             4
+Tài xế ô tô                                                        4
+cả hai xe                                                          3
+Người lái xe bị ngã                                                3
+xe gắn camera hành trình                                           3
+2 bên                                                              2
+2 xe                                                               2
+các bên                                                            2
+Các xe                                                             2
+Các xe liên quan                                                   2
+tài xế xe Ford Ranger                                              2
+Xe gắn camera                                                      2
+Xe tải ben                                                         2
+Xe ô tô con                                                        2
+ô tô con                                                           2
+2 chiếc ô tô                                                       1
+2 phương tiện                                                      1
+chiếc ô tô SUV màu đỏ và ô tô màu xám                              1
+con chó và người điều khiển                                        1
+các phương tiện liên quan như xe container và xe bán tải           1
+Các tài xế xe máy                                                  1
+cả 2 phương tiện                                                   1
+Cả ba xe                                                           1
+Cả hai                                                             1
+Hai người                                                          1
+Hai phương tiên                                                    1
+hai phương tiện                                                    1
+người lái xe màu tối                                               1
+Người lái xe máy bị ngã                                            1
+người lái xe máy màu xám                                           1
+Người lái xe ô tô                                                  1
+người mặc áo sáng                                                  1
+Người mặc áo trắng                                                 1
+Người ngồi sau xe máy                                              1
+người đi xe đạp                                                    1
+Người điều khiển xe tay ga                                         1
+người điểu khiển xe máy                                            1
+Người đàn ông điểu khiển xe máy                                    1
+Tài xế xe máy thồ                                                  1
+tài xế xe ô tô                                                     1
+tài xế xe ô tô con trắng                                           1
+tài xế xe ô tô màu đen                                             1
+Tài xế xe ô tô và xe ben                                           1
+tất cả các xe cùng làn                                             1
+xe bồn                                                             1
+Xe camera hành trình                                               1
+xe con                                                             1
+Xe có camera                                                       1
+Xe có camera hành trình và xe máy do người mặc áo xanh điều khiển  1
+xe màu đen                                                         1
+Xe máy                                                             1
+Xe máy chở 3                                                       1
+xe máy màu nâu do người phụ nữ điều khiển                          1
+Xe máy màu trắng                                                   1
+Xe máy màu trắng do phụ nữ áo đen chở 2 người                      1
+Xe máy màu trắng đen                                               1
+Xe máy màu đen                                                     1
+xe máy màu đen do người phụ nữ điều khiển                          1
+xe máy màu đỏ                                                      1
+xe máy trắng                                                       1
+Xe SUV                                                             1
+xe SUV đen                                                         1
+Xe tay ga bạc                                                      1
+Xe tải lớn                                                         1
+Xe tải lớn màu tối                                                 1
+xe tải lớn màu xanh                                                1
+xe tải màu trắng                                                   1
+Xe tải to                                                          1
+Xe tải và xe ô tô màu đen                                          1
+Xe tải và ô tô màu đen                                             1
+Xe tải xe tải thùng kín                                            1
+Xe ô tô (có camera hành trình)                                     1
+Xe ô tô bán tải màu đen                                            1
+xe ô tô có camera hành trình                                       1
+Xe ô tô gắn camera và xe máy                                       1
+xe ô tô gắn camera và xe tải trắng                                 1
+xe ô tô gắn camera và ô tô con màu bạc                             1
+Xe ô tô màu bạc                                                    1
+xe ô tô màu nâu và xe ô tô màu đỏ                                  1
+xe ô tô màu xám                                                    1
+xe ô tô màu đen                                                    1
+xe ô tô và xe máy                                                  1
+Xe ô tô đang gắn camera hành trình                                 1
+Xe ô tô đỏ                                                         1
+Xe ô tô đỏ và xe tải                                               1
+Xe ô tô đỏ và xe tải thùng                                         1
+Ô tô màu trắng                                                     1
+ô tô màu tối và xe tài thùng                                       1
+
+[hành vi bên thứ nhất]
+Giá trị                     Số câu
+--------------------------  ------
+dừng lại                    118
+tiếp tục di chuyển, rời đi  53
+tự đứng dậy, dựng xe        25
+giằng co                    0
+không rõ                    0
+
+[bên thứ hai]
+Giá trị                                                    Số câu
+---------------------------------------------------------  ------
+người đi xe máy                                            10
+xe máy                                                     10
+người ngồi sau xe máy                                      4
+xe bồn                                                     4
+người điều khiển xe máy                                    2
+xe máy trắng                                               2
+xe tải                                                     2
+2 người xe máy                                             1
+các phương tiện                                            1
+các phương tiện liên quan còn lại                          1
+hai người điều khiển xe máy                                1
+người lái xe màu tối màu                                   1
+người lái xe màu xanh                                      1
+người lái xe mặc màu xanh                                  1
+người ngồi sau xe máy màu đỏ do phụ nữ áo đen chở 2 người  1
+người trên xe máy                                          1
+người đi xe máy màu trắng                                  1
+người đi xe máy màu xanh đen                               1
+người đi xe máy đen                                        1
+người đi xe máy điện                                       1
+người đi xe đạp                                            1
+người đàn ông xe bán tải đen                               1
+tài xế xe tải                                              1
+Xe ba gác                                                  1
+xe ben xanh đen                                            1
+xe khách                                                   1
+xe máy màu nâu                                             1
+xe máy màu trắng do thanh niên không đội mũ điều khiển     1
+xe tải ben                                                 1
+xe tải ben màu xanh đen                                    1
+Xe tải màu xanh                                            1
+xe tải và xe ô tô con màu đen                              1
+xe ô tô                                                    1
+xe ô tô con                                                1
+xe ô tô gắn camera                                         1
+Xe ô tô màu trắng                                          1
+xe ô tô màu đỏ                                             1
+ô tô có camera hành trình                                  1
+ô tô màu xanh ngọc                                         1
+ô tô SUV                                                   1
+
+[hành vi bên thứ hai]
+Giá trị                     Số câu
+--------------------------  ------
+dừng lại                    12
+tiếp tục di chuyển, rời đi  28
+tự đứng dậy, dựng xe        19
+giằng co                    0
+không rõ                    0
+
+[người, xe xung quanh]
+Giá trị                   Số câu
+------------------------  ------
+dừng lại hoặc đến hỗ trợ  30
+không thấy ai dừng lại    0
+không rõ                  0
+
+3. MỌI CỤM BỊ K (codebook thiếu lựa chọn)
+Ô                     Cụm không khớp                                                     Bằng chứng                                                                     Video  Câu
+--------------------  -----------------------------------------------------------------  -----------------------------------------------------------------------------  -----  -----
+hành vi bên thứ hai   bước xuống                                                         bước xuống                                                                     #27    R0105
+hành vi bên thứ hai   lùi lại                                                            lùi lại                                                                        #55    R0207
+hành vi bên thứ hai   nhảy khỏi xe và đi vào lề đường                                    nhảy khỏi xe và đi vào lề đường                                                #26    R0098
+hành vi bên thứ hai   xuống khỏi xe máy và đi vào lề đường                               xuống khỏi xe máy và đi vào lề đường                                           #26    R0103
+hành vi bên thứ hai   xuống xe và lên xe lại                                             xuống xe và lên xe lại                                                         #26    R0100
+hành vi bên thứ hai   xuống xe xem tình hình                                             xuống xe xem tình hình                                                         #27    R0104
+hành vi bên thứ hai   đánh                                                               đánh                                                                           #1     R0003
+hành vi bên thứ hai   đánh                                                               đánh                                                                           #1     R0007
+hành vi bên thứ nhất  bước xuống giải quyết                                              bước xuống giải quyết                                                          #27    R0107
+hành vi bên thứ nhất  chạy vào lề đường                                                  chạy vào lề đường                                                              #55    R0207
+hành vi bên thứ nhất  giảm tốc độ và tấp xe vào lề đường bên phải                        giảm tốc độ và tấp xe vào lề đường bên phải                                    #6     R0019
+hành vi bên thứ nhất  lui xe ra khỏi chỗ kẹt                                             lui xe ra khỏi chỗ kẹt                                                         #55    R0211
+hành vi bên thứ nhất  lùi lại                                                            lùi lại                                                                        #55    R0210
+hành vi bên thứ nhất  mở cửa bước ra nói chuyện với tài xế xe ô tô màu trắng ở trong xe  mở cửa bước ra nói chuyện với tài xế xe ô tô màu trắng ở trong xe              #27    R0108
+hành vi bên thứ nhất  nhảy xuống                                                         nhảy xuống                                                                     #45    R0176
+hành vi bên thứ nhất  nằm lại                                                            nằm lại                                                                        #9     R0031
+hành vi bên thứ nhất  xuống xe                                                           xuống xe                                                                       #27    R0109
+hành vi bên thứ nhất  điều dựng lại                                                      điều dựng lại                                                                  #52    R0196
+hành vi bên thứ nhất  đánh vào mặt                                                       đánh vào mặt                                                                   #1     R0002
+người, xe xung quanh  chủ động giảm tốc độ hoặc lách qua để tránh người bị nạn           Các phương tiện khác chủ động giảm tốc độ hoặc lách qua để tránh người bị nạn  #42    R0161
+người, xe xung quanh  nhìn em học sinh mặc áo màu vàng                                   mọi người nhìn em học sinh mặc áo màu vàng                                     #40    R0158
+người, xe xung quanh  vẫn tiếp tục di chuyển                                             mọi người vẫn tiếp tục di chuyển                                               #58    R0225
+người, xe xung quanh  đi chậm lại                                                        những người xung quanh đi chậm lại                                             #53    R0201
+người, xe xung quanh  đi chậm lại và tiếp tục hành trình                                 các xe khác đi chậm lại và tiếp tục hành trình                                 #47    R0181
+người, xe xung quanh  đi chậm lại để quan sát                                            một số người đi xe máy đi chậm lại để quan sát                                 #33    R0131
+
+4. MỌI T THIẾU CHI TIẾT
+(không có)
+
+5. NGOÀI CODEBOOK (gộp theo loại và đoạn)
+Loại                   Đoạn                                                                          Số câu  Video
+---------------------  ----------------------------------------------------------------------------  ------  ---------------
+khác                   ngay lập tức                                                                  10      #7 #22 #26 #38
+khác                   ngay lập tức tại hiện trường                                                  7       #13 #15
+khác                   tại hiện trường                                                               7       #20 #33 #52 #55
+khác                   kịp thời                                                                      4       #19
+khác                   nhanh chóng                                                                   3       #3
+khác                   vẫn                                                                           3       #16 #20 #23
+khác                   đều                                                                           3       #20 #21 #52
+khác                   giảm tốc độ và                                                                2       #20
+khác                   tại hiện trường ngay sau va chạm.                                             2       #28
+khác                   tự đứng dậy                                                                   2       #53
+khác                   và                                                                            2       #40
+khác                   đi bộ về phía trước đầu xe của camera hành trình                              2       #3
+khác                   điều khiển xe tấp vào lề đường                                                2       #2
+khác                   đã                                                                            2       #28
+khác                   ( trừ xe ô tô con màu bạc)                                                    1       #14
+khác                   , trong khi                                                                   1       #40
+khác                   chạm ra khỏi vị trí sáp va chạm.                                              1       #49
+khác                   chậm về phía trước một đoạn ngắn trước khi video kết thúc                     1       #12
+khác                   chủ động                                                                      1       #39
+khác                   chửi người mặc áo màu xanh lái xe máy                                         1       #38
+khác                   các phương tiện tại hiện trường                                               1       #44
+khác                   có tăng ga                                                                    1       #18
+khác                   di chuyển vào lề đường                                                        1       #1
+khác                   dọc mép đường                                                                 1       #2
+khác                   giảm tốc sát đầu ô tô                                                         1       #39
+khác                   giảm tốc độ cho                                                               1       #20
+khác                   gần vị trí xe ngã                                                             1       #11
+khác                   hiện trường sau va chạm                                                       1       #52
+khác                   hiện trường sau va chạm.                                                      1       #52
+khác                   hiệngay tạin trường.                                                          1       #49
+khác                   hẳn                                                                           1       #59
+khác                   khiến                                                                         1       #23
+khác                   không tắt chìa khóa                                                           1       #18
+khác                   kiểm tra vết thương                                                           1       #55
+khác                   lách sang phải và                                                             1       #29
+khác                   lạng tay lái và                                                               1       #35
+khác                   lấy lại được thăng bằng                                                       1       #19
+khác                   mà không có dấu hiệu dừng lại.                                                1       #5
+khác                   một bên                                                                       1       #6
+khác                   ngay lập tức sau khi va chạm xảy ra                                           1       #57
+khác                   ngay lập tức và xuống xe để kiểm tra tình hình nạn nhân                       1       #7
+khác                   ngay lập tức và xuống xe để kiểm tra tình hình vụ va chạm                     1       #7
+khác                   ngay lập tức,                                                                 1       #38
+khác                   ngay sau cú va chạm                                                           1       #31
+khác                   ngay sau khi vụ việc xảy ra                                                   1       #4
+khác                   ngay sau đó                                                                   1       #20
+khác                   ngay tại hiện trường sau va chạm.                                             1       #49
+khác                   ngay tại hiện trường vụ tai nạn                                               1       #24
+khác                   ngay tại vị trí va chạm trên đường                                            1       #21
+khác                   người ngồi sau xuống xe và người điều khiển đi vào phía bên phải              1       #26
+khác                   nhường cho                                                                    1       #39
+khác                   nhường đường cho xe có camera tiếp tục di chuyển                              1       #39
+khác                   nổi giận                                                                      1       #1
+khác                   phải                                                                          1       #27
+khác                   rồi                                                                           1       #20
+khác                   rồi xe máy chạy đi                                                            1       #26
+khác                   rồi đi vào lề đường                                                           1       #26
+khác                   sau đó                                                                        1       #39
+khác                   tranh cãi với tài xế xe ford ranger.                                          1       #27
+khác                   tài xế bước xuống xử lí                                                       1       #24
+khác                   tài xế xe tải lớn màu xanh chạy xuống kiểm tra tình trạng xe máy              1       #7
+khác                   tác động vật lí vào mặt người đi xe máy cùng chiều với ô tô gắn camera        1       #1
+khác                   tự đứng dậy .                                                                 1       #53
+khác                   tự đứng dậy và hỗ trợ nhau                                                    1       #53
+khác                   và chạy đi tiếp                                                               1       #19
+khác                   và cãi vã với người mặc áo xanh,                                              1       #38
+khác                   và di chuyển tiếp                                                             1       #19
+khác                   và dắt vào lề đường                                                           1       #19
+khác                   và dừng lại                                                                   1       #17
+khác                   và tài xế xe ford ranger bước ra cửa để xử lý.                                1       #27
+khác                   và tấp xe vào lề đường bên phải                                               1       #6
+khác                   và xe tải lớn tiếp tục di chuyển                                              1       #43
+khác                   và xuống xe                                                                   1       #26
+khác                   và đi vào lề đường                                                            1       #26
+khác                   và đi vào lề đường bên phải                                                   1       #6
+khác                   với tốc độ cao                                                                1       #5
+khác                   xe máy chở 2 người đứng dậy tqaaps vào lề đường                               1       #43
+khác                   xuống xe                                                                      1       #8
+khác                   xuống xe để xem xét tình hình vụ va chạm                                      1       #8
+khác                   xảy ra giằng co                                                               1       #1
+khác                   đang                                                                          1       #23
+khác                   đi bộ về phía trước đầu xe gắn camera hành trình                              1       #3
+khác                   đánh người trước đầu xe ô tô                                                  1       #1
+khác                   đã giảm tốc độ và                                                             1       #48
+khác                   đã né tránh và                                                                1       #56
+khác                   đã đạp phanh để                                                               1       #22
+khác                   để kiểm tra                                                                   1       #38
+khác                   ở vị trí va chạm                                                              1       #52
+nhóm khác: E           do đến đoạn lạng tay lái                                                      1       #51
+nhóm khác: E           em bé                                                                         1       #40
+nhóm khác: E thực thể  người gặp nạn                                                                 2       #18
+nhóm khác: O           do không có va chạm.                                                          1       #32
+nhóm khác: O           không có va chạm và                                                           1       #32
+nhóm khác: O           ngay sau khi vụ việc xảy ra.                                                  1       #4
+nhóm khác: O           người lái xe máy tối màu nằm trên đường                                       1       #23
+nhóm khác: O           nạn nhân nằm trên đường                                                       1       #23
+nhóm khác: O           sau khi bị lật nằm trên mặt đường                                             1       #9
+nhóm khác: O           sau khi xe máy ngã                                                            1       #4
+nhóm khác: O           xe máy màu đen do người đàn ông mặc áo sọc điều khiển nằm tại vị trí va chạm  1       #23
+nhóm khác: O kết quả   do không có va chạm                                                           1       #31
+nhóm khác: O kết quả   và ngã thêm lần nữa                                                           1       #18
+nhóm khác: O kết quả   xe máy do người đàn ông áo đen điều khiển nằm trước đầu xe                    1       #42
+nhóm khác: S           ngay tại vị trí va chạm giữa ngã tư                                           1       #17
+nhóm khác: S           trên dải phân cách                                                            1       #47
+nhóm khác: S           trên đường cao tốc                                                            1       #9
+nhóm khác: S           tại hiện trường                                                               1       #10
+nhóm khác: S           tại hiện trường ngay sau khi xảy ra va chạm                                   1       #60
+nhóm khác: S           ở vị trí gặp nạn bên lề đường                                                 1       #59
+nhóm khác: S bối cảnh  ngay tại hiện trường                                                          4       #43
+nhóm khác: S bối cảnh  tại hiện trường                                                               3       #18 #31
+nhóm khác: S bối cảnh  khi chạy qua bên kia đường                                                    1       #43
+nhóm khác: S bối cảnh  ngay tại vị trí va chạm                                                       1       #17
+nhóm khác: S bối cảnh  ngay tại vị trí va chạm giữa ngã tư                                           1       #32
+nhóm khác: S bối cảnh  qua giao lộ                                                                   1       #17
+nhóm khác: S bối cảnh  trước ô tô có camera hành trình                                               1       #17
+nhóm khác: S bối cảnh  tại chỗ                                                                       1       #17
+nhóm khác: S bối cảnh  tại vị trí va chạm                                                            1       #42
+ý định                 chủ động                                                                      2       #6
+ý định                 để giải quyết vụ việc                                                         2       #43
+ý định                 để kiểm tra                                                                   2       #38
+ý định                 cố gắng                                                                       1       #55
+ý định                 đang cố                                                                       1       #23
+ý định                 để không ảnh hưởng giao thông của các xe khác trên đường.                     1       #6
+ý định                 để kiểm tra thiệt hại                                                         1       #55
+ý định                 để kiểm tra thiệt hại trên xe ô tô                                            1       #55
+ý định                 để nhường đường                                                               1       #55
+
+6. GHI CHÚ CỦA MODEL
+Video  Câu    Ghi chú
+-----  -----  ---------------------------------------------------------------------------------------------------------------------------------------------------
+#1     R0002  Người mặc áo xanh là nạn nhân chịu tác động, không có hành vi được kể nên bên thứ hai là T.
+#1     R0003  Người đi xe máy màu xanh là nạn nhân chịu tác động, không có hành vi được kể.
+#1     R0007  Người đi xe máy mặc áo xanh là nạn nhân chịu tác động, không có hành vi được kể.
+#3     R0013  Ô tô có camera hành trình là xe xung quanh nên xếp vào nhóm người, xe xung quanh.
+#7     R0024  Nạn nhân được nhắc tới nhưng không có hành vi nào sau sự kiện được kể nên bên thứ hai là T.
+#7     R0027  Tài xế xe tải lớn màu xanh là người điều khiển bên thứ nhất, không phải bên thứ hai.
+#8     R0028  Nạn nhân được nhắc tới nhưng không có hành vi nào sau sự kiện được kể nên bên thứ hai là T.
+#22    R0082  Câu trả lời dạng mẫu không thể xác định nên ô clip có đoạn sau sự kiện là không, các ô còn lại là T.
+#26    R0100  Bên thứ ba (xe máy chạy đi) được đưa vào ngoài codebook theo quy tắc.
+#27    R0105  Từ 'đừng lại' được hiểu là 'dừng lại' theo nghĩa đen của ngữ cảnh.
+#36    R0142  Mẫu câu không thể xác định cho biết clip không có đoạn sau sự kiện.
+#38    R0146  Hành vi tự đứng dậy của bên 1 khớp trước nên chọn hành vi này, đoạn cãi vã đưa vào ngoài codebook.
+#38    R0149  Người mặc áo màu xanh lái xe máy chỉ được nhắc như đối tượng bị chửi, câu không kể hành vi sau sự kiện của người này nên không ghi vào bên thứ hai.
+#39    R0150  Hành vi của bên thứ ba (xe có camera) được đưa vào ngoài codebook do đã ghi đủ hai bên.
+#39    R0154  Ô tô chỉ được nhắc làm mốc không gian ('sát đầu ô tô'), không có hành vi sau sự kiện nên bên thứ hai là T.
+#43    R0167  Bên thứ ba ('xe tải lớn tiếp tục di chuyển') được đưa vào ngoài codebook do câu kể hành vi riêng của từ ba bên trở lên.
+#43    R0170  Câu nhắc đến hành vi riêng của 3 bên liên quan. Hành vi của bên thứ ba được chuyển sang ngoài codebook.
+#44    R0173  Cụm 'Các phương tiện tại hiện trường' không nêu rõ hành vi nên không đưa vào bên thứ nhất.
+#52    R0196  Từ "điều dựng lại" là lỗi chính tả (có thể là "đều dừng lại"), không khớp chính xác lựa chọn nào trong codebook nên xếp loại K.
+#55    R0209  Xe ô tô chỉ được nhắc tới làm đối tượng kiểm tra thiệt hại, không có hành vi sau va chạm.
+
+7. LỖI (không tính vào độ phủ)
+(không có)
+
+8. TỪNG CÂU TRẢ LỜI
+Câu    Video  Số người  clip có đoạn sau sự kiện  bên thứ nhất                                                         hành vi bên thứ nhất          bên thứ hai                                                  hành vi bên thứ hai           người, xe xung quanh        Câu trả lời
+-----  -----  --------  ------------------------  -------------------------------------------------------------------  ----------------------------  -----------------------------------------------------------  ----------------------------  --------------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+R0001  #1     1         M:có                      M:Hai người                                                          M:dừng lại                    T                                                            T                             T                           Hai người dừng lại và xảy ra giằng co.
+R0002  #1     1         M:có                      M:Người mặc áo trắng                                                 K                             T                                                            T                             T                           Người mặc áo trắng đã đánh vào mặt người mặc áo xanh.
+R0003  #1     1         M:có                      M:Ô tô                                                               M:dừng lại                    M:người đi xe máy màu trắng                                  K                             T                           Ô tô dừng lại, người đi xe máy màu trắng nổi giận đánh người đi xe máy màu xanh.
+R0004  #1     1         M:có                      M:Ô tô                                                               M:dừng lại                    M:người đi xe máy                                            M:tự đứng dậy, dựng xe        T                           Ô tô dừng lại, người đi xe máy tự đứng dậy và di chuyển vào lề đường.
+R0005  #1     1         M:có                      M:Ô tô                                                               M:dừng lại                    M:người đi xe máy                                            M:tự đứng dậy, dựng xe        T                           Ô tô dừng lại, người đi xe máy tự đứng dậy và tác động vật lí vào mặt người đi xe máy cùng chiều với ô tô gắn camera
+R0006  #1     1         M:có                      M:Ô tô                                                               M:dừng lại                    M:người đi xe máy                                            M:tự đứng dậy, dựng xe        T                           Ô tô dừng lại, người đi xe máy tự đứng dậy và đánh người trước đầu xe ô tô
+R0007  #1     1         M:có                      M:Ô tô                                                               M:dừng lại                    M:người đi xe máy đen                                        K                             T                           Ô tô dừng lại, người đi xe máy đen đánh người đi xe máy mặc áo xanh
+R0008  #2     1         M:có                      M:Tài xế xe máy thồ                                                  M:tiếp tục di chuyển, rời đi  M:xe ô tô                                                    M:dừng lại                    T                           Tài xế xe máy thồ đã điều khiển xe đi tiếp và xe ô tô dừng lại.
+R0009  #2     4         M:có                      M:Tài xế ô tô                                                        M:dừng lại                    T                                                            T                             T                           Tài xế ô tô đã điều khiển xe tấp vào lề đường và dừng lại.
+R0010  #2     1         M:có                      M:Tài xế ô tô                                                        M:dừng lại                    M:Xe ba gác                                                  M:tiếp tục di chuyển, rời đi  T                           Tài xế ô tô đã điều khiển xe tấp vào lề đường và dừng lại. Xe ba gác tiếp tục di chuyển dọc mép đường
+R0011  #3     5         M:có                      M:Người lái xe máy                                                   M:tự đứng dậy, dựng xe        T                                                            T                             T                           Người lái xe máy nhanh chóng đứng dậy và đi bộ về phía trước đầu xe của camera hành trình.
+R0012  #3     1         M:có                      M:Người lái xe máy                                                   M:tự đứng dậy, dựng xe        T                                                            T                             T                           Người lái xe máy nhanh chóng đứng dậy và đi bộ về phía trước đầu xe gắn camera hành trình.
+R0013  #3     1         M:có                      M:người lái xe máy                                                   M:tự đứng dậy, dựng xe        T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Ô tô có camera hành trình dừng lại, người lái xe máy nhanh chóng đứng dậy và đi bộ về phía trước đầu xe của camera hành trình.
+R0014  #4     5         M:có                      M:Xe tải lớn                                                         M:dừng lại                    T                                                            T                             T                           Xe tải lớn đã dừng lại ngay sau khi vụ việc xảy ra.
+R0015  #4     1         M:có                      M:Xe tải                                                             M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe tải tiếp tục di chuyển sau khi xe máy ngã
+R0016  #4     1         M:có                      M:Xe tải xe tải thùng kín                                            M:dừng lại                    T                                                            T                             T                           Xe tải xe tải thùng kín đã dừng lại ngay sau khi vụ việc xảy ra.
+R0017  #5     7         M:có                      M:Xe tải ben                                                         M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe tải ben tiếp tục phóng đi với tốc độ cao mà không có dấu hiệu dừng lại.
+R0018  #6     1         M:có                      M:Người đàn ông điểu khiển xe máy                                    M:tự đứng dậy, dựng xe        T                                                            T                             T                           Người đàn ông điểu khiển xe máy đứng dậy lưỡng thững nhìn ngó và dựng xe máy lên.
+R0019  #6     2         M:có                      M:Tài xế                                                             K                             T                                                            T                             T                           Tài xế đã chủ động giảm tốc độ và tấp xe vào lề đường bên phải.
+R0020  #6     1         M:có                      M:Tài xế                                                             M:tự đứng dậy, dựng xe        T                                                            T                             T                           Tài xế đã chủ động đứng dậy và dựng xe lên một bên để không ảnh hưởng giao thông của các xe khác trên đường.
+R0021  #6     1         M:có                      M:Tài xế                                                             M:tự đứng dậy, dựng xe        T                                                            T                             T                           Tài xế đã đứng dậy và nhấc xe lên
+R0022  #6     1         M:có                      M:tài xế                                                             M:tự đứng dậy, dựng xe        T                                                            T                             T                           Tài xế đã đứng dậy và tấp xe vào lề đường bên phải.
+R0023  #6     1         M:có                      M:con chó và người điều khiển                                        M:tự đứng dậy, dựng xe        T                                                            T                             T                           con chó và người điều khiển dựng xe dậy và đi vào lề đường bên phải
+R0024  #7     4         M:có                      M:tài xế                                                             M:dừng lại                    T                                                            T                             T                           Tài xế dừng xe ngay lập tức và xuống xe để kiểm tra tình hình nạn nhân.
+R0025  #7     1         M:có                      M:tài xế                                                             M:dừng lại                    T                                                            T                             T                           Tài xế dừng xe ngay lập tức và xuống xe để kiểm tra tình hình vụ va chạm.
+R0026  #7     1         M:có                      M:tài xế                                                             M:dừng lại                    T                                                            T                             T                           Tài xế dừng xe ngay lập tức.
+R0027  #7     1         M:có                      M:xe tải lớn màu xanh                                                M:dừng lại                    T                                                            T                             T                           Xe tải lớn màu xanh dừng lại, tài xế xe tải lớn màu xanh chạy xuống kiểm tra tình trạng xe máy.
+R0028  #8     6         M:có                      M:tài xế xe tải                                                      M:dừng lại                    T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Tài xế xe tải dừng lại, xuống xe cùng người dân xung quanh hỗ trợ nạn nhân.
+R0029  #8     1         M:có                      M:tài xế xe tải                                                      M:dừng lại                    T                                                            T                             T                           Tài xế xe tải dừng lại, xuống xe để xem xét tình hình vụ va chạm.
+R0030  #9     1         M:có                      M:xe tải                                                             M:dừng lại                    T                                                            T                             T                           Xe tải dừng lại sau khi bị lật nằm trên mặt đường.
+R0031  #9     1         M:có                      M:xe tải                                                             K                             T                                                            T                             T                           Xe tải nằm lại trên đường cao tốc.
+R0032  #10    6         M:có                      M:các phương tiện liên quan như xe container và xe bán tải           M:dừng lại                    T                                                            T                             T                           Các phương tiện liên quan như xe container và xe bán tải đã dừng lại tại hiện trường.
+R0033  #10    1         M:có                      M:xe tải màu trắng                                                   M:dừng lại                    T                                                            T                             T                           Xe tải màu trắng đã dừng lại.
+R0034  #11    1         M:có                      M:người lái xe máy                                                   M:tự đứng dậy, dựng xe        T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Người lái xe máy tự đứng dậy, người dân xung quanh nhanh chóng chạy đến hỗ trợ người bị nạn.
+R0035  #11    1         M:có                      M:người lái xe máy                                                   M:tự đứng dậy, dựng xe        T                                                            T                             T                           Người lái xe máy đứng dậy.
+R0036  #11    1         M:có                      M:người đi xe máy                                                    M:tự đứng dậy, dựng xe        T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Người đi xe máy đứng dậy, người dân xung quanh nhanh chóng chạy đến hỗ trợ người bị nạn.
+R0037  #11    1         M:có                      M:người đi xe đạp                                                    M:dừng lại                    M:người điều khiển xe máy                                    M:tự đứng dậy, dựng xe        M:dừng lại hoặc đến hỗ trợ  Người đi xe đạp dừng lại gần vị trí xe ngã; người xung quanh tiến đến và người điều khiển xe máy ngồi dậy.
+R0038  #11    3         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  người dân xung quanh nhanh chóng chạy đến hỗ trợ người bị nạn.
+R0039  #12    7         M:có                      M:cả hai xe                                                          M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai xe tiếp tục di chuyển chậm về phía trước một đoạn ngắn trước khi video kết thúc.
+R0040  #13    1         M:có                      M:xe ô tô có camera hành trình                                       M:dừng lại                    T                                                            T                             T                           Xe ô tô có camera hành trình dừng lại ngay lập tức tại hiện trường.
+R0041  #13    5         M:có                      M:xe ô tô                                                            M:dừng lại                    T                                                            T                             T                           Xe ô tô dừng lại ngay lập tức tại hiện trường.
+R0042  #13    1         M:có                      M:xe ô tô và xe máy                                                  M:dừng lại                    T                                                            T                             T                           Xe ô tô và xe máy dừng lại ngay lập tức tại hiện trường.
+R0043  #14    1         M:có                      M:Các phương tiện liên quan                                          M:dừng lại                    T                                                            T                             T                           Các phương tiện liên quan dừng lại tại hiện trường ( trừ xe ô tô con màu bạc)
+R0044  #14    1         M:có                      M:Các phương tiện liên quan                                          M:dừng lại                    T                                                            T                             T                           Các phương tiện liên quan dừng lại tại hiện trường.
+R0045  #14    1         M:có                      M:Xe tải và xe ô tô màu đen                                          M:dừng lại                    M:Xe ô tô màu trắng                                          M:tiếp tục di chuyển, rời đi  T                           Xe tải và xe ô tô màu đen dừng lại tại hiện trường. Xe ô tô màu trắng chạy đi.
+R0046  #14    1         M:có                      M:Xe tải và ô tô màu đen                                             M:dừng lại                    T                                                            T                             T                           Xe tải và ô tô màu đen dừng lại.
+R0047  #14    1         M:có                      M:Xe ô tô con                                                        M:tiếp tục di chuyển, rời đi  M:các phương tiện liên quan còn lại                          M:dừng lại                    T                           Xe ô tô con tiếp tục di chuyển, các phương tiện liên quan còn lại dừng lại tại hiện trường.
+R0048  #14    1         M:có                      M:Xe ô tô màu bạc                                                    M:tiếp tục di chuyển, rời đi  M:xe tải và xe ô tô con màu đen                              M:dừng lại                    T                           Xe ô tô màu bạc tiếp tục di chuyển, xe tải và xe ô tô con màu đen dừng lại.
+R0049  #14    1         M:có                      M:ô tô màu tối và xe tài thùng                                       M:dừng lại                    T                                                            T                             T                           ô tô màu tối và xe tài thùng dừng lại tại hiện trường.
+R0050  #15    1         M:có                      M:Hai xe                                                             M:dừng lại                    T                                                            T                             T                           Hai xe dừng lại ngay lập tức tại hiện trường.
+R0051  #15    1         M:có                      M:Xe tải                                                             M:dừng lại                    M:xe ô tô màu đỏ                                             M:dừng lại                    T                           Xe tải dừng lại, xe ô tô màu đỏ dừng lại.
+R0052  #15    2         M:có                      M:Xe ô tô đỏ                                                         M:dừng lại                    T                                                            T                             T                           Xe ô tô đỏ dừng lại ngay lập tức tại hiện trường.
+R0053  #15    2         M:có                      M:Xe ô tô đỏ và xe tải                                               M:dừng lại                    T                                                            T                             T                           Xe ô tô đỏ và xe tải dừng lại ngay lập tức tại hiện trường.
+R0054  #15    1         M:có                      M:Xe ô tô đỏ và xe tải thùng                                         M:dừng lại                    T                                                            T                             T                           Xe ô tô đỏ và xe tải thùng dừng lại ngay lập tức tại hiện trường.
+R0055  #16    1         M:có                      M:2 phương tiện                                                      M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           2 phương tiện tiếp tục di chuyển
+R0056  #16    1         M:có                      M:2 xe                                                               M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           2 xe vẫn tiếp tục hành trình
+R0057  #16    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện vẫn di chuyển như bình thường.
+R0058  #16    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện vẫn tiếp tục di chuyển.
+R0059  #16    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện đều di chuyển tiếp.
+R0060  #16    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện đều đi tiếp.
+R0061  #17    1         M:có                      M:Cả hai phương tiện                                                 M:dừng lại                    T                                                            T                             T                           Cả hai phương tiện đều dừng lại ngay tại vị trí va chạm giữa ngã tư.
+R0062  #17    1         M:có                      M:Cả hai phương tiện                                                 M:dừng lại                    T                                                            T                             T                           Cả hai phương tiện đều dừng lại sau khi va chạm.
+R0063  #17    1         M:có                      M:Xe SUV                                                             M:dừng lại                    M:xe tải ben                                                 M:tiếp tục di chuyển, rời đi  T                           Xe SUV dừng lại và xe tải ben tiếp tục đi tiếp.
+R0064  #17    1         M:có                      M:xe màu đen                                                         M:dừng lại                    M:xe tải ben màu xanh đen                                    M:tiếp tục di chuyển, rời đi  T                           Xe màu đen dừng lại tại chỗ, xe tải ben màu xanh đen chạy nhanh qua một đoạn và dừng lại.
+R0065  #17    1         M:có                      M:xe tải ben                                                         M:tiếp tục di chuyển, rời đi  M:ô tô SUV                                                   M:dừng lại                    T                           Xe tải ben tiếp tục di chuyển qua giao lộ; ô tô SUV dừng lại trước ô tô có camera hành trình.
+R0066  #17    1         M:có                      M:xe SUV đen                                                         M:dừng lại                    M:xe ben xanh đen                                            M:tiếp tục di chuyển, rời đi  T                           xe SUV đen dừng lại ngay tại vị trí va chạm, xe ben xanh đen tiếp tục đi tiếp.
+R0067  #18    6         M:có                      M:các bên                                                            M:dừng lại                    T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Các bên dừng lại tại hiện trường và có người dân chạy đến giúp đỡ người gặp nạn.
+R0068  #18    1         M:có                      M:các bên                                                            M:dừng lại                    M:người đi xe máy điện                                       M:tự đứng dậy, dựng xe        M:dừng lại hoặc đến hỗ trợ  Các bên dừng lại tại hiện trường và người đi xe máy điện không tắt chìa khóa, nên lúc dựng xe lên có tăng ga và ngã thêm lần nữa, có người dân chạy đến giúp đỡ người gặp nạn.
+R0069  #19    1         M:có                      M:các phương tiện                                                    M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Các phương tiện di chuyển tiếp
+R0070  #19    1         M:có                      M:ô tô                                                               M:dừng lại                    M:người đi xe máy                                            M:tiếp tục di chuyển, rời đi  T                           Ô tô dừng lại kịp thời, người đi xe máy lấy lại được thăng bằng và cả hai tiếp tục di chuyển.
+R0071  #19    1         M:có                      M:Ô tô                                                               M:dừng lại                    M:người đi xe máy                                            M:tự đứng dậy, dựng xe        T                           Ô tô dừng lại kịp thời, người đi xe máy tự dựng xe và di chuyển tiếp.
+R0072  #19    3         M:có                      M:Ô tô                                                               M:dừng lại                    M:người đi xe máy                                            M:tự đứng dậy, dựng xe        T                           Ô tô dừng lại kịp thời, người đi xe máy tự dựng xe và dắt vào lề đường.
+R0073  #19    1         M:có                      M:Ô tô màu trắng                                                     M:dừng lại                    M:người đi xe máy màu xanh đen                               M:tự đứng dậy, dựng xe        T                           Ô tô màu trắng dừng lại kịp thời, người đi xe máy màu xanh đen tự dựng xe lên và chạy đi tiếp.
+R0074  #20    1         M:có                      M:Cả hai xe                                                          M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai xe tiếp tục di chuyển.
+R0075  #20    1         M:có                      M:Cả hai xe                                                          M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai xe đều di chuyển tiếp
+R0076  #20    1         M:có                      M:Xe ô tô                                                            M:tiếp tục di chuyển, rời đi  M:xe máy                                                     M:tiếp tục di chuyển, rời đi  T                           Xe ô tô giảm tốc độ cho xe máy đi qua rồi đi thẳng.
+R0077  #20    1         M:có                      M:Xe ô tô                                                            M:dừng lại                    M:xe máy                                                     M:tiếp tục di chuyển, rời đi  T                           Xe ô tô giảm tốc độ và dừng lại tại hiện trường, xe máy tiếp tục di chuyển.
+R0078  #20    1         M:có                      M:Xe ô tô                                                            M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe ô tô giảm tốc độ và đi tiếp ngay sau đó.
+R0079  #20    1         M:có                      M:Xe ô tô                                                            M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe ô tô tiếp tục di chuyển.
+R0080  #20    1         M:có                      M:cả 2 phương tiện                                                   M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           cả 2 phương tiện vẫn tiếp tục di chuyển
+R0081  #21    7         M:có                      M:Cả hai phương tiện                                                 M:dừng lại                    T                                                            T                             T                           Cả hai phương tiện đều dừng lại ngay tại vị trí va chạm trên đường.
+R0082  #22    1         M:không                   T                                                                    T                             T                                                            T                             T                           Không thể xác định
+R0083  #22    3         M:có                      M:Người lái xe ô tô                                                  M:dừng lại                    T                                                            T                             T                           Người lái xe ô tô đã đạp phanh để dừng xe lại ngay lập tức.
+R0084  #23    1         M:có                      M:Người điều khiển xe tay ga                                         M:tiếp tục di chuyển, rời đi  M:người đi xe máy                                            M:tự đứng dậy, dựng xe        T                           Người điều khiển xe tay ga vẫn tiếp tục di chuyển, người đi xe máy đang cố đứng dậy.
+R0085  #23    1         M:có                      M:người điểu khiển xe máy                                            M:tự đứng dậy, dựng xe        T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Người điểu khiển xe máy đứng dậy, những người đi đường khác giảm tốc độ và bắt đầu quan sát để hỗ trợ.
+R0086  #23    1         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Nạn nhân nằm trên đường, những người đi đường khác giảm tốc độ và bắt đầu quan sát để hỗ trợ.
+R0087  #23    1         M:có                      M:xe máy màu nâu do người phụ nữ điều khiển                          M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe máy màu nâu do người phụ nữ điều khiển khiến chạy luôn. Xe máy màu đen do người đàn ông mặc áo sọc điều khiển nằm tại vị trí va chạm.
+R0088  #23    1         M:có                      M:người lái xe màu tối                                               M:tự đứng dậy, dựng xe        T                                                            T                             T                           người lái xe màu tối đang tự đứng dậy
+R0089  #23    1         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  người lái xe máy tối màu nằm trên đường, những người đi đường khác giảm tốc độ và bắt đầu quan sát để hỗ trợ.
+R0090  #24    1         M:có                      M:xe ô tô màu xám                                                    M:dừng lại                    M:xe máy màu trắng do thanh niên không đội mũ điều khiển     M:tiếp tục di chuyển, rời đi  T                           Xe ô tô màu xám dừng lại ngay tại hiện trường vụ tai nạn. Xe máy màu trắng do thanh niên không đội mũ điều khiển chạy luôn.
+R0091  #24    1         M:có                      M:xe ô tô gắn camera và ô tô con màu bạc                             M:dừng lại                    M:xe máy                                                     M:tiếp tục di chuyển, rời đi  T                           xe ô tô gắn camera và ô tô con màu bạc dừng xe, xe máy tiếp tục di chuyển.
+R0092  #24    4         M:có                      M:ô tô con                                                           M:dừng lại                    T                                                            T                             T                           Ô tô con dừng lại ngay tại hiện trường vụ tai nạn.
+R0093  #24    1         M:có                      M:ô tô con                                                           M:dừng lại                    M:xe máy                                                     M:tiếp tục di chuyển, rời đi  T                           Ô tô con dừng lại và tài xế bước xuống xử lí. Xe máy tiếp tục chạy đi
+R0094  #25    5         M:có                      M:các bên liên quan                                                  M:dừng lại                    T                                                            T                             T                           Các bên liên quan đều dừng lại tại hiện trường.
+R0095  #25    1         M:có                      M:người mặc áo sáng                                                  M:tự đứng dậy, dựng xe        M:ô tô màu xanh ngọc                                         M:dừng lại                    T                           Người mặc áo sáng đứng dậy cạnh xe đạp bị đổ; ô tô màu xanh ngọc dừng gần vị trí xảy ra sự việc.
+R0096  #25    1         M:có                      M:xe ô tô                                                            M:dừng lại                    M:người đi xe đạp                                            M:tự đứng dậy, dựng xe        T                           Xe ô tô dừng lại, người đi xe đạp đứng dậy sau va chạm.
+R0097  #26    1         M:có                      M:xe máy màu đỏ                                                      M:dừng lại                    T                                                            T                             T                           Xe máy màu đỏ dừng lại trước đầu ô tô có camera hành trình; người ngồi sau xuống xe và người điều khiển đi vào phía bên phải.
+R0098  #26    1         M:có                      M:xe tải                                                             M:dừng lại                    M:người ngồi sau xe máy                                      K                             T                           Xe tải dừng lại ngay lập tức; người ngồi sau xe máy nhảy khỏi xe và đi vào lề đường.
+R0099  #26    1         M:có                      M:Xe tải                                                             M:dừng lại                    M:người ngồi sau xe máy                                      M:tự đứng dậy, dựng xe        T                           Xe tải dừng lại ngay lập tức; người ngồi sau xe máy tự đứng dậy và đi vào lề đường.
+R0100  #26    1         M:có                      M:Xe ô tô (có camera hành trình)                                     M:dừng lại                    M:người ngồi sau xe máy màu đỏ do phụ nữ áo đen chở 2 người  K                             T                           Xe ô tô (có camera hành trình) dừng lại ngay lập tức; người ngồi sau xe máy màu đỏ do phụ nữ áo đen chở 2 người xuống xe và lên xe lại rồi xe máy chạy đi.
+R0101  #26    1         M:có                      M:Xe ô tô                                                            M:dừng lại                    M:người trên xe máy                                          M:dừng lại                    T                           Xe ô tô dừng lại ngay lập tức; người trên xe máy dừng lại rồi đi vào lề đường.
+R0102  #26    1         M:có                      M:Xe ô tô gắn camera và xe máy                                       M:dừng lại                    M:người ngồi sau xe máy                                      M:tự đứng dậy, dựng xe        T                           Xe ô tô gắn camera và xe máy dừng lại ngay lập tức; người ngồi sau xe máy tự đứng dậy và xuống xe.
+R0103  #26    1         M:có                      M:Xe ô tô đang gắn camera hành trình                                 M:dừng lại                    M:người ngồi sau xe máy                                      K                             T                           Xe ô tô đang gắn camera hành trình dừng lại ngay lập tức; người ngồi sau xe máy xuống khỏi xe máy và đi vào lề đường.
+R0104  #27    1         M:có                      M:Các xe                                                             M:dừng lại                    M:tài xế xe tải                                              K                             T                           Các xe phải dừng lại, tài xế xe tải xuống xe xem tình hình.
+R0105  #27    1         M:có                      M:Cả ba xe                                                           M:dừng lại                    M:người đàn ông xe bán tải đen                               K                             T                           Cả ba xe đừng lại và người đàn ông xe bán tải đen bước xuống.
+R0106  #27    1         M:có                      M:Hai xe                                                             M:dừng lại                    T                                                            T                             T                           Hai xe dừng lại và tài xế xe Ford Ranger bước ra cửa để xử lý.
+R0107  #27    1         M:có                      M:tài xế xe Ford Ranger                                              K                             T                                                            T                             T                           Tài xế xe Ford Ranger bước xuống giải quyết
+R0108  #27    1         M:có                      M:tài xế xe ô tô màu đen                                             K                             T                                                            T                             T                           Tài xế xe ô tô màu đen mở cửa bước ra nói chuyện với tài xế xe ô tô màu trắng ở trong xe.
+R0109  #27    1         M:có                      M:tài xế xe Ford Ranger                                              K                             T                                                            T                             T                           tài xế xe Ford Ranger xuống xe .
+R0110  #27    1         M:có                      M:tài xế xe ô tô con trắng                                           M:dừng lại                    T                                                            T                             T                           tài xế xe ô tô con trắng đứng lại tranh cãi với tài xế xe Ford Ranger.
+R0111  #28    1         M:có                      M:Hai xe                                                             M:dừng lại                    T                                                            T                             T                           Hai xe đã dừng lại tại hiện trường ngay sau va chạm.
+R0112  #28    6         M:có                      M:Xe tải                                                             M:dừng lại                    T                                                            T                             T                           Xe tải đã dừng lại tại hiện trường ngay sau va chạm.
+R0113  #29    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện đều di chuyển bình thường.
+R0114  #29    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện đều tiếp tục di chuyển .
+R0115  #29    1         M:có                      M:Xe có camera                                                       M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe có camera vẫn tiếp tục di chuyển.
+R0116  #29    1         M:có                      M:Xe gắn camera                                                      M:dừng lại                    T                                                            T                             T                           Xe gắn camera dừng lại tại hiện trường ngay sau khi va chạm.
+R0117  #29    1         M:có                      M:Xe ô tô bán tải màu đen                                            M:tiếp tục di chuyển, rời đi  M:ô tô có camera hành trình                                  M:tiếp tục di chuyển, rời đi  T                           Xe ô tô bán tải màu đen lách sang phải và tiếp tục di chuyển; ô tô có camera hành trình đi tiếp.
+R0118  #29    1         M:có                      M:xe gắn camera hành trình                                           M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           xe gắn camera hành trình vẫn tiếp tục đi tiếp.
+R0119  #30    5         M:có                      M:Xe camera hành trình                                               M:dừng lại                    T                                                            T                             T                           Xe camera hành trình dừng lại ngay tại hiện trường sau va chạm.
+R0120  #31    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện đều di chuyển tiếp tục.
+R0121  #31    1         M:có                      M:Cả hai phương tiện                                                 M:dừng lại                    T                                                            T                             T                           Cả hai phương tiện đều dừng lại tại hiện trường ngay sau cú va chạm.
+R0122  #31    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện đều tiếp tục hành trình
+R0123  #31    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện đều đi tiếp do không có va chạm.
+R0124  #31    1         M:không                   T                                                                    T                             T                                                            T                             T                           Không thể xác định
+R0125  #32    1         M:có                      M:Cả hai phương tiện                                                 M:dừng lại                    T                                                            T                             T                           Cả hai phương tiện đều dừng lại ngay tại vị trí va chạm giữa ngã tư.
+R0126  #32    1         M:có                      M:Cả hai phương tiện                                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Cả hai phương tiện đều tiếp tục di chuyển.
+R0127  #32    1         M:không                   T                                                                    T                             T                                                            T                             T                           Không thể xác định khi
+R0128  #32    1         M:có                      M:Xe gắn camera                                                      M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe gắn camera vẫn tiếp tục di chuyển.
+R0129  #32    1         M:có                      M:các phương tiện                                                    M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           các phương tiện đều đi tiếp do không có va chạm.
+R0130  #32    1         M:có                      M:xe ô tô gắn camera và xe tải trắng                                 M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           xe ô tô gắn camera và xe tải trắng không có va chạm và tiếp tục di chuyển.
+R0131  #33    5         M:có                      M:Các xe liên quan                                                   M:dừng lại                    T                                                            T                             K                           Các xe liên quan dừng lại tại hiện trường, một số người đi xe máy đi chậm lại để quan sát.
+R0132  #33    2         M:có                      M:Các xe liên quan                                                   M:dừng lại                    T                                                            T                             T                           Các xe liên quan dừng lại tại hiện trường.
+R0133  #34    6         M:có                      M:Tài xế ô tô                                                        M:dừng lại                    M:người đi xe máy                                            M:tự đứng dậy, dựng xe        M:dừng lại hoặc đến hỗ trợ  Tài xế ô tô dừng xe lại, người đi xe máy tự đứng dậy dựng xe và có người đi đường dừng lại hỗ trợ.
+R0134  #34    1         M:có                      M:Tài xế ô tô                                                        M:dừng lại                    M:người đi xe máy                                            M:tự đứng dậy, dựng xe        T                           Tài xế ô tô dừng xe lại, người đi xe máy tự đứng dậy dựng xe.
+R0135  #35    1         M:có                      M:Tài xế xe tải                                                      M:dừng lại                    M:xe máy trắng                                               M:tiếp tục di chuyển, rời đi  T                           Tài xế xe tải dừng lại , xe máy trắng tiếp tục di chuyển
+R0136  #35    1         M:có                      M:Tài xế xe tải                                                      M:dừng lại                    M:xe máy                                                     M:tiếp tục di chuyển, rời đi  T                           Tài xế xe tải dừng lại và xe máy tiếp tục di chuyển.
+R0137  #35    1         M:có                      M:Tài xế xe tải                                                      M:dừng lại                    M:xe máy                                                     M:tiếp tục di chuyển, rời đi  T                           Tài xế xe tải dừng lại và xe máy đi tiếp.
+R0138  #35    1         M:có                      M:Tài xế xe tải                                                      M:dừng lại                    M:xe máy                                                     M:tiếp tục di chuyển, rời đi  T                           Tài xế xe tải dừng lại, còn xe máy di chuyển tiếp.
+R0139  #35    1         M:có                      M:Tài xế xe tải                                                      M:dừng lại                    M:xe máy trắng                                               M:tiếp tục di chuyển, rời đi  T                           Tài xế xe tải dừng lại, xe máy trắng tiếp tục di chuyển.
+R0140  #35    1         M:có                      M:Tài xế xe tải                                                      M:dừng lại                    M:xe máy                                                     M:tiếp tục di chuyển, rời đi  T                           Tài xế xe tải dừng lại, xe máy vẫn tiếp tục di chuyển.
+R0141  #35    1         M:có                      M:Xe máy màu trắng do phụ nữ áo đen chở 2 người                      M:tiếp tục di chuyển, rời đi  M:Xe tải màu xanh                                            M:dừng lại                    T                           Xe máy màu trắng do phụ nữ áo đen chở 2 người đi thẳng. Xe tải màu xanh lạng tay lái và dừng xe lại.
+R0142  #36    1         M:không                   T                                                                    T                             T                                                            T                             T                           Không thể xác định
+R0143  #36    1         M:không                   T                                                                    T                             T                                                            T                             T                           Video kết thúc ngay khi không thể xác định rõ hành vi tiếp theo.
+R0144  #36    1         M:không                   T                                                                    T                             T                                                            T                             T                           Video kết thúc ngay trước va chạm nên không thể xác định rõ hành vi tiếp theo.
+R0145  #37    7         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Những người xung quanh và nhân viên tiệm sửa xe nhanh chóng chạy ra hỗ trợ dựng xe và giúp đỡ người bị nạn.
+R0146  #38    1         M:có                      M:Người lái xe bị ngã                                                M:tự đứng dậy, dựng xe        M:người lái xe mặc màu xanh                                  M:dừng lại                    T                           Người lái xe bị ngã tự đứng dậy ngay lập tức và cãi vã với người mặc áo xanh, người lái xe mặc màu xanh dừng lại để kiểm tra.
+R0147  #38    1         M:có                      M:Người lái xe bị ngã                                                M:tự đứng dậy, dựng xe        M:người lái xe màu tối màu                                   M:dừng lại                    T                           Người lái xe bị ngã tự đứng dậy ngay lập tức, người lái xe màu tối màu dừng lại để kiểm tra.
+R0148  #38    4         M:có                      M:Người lái xe bị ngã                                                M:tự đứng dậy, dựng xe        M:người lái xe màu xanh                                      M:dừng lại                    T                           Người lái xe bị ngã tự đứng dậy ngay lập tức, người lái xe màu xanh dừng lại để kiểm tra.
+R0149  #38    1         M:có                      M:Người lái xe máy bị ngã                                            M:tự đứng dậy, dựng xe        T                                                            T                             T                           Người lái xe máy bị ngã tự đứng dậy ngay lập tức chửi người mặc áo màu xanh lái xe máy.
+R0150  #39    1         M:có                      M:Cả hai                                                             M:dừng lại                    M:xe máy                                                     M:tiếp tục di chuyển, rời đi  T                           Cả hai đã dừng lại, xe máy chủ động lùi lại nhường đường cho xe có camera tiếp tục di chuyển.
+R0151  #39    2         M:không                   T                                                                    T                             T                                                            T                             T                           Không thể xác định.
+R0152  #39    1         M:có                      M:Xe có camera hành trình và xe máy do người mặc áo xanh điều khiển  M:dừng lại                    T                                                            T                             T                           Xe có camera hành trình và xe máy do người mặc áo xanh điều khiển đứng lại tại chỗ.
+R0153  #39    1         M:có                      M:Xe máy                                                             M:tiếp tục di chuyển, rời đi  M:xe ô tô gắn camera                                         M:tiếp tục di chuyển, rời đi  T                           Xe máy lùi xe nhường cho xe ô tô gắn camera di chuyển tiếp
+R0154  #39    1         M:có                      M:Xe máy màu trắng đen                                               M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe máy màu trắng đen giảm tốc sát đầu ô tô, sau đó lùi xe khỏi khung hình.
+R0155  #40    1         M:có                      M:Các tài xế xe máy                                                  M:tiếp tục di chuyển, rời đi  T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Các tài xế xe máy vẫn chạy tiếp người đi đường và người dân gần đó chạy đến giúp đỡ em bé.
+R0156  #40    1         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Những người đi đường và người dân gần đó chạy đến giúp đỡ.
+R0157  #40    1         M:có                      M:Xe máy màu trắng                                                   M:tiếp tục di chuyển, rời đi  T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Xe máy màu trắng vẫn di chuyển tiếp và những người đi đường và người dân gần đó dừng lại xem.
+R0158  #40    1         M:có                      M:Xe máy màu đen                                                     M:tiếp tục di chuyển, rời đi  T                                                            T                             K                           Xe máy màu đen chạy đi và mọi người nhìn em học sinh mặc áo màu vàng.
+R0159  #40    1         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  những người đi đường và người dân gần đó chạy đến giúp đỡ.
+R0160  #40    1         M:có                      M:xe máy trắng                                                       M:tiếp tục di chuyển, rời đi  T                                                            T                             M:dừng lại hoặc đến hỗ trợ  xe máy trắng tiếp tục chạy, trong khi những người đi đường và người dân gần đó chạy đến giúp đỡ.
+R0161  #42    3         M:có                      T                                                                    T                             T                                                            T                             K                           Các phương tiện khác chủ động giảm tốc độ hoặc lách qua để tránh người bị nạn.
+R0162  #42    1         M:có                      M:Xe gắn camera hành trình                                           M:dừng lại                    T                                                            T                             T                           Xe gắn camera hành trình dừng lại tại vị trí va chạm, xe máy do người đàn ông áo đen điều khiển nằm trước đầu xe.
+R0163  #42    1         M:có                      M:Xe tay ga bạc                                                      M:tiếp tục di chuyển, rời đi  T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Xe tay ga bạc tiếp tục chạy đi và xe ô tô gắn camera kịp thời dừng lại
+R0164  #42    1         M:có                      M:người lái xe máy màu xám                                           M:tự đứng dậy, dựng xe        T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Xe ô tô gắn camera hành trình dừng lại, người lái xe máy màu xám tự đứng dậy.
+R0165  #43    1         M:có                      M:Các phương tiện                                                    M:dừng lại                    M:xe tải                                                     M:tiếp tục di chuyển, rời đi  T                           Các phương tiện dừng lại ngay tại hiện trường để giải quyết vụ việc còn xe tải vẫn đi tiếp.
+R0166  #43    1         M:có                      M:Các phương tiện                                                    M:dừng lại                    M:2 người xe máy                                             M:tự đứng dậy, dựng xe        T                           Các phương tiện dừng lại ngay tại hiện trường để giải quyết vụ việc, 2 người xe máy tự đứng dậy.
+R0167  #43    1         M:có                      M:Các phương tiện                                                    M:dừng lại                    M:xe máy                                                     M:tự đứng dậy, dựng xe        T                           Các phương tiện dừng lại ngay tại hiện trường, xe máy tự đứng dậy và xe tải lớn tiếp tục di chuyển.
+R0168  #43    1         M:có                      M:Xe tải lớn màu tối                                                 M:dừng lại                    M:các phương tiện                                            M:dừng lại                    T                           Xe tải lớn màu tối dừng lại khi chạy qua bên kia đường, các phương tiện dừng lại ngay tại hiện trường.
+R0169  #43    1         M:có                      M:xe tải                                                             M:tiếp tục di chuyển, rời đi  M:hai người điều khiển xe máy                                M:tự đứng dậy, dựng xe        T                           Xe tải tiếp tục di chuyển, hai người điều khiển xe máy tự đứng dậy dựng xe lên.
+R0170  #43    1         M:có                      M:xe ô tô con                                                        M:dừng lại                    M:xe tải                                                     M:tiếp tục di chuyển, rời đi  T                           xe ô tô con dừng lại, xe tải đi tiếp, xe máy chở 2 người đứng dậy tqaaps vào lề đường
+R0171  #44    1         M:có                      M:các bên liên quan                                                  M:dừng lại                    T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Các bên liên quan đã dừng phương tiện tại hiện trường và mọi người xung quanh chạy tới xem
+R0172  #44    2         M:có                      M:các bên liên quan                                                  M:dừng lại                    T                                                            T                             T                           Các bên liên quan đã dừng phương tiện tại hiện trường.
+R0173  #44    1         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Các phương tiện tại hiện trường và mọi người ra xem tình hình.
+R0174  #44    1         M:có                      M:xe bồn                                                             M:dừng lại                    M:xe ô tô con                                                M:tiếp tục di chuyển, rời đi  T                           xe bồn dừng lại, xe ô tô con đi tiếp
+R0175  #45    1         M:có                      M:người lái xe máy                                                   M:tự đứng dậy, dựng xe        M:xe bồn                                                     M:tiếp tục di chuyển, rời đi  T                           Người lái xe máy dựng xe dậy, xe bồn tiếp tục di chuyển.
+R0176  #45    1         M:có                      M:người lái xe máy                                                   K                             M:xe bồn                                                     M:tiếp tục di chuyển, rời đi  M:dừng lại hoặc đến hỗ trợ  Người lái xe máy nhảy xuống, xe bồn đi tiếp một đoạn, các xe khác dừng lại hỗ trợ.
+R0177  #45    1         M:có                      M:người lái xe máy                                                   M:tự đứng dậy, dựng xe        M:xe bồn                                                     M:tiếp tục di chuyển, rời đi  M:dừng lại hoặc đến hỗ trợ  Người lái xe máy tự đứng dậy, xe bồn đi tiếp , các xe khác dừng lại
+R0178  #45    3         M:có                      M:người lái xe máy                                                   M:tự đứng dậy, dựng xe        M:xe bồn                                                     M:tiếp tục di chuyển, rời đi  M:dừng lại hoặc đến hỗ trợ  Người lái xe máy tự đứng dậy, xe bồn đi tiếp một đoạn, các xe khác dừng lại hỗ trợ.
+R0179  #46    1         M:có                      M:người lái xe máy                                                   M:tự đứng dậy, dựng xe        T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Người lái xe máy nhanh chóng đứng dậy và tự dựng xe của mình lên, xe ô tô có camera kịp thời dừng lại
+R0180  #46    5         M:có                      M:người lái xe máy                                                   M:tự đứng dậy, dựng xe        T                                                            T                             T                           Người lái xe máy nhanh chóng đứng dậy và tự dựng xe của mình lên.
+R0181  #47    6         M:có                      M:xe tải                                                             M:dừng lại                    T                                                            T                             K                           Xe tải dừng lại trên dải phân cách, các xe khác đi chậm lại và tiếp tục hành trình.
+R0182  #48    6         M:có                      M:tài xế xe ô tô                                                     M:dừng lại                    T                                                            T                             T                           Tài xế xe ô tô đã giảm tốc độ và dừng lại.
+R0183  #49    1         M:có                      M:Các phương tiện liên quan                                          M:dừng lại                    T                                                            T                             T                           Các phương tiện liên quan đều dừng lại hiệngay tạin trường.
+R0184  #49    1         M:có                      M:Các phương tiện liên quan                                          M:dừng lại                    T                                                            T                             T                           Các phương tiện liên quan đều dừng lại ngay tại hiện trường sau va chạm.
+R0185  #49    1         M:có                      M:Các phương tiện liên quan                                          M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Các phương tiện liên quan đều đi tiếp
+R0186  #49    1         M:có                      M:Các phương tiện                                                    M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Các phương tiện tiếp tục di chuyển chạm ra khỏi vị trí sáp va chạm.
+R0187  #50    4         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Cảnh sát giao thông đã có mặt tại hiện trường để điều tiết và xử lý vụ việc.
+R0188  #50    1         M:có                      M:Xe ô tô                                                            M:dừng lại                    M:người đi xe máy                                            M:tự đứng dậy, dựng xe        T                           Xe ô tô dừng lại, người đi xe máy tự đứng dậy và dựng xe lên.
+R0189  #50    1         M:có                      M:các phương tiện                                                    M:dừng lại                    T                                                            T                             M:dừng lại hoặc đến hỗ trợ  các phương tiện dừng lại, cảnh sát ở cạnh đó cũng tới xem tình hình.
+R0190  #51    1         M:không                   T                                                                    T                             T                                                            T                             T                           Do đến đoạn lạng tay lái hết video nên chưa xác nhận được
+R0191  #51    1         M:có                      M:người lái xe máy                                                   M:dừng lại                    M:xe khách                                                   M:tiếp tục di chuyển, rời đi  T                           Người lái xe máy dừng lại, xe khách tiếp tục di chuyển.
+R0192  #52    1         M:có                      M:2 bên                                                              M:dừng lại                    T                                                            T                             T                           2 bên dừng lại tại hiện trường
+R0193  #52    1         M:có                      M:2 bên                                                              M:dừng lại                    T                                                            T                             T                           2 bên đều dừng lại
+R0194  #52    1         M:có                      M:Hai phương tiên                                                    M:dừng lại                    T                                                            T                             T                           Hai phương tiên dừng lại ở vị trí va chạm.
+R0195  #52    1         M:có                      M:Hai xe                                                             M:dừng lại                    T                                                            T                             T                           Hai xe dừng lại hiện trường sau va chạm.
+R0196  #52    1         M:có                      M:Tài xế xe ô tô và xe ben                                           K                             T                                                            T                             T                           Tài xế xe ô tô và xe ben điều dựng lại tại hiện trường
+R0197  #52    1         M:có                      M:các xe                                                             M:dừng lại                    T                                                            T                             T                           các xe dừng lại hiện trường sau va chạm.
+R0198  #53    1         M:có                      M:Các bên liên quan                                                  M:dừng lại                    T                                                            T                             T                           Các bên liên quan dừng lại, tự đứng dậy
+R0199  #53    1         M:có                      M:Các bên liên quan                                                  M:dừng lại                    T                                                            T                             T                           Các bên liên quan dừng lại, tự đứng dậy .
+R0200  #53    1         M:có                      M:Các bên liên quan                                                  M:dừng lại                    T                                                            T                             T                           Các bên liên quan dừng lại, tự đứng dậy và hỗ trợ nhau
+R0201  #53    1         M:có                      M:Các bên liên quan                                                  M:dừng lại                    T                                                            T                             K                           Các bên liên quan dừng lại, tự đứng dậy và những người xung quanh đi chậm lại.
+R0202  #53    1         M:có                      M:Xe máy chở 3                                                       M:tự đứng dậy, dựng xe        M:xe máy màu nâu                                             M:tự đứng dậy, dựng xe        T                           Xe máy chở 3 đứng dậy, xe máy màu nâu dựng xe lên.
+R0203  #54    1         M:có                      M:Các phương tiện                                                    M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Các phương tiện tiếp tục di chuyển
+R0204  #54    1         M:có                      M:Các phương tiện                                                    M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Các phương tiện vẫn tiếp tục di chuyển.
+R0205  #54    1         M:không                   T                                                                    T                             T                                                            T                             T                           Không có va chạm
+R0206  #54    1         M:có                      M:Xe tải to                                                          M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe tải to chạy thẳng.
+R0207  #55    1         M:có                      M:Người ngồi sau xe máy                                              K                             M:người điều khiển xe máy                                    K                             T                           Người ngồi sau xe máy chạy vào lề đường kiểm tra vết thương, người điều khiển xe máy lùi lại để nhường đường.
+R0208  #55    1         M:có                      M:Người đi xe máy                                                    M:dừng lại                    T                                                            T                             T                           Người đi xe máy dừng lại tại hiện trường để kiểm tra thiệt hại .
+R0209  #55    1         M:có                      M:Người đi xe máy                                                    M:dừng lại                    T                                                            T                             T                           Người đi xe máy dừng lại tại hiện trường để kiểm tra thiệt hại trên xe ô tô.
+R0210  #55    1         M:có                      M:Người đi xe máy                                                    K                             T                                                            T                             T                           Người đi xe máy lùi lại
+R0211  #55    1         M:có                      M:người đi xe máy                                                    K                             T                                                            T                             T                           người đi xe máy cố gắng lui xe ra khỏi chỗ kẹt.
+R0212  #56    1         M:có                      M:2 xe                                                               M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           2 xe đều đi tiếp
+R0213  #56    1         M:có                      M:Xe gắn camera hành trình                                           M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe gắn camera hành trình chạy tiếp.
+R0214  #56    1         M:có                      M:Xe ô tô                                                            M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe ô tô tiếp tục di chuyển.
+R0215  #56    1         M:có                      M:Xe ô tô                                                            M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe ô tô đi tiếp
+R0216  #56    1         M:có                      M:Xe ô tô                                                            M:tiếp tục di chuyển, rời đi  T                                                            T                             T                           Xe ô tô đã né tránh và tiếp tục di chuyển.
+R0217  #57    1         M:có                      M:2 chiếc ô tô                                                       M:dừng lại                    T                                                            T                             T                           2 chiếc ô tô đã dừng lại ngay lập tức sau khi va chạm xảy ra.
+R0218  #57    1         M:có                      M:chiếc ô tô SUV màu đỏ và ô tô màu xám                              M:dừng lại                    T                                                            T                             T                           Chiếc ô tô SUV màu đỏ và ô tô màu xám đã dừng lại ngay lập tức sau khi va chạm xảy ra.
+R0219  #57    1         M:có                      M:hai phương tiện                                                    M:dừng lại                    T                                                            T                             T                           Hai phương tiện dừng lại.
+R0220  #57    1         M:có                      M:tất cả các xe cùng làn                                             M:dừng lại                    T                                                            T                             T                           Tất cả các xe cùng làn đã dừng lại sau va chạm xảy ra
+R0221  #57    1         M:có                      M:xe ô tô màu nâu và xe ô tô màu đỏ                                  M:dừng lại                    T                                                            T                             T                           Xe ô tô màu nâu và xe ô tô màu đỏ dừng lại ở vị trí va chạm.
+R0222  #58    2         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Một số người đi đường đã dừng lại để hỏi thăm và hỗ trợ người phụ nữ.
+R0223  #58    1         M:có                      T                                                                    T                             T                                                            T                             M:dừng lại hoặc đến hỗ trợ  Người đàn ông từ trong nhà bước ra hỗ trợ người phụ nữ.
+R0224  #58    1         M:có                      M:xe máy màu đen do người phụ nữ điều khiển                          M:dừng lại                    T                                                            T                             T                           Xe máy màu đen do người phụ nữ điều khiển đứng tại chỗ.
+R0225  #58    1         M:có                      T                                                                    T                             T                                                            T                             K                           mọi người vẫn tiếp tục di chuyển.
+R0226  #59    4         M:có                      M:xe con                                                             M:dừng lại                    T                                                            T                             T                           Xe con dừng lại hẳn ở vị trí gặp nạn bên lề đường.
+R0227  #59    1         M:có                      M:xe ô tô màu đen                                                    M:dừng lại                    T                                                            T                             T                           xe ô tô màu đen dừng lại
+R0228  #60    5         M:có                      M:các phương tiện                                                    M:dừng lại                    T                                                            T                             T                           Các phương tiện dừng lại tại hiện trường ngay sau khi xảy ra va chạm.

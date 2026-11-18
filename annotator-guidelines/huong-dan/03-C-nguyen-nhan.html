@@ -1,0 +1,272 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hướng dẫn gán nhãn Nhóm C: nguyên nhân trực tiếp (Causal)</title><style>
+:root{--bg:#ffffff;--fg:#1f2328;--muted:#59636e;--line:#d1d9e0;--head:#f6f8fa;--link:#0969da}
+@media (prefers-color-scheme: dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--line:#3d444d;--head:#151b23;--link:#4493f8}}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:1.7em;border-bottom:1px solid var(--line);padding-bottom:.3em}
+h2{font-size:1.3em;margin-top:1.8em;border-bottom:1px solid var(--line);padding-bottom:.2em}
+table{border-collapse:collapse;width:100%;margin:1em 0;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--head)}
+code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:.92em}
+a{color:var(--link)}
+.nav{font-size:.9em;color:var(--muted);margin-bottom:1.5em}
+</style></head><body><main><div class="nav"><a href="../00-DOC-TRUOC.html">&larr; Mục lục</a></div><h1>Hướng dẫn gán nhãn Nhóm C: nguyên nhân trực tiếp (Causal)</h1>
+<ul>
+<li>Câu hỏi chuẩn: Nguyên nhân trực tiếp hoặc hành động ngay trước va chạm là gì?</li>
+<li>Tên thực thể A, B, C lấy từ Nhóm E.</li>
+<li>Mỗi ô chọn đúng một giá trị. Không nhìn rõ ô nào thì chọn "không rõ".</li>
+<li>Chỉ mô tả hành động nhìn thấy được; không kết luận lỗi, không đoán ý định.</li>
+</ul>
+<h2>Các ô</h2>
+<table>
+<thead>
+<tr>
+<th>Ô</th>
+<th>Lựa chọn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0. Loại sự kiện</td>
+<td>va chạm · suýt va chạm · không rõ</td>
+</tr>
+<tr>
+<td>1. Chủ thể</td>
+<td>chọn từ E · cả hai bên · không rõ</td>
+</tr>
+<tr>
+<td>2. Kiểu xung đột</td>
+<td>chọn nhóm, rồi chọn kiểu (bảng dưới) · không rõ</td>
+</tr>
+<tr>
+<td>3. Hành động</td>
+<td>lựa chọn theo kiểu xung đột (bảng dưới)</td>
+</tr>
+<tr>
+<td>4. Tốc độ (không bắt buộc)</td>
+<td>phanh gấp · dừng đột ngột · tăng tốc · không giảm tốc · đứng yên · tốc độ cao</td>
+</tr>
+<tr>
+<td>Mốc</td>
+<td>Start · End</td>
+</tr>
+</tbody>
+</table>
+<p>Ô 0 "va chạm" gồm cả trường hợp phương tiện tự lật hoặc văng khỏi đường dù không chạm bên nào, kể cả khi trước đó có né.
+Cơ sở: ANSI D16.1-2007 (Manual on Classification of Motor Vehicle Traffic Accidents, bản NHTSA phát hành), mục 2.6.1 định nghĩa overturning accident là tai nạn có sự kiện gây hại đầu tiên là phương tiện bị lật, và mục 2.6.3 xếp nó vào noncollision accident, tức vẫn là tai nạn.
+"Suýt va chạm" chỉ dùng khi không có thiệt hại nào; định nghĩa near-crash của SHRP2 (Hankey et al. 2016) là tình huống phải né gấp để tránh tai nạn.</p>
+<p>Cặp chính gồm chủ thể (bên thay đổi chuyển động trước) và đối tượng.
+Đối tượng là bên bị chủ thể chạm đầu tiên; chủ thể không chạm ai thì là bên đầu tiên phải né.
+Bên né đâm vào bên thứ ba thì không tạo cặp mới.
+Từ codebook v2 (2026-11-16) không còn ô bên né, cách né, kết quả né.</p>
+<p>Cơ sở cho "tốc độ cao" ở ô 4: MMUCC 5th Edition (NHTSA 2017), phần tử P13 "Speeding-Related"; NHTSA ghi rằng phần tử này được mã hóa theo bằng chứng lời nói hoặc nhìn thấy.
+Danh sách giá trị của P13 chưa đọc được bản gốc.
+Tốc độ ước bằng mắt nên hai annotator có thể chọn khác nhau; xem lại ở vòng đồng thuận sau.</p>
+<p>Đối tượng: video có 2 thực thể thì hệ thống tự điền bên còn lại; từ 3 thực thể trở lên thì chọn từ E.
+Quan hệ được tự điền theo kiểu xung đột.</p>
+<h2>Video có từ 3 bên trở lên</h2>
+<p>Chỉ ghi cặp chính như định nghĩa ở trên; các va chạm hoặc bên xuất hiện sau đó không tạo cặp mới.
+Bên chỉ có mặt trong khung hình mà không phải né, không bị chạm thì không ghi.
+Cơ sở: bộ phân loại tình huống trước va chạm của NHTSA (Najm và cộng sự, 2007, DOT HS 810 767) xếp tai nạn nhiều xe vào cùng các tình huống của tai nạn hai xe, dựa vào sự kiện đầu tiên của vụ việc.
+Unfalltypen-Katalog của Đức cũng xác định loại tai nạn chỉ bằng tình huống xung đột dẫn tới tai nạn, không theo diễn biến va chạm sau đó.</p>
+<p>Ví dụ thật từ nhóm agreement (mô tả lấy từ câu trả lời của người gán nhãn):</p>
+<table>
+<thead>
+<tr>
+<th>Video</th>
+<th>Diễn biến</th>
+<th>Cách ghi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#10</td>
+<td>Xe tải xám mất lái, lật xuống rãnh; xe container, bán tải, xe khách đang dừng trên đường.</td>
+<td>K18, chủ thể là xe tải xám, không có đối tượng. Các xe đang dừng không phải né, không bị chạm nên không ghi.</td>
+</tr>
+<tr>
+<td>#54</td>
+<td>Xe tải lấn sang làn ngược chiều để vượt, suýt va chạm với các ô tô trắng đi ngược chiều.</td>
+<td>K08 lấn khi vượt, chủ thể là xe tải, đối tượng là ô tô trắng đầu tiên phải né. Các ô tô sau không ghi.</td>
+</tr>
+<tr>
+<td>#1</td>
+<td>Xe máy áo trắng băng qua đường cắt ngang ô tô gắn camera (ô tô phanh gấp), rồi tông xe máy áo xanh đang đi thẳng tới.</td>
+<td>Va chạm, chủ thể là xe máy áo trắng, đối tượng là xe máy áo xanh (bên bị chủ thể chạm), không phải ô tô dù ô tô phải né trước.</td>
+</tr>
+<tr>
+<td>#24</td>
+<td>Xe máy trắng cắt ngang giữa ngã tư, chạm đầu ô tô gắn camera rồi chạm hông ô tô màu bạc.</td>
+<td>Chủ thể là xe máy trắng, đối tượng là ô tô bị chạm trước (theo thứ tự trên video). Va chạm với ô tô thứ hai không ghi.</td>
+</tr>
+</tbody>
+</table>
+<h2>Kiểu xung đột</h2>
+<table>
+<thead>
+<tr>
+<th>Mã</th>
+<th>Nhóm</th>
+<th>Kiểu</th>
+<th>Quan hệ (tự điền)</th>
+<th>Hành động</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K01</td>
+<td>Cùng chiều, phía trước</td>
+<td>Xe phía trước dừng hoặc đứng yên</td>
+<td>tiến sát phía sau</td>
+<td>không giảm tốc · tăng tốc</td>
+</tr>
+<tr>
+<td>K02</td>
+<td>Cùng chiều, phía trước</td>
+<td>Xe phía trước phanh, giảm tốc</td>
+<td>ở ngay phía trước</td>
+<td>phanh gấp · dừng đột ngột</td>
+</tr>
+<tr>
+<td>K03</td>
+<td>Cùng chiều, phía trước</td>
+<td>Tiến sát xe phía trước chạy chậm</td>
+<td>tiến sát phía sau</td>
+<td>không giảm tốc · tăng tốc</td>
+</tr>
+<tr>
+<td>K04</td>
+<td>Cùng chiều, bên cạnh</td>
+<td>Chuyển làn, nhập làn</td>
+<td>đi vào đường đi của</td>
+<td>chuyển sang làn bên trái · chuyển sang làn bên phải</td>
+</tr>
+<tr>
+<td>K05</td>
+<td>Cùng chiều, bên cạnh</td>
+<td>Vượt, len giữa các xe</td>
+<td>tiến sát bên hông</td>
+<td>vượt bên trái · vượt bên phải · len giữa</td>
+</tr>
+<tr>
+<td>K06</td>
+<td>Cùng chiều, bên cạnh</td>
+<td>Rẽ cắt qua xe đi cùng chiều bên cạnh</td>
+<td>cắt ngang phía trước</td>
+<td>rẽ trái · rẽ phải</td>
+</tr>
+<tr>
+<td>K07</td>
+<td>Cùng chiều, bên cạnh</td>
+<td>Xe đỗ ven đường, mở cửa, ra khỏi chỗ đỗ</td>
+<td>đi vào đường đi của</td>
+<td>mở cửa xe · ra khỏi chỗ đỗ</td>
+</tr>
+<tr>
+<td>K08</td>
+<td>Ngược chiều</td>
+<td>Lấn sang phần đường ngược chiều</td>
+<td>đi đối đầu với</td>
+<td>lấn khi vượt · lấn khi vào cua · lấn khi đi thẳng</td>
+</tr>
+<tr>
+<td>K09</td>
+<td>Ngược chiều</td>
+<td>Đi ngược chiều trên làn của người khác</td>
+<td>đi đối đầu với</td>
+<td>đi thẳng ngược chiều</td>
+</tr>
+<tr>
+<td>K10</td>
+<td>Ngược chiều</td>
+<td>Rẽ trái hoặc quay đầu cắt đầu xe ngược chiều</td>
+<td>cắt ngang phía trước</td>
+<td>rẽ trái · quay đầu</td>
+</tr>
+<tr>
+<td>K11</td>
+<td>Cắt ngang</td>
+<td>Hai hướng cắt nhau tại giao lộ, cùng đi thẳng</td>
+<td>cắt ngang phía trước</td>
+<td>từ trái sang phải · từ phải sang trái</td>
+</tr>
+<tr>
+<td>K12</td>
+<td>Cắt ngang</td>
+<td>Ra từ đường nhánh, hẻm, bãi xe</td>
+<td>đi vào đường đi của</td>
+<td>ra từ bên trái · ra từ bên phải</td>
+</tr>
+<tr>
+<td>K13</td>
+<td>Cắt ngang</td>
+<td>Quay đầu giữa đường</td>
+<td>cắt ngang phía trước</td>
+<td>quay đầu sang trái · quay đầu sang phải</td>
+</tr>
+<tr>
+<td>K14</td>
+<td>Cắt ngang</td>
+<td>Băng ngang đường giữa đoạn</td>
+<td>cắt ngang phía trước</td>
+<td>từ trái sang phải · từ phải sang trái</td>
+</tr>
+<tr>
+<td>K15</td>
+<td>Người đi bộ, động vật</td>
+<td>Người đi bộ băng qua hoặc đi dưới lòng đường</td>
+<td>cắt ngang phía trước</td>
+<td>từ trái sang phải · từ phải sang trái · đi dọc đường</td>
+</tr>
+<tr>
+<td>K16</td>
+<td>Người đi bộ, động vật</td>
+<td>Động vật lao ra đường</td>
+<td>cắt ngang phía trước</td>
+<td>từ trái sang phải · từ phải sang trái</td>
+</tr>
+<tr>
+<td>K17</td>
+<td>Khác</td>
+<td>Lùi xe vào bên khác</td>
+<td>tiến sát phía sau</td>
+<td>lùi xe</td>
+</tr>
+<tr>
+<td>K18</td>
+<td>Khác</td>
+<td>Một bên trượt, văng, không do bên kia</td>
+<td>không có</td>
+<td>trượt · văng khỏi làn · nổ lốp</td>
+</tr>
+</tbody>
+</table>
+<h2>Mẫu câu</h2>
+<table>
+<thead>
+<tr>
+<th>Trường hợp</th>
+<th>Mẫu câu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Va chạm</td>
+<td>[Chủ thể] [hành động] (và [tốc độ]), [quan hệ] [đối tượng], dẫn đến va chạm.</td>
+</tr>
+<tr>
+<td>Suýt va chạm</td>
+<td>[Chủ thể] [hành động] (và [tốc độ]), [quan hệ] [đối tượng], suýt xảy ra va chạm.</td>
+</tr>
+<tr>
+<td>Không rõ loại sự kiện</td>
+<td>[Chủ thể] [hành động] (và [tốc độ]), [quan hệ] [đối tượng].</td>
+</tr>
+<tr>
+<td>Cả A và B</td>
+<td>[A] [hành động của A], đồng thời [B] [hành động của B], đi vào đường đi của nhau, dẫn đến va chạm (hoặc: suýt xảy ra va chạm).</td>
+</tr>
+</tbody>
+</table>
+<p>"Tốc độ cao" vào câu là "chạy tốc độ cao".</p></main></body></html>

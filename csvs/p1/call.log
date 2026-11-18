@@ -1,0 +1,74 @@
+S-002: xong, 0 câu lỗi
+S-003: xong, 0 câu lỗi
+S-004: xong, 0 câu lỗi
+S-005: xong, 0 câu lỗi
+S-006: xong, 0 câu lỗi
+S-007: xong, 0 câu lỗi
+S-008: xong, 0 câu lỗi
+S-009: xong, 0 câu lỗi
+S-010: xong, 0 câu lỗi
+S-011: xong, 0 câu lỗi
+S-012: xong, 0 câu lỗi
+S-013: xong, 0 câu lỗi
+S-014: xong, 0 câu lỗi
+S-015: xong, 0 câu lỗi
+S-016: xong, 0 câu lỗi
+S-017: xong, 0 câu lỗi
+S-018: xong, 0 câu lỗi
+S-019: xong, 0 câu lỗi
+S-020: xong, 0 câu lỗi
+S-021: xong, 0 câu lỗi
+S-022 lần 1: 7 câu không hợp lệ
+S-022: xong, 0 câu lỗi
+S-023: xong, 0 câu lỗi
+S-024: xong, 0 câu lỗi
+S-025: xong, 0 câu lỗi
+Traceback (most recent call last):
+  File "d:\Projects\Assignment\VQA-VN-Traffic-2026\scripts\codebook_map.py", line 488, in <module>
+    main()
+    ~~~~^^
+  File "d:\Projects\Assignment\VQA-VN-Traffic-2026\scripts\codebook_map.py", line 484, in main
+    args.func(args)
+    ~~~~~~~~~^^^^^^
+  File "d:\Projects\Assignment\VQA-VN-Traffic-2026\scripts\codebook_map.py", line 404, in cmd_call
+    text, usage = generate(args.model, r["system"], r["messages"], key)
+                  ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Projects\Assignment\VQA-VN-Traffic-2026\scripts\codebook_map.py", line 358, in gemini_generate
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 487, in open
+    response = self._open(req, data)
+  File "C:\Python314\Lib\urllib\request.py", line 504, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+                              '_open', req)
+  File "C:\Python314\Lib\urllib\request.py", line 464, in _call_chain
+    result = func(*args)
+  File "C:\Python314\Lib\urllib\request.py", line 1369, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                        context=self._context)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\urllib\request.py", line 1325, in do_open
+    r = h.getresponse()
+  File "C:\Python314\Lib\http\client.py", line 1450, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 297, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 725, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+  File "C:\Python314\Lib\ssl.py", line 1304, in recv_into
+    return self.read(nbytes, buffer)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\ssl.py", line 1138, in read
+    return self._sslobj.read(len, buffer)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+TimeoutError: The read operation timed out

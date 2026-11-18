@@ -1,0 +1,864 @@
+BÁO CÁO ĐỘ PHỦ CODEBOOK, NHÓM E
+
+Câu trả lời khác nhau (đơn vị đếm): 276  | video: 60  | lượt viết của annotator: 418
+Map hợp lệ: 272  | lỗi, chưa tính: 4
+Số bên đã tách: 578 (mỗi ô tính trên từng bên; câu ghi '<câu>/<thứ tự bên>')
+Độ phủ = M / n, n = M + K. Ô có n < 10: chưa đủ dữ liệu. Đạt khi độ phủ >= 80%.
+T chia hai: 'T thiếu chi tiết' (có nhắc nhưng không đủ để chọn) và 'T không nhắc'.
+
+1. ĐỘ PHỦ THEO Ô
+Ô                        M    K  T    T thiếu chi tiết  T không nhắc  n = M + K  Độ phủ = M / n  Kết luận
+-----------------------  ---  -  ---  ----------------  ------------  ---------  --------------  --------
+loại                     545  0  33   33                0             545        100%            đạt
+cỡ                       30   0  548  0                 548           30         100%            đạt
+camera hành trình        74   0  504  0                 504           74         100%            đạt
+màu xe                   419  0  159  0                 159           419        100%            đạt
+màu áo người điều khiển  55   4  519  0                 519           59         93%             đạt
+số người trên xe         13   0  565  0                 565           13         100%            đạt
+
+2. GIÁ TRỊ ĐƯỢC CHỌN (chỉ tính M)
+
+[loại]
+Giá trị              Số câu
+-------------------  ------
+ô tô                 187
+xe khách             9
+xe tải               117
+xe máy, xe hai bánh  219
+xe ba gác            4
+người đi bộ          3
+động vật             6
+khác                 0
+
+[cỡ]
+Giá trị  Số câu
+-------  ------
+to       23
+nhỏ      7
+
+[camera hành trình]
+Giá trị  Số câu
+-------  ------
+có       74
+không    0
+
+[màu xe]
+Giá trị   Số câu
+--------  ------
+trắng     133
+đen       67
+xám, bạc  65
+đỏ        32
+xanh      51
+vàng      6
+nâu       8
+màu khác  3
+màu sáng  3
+màu tối   50
+không rõ  1
+
+[màu áo người điều khiển]
+Giá trị   Số câu
+--------  ------
+trắng     16
+đen       9
+xám, bạc  1
+đỏ        0
+xanh      14
+vàng      7
+nâu       0
+màu khác  4
+màu sáng  2
+màu tối   2
+không rõ  0
+
+[số người trên xe]
+Giá trị    Số câu
+---------  ------
+1          1
+2          10
+3 trở lên  2
+
+3. MỌI CỤM BỊ K (codebook thiếu lựa chọn)
+Ô                        Cụm không khớp  Bằng chứng     Video  Câu
+-----------------------  --------------  -------------  -----  -------
+màu áo người điều khiển  áo caro         áo caro        #6     E0030/1
+màu áo người điều khiển  áo caro         áo caro        #6     E0031/1
+màu áo người điều khiển  áo khoác caro   áo khoác caro  #23    E0094/2
+màu áo người điều khiển  áo sọc          áo sọc         #23    E0092/1
+
+4. MỌI T THIẾU CHI TIẾT
+Ô     Bằng chứng            Video  Câu
+----  --------------------  -----  -------
+loại  Một chiếc xe          #12    E0056/1
+loại  Một chiếc xe          #12    E0056/2
+loại  Một chiếc xe          #26    E0103/1
+loại  Một em học sinh       #40    E0174/1
+loại  Xe                    #29    E0117/1
+loại  Xe                    #29    E0118/1
+loại  Xe                    #3     E0017/1
+loại  Xe                    #30    E0119/1
+loại  Xe                    #30    E0120/1
+loại  Xe                    #30    E0121/1
+loại  Xe                    #36    E0148/1
+loại  Xe                    #39    E0161/1
+loại  Xe                    #39    E0162/1
+loại  Xe                    #39    E0163/1
+loại  Xe                    #41    E0178/1
+loại  Xe                    #41    E0179/1
+loại  Xe                    #48    E0216/1
+loại  Xe                    #49    E0217/1
+loại  Xe                    #49    E0218/1
+loại  Xe                    #49    E0219/1
+loại  Xe                    #49    E0220/1
+loại  Xe                    #49    E0221/1
+loại  Xe                    #54    E0245/1
+loại  Xe camera hành trình  #29    E0116/1
+loại  cô bé                 #40    E0171/2
+loại  một bé nhỏ            #40    E0172/2
+loại  một chiếc xe          #37    E0154/2
+loại  một em bé             #40    E0173/2
+loại  một người đàn ông     #1     E0005/3
+loại  xe                    #42    E0185/2
+loại  xe                    #55    E0255/3
+loại  xe                    #56    E0257/2
+loại  xe                    #58    E0268/2
+
+5. NGOÀI CODEBOOK (gộp theo loại và đoạn)
+Loại          Đoạn                             Số câu  Video
+------------  -------------------------------  ------  ---------------------
+khác          người đàn ông                    11      #1 #23
+khác          phụ nữ                           9       #26 #35 #41 #42 #58
+khác          áo mưa                           7       #46 #58
+khác          bê tông                          6       #55
+khác          đàn ông                          6       #1 #6 #45 #53 #56 #58
+khác          chở nhiên liệu                   5       #44
+khác          nhãn hiệu toyota                 4       #57
+khác          29 chỗ                           3       #49
+khác          hạng sang                        3       #12
+khác          màu đen                          3       #6
+khác          nhãn hiệu howo                   3       #5
+khác          nhãn hiệu vimid                  3       #33
+khác          đang đỗ                          3       #37
+khác          audi q8                          2       #12
+khác          bé gái                           2       #40
+khác          ford ranger                      2       #27
+khác          hiệu kia                         2       #30
+khác          học sinh                         2       #48
+khác          một chiếc đang di chuyển         2       #37
+khác          một chiếc đang đỗ                2       #37
+khác          1 chieecs                        1       #57
+khác          biển số 84c-082.82               1       #35
+khác          bé nhỏ                           1       #40
+khác          chỗ                              1       #49
+khác          chở 2 nguoief                    1       #55
+khác          chở hàng                         1       #34
+khác          có giá nóc                       1       #17
+khác          có mảng màu xanh trên thùng      1       #9
+khác          cô bé                            1       #40
+khác          do camera ghi hình               1       #3
+khác          em bé                            1       #40
+khác          em học sinh                      1       #40
+khác          giao hàng                        1       #34
+khác          honda cr-v                       1       #12
+khác          màu                              1       #55
+khác          màu trắng đen                    1       #6
+khác          màu đen trắng                    1       #6
+khác          mũ bảo hiểm đỏ                   1       #37
+khác          mặc quần trắng                   1       #3
+khác          nam học sinh                     1       #34
+khác          người phụ nữ                     1       #23
+khác          người thanh niên                 1       #23
+khác          phủ bạt                          1       #10
+khác          qua đường                        1       #40
+khác          thanh niên                       1       #24
+khác          thùng màu xám đen                1       #5
+khác          thùng phủ bạt màu tối            1       #17
+khác          thồ tự chế                       1       #2
+khác          trộn bê tông                     1       #31
+khác          tô                               1       #54
+khác          vác thùng hàng                   1       #25
+khác          đang di chuyển                   1       #37
+khác          đang dừng                        1       #37
+khác          đang dừng chờ đèn                1       #5
+khác          đang đi trên đường               1       #5
+khác          đen                              1       #6
+khác          đi thẳng từ hướng phải qua trái  1       #40
+khác          đối diện                         1       #5
+khác          đội mũ bảo hiểm màu sáng         1       #1
+nhóm khác: V  đi ngược chiều                   2       #5 #42
+nhóm khác: V  không đội mũ                     1       #24
+nhóm khác: V  không đội mũ bảo hiểm            1       #6
+
+6. GHI CHÚ CỦA MODEL
+Video  Câu    Ghi chú
+-----  -----  --------------------------------------------------------------------------------------------------------------------------------------------
+#1     E0003  Câu gộp hai xe máy màu đen, tách thành hai bên với áo trắng và áo xanh tương ứng.
+#1     E0005  Bên thứ ba chỉ nêu 'một người đàn ông áo xanh' mà không nói đi bộ hay đi xe, nên loại là T kèm bằng chứng.
+#3     E0016  Câu viết 'ô tô do camera ghi hình' chứ không nói ô tô gắn camera hành trình, nên camera hành trình là T.
+#3     E0017  Bên thứ nhất chỉ ghi 'Xe', không nói rõ loại phương tiện, nên loại là T kèm bằng chứng.
+#5     E0029  Xe tải ben nêu hai màu (cabin màu xanh dương, thùng màu xám đen), chọn màu đầu tiên là xanh.
+#9     E0041  Xe tải nêu màu chính là màu sáng và có mảng màu xanh trên thùng, chọn màu đầu tiên là màu sáng.
+#11    E0051  Xe máy ghi hai màu (màu sáng phối đen), chọn màu đầu tiên là màu sáng.
+#12    E0056  Cả hai bên đều chỉ ghi 'Một chiếc xe' mà không nêu rõ loại phương tiện nên loại là T kèm bằng chứng.
+#17    E0076  Xe tải ben nêu hai màu (cabin màu xanh đậm, thùng phủ bạt màu tối), chọn màu đầu tiên là xanh.
+#26    E0103  Bên thứ nhất chỉ ghi "xe", không nói loại, nên loại là T kèm bằng chứng.
+#29    E0116  Bên thứ nhất ghi 'Xe camera hành trình', không nêu rõ loại xe nên loại là T kèm bằng chứng.
+#29    E0117  Bên thứ nhất chỉ ghi 'Xe', không nói rõ loại phương tiện nên loại là T kèm bằng chứng.
+#29    E0118  Bên thứ nhất chỉ ghi 'Xe', không nói rõ loại phương tiện nên loại là T kèm bằng chứng.
+#30    E0119  Bên thứ nhất chỉ ghi 'Xe', không nói rõ loại phương tiện nên loại là T kèm bằng chứng.
+#30    E0120  Bên thứ nhất chỉ ghi 'Xe', không nói rõ loại phương tiện nên loại là T kèm bằng chứng.
+#30    E0121  Bên thứ nhất chỉ ghi 'Xe', không nói rõ loại phương tiện nên loại là T kèm bằng chứng.
+#36    E0148  Bên thứ nhất chỉ ghi 'Xe', không nói rõ loại phương tiện nên loại là T kèm bằng chứng.
+#37    E0151  Câu gộp hai chiếc xe tay ga màu trắng nên tách thành 2 bên giống nhau.
+#37    E0153  Câu gộp hai chiếc xe tay ga màu trắng nên tách thành 2 bên giống nhau.
+#37    E0154  Bên thứ hai chỉ ghi "xe", không nói loại, nên loại là T kèm bằng chứng.
+#38    E0157  Câu ghi "người mặc màu xanh", hiểu theo ngữ cảnh là màu áo người điều khiển.
+#39    E0161  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#39    E0162  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#39    E0163  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#39    E0164  Xe máy ghi hai màu trắng đen nên chọn màu đầu tiên là trắng.
+#39    E0165  Xe máy ghi hai màu trắng đen nên chọn màu đầu tiên là trắng.
+#40    E0171  Bên thứ hai không nói rõ đi bộ hay đi xe nên loại là T kèm bằng chứng.
+#40    E0172  Bên thứ hai không nói rõ đi bộ hay đi xe nên loại là T kèm bằng chứng; "mặc đồ sáng" map vào màu sáng của áo.
+#40    E0173  Bên thứ hai không nói rõ đi bộ hay đi xe nên loại là T kèm bằng chứng.
+#40    E0174  Bên thứ nhất không nói rõ đi bộ hay đi xe nên loại là T kèm bằng chứng.
+#41    E0178  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#41    E0179  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#42    E0185  Bên thứ hai chỉ ghi "xe", không nói loại, nên loại là T kèm bằng chứng.
+#44    E0196  Xe bồn được map về xe tải theo hướng dẫn trong codebook. Màu xe "trắng xanh" chọn màu đầu tiên là trắng theo quy định tại ghi chú màu xe.
+#44    E0197  Xe bồn được map về xe tải. Màu xe "trắng xanh" chọn màu đầu tiên là trắng.
+#44    E0198  Xe bồn được map về xe tải. Màu xe "trắng xanh" chọn màu đầu tiên là trắng.
+#44    E0199  Xe bồn được map về xe tải. Màu xe "trắng xanh" chọn màu đầu tiên là trắng.
+#44    E0200  Xe bồn được map về xe tải.
+#45    E0201  Màu xe "trắng-đỏ" chọn màu đầu tiên là trắng theo quy định tại ghi chú màu xe.
+#45    E0202  Màu xe "xanh-đỏ" chọn màu đầu tiên là xanh theo quy định tại ghi chú màu xe.
+#45    E0203  Màu xe "trắng xanh" chọn màu đầu tiên là trắng theo quy định tại ghi chú màu xe.
+#48    E0215  Xe đạp thuộc nhóm 'xe máy, xe hai bánh' theo chú thích trong codebook.
+#48    E0216  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng. Xe đạp thuộc nhóm 'xe máy, xe hai bánh' theo codebook.
+#49    E0217  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#49    E0218  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#49    E0219  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#49    E0220  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#49    E0221  Bên thứ nhất chỉ ghi "Xe", không nói loại, nên loại là T kèm bằng chứng.
+#51    E0229  Màu xe "trắng-vàng-đỏ" chọn màu đầu tiên là trắng theo quy định tại ghi chú màu xe.
+#51    E0230  Xe bus được map về xe khách theo quy tắc chung.
+#52    E0231  Màu xe "xám/vàng" chọn màu đầu tiên là xám, bạc theo ghi chú màu xe.
+#52    E0233  Màu xe "xanh xám" chọn màu đầu tiên là xanh theo quy định màu xe.
+#52    E0234  Màu xe "trắng-cam" chọn màu đầu tiên là trắng.
+#52    E0235  Màu xe "trắng-cam" chọn màu đầu tiên là trắng.
+#52    E0237  Xe ben được map về xe tải theo hướng dẫn trong codebook.
+#53    E0238  Màu xe "trắng/bạc" chọn màu đầu tiên là trắng theo ghi chú màu xe.
+#53    E0239  Xe tay ga được map về xe máy, xe hai bánh theo codebook.
+#53    E0240  Xe tay ga được map về xe máy, xe hai bánh. Màu xe "trắng/bạc" chọn màu đầu tiên là trắng theo quy định màu xe.
+#53    E0241  Xe tay ga được map về xe máy, xe hai bánh. Màu xe "trắng/bạc" chọn màu đầu tiên là trắng theo quy định màu xe.
+#53    E0242  Xe tay ga được map về xe máy, xe hai bánh. Màu xe "trắng/bạc" chọn màu đầu tiên là trắng theo quy định màu xe.
+#53    E0243  Xe tay ga được map về xe máy, xe hai bánh.
+#53    E0244  Từ "màu nêu" trong câu được hiểu là màu nâu theo nghĩa chính tả.
+#54    E0245  Bên thứ nhất chỉ ghi "Xe", không nói rõ loại, nên loại là T kèm bằng chứng.
+#54    E0250  Từ "tô" được coi là lỗi đánh máy từ chữ "to", nhưng theo hướng dẫn không suy đoán nên từ "tô" được đưa vào ngoài codebook loại "khác".
+#55    E0251  Xe bồn được map về xe tải theo hướng dẫn trong codebook.
+#55    E0252  Xe bồn được map về xe tải. Từ "màu" ở bên xe máy không đủ thông tin về màu sắc nên ô màu xe là T, từ "màu" đưa vào ngoài codebook loại khác.
+#55    E0253  Xe bồn được map về xe tải.
+#55    E0254  Xe bồn được map về xe tải.
+#55    E0255  Bên thứ ba chỉ ghi "xe", không nói rõ loại xe máy hay ô tô, nên loại là T kèm bằng chứng; số người trên xe áp dụng cho xe máy nên để T.
+#55    E0256  Xe bồn được map về xe tải.
+#56    E0257  Bên thứ hai chỉ ghi "xe", không nói rõ loại, nên loại là T kèm bằng chứng.
+#57    E0260  Màu xe "xám/bạc" chọn màu đầu tiên là xám, bạc theo ghi chú màu xe.
+#57    E0264  Màu xe "nâu/ vàng" chọn màu đầu tiên là nâu theo ghi chú màu xe.
+#58    E0268  Bên thứ hai chỉ ghi "xe", không nói rõ loại, nên loại là T kèm bằng chứng.
+
+7. LỖI (không tính vào độ phủ)
+Video  Câu    Lô     Lỗi
+-----  -----  -----  --------------------------------------------------------
+#37    E0152  E-007  bên 2: đoạn 'xe tay ga ... màu tím' không có trong câu
+#43    E0190  E-008  bên 3: đoạn 'xe máy thứ nhất' không có trong câu
+#43    E0190  E-008  bên 4: đoạn 'xe máy thứ hai' không có trong câu
+#59    E0271  E-011  bên 1: loại: bằng chứng 'xe ô tô con' không có trong câu
+#59    E0272  E-011  bên 1: loại: bằng chứng 'xe ô tô' không có trong câu
+
+8. TỪNG CÂU TRẢ LỜI
+Câu      Video  Số người  loại                   cỡ     camera hành trình  màu xe      màu áo người điều khiển  số người trên xe  Câu trả lời
+-------  -----  --------  ---------------------  -----  -----------------  ----------  -----------------------  ----------------  -----------------------------------------------------------------------------------------
+E0001/1  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:trắng                  T                 Một xe máy màu đen do người đàn ông mặc áo trắng điều khiển
+E0001/2  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:xanh                   T                 một xe máy màu đen do người mặc áo xanh điều khiển
+E0002/1  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:xanh                   T                 Một xe máy màu đen do người đàn ông mặc áo xanh điều khiển
+E0002/2  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:trắng                  T                 một xe máy màu đen do người đàn ông mặc áo trắng điều khiển
+E0003/1  #1     1         M:ô tô                 T      M:có               T           T                        T                 Một ô tô con (xe camera)
+E0003/2  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:trắng                  T                 hai xe máy màu đen do người đàn ông mặc áo trắng và áo xanh điều khiển
+E0003/3  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:xanh                   T                 hai xe máy màu đen do người đàn ông mặc áo trắng và áo xanh điều khiển
+E0004/1  #1     1         M:ô tô                 T      M:có               T           T                        T                 Một ô tô con (xe camera)
+E0004/2  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:trắng                  T                 một xe máy màu đen do người đàn ông mặc áo trắng điều khiển
+E0004/3  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:xanh                   T                 một xe máy màu đen do người đàn ông mặc áo xanh điều khiển
+E0005/1  #1     1         M:ô tô                 T      M:có               T           T                        T                 Một ô tô con (xe camera)
+E0005/2  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:trắng                  T                 một xe máy màu đen do người đàn ông mặc áo trắng điều khiển
+E0005/3  #1     1         T                      T      T                  T           M:xanh                   T                 một người đàn ông áo xanh
+E0006/1  #1     1         M:ô tô                 T      M:có               T           T                        T                 Một ô tô con (xe camera)
+E0006/2  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:trắng                  T                 một xe máy màu đen do người đàn ông mặc áo trắng điều khiển
+E0006/3  #1     1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  M:xanh                   T                 một xe máy màu xám do người đàn ông mặc áo xanh điều khiển
+E0007/1  #1     1         M:xe máy, xe hai bánh  T      T                  M:đen       M:trắng                  T                 một xe máy màu đen do người đàn ông mặc áo trắng điều khiển
+E0007/2  #1     1         M:xe máy, xe hai bánh  T      T                  T           M:xanh                   T                 1 người điều khiển xe 2 bánh mặc áo hoodie xanh lá đội mũ bảo hiểm màu sáng
+E0008/1  #2     1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một chiếc ô tô con màu bạc (loại SUV)
+E0008/2  #2     1         M:xe ba gác            T      T                  T           T                        T                 một chiếc xe ba gác
+E0009/1  #2     1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một chiếc ô tô con màu bạc (loại SUV)
+E0009/2  #2     1         M:xe ba gác            T      T                  T           T                        T                 một chiếc xe ba gác máy
+E0010/1  #2     1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một chiếc ô tô con màu bạc (loại SUV)
+E0010/2  #2     1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một chiếc xe máy thồ tự chế
+E0011/1  #2     2         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một chiếc ô tô con màu bạc (loại SUV)
+E0011/2  #2     2         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một chiếc xe máy
+E0012/1  #2     1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một chiếc ô tô con màu bạc
+E0012/2  #2     1         M:xe ba gác            T      T                  T           T                        T                 một chiếc xe máy ba bánh
+E0013/1  #2     1         M:ô tô                 T      T                  M:trắng     T                        T                 Một chiếc ô tô con màu trắng
+E0013/2  #2     1         M:xe ba gác            T      T                  T           T                        T                 một chiếc xe máy ba gác
+E0014/1  #3     1         M:ô tô                 T      M:có               T           T                        T                 Một chiếc xe ô tô gắn camera hành trình
+E0014/2  #3     1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một người đi xe máy
+E0015/1  #3     1         M:ô tô                 T      M:có               T           T                        T                 Một chiếc xe ô tô đang gắn camera hành trình
+E0015/2  #3     1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một người đi xe máy
+E0016/1  #3     1         M:ô tô                 T      T                  T           T                        T                 Một chiếc ô tô do camera ghi hình
+E0016/2  #3     1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một người đi xe máy
+E0017/1  #3     1         T                      T      M:có               T           T                        T                 Xe gắn camera
+E0017/2  #3     1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một người đi xe máy
+E0018/1  #3     1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Xe máy màu tối do người mặc quần trắng điều khiển
+E0018/2  #3     1         M:ô tô                 T      M:có               T           T                        T                 ô tô gắn camera
+E0019/1  #3     1         M:ô tô                 T      M:có               T           T                        T                 Xe ô tô có gắn camera hành trình
+E0019/2  #3     1         M:xe máy, xe hai bánh  T      T                  T           M:đen                    T                 một người đi xe máy mặc áo khoác màu đen
+E0020/1  #3     1         M:ô tô                 T      M:có               T           T                        T                 Xe ô tô gắn cam
+E0020/2  #3     1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một người đi xe máy
+E0021/1  #4     6         M:xe tải               M:to   T                  M:xám, bạc  T                        T                 Một xe tải lớn màu bạc
+E0021/2  #4     6         M:xe máy, xe hai bánh  T      T                  T           M:xanh                   T                 một người đi xe máy mặc áo xanh
+E0022/1  #4     1         M:xe tải               T      T                  T           T                        T                 Một xe tải thùng kín
+E0022/2  #4     1         M:xe máy, xe hai bánh  T      T                  T           M:xanh                   T                 một người đi xe máy mặc áo xanh
+E0023/1  #5     1         M:xe tải               T      T                  M:xanh      T                        T                 Một xe tải ben cabin màu xanh
+E0023/2  #5     1         M:ô tô                 T      M:có               T           T                        T                 một xe ô tô gắn camera
+E0024/1  #5     1         M:xe tải               T      T                  M:xanh      T                        T                 Một xe tải ben màu xanh (nhãn hiệu Howo)
+E0024/2  #5     1         M:ô tô                 T      T                  M:đen       T                        T                 một xe ô tô con màu đen đang dừng chờ đèn
+E0025/1  #5     1         M:xe tải               T      T                  M:xanh      T                        T                 Một xe tải ben màu xanh (nhãn hiệu Howo)
+E0025/2  #5     1         M:ô tô                 T      M:có               T           T                        T                 một xe ô tô có camera
+E0026/1  #5     1         M:xe tải               T      T                  M:xanh      T                        T                 Một xe tải ben màu xanh (nhãn hiệu Howo)
+E0026/2  #5     1         M:ô tô                 T      T                  T           T                        T                 một xe ô tô đi ngược chiều
+E0027/1  #5     1         M:xe tải               T      T                  M:xanh      T                        T                 Một xe tải ben màu xanh
+E0027/2  #5     1         M:ô tô                 T      M:có               T           T                        T                 một xe ô tô con gắn cam đang đi trên đường
+E0028/1  #5     1         M:xe tải               T      T                  M:xanh      T                        T                 Một xe tải ben màu xanh
+E0028/2  #5     1         M:ô tô                 T      M:có               T           T                        T                 một xe ô tô đang gắn camera hành trình
+E0029/1  #5     1         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải ben cabin màu xanh dương, thùng màu xám đen
+E0029/2  #5     1         M:ô tô                 T      T                  M:không rõ  T                        T                 một xe ô tô con đối diện không xác định được màu
+E0030/1  #6     1         M:xe máy, xe hai bánh  T      T                  T           K                        T                 Một chiếc xe 2 bánh do người mặc áo caro điều khiển
+E0030/2  #6     1         M:động vật             T      T                  T           T                        T                 một con chó màu trắng đen
+E0031/1  #6     1         M:xe máy, xe hai bánh  T      T                  T           K                        T                 Một chiếc xe máy do người mặc áo caro không đội mũ bảo hiểm điều khiển
+E0031/2  #6     1         M:động vật             T      T                  T           T                        T                 một con chó màu đen trắng
+E0032/1  #6     1         M:xe máy, xe hai bánh  T      T                  T           M:xanh                   T                 Một chiếc xe máy do người áo kẻ xanh lái
+E0032/2  #6     1         M:động vật             T      T                  T           T                        T                 một con chó đen
+E0033/1  #6     1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 Một chiếc xe máy màu đen
+E0033/2  #6     1         M:động vật             T      T                  T           T                        T                 một con chó màu đen
+E0034/1  #6     2         M:xe máy, xe hai bánh  T      T                  T           T                        T                 Một chiếc xe máy
+E0034/2  #6     2         M:động vật             T      T                  T           T                        T                 một con chó màu đen
+E0035/1  #6     1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 Một người đàn ông điểu khiển xe máy
+E0035/2  #6     1         M:động vật             T      T                  T           T                        T                 một con chó màu đen
+E0036/1  #7     7         M:xe tải               M:to   T                  M:xanh      T                        T                 Một xe tải lớn màu xanh lá cây
+E0036/2  #7     7         M:xe máy, xe hai bánh  T      T                  T           M:màu sáng               T                 một xe máy do người mặc áo khoác sáng màu điều khiển
+E0037/1  #8     7         M:xe tải               T      T                  M:xanh      T                        T                 Một xe tải màu xanh
+E0037/2  #8     7         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một người đi xe đạp
+E0038/1  #9     1         M:xe tải               T      T                  M:xám, bạc  T                        T                 Một chiếc xe tải thùng màu xám
+E0039/1  #9     1         M:xe tải               T      T                  M:xám, bạc  T                        T                 Một chiếc xe tải thùng màu xám
+E0039/2  #9     1         M:ô tô                 T      T                  M:trắng     T                        T                 một chiếc ô tô con màu trắng
+E0040/1  #9     4         M:xe tải               T      T                  M:xám, bạc  T                        T                 Một chiếc xe tải thùng màu xám
+E0041/1  #9     1         M:xe tải               T      T                  M:màu sáng  T                        T                 Xe tải thùng kín màu sáng, có mảng màu xanh trên thùng
+E0042/1  #10    2         M:xe tải               T      T                  M:trắng     T                        T                 Xe container màu trắng
+E0042/2  #10    2         M:xe tải               T      T                  M:xám, bạc  T                        T                 xe tải màu xám
+E0043/1  #10    3         M:xe tải               T      T                  M:trắng     T                        T                 Xe container màu trắng
+E0043/2  #10    3         M:xe tải               T      T                  M:trắng     T                        T                 xe bán tải màu trắng
+E0043/3  #10    3         M:xe khách             T      T                  M:vàng      T                        T                 xe khách màu vàng
+E0043/4  #10    3         M:xe tải               T      T                  M:xám, bạc  T                        T                 xe tải màu xám
+E0044/1  #10    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 Xe tải màu xám phủ bạt
+E0045/1  #10    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 Xe tải màu xám
+E0046/1  #11    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe máy màu tối
+E0046/2  #11    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một chiếc xe đạp
+E0047/1  #11    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe máy màu tối
+E0047/2  #11    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một người đi xe đạp
+E0048/1  #11    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe máy màu tối
+E0048/2  #11    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 Một người đi xe đạp
+E0049/1  #11    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một chiếc xe ô tô SUV màu trắng
+E0049/2  #11    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc xe máy màu tối
+E0049/3  #11    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 1 người đi xe đạp
+E0050/1  #11    2         M:ô tô                 T      T                  M:trắng     T                        T                 Một chiếc xe ô tô SUV màu trắng
+E0050/2  #11    2         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc xe máy màu tối
+E0051/1  #11    1         M:xe máy, xe hai bánh  T      T                  M:màu sáng  M:màu tối                T                 Xe máy màu sáng phối đen do người mặc áo tối điều khiển
+E0051/2  #11    1         M:ô tô                 T      T                  M:trắng     T                        T                 ô tô SUV màu trắng
+E0051/3  #11    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 xe đạp màu tối
+E0052/1  #12    3         M:ô tô                 T      T                  M:xanh      T                        T                 Một chiếc xe SUV hạng sang màu xanh đen (Audi Q8)
+E0052/2  #12    3         M:ô tô                 T      T                  M:xám, bạc  T                        T                 một chiếc SUV màu bạc (Honda CR-V)
+E0053/1  #12    1         M:ô tô                 T      T                  M:xanh      T                        T                 Một chiếc xe SUV hạng sang màu xanh đen (Audi Q8)
+E0053/2  #12    1         M:ô tô                 T      T                  M:nâu       T                        T                 một chiếc SUV màu nâu
+E0054/1  #12    1         M:ô tô                 T      T                  M:xanh      T                        T                 Một chiếc xe SUV hạng sang màu xanh đen
+E0054/2  #12    1         M:ô tô                 T      T                  M:vàng      T                        T                 một chiếc SUV màu gold
+E0055/1  #12    1         M:ô tô                 T      T                  M:xanh      T                        T                 Một chiếc xe SUV màu xanh đen
+E0055/2  #12    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 một chiếc SUV màu bạc
+E0056/1  #12    1         T                      T      T                  M:xám, bạc  T                        T                 Một chiếc xe màu xám
+E0056/2  #12    1         T                      T      T                  M:xanh      T                        T                 Một chiếc xe màu xanh biển
+E0057/1  #13    7         M:ô tô                 T      M:có               T           T                        T                 Xe ô tô có camera hành trình
+E0057/2  #13    7         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một xe máy màu trắng
+E0058/1  #14    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Xe ô tô con màu bạc
+E0058/2  #14    1         M:xe tải               T      T                  M:trắng     T                        T                 xe tải thùng màu trắng
+E0058/3  #14    1         M:ô tô                 T      T                  M:đen       T                        T                 xe ô tô con màu đen
+E0059/1  #14    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Xe ô tô con màu bạc
+E0059/2  #14    1         M:xe tải               T      T                  M:trắng     T                        T                 xe tải thùng màu trắng
+E0059/3  #14    1         M:ô tô                 T      T                  M:đen       T                        T                 xe ô tô con màu đen
+E0060/1  #14    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Xe ô tô con màu bạc
+E0060/2  #14    1         M:xe tải               T      T                  M:trắng     T                        T                 xe tải thùng màu trắng
+E0060/3  #14    1         M:ô tô                 T      T                  M:màu tối   T                        T                 xe ô tô màu tối
+E0061/1  #14    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Xe ô tô con màu bạc
+E0061/2  #14    1         M:xe tải               T      T                  M:trắng     T                        T                 xe tải thùng màu trắng
+E0061/3  #14    1         M:ô tô                 T      T                  M:đen       T                        T                 xe ô tô màu đen
+E0062/1  #14    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Xe ô tô con màu bạc
+E0062/2  #14    1         M:xe tải               T      T                  M:trắng     T                        T                 xe tải thùng màu trắng
+E0062/3  #14    1         M:ô tô                 T      T                  M:đen       T                        T                 xe ô tô đen
+E0063/1  #14    1         M:ô tô                 T      T                  M:trắng     T                        T                 Xe ô tô con màu trắng
+E0063/2  #14    1         M:xe tải               T      T                  T           T                        T                 xe tải
+E0063/3  #14    1         M:ô tô                 T      T                  M:đen       T                        T                 xe ô tô con màu đen
+E0064/1  #14    1         M:ô tô                 T      T                  M:đen       T                        T                 Xe ô tô con màu đen
+E0064/2  #14    1         M:xe tải               T      T                  M:trắng     T                        T                 xe tải thùng màu trắng
+E0065/1  #15    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một xe ô tô SUV màu đỏ
+E0065/2  #15    1         M:xe tải               T      T                  M:trắng     T                        T                 một xe tải thùng kín màu trắng
+E0066/1  #15    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một xe ô tô SUV màu đỏ
+E0066/2  #15    1         M:xe tải               T      T                  M:trắng     T                        T                 một xe tải thùng kín màu trắng
+E0067/1  #15    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một xe ô tô SUV màu đỏ
+E0067/2  #15    1         M:xe tải               T      T                  M:trắng     T                        T                 một xe tải thùng kín màu trắng
+E0067/3  #15    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một xe máy màu tối
+E0068/1  #15    3         M:ô tô                 T      T                  M:đỏ        T                        T                 Một xe ô tô SUV màu đỏ
+E0068/2  #15    3         M:xe tải               T      T                  M:trắng     T                        T                 một xe tải thùng kín màu trắng
+E0069/1  #15    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một xe ô tô màu đỏ
+E0069/2  #15    1         M:xe tải               T      T                  M:trắng     T                        T                 một xe tải thùng kín màu trắng
+E0070/1  #16    7         M:xe tải               T      T                  M:trắng     T                        T                 Một chiếc xe tải màu trắng
+E0070/2  #16    7         M:ô tô                 T      M:có               T           T                        T                 xe ô tô có gắn camera hành trình
+E0071/1  #17    1         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc xe SUV màu đen
+E0071/2  #17    1         M:xe tải               T      T                  M:xanh      T                        T                 một chiếc xe tải ben màu xanh đen
+E0071/3  #17    1         M:xe tải               T      T                  T           T                        T                 một chiếc xe tải
+E0072/1  #17    2         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc xe SUV màu đen
+E0072/2  #17    2         M:xe tải               T      T                  M:xanh      T                        T                 một chiếc xe tải ben màu xanh đen
+E0073/1  #17    1         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc xe SUV màu đen
+E0073/2  #17    1         M:xe tải               T      T                  T           T                        T                 một chiếc xe tải kéo
+E0073/3  #17    1         M:xe tải               T      T                  M:xanh      T                        T                 một chiếc xe tải ben màu xanh đen
+E0074/1  #17    1         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc xe ô tô màu đen
+E0074/2  #17    1         M:xe tải               T      T                  M:xanh      T                        T                 một chiếc xe tải ben màu xanh đen
+E0075/1  #17    1         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc xe ô tô màu đen
+E0075/2  #17    1         M:xe tải               T      T                  M:xanh      T                        T                 một chiếc xe tải ben màu xanh đen
+E0076/1  #17    1         M:ô tô                 T      T                  M:đen       T                        T                 Ô tô SUV màu đen có giá nóc
+E0076/2  #17    1         M:xe tải               T      T                  M:xanh      T                        T                 xe tải ben cabin màu xanh đậm, thùng phủ bạt màu tối
+E0077/1  #18    4         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 Một chiếc xe đạp màu bạc
+E0077/2  #18    4         M:xe máy, xe hai bánh  T      T                  M:màu khác  T                        T                 một chiếc xe máy điện màu tím
+E0078/1  #18    1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 Một chiếc xe đạp màu bạc
+E0078/2  #18    1         M:xe máy, xe hai bánh  T      T                  M:xanh      T                        T                 một chiếc xe máy điện màu xanh
+E0079/1  #18    1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 Một chiếc xe đạp màu bạc
+E0079/2  #18    1         M:xe máy, xe hai bánh  T      T                  M:xanh      T                        T                 một chiếc xe đạp điện màu xanh
+E0080/1  #18    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 Một chiếc xe đạp
+E0080/2  #18    1         M:xe máy, xe hai bánh  T      T                  M:màu khác  T                        T                 một chiếc xe máy điện màu tím
+E0081/1  #19    7         M:ô tô                 T      M:có               M:trắng     T                        T                 Một chiếc ô tô màu trắng (xe gắn camera)
+E0081/2  #19    7         M:xe máy, xe hai bánh  T      T                  M:xanh      T                        T                 một chiếc xe máy màu xanh đen
+E0082/1  #20    6         M:ô tô                 T      M:có               M:xanh      T                        T                 Xe ô tô con màu xanh (xe camera)
+E0082/2  #20    6         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 xe máy màu đen
+E0083/1  #20    1         M:ô tô                 T      M:có               T           T                        T                 Xe ô tô gắn camera
+E0083/2  #20    1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 xe máy màu đen
+E0084/1  #21    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một chiếc xe ô tô 7 chỗ màu trắng
+E0084/2  #21    1         M:ô tô                 T      T                  M:xanh      T                        T                 một chiếc xe taxi màu xanh
+E0085/1  #21    4         M:ô tô                 T      T                  M:trắng     T                        T                 Một chiếc xe ô tô 7 chỗ màu trắng
+E0085/2  #21    4         M:ô tô                 T      T                  M:xanh      T                        T                 một chiếc xe taxi màu xanh lá cây
+E0086/1  #21    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một chiếc xe ô tô 7 chỗ màu trắng
+E0086/2  #21    1         M:ô tô                 T      T                  M:xanh      T                        T                 một chiếc xe taxi màu xanh
+E0087/1  #21    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một chiếc xe ô tô màu trắng
+E0087/2  #21    1         M:ô tô                 T      T                  M:xanh      T                        T                 một chiếc xe taxi màu xanh lá cây
+E0088/1  #22    2         M:ô tô                 T      M:có               T           T                        T                 Một chiếc ô tô con (xe camera)
+E0088/2  #22    2         M:xe máy, xe hai bánh  T      T                  T           M:trắng                  T                 một người đi xe đạp mặc áo trắng
+E0089/1  #22    5         M:ô tô                 T      M:có               T           T                        T                 Một chiếc ô tô con (xe camera)
+E0089/2  #22    5         M:xe máy, xe hai bánh  T      T                  T           M:trắng                  T                 một người đi xe đạp mặc áo trắng
+E0090/1  #23    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng
+E0090/2  #23    1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 một chiếc xe máy màu đen
+E0091/1  #23    1         M:xe máy, xe hai bánh  T      T                  M:xanh      T                        T                 Một chiếc xe máy màu xanh
+E0091/2  #23    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc xe máy màu tối
+E0092/1  #23    1         M:xe máy, xe hai bánh  T      T                  M:đen       K                        T                 Một chiếc xe máy màu đen do người đàn ông mặc áo sọc điều khiển
+E0092/2  #23    1         M:xe máy, xe hai bánh  T      T                  M:nâu       T                        T                 xe máy màu nâu do người phụ nữ điều khiển
+E0093/1  #23    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe tay ga màu tối
+E0093/2  #23    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc xe máy màu tối
+E0094/1  #23    1         M:xe máy, xe hai bánh  T      T                  M:xanh      T                        T                 Một chiếc xe tay ga màu xanh
+E0094/2  #23    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   K                        T                 một chiếc xe máy màu tối do người thanh niên mang áo khoác caro điều khiển
+E0095/1  #23    2         M:xe máy, xe hai bánh  T      T                  M:xanh      T                        T                 Một chiếc xe tay ga màu xanh
+E0095/2  #23    2         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc xe máy màu tối
+E0096/1  #24    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng do thanh niên không đội mũ điều khiển
+E0096/2  #24    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 xe ô tô màu xám
+E0097/1  #24    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một chiếc ô tô con màu bạc
+E0097/2  #24    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc xe máy màu trắng
+E0098/1  #24    4         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một chiếc ô tô con màu bạc
+E0098/2  #24    4         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một chiếc xe máy
+E0099/1  #24    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một chiếc ô tô con màu bạc
+E0099/2  #24    1         M:ô tô                 T      M:có               T           T                        T                 xe ô tô gắn camera
+E0099/3  #24    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc xe máy màu trắng
+E0100/1  #25    1         M:người đi bộ          T      T                  T           T                        T                 Người đi bộ vác thùng hàng
+E0100/2  #25    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 người đi xe đạp
+E0100/3  #25    1         M:ô tô                 T      T                  M:xanh      T                        T                 xe taxi màu xanh
+E0101/1  #25    3         M:xe máy, xe hai bánh  T      T                  T           T                        T                 Người đi xe đạp
+E0101/2  #25    3         M:ô tô                 T      T                  M:xanh      T                        T                 xe taxi màu xanh
+E0102/1  #25    3         M:xe máy, xe hai bánh  T      T                  T           T                        T                 người đi xe đạp
+E0102/2  #25    3         M:ô tô                 T      T                  M:xanh      T                        T                 xe taxi màu xanh
+E0103/1  #26    1         T                      T      M:có               T           T                        T                 Một chiếc xe (có camera hành trình)
+E0103/2  #26    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        M:đen                    M:2               xe máy màu đỏ do phụ nữ áo đen chở 2 người
+E0104/1  #26    1         M:ô tô                 T      M:có               T           T                        T                 Một chiếc xe ô tô (đang gắn cam hành trình)
+E0104/2  #26    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 một chiếc xe máy màu đỏ
+E0105/1  #26    1         M:ô tô                 T      M:có               T           T                        T                 Một chiếc xe ô tô đang gắn camera hành trình
+E0105/2  #26    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 một chiếc xe máy màu đỏ
+E0106/1  #26    1         M:ô tô                 T      M:có               T           T                        T                 Một chiếc ô tô có cam hành trình
+E0106/2  #26    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        M:1               một chiếc xe máy màu đỏ chở 1 người
+E0107/1  #26    1         M:ô tô                 T      M:có               T           T                        T                 Một ô tô gắn camera hành trình
+E0107/2  #26    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 một chiếc xe máy màu đỏ
+E0108/1  #26    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        M:màu tối                M:2               Xe máy màu đỏ do người mặc áo tối điều khiển, chở 2 người
+E0108/2  #26    1         M:ô tô                 T      M:có               T           T                        T                 xe ô tô (có camera hành trình)
+E0109/1  #26    1         M:ô tô                 T      M:có               T           T                        T                 xe ô tô gắn camera
+E0109/2  #26    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 một chiếc xe máy màu đỏ
+E0110/1  #27    1         M:ô tô                 T      T                  M:trắng     T                        T                 Xe ô tô con màu trắng
+E0110/2  #27    1         M:xe tải               T      T                  M:đen       T                        T                 xe bán tải Ford Ranger màu đen
+E0111/1  #27    4         M:ô tô                 T      T                  M:trắng     T                        T                 Xe ô tô con màu trắng
+E0111/2  #27    4         M:xe tải               T      T                  M:đen       T                        T                 xe bán tải Ford Ranger màu đen
+E0111/3  #27    4         M:xe tải               M:to   T                  M:xám, bạc  T                        T                 xe tải lớn màu xám
+E0112/1  #27    1         M:ô tô                 T      T                  M:trắng     T                        T                 Xe ô tô con màu trắng
+E0112/2  #27    1         M:xe tải               T      T                  M:đen       T                        T                 xe bán tải màu đen
+E0112/3  #27    1         M:xe tải               M:to   T                  M:xám, bạc  T                        T                 xe tải lớn màu xám
+E0113/1  #27    1         M:ô tô                 T      T                  M:trắng     T                        T                 Xe ô tô con màu trắng
+E0113/2  #27    1         M:ô tô                 T      T                  M:đen       T                        T                 xe ô tô màu đen
+E0114/1  #28    6         M:xe tải               T      T                  M:đỏ        T                        T                 Một xe tải ben màu đỏ
+E0114/2  #28    6         M:ô tô                 T      T                  M:xám, bạc  T                        T                 một xe ô tô con màu bạc
+E0115/1  #28    1         M:xe tải               T      T                  M:đỏ        T                        T                 Một xe tải ben màu đỏ
+E0115/2  #28    1         M:ô tô                 T      T                  M:trắng     T                        T                 một xe ô tô con màu trắng
+E0116/1  #29    5         T                      T      M:có               M:đỏ        T                        T                 Xe camera hành trình (có nắp capo màu đỏ)
+E0116/2  #29    5         M:xe tải               T      T                  M:đen       T                        T                 một chiếc xe bán tải màu đen
+E0117/1  #29    1         T                      T      M:có               T           T                        T                 Xe có camera hành trình
+E0117/2  #29    1         M:xe tải               T      T                  M:đen       T                        T                 một chiếc xe bán tải màu đen
+E0118/1  #29    1         T                      T      M:có               T           T                        T                 Xe gắn camera
+E0118/2  #29    1         M:ô tô                 T      T                  M:đen       T                        T                 một chiếc xe ô tô màu đen
+E0119/1  #30    5         T                      T      M:có               T           T                        T                 Xe có camera hành trình
+E0119/2  #30    5         M:ô tô                 T      T                  M:trắng     T                        T                 xe ô tô con màu trắng hiệu Kia
+E0120/1  #30    1         T                      T      M:có               T           T                        T                 Xe có camera hành trình
+E0120/2  #30    1         M:ô tô                 T      T                  M:trắng     T                        T                 xe ô tô con màu trắng
+E0121/1  #30    1         T                      T      M:có               T           T                        T                 Xe có camera hành trình
+E0121/2  #30    1         M:xe khách             T      T                  T           T                        T                 xe khách
+E0121/3  #30    1         M:ô tô                 T      T                  M:trắng     T                        T                 xe ô tô con màu trắng hiệu Kia
+E0122/1  #31    7         M:ô tô                 T      M:có               T           T                        T                 Xe ô tô gắn camera hành trình
+E0122/2  #31    7         M:xe tải               T      T                  M:trắng     T                        T                 một chiếc xe bồn trộn bê tông màu trắng
+E0123/1  #32    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một chiếc xe ô tô con màu trắng
+E0123/2  #32    1         M:xe tải               M:nhỏ  T                  M:trắng     T                        T                 một chiếc xe tải nhỏ màu trắng
+E0124/1  #32    1         M:ô tô                 T      M:có               T           T                        T                 Một chiếc xe ô tô con đang gắn camera hành trình
+E0124/2  #32    1         M:xe tải               M:nhỏ  T                  M:trắng     T                        T                 một chiếc xe tải nhỏ màu trắng
+E0125/1  #32    3         M:ô tô                 T      M:có               T           T                        T                 Một chiếc xe ô tô gắn camera hành trình
+E0125/2  #32    3         M:xe tải               M:nhỏ  T                  M:trắng     T                        T                 một chiếc xe tải nhỏ màu trắng
+E0126/1  #32    1         M:ô tô                 T      M:có               T           T                        T                 xe ô tô gắn camera
+E0126/2  #32    1         M:xe tải               M:nhỏ  T                  M:trắng     T                        T                 một chiếc xe tải nhỏ màu trắng
+E0127/1  #32    1         M:ô tô                 T      M:có               T           T                        T                 ô tô camera
+E0127/2  #32    1         M:xe tải               M:nhỏ  T                  M:trắng     T                        T                 một chiếc xe tải nhỏ màu trắng
+E0128/1  #33    1         M:xe tải               M:to   T                  M:xám, bạc  T                        T                 Một xe tải lớn màu xám đen (nhãn hiệu Vimid)
+E0128/2  #33    1         M:ô tô                 T      T                  M:đen       T                        T                 một xe hatchback màu đen
+E0129/1  #33    1         M:xe tải               M:to   T                  M:xám, bạc  T                        T                 Một xe tải lớn màu xám đen (nhãn hiệu Vimid)
+E0129/2  #33    1         M:ô tô                 T      T                  M:đen       T                        T                 một xe hatchback màu đen
+E0130/1  #33    2         M:xe tải               M:to   T                  M:xám, bạc  T                        T                 Một xe tải lớn màu xám đen (nhãn hiệu Vimid)
+E0130/2  #33    2         M:ô tô                 T      T                  M:đen       T                        T                 một xe hatchback màu đen
+E0131/1  #33    1         M:xe tải               M:to   T                  M:xám, bạc  T                        T                 Một xe tải lớn màu xám đen
+E0131/2  #33    1         M:ô tô                 T      T                  M:đen       T                        T                 một xe ô tô màu đen
+E0132/1  #33    1         M:xe tải               M:to   T                  M:xám, bạc  T                        T                 Một xe tải lớn màu xám đen
+E0132/2  #33    1         M:ô tô                 T      T                  M:đen       T                        T                 một chiếc ô tô con màu đen
+E0133/1  #33    1         M:xe tải               M:to   T                  M:xám, bạc  T                        T                 Một xe tải lớn màu xám đen
+E0133/2  #33    1         M:ô tô                 T      T                  M:đen       T                        T                 một xe ô tô màu đen
+E0134/1  #34    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng do nam học sinh điều khiển
+E0134/2  #34    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 một chiếc xe máy màu đỏ giao hàng
+E0135/1  #34    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng
+E0135/2  #34    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 một chiếc xe máy màu đỏ
+E0136/1  #34    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 Một chiếc xe máy màu đỏ
+E0136/2  #34    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc xe máy màu trắng
+E0137/1  #34    1         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc xe ô tô MPV màu đen
+E0137/2  #34    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc xe máy màu trắng
+E0137/3  #34    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 chiếc xe máy màu đỏ
+E0138/1  #34    1         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc xe ô tô MPV màu đen
+E0138/2  #34    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc xe máy màu trắng
+E0138/3  #34    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 chiếc xe máy màu đỏ
+E0139/1  #34    1         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc xe ô tô màu đen
+E0139/2  #34    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 một xe máy chở hàng màu đỏ
+E0139/3  #34    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một xe máy màu trắng
+E0140/1  #34    1         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc xe ô tô màu đen
+E0140/2  #34    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc xe máy màu trắng
+E0140/3  #34    1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 một chiếc xe máy màu đen
+E0141/1  #35    1         M:xe máy, xe hai bánh  T      T                  M:trắng     M:đen                    M:2               Xe máy màu trắng do phụ nữ áo đen chở 2 người
+E0141/2  #35    1         M:xe tải               T      T                  M:xanh      T                        T                 xe tải màu xanh
+E0142/1  #35    5         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải ben màu xanh (biển số 84C-082.82)
+E0142/2  #35    5         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0143/1  #35    1         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải ben màu xanh
+E0143/2  #35    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0144/1  #36    1         M:ô tô                 T      M:có               T           T                        T                 Một chiếc ô tô camera
+E0144/2  #36    1         M:xe máy, xe hai bánh  T      T                  T           M:trắng                  T                 một người đi xe máy mặc áo trắng
+E0145/1  #36    1         M:ô tô                 T      M:có               T           T                        T                 Một chiếc ô tô con có gắn camera hành trình
+E0145/2  #36    1         M:xe máy, xe hai bánh  T      T                  T           M:trắng                  T                 một người đi xe máy mặc áo trắng
+E0146/1  #36    1         M:ô tô                 T      M:có               M:trắng     T                        T                 Một chiếc ô tô con màu trắng gắn camera hành trình
+E0146/2  #36    1         M:xe máy, xe hai bánh  T      T                  T           M:trắng                  T                 một người đi xe máy mặc áo trắng
+E0147/1  #36    2         M:ô tô                 T      T                  M:trắng     T                        T                 Một chiếc ô tô con màu trắng
+E0147/2  #36    2         M:xe máy, xe hai bánh  T      T                  T           M:trắng                  T                 một người đi xe máy mặc áo trắng
+E0148/1  #36    1         T                      T      M:có               T           T                        T                 Xe có camera hành trình
+E0148/2  #36    1         M:xe máy, xe hai bánh  T      T                  T           M:trắng                  T                 một người đi xe máy mặc áo trắng
+E0149/1  #37    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc đang đỗ
+E0149/2  #37    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc do người đội mũ bảo hiểm đỏ điều khiển
+E0150/1  #37    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc đang đỗ
+E0150/2  #37    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc đang di chuyển
+E0151/1  #37    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Hai chiếc xe tay ga màu trắng
+E0151/2  #37    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Hai chiếc xe tay ga màu trắng
+E0152    #37    1         lỗi                    lỗi    lỗi                lỗi         lỗi                      lỗi               Hai chiếc xe tay ga màu trắng và màu tím (một chiếc đang đỗ và một chiếc đang di chuyển).
+E0153/1  #37    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Hai chiếc xe tay ga màu trắng
+E0153/2  #37    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Hai chiếc xe tay ga màu trắng
+E0154/1  #37    1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 Một chiếc xe máy màu xám đang đỗ
+E0154/2  #37    1         T                      T      T                  M:trắng     T                        T                 một chiếc xe màu trắng
+E0155/1  #37    1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 Một xe máy màu xám đang dừng
+E0155/2  #37    1         M:xe máy, xe hai bánh  T      T                  M:màu khác  T                        T                 một xe máy màu hồng
+E0156/1  #38    1         M:xe máy, xe hai bánh  T      T                  T           M:xanh                   T                 một chiếc do một người mặc áo màu xanh điều khiển
+E0156/2  #38    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc màu tối
+E0157/1  #38    1         M:xe máy, xe hai bánh  T      T                  T           M:xanh                   T                 một chiếc do người mặc màu xanh điều khiển
+E0157/2  #38    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc màu tối
+E0158/1  #38    3         M:xe máy, xe hai bánh  T      T                  M:xanh      T                        T                 một chiếc màu xanh
+E0158/2  #38    3         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc màu tối
+E0159/1  #38    1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 một chiếc màu đen
+E0159/2  #38    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc màu tối
+E0160/1  #38    1         M:xe máy, xe hai bánh  T      T                  T           M:xanh                   T                 Một chiếc xe máy do người áo xanh điều khiển
+E0160/2  #38    1         M:xe máy, xe hai bánh  T      T                  T           M:đen                    T                 một chiếc xe máy do người áo đen điều khiển
+E0161/1  #39    1         T                      T      M:có               T           T                        T                 Xe gắn camera hành trình
+E0161/2  #39    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0162/1  #39    1         T                      T      M:có               T           T                        T                 Xe gắn camera hành trình
+E0162/2  #39    1         M:xe máy, xe hai bánh  T      T                  M:trắng     M:xanh                   T                 xe máy màu trắng do người mặc áo màu xanh điều khiển
+E0163/1  #39    1         T                      T      M:có               T           T                        T                 Xe gắn camera
+E0163/2  #39    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0164/1  #39    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Xe máy màu trắng đen
+E0164/2  #39    1         M:ô tô                 T      M:có               T           T                        T                 xe ô tô có camera hành trình
+E0165/1  #39    1         M:ô tô                 T      M:có               T           T                        T                 Xe ô tô gắn camera
+E0165/2  #39    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng đen
+E0166/1  #39    1         M:ô tô                 T      M:có               T           T                        T                 Xe ô tô đang gắn camera hành trình
+E0166/2  #39    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0167/1  #39    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0167/2  #39    1         M:ô tô                 T      M:có               T           T                        T                 xe ô tô gắn camera hành trình
+E0168/1  #40    1         M:người đi bộ          T      T                  T           T                        T                 Một bé gái qua đường
+E0168/2  #40    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 một xe máy đi thẳng từ hướng phải qua trái
+E0169/1  #40    1         M:người đi bộ          T      T                  T           T                        T                 Một bé gái đi bộ
+E0169/2  #40    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một xe máy màu trắng
+E0170/1  #40    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng trắng
+E0171/1  #40    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng
+E0171/2  #40    1         T                      T      T                  T           M:màu khác               T                 cô bé áo hồng
+E0172/1  #40    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng
+E0172/2  #40    1         T                      T      T                  T           M:màu sáng               T                 một bé nhỏ mặc đồ sáng
+E0173/1  #40    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng
+E0173/2  #40    1         T                      T      T                  T           T                        T                 một em bé
+E0174/1  #40    1         T                      T      T                  T           M:vàng                   T                 Một em học sinh mặc áo vàng
+E0174/2  #40    1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 xe máy màu đen
+E0175/1  #41    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng
+E0175/2  #41    1         M:ô tô                 T      M:có               T           T                        T                 xe ô tô có gắn camera hành trình
+E0176/1  #41    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng
+E0176/2  #41    1         M:ô tô                 T      M:có               T           T                        T                 ô tô gắn camera hành trình
+E0177/1  #41    1         M:ô tô                 T      M:có               T           T                        T                 Một chiếc ô tô gắn camera hành trình
+E0177/2  #41    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một chiếc xe mày trắng
+E0178/1  #41    1         T                      T      M:có               T           T                        T                 Xe gắn camera hành trình
+E0178/2  #41    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0179/1  #41    1         T                      T      M:có               T           T                        T                 Xe gắn camera hành trình
+E0179/2  #41    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng do phụ nữ điều khiển
+E0180/1  #41    1         M:ô tô                 T      M:có               T           T                        T                 Ô tô có gắn camera hành trình
+E0180/2  #41    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy trắng
+E0181/1  #41    1         M:ô tô                 T      M:có               T           T                        T                 Ô tô gắn camera
+E0181/2  #41    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0182/1  #42    1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 xe máy màu xám
+E0182/2  #42    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0183/1  #42    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng
+E0183/2  #42    1         M:ô tô                 T      M:có               T           T                        T                 xe ô tô có gắn camera hành trình
+E0184/1  #42    1         M:ô tô                 T      M:có               T           T                        T                 Một xe ô tô đang gắn camera hành trình
+E0184/2  #42    1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 một xe máy màu xám
+E0184/3  #42    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 một xe máy màu trắng
+E0185/1  #42    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Xe máy màu trắng do phụ nữ điều khiển
+E0185/2  #42    1         T                      T      M:có               T           T                        T                 xe gắn camera hành trình
+E0185/3  #42    1         M:xe máy, xe hai bánh  T      T                  T           M:đen                    T                 xe máy do người đàn ông áo đen điều khiển
+E0186/1  #42    1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 một xe tay ga màu bạc
+E0186/2  #42    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0186/3  #42    1         M:ô tô                 T      M:có               T           T                        T                 ô tô có gắn camera
+E0187/1  #42    1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 người đi xe máy màu xám
+E0187/2  #42    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 người đi xe máy màu trắng
+E0188/1  #42    1         M:ô tô                 T      M:có               T           T                        T                 xe ô tô gắn camera
+E0188/2  #42    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 xe máy màu trắng
+E0188/3  #42    1         M:xe máy, xe hai bánh  T      T                  M:xám, bạc  T                        T                 xe máy màu bạc
+E0189/1  #43    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một xe ô tô con màu trắng
+E0189/2  #43    1         M:xe tải               M:to   T                  M:màu tối   T                        T                 một xe tải lớn màu tối
+E0189/3  #43    1         M:xe máy, xe hai bánh  T      T                  T           M:đen                    M:2               chiếc xe máy chở hai người mặc áo đen
+E0190    #43    1         lỗi                    lỗi    lỗi                lỗi         lỗi                      lỗi               Một xe ô tô con màu trắng và một xe tải lớn màu tối và hai xe máy.
+E0191/1  #43    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một xe ô tô con màu trắng
+E0191/2  #43    1         M:xe tải               M:to   T                  M:màu tối   T                        T                 một xe tải lớn màu tối
+E0191/3  #43    1         M:xe máy, xe hai bánh  T      T                  T           T                        M:2               xe máy chở 2 người
+E0192/1  #43    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một xe ô tô con màu trắng
+E0192/2  #43    1         M:xe tải               M:to   T                  M:màu tối   T                        T                 một xe tải lớn màu tối
+E0192/3  #43    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 người đi xe máy
+E0193/1  #43    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một xe ô tô con màu trắng
+E0193/2  #43    1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 một xe máy màu đen
+E0193/3  #43    1         M:xe tải               M:to   T                  M:màu tối   T                        T                 một xe tải lớn màu tối
+E0194/1  #43    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một xe ô tô con màu trắng
+E0194/2  #43    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        M:2               xe máy chở 2 người màu tối
+E0194/3  #43    1         M:xe tải               M:to   T                  M:màu tối   T                        T                 một xe tải lớn màu tối
+E0195/1  #43    1         M:ô tô                 T      T                  M:trắng     T                        T                 Một xe ô tô con màu trắng
+E0195/2  #43    1         M:xe tải               M:to   T                  M:màu tối   T                        T                 xe tải lớn màu tối
+E0195/3  #43    1         M:xe máy, xe hai bánh  T      T                  M:đen       M:đen                    M:2               xe máy màu đen do người áo đen điều khiển chở 2
+E0196/1  #44    1         M:xe tải               T      T                  M:trắng     T                        T                 Một xe bồn chở nhiên liệu màu trắng xanh
+E0196/2  #44    1         M:ô tô                 T      T                  M:trắng     T                        T                 một xe ô tô con màu trắng
+E0197/1  #44    1         M:xe tải               T      T                  M:trắng     T                        T                 Một xe bồn chở nhiên liệu màu trắng xanh
+E0197/2  #44    1         M:ô tô                 T      T                  M:trắng     T                        T                 một xe ô tô con màu trắng
+E0197/3  #44    1         M:xe tải               T      T                  T           T                        T                 một xe tải
+E0198/1  #44    3         M:xe tải               T      T                  M:trắng     T                        T                 Một xe bồn chở nhiên liệu màu trắng xanh
+E0198/2  #44    3         M:ô tô                 T      T                  M:trắng     T                        T                 một xe ô tô con màu trắng
+E0199/1  #44    1         M:xe tải               T      T                  M:trắng     T                        T                 Một xe bồn chở nhiên liệu màu trắng xanh
+E0199/2  #44    1         M:ô tô                 T      T                  M:trắng     T                        T                 một xe ô tô màu trắng
+E0199/3  #44    1         M:xe tải               M:nhỏ  T                  T           T                        T                 một xe tải nhỏ
+E0200/1  #44    1         M:xe tải               T      T                  M:trắng     T                        T                 Một xe bồn chở nhiên liệu màu trắng
+E0200/2  #44    1         M:ô tô                 T      T                  M:trắng     T                        T                 một xe ô tô con màu trắng
+E0201/1  #45    2         M:xe tải               T      T                  M:trắng     T                        T                 Xe bồn (màu trắng-đỏ)
+E0201/2  #45    2         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 xe máy (màu tối)
+E0202/1  #45    1         M:xe tải               T      T                  M:xanh      T                        T                 Xe bồn (màu xanh-đỏ)
+E0202/2  #45    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 xe máy (màu tối)
+E0203/1  #45    1         M:xe tải               T      T                  M:trắng     T                        T                 Xe bồn màu trắng xanh
+E0203/2  #45    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 xe máy màu tối
+E0204/1  #45    1         M:xe tải               T      T                  M:xanh      T                        T                 Xe bồn màu xanh
+E0204/2  #45    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 xe máy màu tối
+E0205/1  #45    1         M:xe tải               T      T                  T           T                        T                 Xe bồn
+E0205/2  #45    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 xe máy (màu tối)
+E0206/1  #45    1         M:xe máy, xe hai bánh  T      T                  M:đen       M:xám, bạc               T                 xe máy màu đen do người đàn ông mặc áo xám điều khiển
+E0206/2  #45    1         M:xe tải               T      T                  M:trắng     T                        T                 xe bồn màu trắng
+E0207/1  #46    2         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một xe SUV màu bạc
+E0207/2  #46    2         M:xe máy, xe hai bánh  T      T                  T           M:vàng                   T                 một xe máy
+E0208/1  #46    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một xe SUV màu bạc
+E0208/2  #46    1         M:ô tô                 T      T                  M:xanh      T                        T                 một xe sedan màu xanh
+E0208/3  #46    1         M:xe máy, xe hai bánh  T      T                  T           M:vàng                   T                 một xe máy
+E0209/1  #46    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một xe SUV màu bạc
+E0209/2  #46    1         M:ô tô                 T      M:có               T           T                        T                 một xe ô tô có camera
+E0209/3  #46    1         M:xe máy, xe hai bánh  T      T                  T           M:vàng                   T                 một xe máy
+E0210/1  #46    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một xe ô tô màu bạc
+E0210/2  #46    1         M:xe máy, xe hai bánh  T      T                  T           M:vàng                   T                 một xe máy
+E0211/1  #46    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 Một xe ô tô màu bạc
+E0211/2  #46    1         M:xe máy, xe hai bánh  T      T                  T           M:vàng                   T                 một xe máy
+E0212/1  #46    1         M:xe máy, xe hai bánh  T      T                  M:đen       M:vàng                   T                 Xe máy màu đen do người mặc áo vàng điều khiển
+E0212/2  #46    1         M:ô tô                 T      T                  M:nâu       T                        T                 xe ô tô màu nâu
+E0213/1  #47    6         M:xe tải               T      T                  M:xanh      T                        T                 Một chiếc xe tải màu xanh dương
+E0214/1  #47    1         M:xe tải               M:nhỏ  T                  M:xám, bạc  T                        T                 Xe tải nhỏ màu xám
+E0215/1  #48    6         M:ô tô                 T      M:có               T           T                        T                 Một xe ô tô con (xe gắn camera)
+E0215/2  #48    6         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 học sinh đi xe đạp màu đỏ
+E0216/1  #48    1         T                      T      M:có               T           T                        T                 Xe gắn camera hành trình
+E0216/2  #48    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 xe đạp do học sinh điều khiển
+E0217/1  #49    3         T                      M:to   M:có               T           T                        T                 Xe của camera hành trình
+E0217/2  #49    3         M:xe tải               T      T                  M:trắng     T                        T                 xe bồn màu trắng
+E0217/3  #49    3         M:xe khách             T      T                  M:trắng     T                        T                 xe khách 29 chỗ màu trắng
+E0218/1  #49    1         T                      M:to   M:có               T           T                        T                 Xe của camera hành trình
+E0218/2  #49    1         M:xe tải               T      T                  M:trắng     T                        T                 xe bồn màu trắng
+E0218/3  #49    1         M:xe khách             T      T                  M:trắng     T                        T                 xe khách chỗ màu trắng
+E0219/1  #49    1         T                      M:to   M:có               T           T                        T                 Xe của camera hành trình
+E0219/2  #49    1         M:xe khách             T      T                  M:trắng     T                        T                 xe khách 29 chỗ màu trắng
+E0220/1  #49    1         T                      T      M:có               T           T                        T                 Xe của camera hành trình
+E0220/2  #49    1         M:xe khách             T      T                  M:vàng      T                        T                 xe khách 29 chỗ màu vàng
+E0221/1  #49    1         T                      T      M:có               T           T                        T                 Xe gắn camera hành trình
+E0221/2  #49    1         M:xe khách             T      T                  M:vàng      T                        T                 xe khách màu vàng
+E0222/1  #50    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe máy màu tối
+E0222/2  #50    1         M:ô tô                 T      T                  M:đen       T                        T                 chiếc xe ô tô màu đen
+E0223/1  #50    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe máy màu tối
+E0223/2  #50    1         M:ô tô                 T      T                  M:đen       T                        T                 một ô tô màu đen
+E0224/1  #50    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe máy màu tối
+E0224/2  #50    1         M:ô tô                 T      T                  M:đen       T                        T                 ô tô màu đen
+E0225/1  #50    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe máy màu tối
+E0225/2  #50    1         M:ô tô                 T      T                  M:đen       T                        T                 ô tô màu đen
+E0226/1  #50    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe máy màu tối
+E0226/2  #50    1         M:ô tô                 T      T                  M:đen       T                        T                 SUV màu đen
+E0227/1  #50    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một chiếc xe máy màu tối
+E0228/1  #50    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Xe máy màu tối
+E0228/2  #50    1         M:ô tô                 T      T                  M:đen       T                        T                 xe ô tô màu đen
+E0229/1  #51    6         M:xe khách             T      T                  M:trắng     T                        T                 Một chiếc xe khách (màu trắng-vàng-đỏ)
+E0229/2  #51    6         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc xe máy màu tối
+E0230/1  #51    1         M:xe khách             T      T                  T           T                        T                 Xe bus
+E0230/2  #51    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   M:đen                    T                 xe máy màu tối do người áo đen điều khiển
+E0231/1  #52    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 Xe tải ben màu xám/vàng
+E0231/2  #52    1         M:ô tô                 T      T                  M:trắng     T                        T                 xe ô tô màu trắng
+E0232/1  #52    1         M:xe tải               T      T                  T           T                        T                 Xe tải ben
+E0232/2  #52    1         M:ô tô                 T      T                  M:trắng     T                        T                 ô tô con trắng
+E0233/1  #52    1         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải màu xanh xám
+E0233/2  #52    1         M:ô tô                 T      T                  M:trắng     T                        T                 ô tô con màu trắng
+E0234/1  #52    1         M:xe tải               T      T                  M:trắng     T                        T                 Xe tải thùng trắng-cam
+E0234/2  #52    1         M:ô tô                 T      T                  M:trắng     T                        T                 ô tô con trắng
+E0235/1  #52    1         M:xe tải               T      T                  M:trắng     T                        T                 Xe tải thùng trắng-cam
+E0235/2  #52    1         M:ô tô                 T      T                  M:trắng     T                        T                 ô tô con trắng
+E0236/1  #52    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 Xe tải thùng xám
+E0236/2  #52    1         M:ô tô                 T      T                  M:trắng     T                        T                 ô tô con trắng
+E0237/1  #52    1         M:ô tô                 T      T                  M:trắng     T                        T                 Xe ô tô màu trắng
+E0237/2  #52    1         M:xe tải               T      T                  M:nâu       T                        T                 xe ben màu nâu
+E0238/1  #53    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe máy màu trắng/bạc
+E0238/2  #53    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc xe máy màu tối
+E0239/1  #53    1         M:xe máy, xe hai bánh  T      T                  M:màu sáng  T                        T                 Một chiếc xe tay ga màu sáng
+E0239/2  #53    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc xe máy màu tối
+E0240/1  #53    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe tay ga màu trắng/bạc
+E0240/2  #53    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        M:2               một chiếc xe máy màu tối chở 2 người
+E0241/1  #53    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe tay ga màu trắng/bạc
+E0241/2  #53    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        M:2               một chiếc xe máy màu tối chở theo 2 người
+E0242/1  #53    1         M:xe máy, xe hai bánh  T      T                  M:trắng     T                        T                 Một chiếc xe tay ga màu trắng/bạc
+E0242/2  #53    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 một chiếc xe máy màu tối
+E0243/1  #53    1         M:xe máy, xe hai bánh  T      T                  M:vàng      T                        T                 Một chiếc xe tay ga màu vàng
+E0243/2  #53    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        M:3 trở lên       một chiếc xe máy màu tối chở theo ba người
+E0244/1  #53    1         M:xe máy, xe hai bánh  T      T                  M:nâu       M:đen                    T                 Xe máy màu nêu do đàn ông mặc áo màu đen điều khiển
+E0244/2  #53    1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        M:3 trở lên       xe máy màu đen chở 3
+E0245/1  #54    1         T                      T      M:có               T           T                        T                 Xe camera
+E0245/2  #54    1         M:xe tải               M:to   T                  T           T                        T                 một chiếc xe tải lớn
+E0246/1  #54    1         M:xe tải               M:to   T                  M:trắng     T                        T                 Xe tải lớn màu trắng
+E0247/1  #54    1         M:xe tải               M:to   T                  M:vàng      T                        T                 Xe tải lớn màu vàng
+E0247/2  #54    1         M:ô tô                 T      T                  M:trắng     T                        T                 các xe ô tô màu trắng
+E0248/1  #54    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 Xe tải thùng màu bạc
+E0249/1  #54    1         M:xe tải               M:to   T                  T           T                        T                 Xe tải to
+E0250/1  #54    1         M:xe tải               T      T                  M:nâu       T                        T                 Xe tải tô màu nâu
+E0251/1  #55    1         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải xanh
+E0251/2  #55    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 xe bồn bê tông xám
+E0251/3  #55    1         M:xe máy, xe hai bánh  T      T                  M:đỏ        T                        T                 xe máy màu đỏ
+E0252/1  #55    1         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải xanh
+E0252/2  #55    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 xe bồn bê tông xám
+E0252/3  #55    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 xe máy màu
+E0253/1  #55    2         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải xanh
+E0253/2  #55    2         M:xe tải               T      T                  M:xám, bạc  T                        T                 xe bồn bê tông xám
+E0253/3  #55    2         M:xe máy, xe hai bánh  T      T                  T           T                        T                 xe máy
+E0254/1  #55    1         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải xanh
+E0254/2  #55    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 xe bồn bê tông xám
+E0254/3  #55    1         M:xe máy, xe hai bánh  T      T                  T           T                        T                 xe máy
+E0255/1  #55    1         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải xanh
+E0255/2  #55    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 xe bồn bê tông xám
+E0255/3  #55    1         T                      T      T                  T           T                        T                 xe chở 2 nguoief
+E0256/1  #55    1         M:xe tải               T      T                  M:xanh      T                        T                 Xe tải xanh
+E0256/2  #55    1         M:xe tải               T      T                  M:xám, bạc  T                        T                 xe bồn bê tông xám
+E0256/3  #55    1         M:xe máy, xe hai bánh  T      T                  M:đen       M:trắng                  M:2               xe máy màu đen do người áo trắng chở 2
+E0257/1  #56    1         M:xe máy, xe hai bánh  T      T                  T           M:trắng                  T                 xe máy do người đàn ông áo trắng điều khiển
+E0257/2  #56    1         T                      T      M:có               T           T                        T                 xe có gắn camera hành trình
+E0258/1  #56    6         M:ô tô                 T      M:có               T           T                        T                 Xe ô tô (xe gắn camera)
+E0258/2  #56    6         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 xe máy màu tối
+E0259/1  #57    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một chiếc ô tô SUV màu đỏ (nhãn hiệu Toyota)
+E0259/2  #57    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 một ô tô màu xám
+E0260/1  #57    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một chiếc ô tô SUV màu đỏ (nhãn hiệu Toyota)
+E0260/2  #57    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 một ô tô mầu xám/bạc
+E0261/1  #57    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một chiếc ô tô SUV màu đỏ (nhãn hiệu Toyota)
+E0261/2  #57    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 ô tô màu bạc
+E0262/1  #57    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một chiếc ô tô SUV màu đỏ (nhãn hiệu Toyota)
+E0262/2  #57    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 ô tô màu xám
+E0263/1  #57    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một chiếc ô tô SUV màu đỏ
+E0263/2  #57    1         M:ô tô                 T      T                  M:xám, bạc  T                        T                 1 chieecs ô tô con màu bạc
+E0264/1  #57    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Một chiếc ô tô SUV màu đỏ
+E0264/2  #57    1         M:ô tô                 T      T                  M:nâu       T                        T                 một xe ô tô màu nâu/ vàng
+E0265/1  #57    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Xe ô tô màu đỏ
+E0265/2  #57    1         M:ô tô                 T      T                  M:nâu       T                        T                 xe ô tô màu nâu
+E0266/1  #58    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một người phụ nữ điều khiển xe máy màu tối
+E0266/2  #58    1         M:xe máy, xe hai bánh  T      T                  T           M:màu khác               T                 một người đi xe máy mặc áo mưa màu cam
+E0267/1  #58    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một người phụ nữ điều khiển xe máy màu tối
+E0267/2  #58    1         M:xe máy, xe hai bánh  T      T                  T           M:màu khác               T                 xe máy mặc áo mưa cam
+E0268/1  #58    1         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một người phụ nữ điều khiển xe máy màu tối
+E0268/2  #58    1         T                      T      T                  T           M:màu khác               T                 xe người mặc áo cam
+E0269/1  #58    3         M:xe máy, xe hai bánh  T      T                  M:màu tối   T                        T                 Một người phụ nữ điều khiển xe máy màu tối
+E0270/1  #58    1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 Xe máy màu đen do người phụ nữ điều khiển
+E0270/2  #58    1         M:xe máy, xe hai bánh  T      T                  M:đen       T                        T                 xe máy màu đen do người đàn ông điều khiển
+E0271    #59    4         lỗi                    lỗi    lỗi                lỗi         lỗi                      lỗi               Một chiếc ô tô con màu đen và một chiếc xe tải ben màu xanh lá cây.
+E0272    #59    1         lỗi                    lỗi    lỗi                lỗi         lỗi                      lỗi               Một chiếc ô tô màu đen và một chiếc xe tải ben màu xanh lá cây.
+E0273/1  #59    1         M:ô tô                 T      T                  M:đen       T                        T                 Một chiếc ô tô đen
+E0273/2  #59    1         M:xe tải               T      T                  M:xanh      T                        T                 một chiếc xe tải ben màu xanh lá cây
+E0274/1  #59    1         M:ô tô                 T      T                  M:đen       T                        T                 Xe ô tô màu đen
+E0274/2  #59    1         M:xe tải               T      T                  M:xanh      T                        T                 xe tải màu xanh
+E0275/1  #60    6         M:ô tô                 T      T                  M:đỏ        T                        T                 Một chiếc xe sedan màu đỏ
+E0275/2  #60    6         M:ô tô                 T      T                  M:đen       T                        T                 một chiếc xe SUV màu đen
+E0276/1  #60    1         M:ô tô                 T      T                  M:đỏ        T                        T                 Xe ô tô màu đỏ
+E0276/2  #60    1         M:ô tô                 T      T                  M:đen       T                        T                 xe ô tô màu đen

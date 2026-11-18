@@ -1,0 +1,669 @@
+BÁO CÁO ĐỘ PHỦ CODEBOOK, NHÓM O
+
+Câu trả lời khác nhau (đơn vị đếm): 295  | video: 60  | lượt viết của annotator: 371
+Map hợp lệ: 287  | lỗi, chưa tính: 8
+Độ phủ = M / n, n = M + K. Ô có n < 10: chưa đủ dữ liệu. Đạt khi độ phủ >= 80%.
+T chia hai: 'T thiếu chi tiết' (có nhắc nhưng không đủ để chọn) và 'T không nhắc'.
+
+1. ĐỘ PHỦ THEO Ô
+Ô                   M    K  T   T thiếu chi tiết  T không nhắc  n = M + K  Độ phủ = M / n  Kết luận
+------------------  ---  -  --  ----------------  ------------  ---------  --------------  --------
+mức độ              222  1  64  23                41            223        100%            đạt
+dấu hiệu nhìn thấy  198  2  87  7                 80            200        99%             đạt
+
+2. GIÁ TRỊ ĐƯỢC CHỌN (chỉ tính M)
+
+[mức độ]
+Giá trị        Số câu
+-------------  ------
+không va chạm  77
+va chạm nhẹ    14
+va chạm vừa    94
+va chạm mạnh   32
+không rõ       5
+
+[dấu hiệu nhìn thấy]
+Giá trị                               Số câu
+------------------------------------  ------
+không va chạm: không có               77
+va chạm nhẹ: chạm quẹt, vẫn đứng yên  0
+va chạm nhẹ: chạm quẹt, vẫn đi tiếp   0
+va chạm vừa: lệch hướng               5
+va chạm vừa: dừng đột ngột            1
+va chạm vừa: xe ngã                   27
+va chạm vừa: người ngã                58
+va chạm mạnh: bị lật                  10
+va chạm mạnh: bị văng                 5
+va chạm mạnh: biến dạng rõ            8
+va chạm mạnh: người nằm trên đường    7
+
+3. MỌI CỤM BỊ K (codebook thiếu lựa chọn)
+Ô                   Cụm không khớp         Bằng chứng             Video  Câu
+------------------  ---------------------  ---------------------  -----  -----
+dấu hiệu nhìn thấy  bị kẹt giữa 2 xe       bị kẹt giữa 2 xe       #55    O0274
+dấu hiệu nhìn thấy  bị kẹt giữa 2 xe khác  bị kẹt giữa 2 xe khác  #55    O0275
+mức độ              tai nạn nghiêm trọng   tai nạn nghiêm trọng   #40    O0204
+
+4. MỌI T THIẾU CHI TIẾT
+Ô                   Bằng chứng                                                   Video  Câu
+------------------  -----------------------------------------------------------  -----  -----
+dấu hiệu nhìn thấy  móp nhẹ phần hông xe ô tô con màu bạc                        #24    O0127
+dấu hiệu nhìn thấy  mất thăng bằng                                               #51    O0253
+dấu hiệu nhìn thấy  quẹt hông                                                    #12    O0057
+dấu hiệu nhìn thấy  quẹt hông                                                    #12    O0058
+dấu hiệu nhìn thấy  suýt ngã                                                     #51    O0254
+dấu hiệu nhìn thấy  trầy xước bên hông xe                                        #24    O0128
+dấu hiệu nhìn thấy  va quẹt nhẹ ở thành xe                                       #15    O0077
+mức độ              Không có hư hại nào.                                         #2     O0004
+mức độ              Không va chạm trực diện                                      #13    O0061
+mức độ              Va chạm                                                      #30    O0146
+mức độ              Va chạm                                                      #30    O0147
+mức độ              Va chạm gây hư hỏng phần đầu xe tải và đuôi xe ô tô màu đen  #33    O0161
+mức độ              bị hư hỏng                                                   #21    O0110
+mức độ              bị hư hỏng                                                   #21    O0111
+mức độ              hậu quả không có thật                                        #20    O0109
+mức độ              không có hư hại                                              #48    O0237
+mức độ              không có hư hại                                              #51    O0255
+mức độ              không có hư hại                                              #56    O0279
+mức độ              không có hư hại nào                                          #31    O0152
+mức độ              không có hư hại đáng kể                                      #39    O0197
+mức độ              không có hư hại đáng kể nào                                  #35    O0181
+mức độ              không có hư hại.                                             #26    O0135
+mức độ              không hư hại nào                                             #32    O0160
+mức độ              không hư hại đáng kể nào                                     #49    O0243
+mức độ              không quan sát thấy hư hỏng phương tiện                      #52    O0256
+mức độ              không quan sát thấy hư hỏng phương tiện                      #57    O0282
+mức độ              không sao                                                    #19    O0102
+mức độ              mất thăng bằng                                               #51    O0253
+mức độ              suýt ngã                                                     #51    O0254
+mức độ              trầy xước bên hông xe                                        #24    O0128
+
+5. NGOÀI CODEBOOK (gộp theo loại và đoạn)
+Loại          Đoạn                                                                                                                    Số câu  Video
+------------  ----------------------------------------------------------------------------------------------------------------------  ------  ------------------
+khác          xe máy bị đổ                                                                                                            6       #4 #34
+khác          hoặc hư hỏng phương tiện                                                                                                5       #2 #31 #49 #54 #56
+khác          và trầy xước nhẹ                                                                                                        4       #34
+khác          các phương tiện bị trầy xước nhẹ                                                                                        3       #53
+khác          phương tiện bị hư hỏng nhẹ                                                                                              3       #45
+khác          , phương tiện hư hỏng nhẹ                                                                                               2       #14
+khác          gây hư hỏng phần đuôi xe hatchback                                                                                      2       #33
+khác          hoặc hư hỏng                                                                                                            2       #26 #39
+khác          mất thăng bằng                                                                                                          2       #19 #24
+khác          nhưng không thấy hư hỏng nặng.                                                                                          2       #18
+khác          phương tiện bị đổ                                                                                                       2       #18
+khác          và hư hỏng phương tiện                                                                                                  2       #39 #54
+khác          xe máy bị đổ,                                                                                                           2       #15 #19
+khác          , có hư hỏng nhẹ                                                                                                        1       #15
+khác          bị mất thăng bằng tại vị trí va chạm; xe ô tô màu xám bị trầy.                                                          1       #24
+khác          bị trâyd nhẹ                                                                                                            1       #57
+khác          có xước ở đầu                                                                                                           1       #57
+khác          cả 2 xe bị hư hại nhẹ.                                                                                                  1       #52
+khác          dẫn đến cản trở giao thông                                                                                              1       #35
+khác          gây hư hỏng nhẹ                                                                                                         1       #52
+khác          gây hư hỏng phần đuôi xe ô tô màu đen                                                                                   1       #33
+khác          gây hư hỏng phần đầu xe camera hành trình và phần đuôi xe ô tô con màu trắng                                            1       #30
+khác          gây hư hỏng phần đầu xe camera và phần đuôi xe kia trắng                                                                1       #30
+khác          hai xee máy bị đổ và trầy xước nhẹ                                                                                      1       #34
+khác          hoặc hư hỏng phương tiện.                                                                                               1       #32
+khác          hư hại không có                                                                                                         1       #16
+khác          hư hỏng nhẹ phần gầm và lốp                                                                                             1       #47
+khác          khi                                                                                                                     1       #32
+khác          không quan sát thấy hư hỏng phương tiện                                                                                 1       #29
+khác          không quan sát thấy hư hỏng ở xe máy                                                                                    1       #24
+khác          không thấy hư hỏng nặng cho các phương tiện                                                                             1       #25
+khác          không thấy hư hỏng nặng cho các phương tiện khác                                                                        1       #46
+khác          không xảy ra hư hỏng                                                                                                    1       #29
+khác          mức độ hư hỏng không thể xác định                                                                                       1       #9
+khác          người lái xe máy bị ngã xuống đường                                                                                     1       #34
+khác          người và xe máy màu đỏ ngã xuống đường                                                                                  1       #34
+khác          người điều khiển gần bị ngã xuống mặt đường                                                                             1       #58
+khác          người điều khiển mất thăng bằng                                                                                         1       #58
+khác          người điều khiển xe máy hơi mất thăng bằng nhưng không có va chạm mạnh                                                  1       #19
+khác          nhưng không đổ xuống đường                                                                                              1       #19
+khác          phần sau của xe ô tô con bị hư hại                                                                                      1       #44
+khác          trượt trúng người đi xe máy màu đen đi cùng chiều với ô tô màu đen                                                      1       #34
+khác          trầy xước đuôi ô tô trắng                                                                                               1       #44
+khác          va chạm ,                                                                                                               1       #43
+khác          va chạm hư phần sau của xe ô tô màu đen                                                                                 1       #33
+khác          va chạm nhẹ với hông đuôi xe ô tô màu trắng và                                                                          1       #43
+khác          va chạm nhẹ,                                                                                                            1       #43
+khác          va chạm với phần đâu xe gắn camera hành trình.                                                                          1       #19
+khác          và bị bánh xe cán qua                                                                                                   1       #4
+khác          và bị cán qua                                                                                                           1       #4
+khác          và dừng tạm thời trên đường                                                                                             1       #15
+khác          và gây nguy hiểm cực độ                                                                                                 1       #5
+khác          và hư hỏng                                                                                                              1       #35
+khác          và hư hỏng nặng phần hông và đầu xe bên trái, xe suv bị hư hỏng phần đầu.                                               1       #17
+khác          và nằm ngang với mặt đường                                                                                              1       #9
+khác          và tóe lửa mạnh                                                                                                         1       #9
+khác          và xe gắn camera hành trình bị trầy xước nhẹ ở đầu xe bên phải.                                                         1       #42
+khác          và xe ô tô gắn camera phải dừng lại đột ngột                                                                            1       #42
+khác          vào xe ô tô màu đen dẫn đến hư hỏng hông xe                                                                             1       #33
+khác          xe máy bị đổ nghiêng ra đường                                                                                           1       #58
+khác          xe máy không giữ được thăng bằng                                                                                        1       #24
+khác          xe máy loạng choạng                                                                                                     1       #24
+khác          xe máy màu trắng                                                                                                        1       #24
+khác          xe máy màu trắng bị trượt dài                                                                                           1       #34
+khác          xe máy màu trắng trượt dài va chạm với xe máy màu đỏ giao hàng làm người cả điều khiển và xe máy màu đỏ té xuống đường  1       #34
+khác          xe máy mất thằng bằng nhưng không bị đổ.                                                                                1       #24
+khác          xe máy và ô tô bị hư hại do va chạm.                                                                                    1       #24
+khác          xe suv bị vỡ đầu xe                                                                                                     1       #15
+khác          xe tải benbị                                                                                                            1       #17
+khác          xe ô tô bạc bị trầy xước phần đầu                                                                                       1       #24
+khác          xe ô tô con bị rụng đuôi xe                                                                                             1       #44
+khác          xe ô tô con màu trắng bị trầy bên phải xe,                                                                              1       #43
+khác          xe ô tô con màu trắng bị va chạm rớt thanh chắn phía sau xe                                                             1       #44
+khác          xe ô tô màu trắng trầy sơn phía duôi, xe ben màu nâu trầy mặt trước.                                                    1       #52
+khác          xe ô tô trắng bị hư nhẹ phần bên trái xe.                                                                               1       #52
+khác          xe ô tô đen bị trầy nhẹ ở phần đầu xe                                                                                   1       #50
+khác          xe ô tô đen bị trầy nhẹ ở đầu xe và xe tải bị trầy xe ở đuôi xe                                                         1       #14
+khác          xe đạp bị hư hỏng                                                                                                       1       #8
+khác          xoay vòng trượt trên mặt đường                                                                                          1       #9
+khác          đuôi xe ô tô trắng bị trầy xước                                                                                         1       #43
+khác          ở thành xe                                                                                                              1       #15
+khác          ở đầu xe tải xám đen và xe ô tô con đen                                                                                 1       #33
+nhóm khác: C  bị tông                                                                                                                 2       #8
+nhóm khác: C  dừng lại kịp thời                                                                                                       2       #26
+nhóm khác: C  mất lái                                                                                                                 2       #9
+nhóm khác: C  người lái xe máy bị cuốn vào gầm xe tải                                                                                 2       #4 #7
+nhóm khác: C  xe tải leo lên dải phân cách cỏ                                                                                         2       #47
+nhóm khác: C  xe tải để lại vết phanh dài                                                                                             2       #28
+nhóm khác: C  bị tông trúng                                                                                                           1       #40
+nhóm khác: C  bị va chạm                                                                                                              1       #40
+nhóm khác: C  bị xe tải cán qua                                                                                                       1       #7
+nhóm khác: C  bị xe tải cán qua người                                                                                                 1       #4
+nhóm khác: C  con chó bị xe máy đâm trúng bị xe máy đè lên người                                                                      1       #6
+nhóm khác: C  con chó bị xe đâm trúng                                                                                                 1       #6
+nhóm khác: C  con chó bị xe đâm trúng và cuốn vào gầm                                                                                 1       #6
+nhóm khác: C  con chó bị xe đâm trúng.                                                                                                1       #6
+nhóm khác: C  con chó màu đen bị xe máy đâm trúng                                                                                     1       #6
+nhóm khác: C  cô bé áo hồng bị đâm                                                                                                    1       #40
+nhóm khác: C  cả 2 phương tiện kịp thời phanh lại                                                                                     1       #13
+nhóm khác: C  do lực đâm mạnh                                                                                                         1       #21
+nhóm khác: C  em bé bị xe máy đâm phải                                                                                                1       #40
+nhóm khác: C  hai bên điều khiển giao thông đã kịp thời phanh xe lại                                                                  1       #13
+nhóm khác: C  hai xe dừng lại đột ngột và                                                                                             1       #22
+nhóm khác: C  hai xe máy va chạm                                                                                                      1       #38
+nhóm khác: C  hai xe phanh gặp dừng lại tại chỗ                                                                                       1       #26
+nhóm khác: C  hai xe phải phanh gấp                                                                                                   1       #13
+nhóm khác: C  hai xe va chạm                                                                                                          1       #15
+nhóm khác: C  hai xe ô tô phanh gấp                                                                                                   1       #15
+nhóm khác: C  hai xe đã kịp phanh và dừng lại                                                                                         1       #39
+nhóm khác: C  lảng lách                                                                                                               1       #9
+nhóm khác: C  mất lại và vẫn kịp dừng lại an toàn                                                                                     1       #35
+nhóm khác: C  người lái xe máy kịp nhảy ra khỏi xe                                                                                    1       #7
+nhóm khác: C  người điều xe máy đâm trúng con chó                                                                                     1       #6
+nhóm khác: C  người đàn ông nhảy ra khỏi xe máy                                                                                       1       #7
+nhóm khác: C  nhưng xe tải ben mất lái xoay chắn ngang đường                                                                          1       #35
+nhóm khác: C  sau khi xảy ra va chạm                                                                                                  1       #40
+nhóm khác: C  sau liên hoàn đâm                                                                                                       1       #24
+nhóm khác: C  tông trúng                                                                                                              1       #40
+nhóm khác: C  va chạm giữa hai xe khiến                                                                                               1       #9
+nhóm khác: C  va vào người đi xe đạp                                                                                                  1       #11
+nhóm khác: C  va vào ô tô gắn camera                                                                                                  1       #42
+nhóm khác: C  và bị xe tải đè lên                                                                                                     1       #7
+nhóm khác: C  và bị đẩy lên dải phân cách                                                                                             1       #28
+nhóm khác: C  và va chạm với một người đi xe đạp                                                                                      1       #11
+nhóm khác: C  và xe máy bị cuốn vào gầm xe tải                                                                                        1       #7
+nhóm khác: C  và xe máy nằm dưới gầm xe tải thùng kín                                                                                 1       #4
+nhóm khác: C  và xe tải đã cán qua 1 phần trước của xe máy                                                                            1       #7
+nhóm khác: C  vào đuôi xe tải                                                                                                         1       #14
+nhóm khác: C  xe bán tải màu đen đi lệch khỏi đường                                                                                   1       #29
+nhóm khác: C  xe bán tải đi thẳng ra lề đường .                                                                                       1       #29
+nhóm khác: C  xe gắn camera phải chuyển làn xử lý nên                                                                                 1       #32
+nhóm khác: C  xe máy bị cuốn vào gầm xe tải                                                                                           1       #7
+nhóm khác: C  xe máy cuốn vào bánh xe                                                                                                 1       #7
+nhóm khác: C  xe máy màu xanh đen mất thâng bằng                                                                                      1       #19
+nhóm khác: C  xe máy mất thăng bằng                                                                                                   1       #19
+nhóm khác: C  xe máy phanh gấp                                                                                                        1       #13
+nhóm khác: C  xe máy và xe ô tô gắn camera phải dừng đột ngột                                                                         1       #26
+nhóm khác: C  xe tải ben trượt do phanh gấp                                                                                           1       #35
+nhóm khác: C  xe tải trắng phanh gấp khiến xe ô tô con màu xanh tông phải                                                             1       #14
+nhóm khác: C  xe ô tô cammera phải né và di chuyển sang phía làn bên phải                                                             1       #32
+nhóm khác: C  xe ô tô có camera hành trình và xe máy màu trắng dừng lại                                                               1       #13
+nhóm khác: C  xe ô tô có gắn camera phanh kịp thời                                                                                    1       #16
+nhóm khác: C  xe ô tô màu đen va chạm đuôi xe tải                                                                                     1       #14
+nhóm khác: C  xe ô tô phải dừng lại đánh lái vào sát lề                                                                               1       #2
+nhóm khác: C  xe ô tô phải phanh gấp                                                                                                  1       #48
+nhóm khác: C  xe ô tô đen đâm vào đuôi xe tải                                                                                         1       #14
+nhóm khác: C  ô tô màu tối đâm đít xe tải thùng                                                                                       1       #14
+nhóm khác: C  ô tô màu đen đâm đít xe tải                                                                                             1       #14
+nhóm khác: C  ô tô phải phanh gấp                                                                                                     1       #2
+nhóm khác: C  đang sang đường                                                                                                         1       #40
+nhóm khác: C  đầu xe camera suýt đâm vào hông xe tải                                                                                  1       #16
+nhóm khác: C  đầu xe tải đâm vào đầu xe ô tô con trắng                                                                                1       #52
+nhóm khác: C  đầu xe ô tô đỏ va chạm với đuôi xe bên trái của xe tải thùng                                                            1       #15
+nhóm khác: E  xe tải                                                                                                                  5       #9
+nhóm khác: E  bé gái                                                                                                                  2       #40
+nhóm khác: E  hai xe                                                                                                                  2       #16 #26
+nhóm khác: E  người đi xe đạp                                                                                                         2       #8 #25
+nhóm khác: E  xe máy                                                                                                                  2       #24 #39
+nhóm khác: E  2 xe                                                                                                                    1       #57
+nhóm khác: E  2 xe ô tô va chạm                                                                                                       1       #57
+nhóm khác: E  bé mặc đồ sáng                                                                                                          1       #40
+nhóm khác: E  em bé                                                                                                                   1       #40
+nhóm khác: E  em học sinh mặc áo vàng                                                                                                 1       #40
+nhóm khác: E  giữa hai xe ô tô                                                                                                        1       #12
+nhóm khác: E  giữa xe máy màu đỏ và ô tô có camera hành trình                                                                         1       #26
+nhóm khác: E  hai xe 2 bánh                                                                                                           1       #1
+nhóm khác: E  hông xe tải                                                                                                             1       #16
+nhóm khác: E  một chiếc xe ô tô (có camera hành trình) và xe máy màu đỏ do phụ nữ áo đen chở 2 người                                  1       #26
+nhóm khác: E  ngay sát bánh trước xe tải lớn                                                                                          1       #4
+nhóm khác: E  người đi xe đạp và xe đạp                                                                                               1       #8
+nhóm khác: E  phần hông xe màu xanh                                                                                                   1       #21
+nhóm khác: E  phần đầu của cả xe ô tô trắng                                                                                           1       #21
+nhóm khác: E  phần đầu của cả xe ô tô trắng và xe taxi xanh                                                                           1       #21
+nhóm khác: E  sát gầm xe tải                                                                                                          1       #4
+nhóm khác: E  tại điểm tiếp xúc giữa đầu xe tải và đuôi xe ô tô con và xe máy.                                                        1       #43
+nhóm khác: E  tại điểm tiếp xúc giữa đầu xe tải và đuôi xe ô tô con,                                                                  1       #43
+nhóm khác: E  vào hông ô tô                                                                                                           1       #2
+nhóm khác: E  vào đầu xe bồn trắng                                                                                                    1       #31
+nhóm khác: E  vào đầu ô tô con màu bạc                                                                                                1       #2
+nhóm khác: E  với xe gắn camera hành trình                                                                                            1       #39
+nhóm khác: E  xe ba gác                                                                                                               1       #2
+nhóm khác: E  xe camera                                                                                                               1       #31
+nhóm khác: E  xe máy ba gác                                                                                                           1       #2
+nhóm khác: E  xe máy chở 2 người                                                                                                      1       #55
+nhóm khác: E  xe máy màu đen do người áo trắng chở 2                                                                                  1       #55
+nhóm khác: E  xe máy thồ                                                                                                              1       #2
+nhóm khác: E  xe máy và xe tải ben                                                                                                    1       #35
+nhóm khác: E  xe máy và xe ô tô gắn camera                                                                                            1       #20
+nhóm khác: E  xe máy đi ngang qua mặt xe ô tô camera                                                                                  1       #20
+nhóm khác: E  xe tải ben                                                                                                              1       #35
+nhóm khác: E  xe tải và xe ô tô                                                                                                       1       #15
+nhóm khác: E  xe ô tô con màu bạc                                                                                                     1       #24
+nhóm khác: E  xe ô tô con màu trắng                                                                                                   1       #2
+nhóm khác: E  xe ô tô màu nâu bị xe ô tô màu đỏ va chạm trước đầu xe                                                                  1       #57
+nhóm khác: E  xe ô tô màu đen sau cùng                                                                                                1       #14
+nhóm khác: E  ô tô gắn camera                                                                                                         1       #39
+nhóm khác: E  đầu xe camera                                                                                                           1       #16
+nhóm khác: E  đầu xe của cả 2 e do va chạm                                                                                            1       #57
+nhóm khác: E  đầu ô tô gắn camera                                                                                                     1       #24
+nhóm khác: R  nhưng đã tự đứng dậy được ngay sau đó                                                                                   7       #34
+nhóm khác: R  nhưng sau đó đã tự đứng dậy được                                                                                        3       #3 #58
+nhóm khác: R  hai xe phải dừng lại                                                                                                    2       #52 #57
+nhóm khác: R  nhưng có thể tự đứng dậy ngay sau đó                                                                                    2       #19
+nhóm khác: R  các phương tiện dừng lại                                                                                                1       #44
+nhóm khác: R  các phương tiện phải dừng lại                                                                                           1       #55
+nhóm khác: R  có thể tự đứng dậy ngay sau đó                                                                                          1       #19
+nhóm khác: R  người lái nhảy xuống xe                                                                                                 1       #45
+nhóm khác: R  người lái nhảy xuống đường                                                                                              1       #45
+nhóm khác: R  người đi xe máy dừng lại kiểm tra                                                                                       1       #55
+nhóm khác: R  người điều khiển xe tay ga vẫn tiếp tục di chuyển                                                                       1       #23
+nhóm khác: R  nhưng có thể tự đứng dậy ngay lập tức                                                                                   1       #1
+nhóm khác: R  nhưng có thể tự đứng dậy ngay sau đó.                                                                                   1       #19
+nhóm khác: R  nên tiếp tục di chuyển.                                                                                                 1       #19
+nhóm khác: R  nên vẫn tiếp tục di chuyển bình thường                                                                                  1       #16
+nhóm khác: R  sau đó hai xe vẫn tiếp tục di chuyển                                                                                    1       #2
+nhóm khác: R  và sau đó đứng thẳng lên được                                                                                           1       #58
+nhóm khác: R  và xe máy trắng tiếp tục di chuyển                                                                                      1       #40
+nhóm khác: R  xe máy trắng vẫn chạy đi                                                                                                1       #40
+nhóm khác: S  cùng tiến vào giao ngã tư.                                                                                              1       #32
+nhóm khác: S  giao thông hỗn loạn                                                                                                     1       #45
+nhóm khác: S  ngay giữa đường                                                                                                         1       #9
+nhóm khác: S  nhưng xe tải ben tạo ra đám bụi lớn                                                                                     1       #5
+nhóm khác: S  nằm chắn một phần mặt đường                                                                                             1       #9
+nhóm khác: S  nằm trên mặt đường                                                                                                      1       #50
+nhóm khác: S  nằm trên mặt đường sát dải phân cách                                                                                    1       #50
+nhóm khác: S  nằm trên trước đầu xe ô tô màu đen                                                                                      1       #50
+nhóm khác: S  xuống lề đường ngược chiều xe                                                                                           1       #10
+nhóm khác: S  xuống rãnh bên đường                                                                                                    1       #10
+nhóm khác: S  xuống vỉa hè bên đường                                                                                                  1       #10
+nhóm khác: V  do thanh niên không đội mũ điều khiển                                                                                   1       #24
+nhóm khác: V  nhưng xe gắn camera phải lần làn trái                                                                                   1       #31
+nhóm khác: V  vượt quá tốc độ an toàn khi tham gia giao thông                                                                         1       #40
+nhóm khác: V  xe máy đi ngược chiều                                                                                                   1       #38
+nhóm khác: V  xe ô tô gắn camera hành trình lách qua đường ngược chiều                                                                1       #31
+suy đoán      có thể bị trầy xước nhẹ                                                                                                 2       #37
+suy đoán      gây trầy xước hoặc móp méo phần vỏ xe                                                                                   2       #43
+suy đoán      , xe ô tô đỏ có thể bị trầy xước nhẹ bên hông                                                                           1       #15
+suy đoán      có khả năng bị thương nặng hoặc tử vong                                                                                 1       #6
+suy đoán      có khả năng méo móp, xước sơn của xe ô tô màu trắng và xe bán tải ford ranger màu đen                                   1       #27
+suy đoán      có thể gây trầy xước hoặc móp nhẹ bề mặt vỏ xe của cả hai phương tiện                                                   1       #12
+suy đoán      gây trầy xước hoặc móp méo phần đầu xe và                                                                               1       #43
+suy đoán      không có hư hỏng phương tiện hay thương tích nghiêm trọng quan sát được                                                 1       #27
+suy đoán      nguy hiểm cho 2 bên                                                                                                     1       #9
+suy đoán      người ngồi sau bị trầy da do cọ xát vào bánh xe bồn                                                                     1       #55
+suy đoán      người ngồi sau xe máy bị thương nhẹ                                                                                     1       #55
+suy đoán      phương tiện có thể hư hỏng, móp méo                                                                                     1       #14
+suy đoán      thương tích gì                                                                                                          1       #2
+suy đoán      và hư hỏng                                                                                                              1       #48
+suy đoán      xe máy và ô tô không sao                                                                                                1       #19
+ý định        để né xe tải trắng                                                                                                      1       #32
+ý định        để tránh va chạm                                                                                                        1       #31
+ý định        để tránh va chạm với xe ba gác                                                                                          1       #2
+
+6. GHI CHÚ CỦA MODEL
+Video  Câu    Ghi chú
+-----  -----  ----------------------------------------------------------------------------------------------------------------------------------------------------------
+#1     O0002  Cả hai dấu hiệu 'xe ngã' và 'người ngã' đều thuộc mức va chạm vừa, chọn 'người ngã' do đứng sau trong danh sách.
+#2     O0010  Dừng lại, đánh lái là cách né của nhóm C, không phải dấu hiệu dừng đột ngột của nhóm O, vì câu nói không có va chạm.
+#3     O0011  Câu có hai dấu hiệu cùng mức va chạm vừa là 'xe ngã' và 'người ngã', chọn dấu hiệu đứng sau trong danh sách là 'người ngã'.
+#4     O0014  Chọn dấu hiệu nặng nhất là 'người nằm trên đường' (va chạm mạnh) thay vì 'xe ngã' (va chạm vừa).
+#6     O0023  Có hai dấu hiệu cùng mức độ vừa là xe ngã và người ngã, chọn dấu hiệu đứng sau trong danh sách là người ngã.
+#8     O0034  Câu có cả hai dấu hiệu 'xe ngã' và 'người ngã', chọn 'người ngã' vì đứng sau trong danh sách.
+#8     O0037  Cả xe đạp và người đi xe đạp đều ngã, theo quy tắc chọn dấu hiệu đứng sau trong danh sách (người ngã đứng sau xe ngã).
+#11    O0049  Câu nêu va chạm nhẹ nhưng có dấu hiệu người ngã (va chạm vừa) nên chọn va chạm vừa theo dấu hiệu nặng nhất.
+#13    O0061  Câu chỉ nói 'không va chạm trực diện', chưa đủ thông tin để xác định có va chạm kiểu khác hay không va chạm hoàn toàn.
+#15    O0076  Cụm 'Xe máy bị đổ' tương ứng dấu hiệu 'xe ngã' cùng mức độ va chạm vừa với 'người ngã', chọn dấu hiệu đứng sau trong danh sách là 'người ngã'.
+#15    O0077  Dấu hiệu 'va quẹt nhẹ ở thành xe' là chạm quẹt nhưng không nêu rõ xe vẫn đứng yên hay vẫn đi tiếp nên dấu hiệu là T.
+#22    O0112  Hiểu "Không quan sát thấy" theo nghĩa đen là không nhìn thấy/không xác định được nên chọn "không rõ" theo Quy tắc 3.
+#23    O0121  Có hai dấu hiệu cùng mức là 'xe ngã' và 'người ngã', chọn dấu hiệu đứng sau trong danh sách là 'người ngã'.
+#24    O0127  Đâm nhẹ được hiểu là va chạm nhẹ. Hư hỏng móp nhẹ không đủ chi tiết về trạng thái di chuyển (đứng yên/đi tiếp) nên dấu hiệu nhìn thấy là T.
+#24    O0128  Trầy xước là hư hỏng nên không suy ra mức độ va chạm. Chi tiết trầy xước không đủ để xác định xe vẫn đứng yên hay vẫn đi tiếp nên dấu hiệu nhìn thấy là T.
+#26    O0133  Suýt va chạm mà không nêu hậu quả né ngã/trượt khác được quy về không va chạm theo quy tắc codebook.
+#39    O0197  Theo quy tắc, câu chỉ nói không có hư hại thì mức độ là T kèm bằng chứng.
+#43    O0214  Câu nêu va chạm nhẹ nhưng dấu hiệu người ngã thuộc mức va chạm vừa.
+#43    O0216  Câu nêu va chạm nhẹ nhưng dấu hiệu xe ngã thuộc mức va chạm vừa.
+
+7. LỖI (không tính vào độ phủ)
+Video  Câu    Lô     Lỗi
+-----  -----  -----  -----------------
+#58    O0288  O-042  lô chưa có output
+#59    O0289  O-042  lô chưa có output
+#59    O0290  O-042  lô chưa có output
+#59    O0291  O-042  lô chưa có output
+#59    O0292  O-042  lô chưa có output
+#59    O0293  O-042  lô chưa có output
+#60    O0294  O-042  lô chưa có output
+#60    O0295  O-043  lô chưa có output
+
+8. TỪNG CÂU TRẢ LỜI
+Câu    Video  Số người  mức độ           dấu hiệu nhìn thấy      Câu trả lời
+-----  -----  --------  ---------------  ----------------------  -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+O0001  #1     1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ
+O0002  #1     5         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái xe máy bị ngã nhưng có thể tự đứng dậy ngay lập tức.
+O0003  #1     1         M:va chạm vừa    T                       hai xe 2 bánh va chạm vừa
+O0004  #2     1         T                T                       Không có hư hại nào.
+O0005  #2     1         M:không va chạm  M:không có              Không quan sát thấy va chạm hoặc hư hỏng phương tiện.
+O0006  #2     1         M:không va chạm  M:không có              Suýt va chạm.
+O0007  #2     1         M:không va chạm  M:không có              Xe ba gác suýt đâm vào đầu ô tô con màu bạc
+O0008  #2     1         M:không va chạm  M:không có              Xe máy ba gác không va chạm xe ô tô con màu trắng
+O0009  #2     1         M:không va chạm  M:không có              Xe máy thồ suýt va chạm vào hông ô tô, ô tô phải phanh gấp
+O0010  #2     1         M:không va chạm  M:không có              Xe ô tô phải dừng lại đánh lái vào sát lề để tránh va chạm với xe ba gác. Sau đó hai xe vẫn tiếp tục di chuyển không có va chạm hay thương tích gì.
+O0011  #3     7         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái xe máy bị ngã xuống đường nhưng sau đó đã tự đứng dậy được.
+O0012  #4     1         M:va chạm vừa    M:người ngã             Người điều khiển và xe máy ngã xuống đường sát gầm xe tải và bị cán qua
+O0013  #4     1         M:va chạm vừa    M:người ngã             Xe máy bị đổ xuống đường, người đi xe máy không may ngã vào vị trí bánh xe tải và bị bánh xe cán qua.
+O0014  #4     1         M:va chạm mạnh   M:người nằm trên đường  Xe máy bị đổ, người lái nằm trên đường ngay sát bánh trước xe tải lớn.
+O0015  #4     1         M:va chạm mạnh   M:người nằm trên đường  Xe máy bị đổ, người lái nằm trên đường và bị xe tải cán qua người.
+O0016  #4     1         M:va chạm mạnh   M:người nằm trên đường  Xe máy bị đổ, người lái nằm và xe máy nằm dưới gầm xe tải thùng kín
+O0017  #4     1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ, người lái xe máy bị cuốn vào gầm xe tải, xe tải dừng lại ngay sau đó.
+O0018  #4     1         M:va chạm mạnh   M:người nằm trên đường  Xe máy bị đổ, người lái xe nằm dưới gầm xe tải lớn.
+O0019  #5     6         M:không va chạm  M:không có              Không có va chạm trực tiếp nào được quan sát thấy, nhưng xe tải ben tạo ra đám bụi lớn và gây nguy hiểm cực độ.
+O0020  #5     1         M:không va chạm  M:không có              Không có va chạm trực tiếp nào được quan sát thấy.
+O0021  #6     1         T                T                       Con chó bị xe máy đâm trúng bị xe máy đè lên người
+O0022  #6     2         T                T                       Con chó bị xe đâm trúng và cuốn vào gầm, có khả năng bị thương nặng hoặc tử vong.
+O0023  #6     1         M:va chạm vừa    M:người ngã             Con chó bị xe đâm trúng, xe máy và người điều khiển mặc áo caro ngã xuống đường
+O0024  #6     1         T                T                       Con chó bị xe đâm trúng.
+O0025  #6     1         M:va chạm vừa    M:người ngã             Con chó màu đen bị xe máy đâm trúng và người đàn ông điểu khiển xe máy bị té giữa đường.
+O0026  #6     1         M:va chạm vừa    M:người ngã             Người điều xe máy đâm trúng con chó và bị ngã xuống đường.
+O0027  #7     1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ và bị xe tải đè lên.
+O0028  #7     1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ và xe tải đã cán qua 1 phần trước của xe máy
+O0029  #7     1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ, người lái xe máy bị cuốn vào gầm xe tải, xe tải dừng lại ngay sau đó.
+O0030  #7     1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ, người lái xe máy kịp nhảy ra khỏi xe và xe máy bị cuốn vào gầm xe tải, xe tải dừng lại ngay sau đó.
+O0031  #7     1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ, xe máy bị cuốn vào gầm xe tải, xe tải dừng lại ngay sau đó.
+O0032  #7     1         M:va chạm vừa    M:dừng đột ngột         Xe máy cuốn vào bánh xe, người đàn ông nhảy ra khỏi xe máy, xe tải dừng lại ngay sau đó.
+O0033  #7     1         M:va chạm vừa    M:xe ngã                Xe máy đổ bị xe tải cán qua, xe tải dừng lại ngay sau đó.
+O0034  #8     1         M:va chạm vừa    M:người ngã             Người đi xe đạp bị tông ngã cả người và xe xuống đường.
+O0035  #8     4         M:va chạm vừa    M:người ngã             Người đi xe đạp bị tông ngã xuống đường, xe đạp bị hư hỏng.
+O0036  #8     1         M:va chạm vừa    M:người ngã             Người đi xe đạp bị tông ngã xuống đường.
+O0037  #8     1         M:va chạm vừa    M:người ngã             Người đi xe đạp và xe đạp bị tông ngã xuống đường.
+O0038  #9     1         M:va chạm mạnh   M:bị lật                Va chạm giữa hai xe khiến xe tải bị đổ, nguy hiểm cho 2 bên
+O0039  #9     1         M:va chạm mạnh   M:bị lật                Xe tải bị lật và nằm ngang với mặt đường
+O0040  #9     1         M:va chạm mạnh   M:bị lật                Xe tải bị lật, xoay vòng trượt trên mặt đường.
+O0041  #9     1         M:va chạm mạnh   M:bị lật                Xe tải mất lái, lảng lách đổ xuống đường.
+O0042  #9     1         M:va chạm mạnh   M:bị lật                Xe tải mất lái, lật ngay giữa đường và tóe lửa mạnh.
+O0043  #9     1         M:va chạm mạnh   M:bị lật                Xe tải thùng kín lật ngang, nằm chắn một phần mặt đường; mức độ hư hỏng không thể xác định.
+O0044  #9     1         M:va chạm mạnh   M:bị lật                Xe tải đổ xuống đường.
+O0045  #10    1         M:va chạm mạnh   M:bị lật                Xe tải màu xám lật nghiêng hoàn toàn xuống lề đường ngược chiều xe.
+O0046  #10    5         M:va chạm mạnh   M:bị lật                Xe tải màu xám lật nghiêng hoàn toàn xuống rãnh bên đường.
+O0047  #10    1         M:va chạm mạnh   M:bị lật                Xe tải màu xám lật nghiêng hoàn toàn xuống vỉa hè bên đường.
+O0048  #11    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái xe máy ngã xuống đường, người đi xe đạp và xe đạp cug bị ngã xuống đường.
+O0049  #11    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái xe máy ngã xuống đường, va chạm nhẹ với người đi xe đạp
+O0050  #11    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái xe máy ngã xuống đường, và va chạm với một người đi xe đạp.
+O0051  #11    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái xe máy ngã xuống đường, xe đạp và người điều khiển ngã xuống đường
+O0052  #11    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái xe máy ngã xuống đường.
+O0053  #11    1         M:va chạm vừa    M:người ngã             Xe máy và người lái xe máy té trượt dài dưới đường và người đi xe đạp té xuống đường.
+O0054  #11    1         M:va chạm vừa    M:người ngã             Xe máy và người điều khiển ngã, trượt trên đường va vào người đi xe đạp ngã theo
+O0055  #12    1         M:không va chạm  M:không có              Chưa có va chạm.
+O0056  #12    1         M:không va chạm  M:không có              Không xảy ra va chạm.
+O0057  #12    1         M:va chạm nhẹ    T                       Va chạm nhẹ (quẹt hông) giữa hai xe ô tô.
+O0058  #12    4         M:va chạm nhẹ    T                       Va chạm nhẹ (quẹt hông), có thể gây trầy xước hoặc móp nhẹ bề mặt vỏ xe của cả hai phương tiện.
+O0059  #13    1         M:không va chạm  M:không có              Chưa có va chạm gì, hai bên điều khiển giao thông đã kịp thời phanh xe lại.
+O0060  #13    1         M:không va chạm  M:không có              Hai xe phải phanh gấp, không có va chạm xảy ra
+O0061  #13    1         T                T                       Không va chạm trực diện
+O0062  #13    1         M:không va chạm  M:không có              Suýt va chạm.
+O0063  #13    1         M:không va chạm  M:không có              Xe máy phanh gấp suýt đâm vào xe ô tô
+O0064  #13    1         M:không va chạm  M:không có              Xe ô tô có camera hành trình và xe máy màu trắng dừng lại tránh va chạm.
+O0065  #13    1         M:không va chạm  M:không có              không va chạm, cả 2 phương tiện kịp thời phanh lại.
+O0066  #14    1         T                T                       Xe tải trắng phanh gấp khiến xe ô tô con màu xanh tông phải
+O0067  #14    1         M:va chạm nhẹ    T                       Xe ô tô màu đen sau cùng tông nhẹ vào đuôi xe tải.
+O0068  #14    1         T                T                       Xe ô tô màu đen va chạm đuôi xe tải.
+O0069  #14    1         T                T                       Xe ô tô đen đâm vào đuôi xe tải, phương tiện có thể hư hỏng, móp méo.
+O0070  #14    1         T                T                       xe ô tô đen bị trầy nhẹ ở đầu xe và xe tải bị trầy xe ở đuôi xe
+O0071  #14    1         T                T                       Ô tô màu đen đâm đít xe tải, phương tiện hư hỏng nhẹ.
+O0072  #14    1         T                T                       ô tô màu tối đâm đít xe tải thùng, phương tiện hư hỏng nhẹ.
+O0073  #15    1         T                T                       Hai xe va chạm , có hư hỏng nhẹ.
+O0074  #15    1         T                T                       Hai xe ô tô phanh gấp và dừng tạm thời trên đường
+O0075  #15    1         T                T                       Xe SUV bị vỡ đầu xe
+O0076  #15    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ, hai người trên xe ngã xuống đường, xe ô tô đỏ có thể bị trầy xước nhẹ bên hông.
+O0077  #15    1         M:va chạm nhẹ    T                       Xe tải và xe ô tô va quẹt nhẹ ở thành xe.
+O0078  #15    1         T                T                       Đầu xe ô tô đỏ va chạm với đuôi xe bên trái của xe tải thùng.
+O0079  #16    1         M:không va chạm  M:không có              Hai xe tránh được va chạm nên vẫn tiếp tục di chuyển bình thường.
+O0080  #16    1         M:không va chạm  M:không có              Không có va chạm , hư hại không có.
+O0081  #16    1         M:không va chạm  M:không có              Suýt va chạm.
+O0082  #16    1         T                T                       Xe ô tô có gắn camera phanh kịp thời
+O0083  #16    1         M:không va chạm  M:không có              Đầu xe camera suýt đâm vào hông xe tải
+O0084  #16    1         M:không va chạm  M:không có              Đầu xe camera suýt đâm vào hông xe tải, dẫn đến suýt va chạm giao thông
+O0085  #16    1         M:không va chạm  M:không có              Đầu xe gắn camera suýt đâm vào hông xe tải.
+O0086  #17    1         M:va chạm mạnh   M:biến dạng rõ          Xe SUV bị hư hỏng nặng phần đầu xe, xe tải ben bị hư hỏng phần hông và đầu xe.
+O0087  #17    1         M:va chạm mạnh   M:biến dạng rõ          Xe SUV bị móp méo và hư hỏng nặng phần hông và đầu xe bên trái, xe tải ben bị hư hỏng phần đầu.
+O0088  #17    1         M:va chạm mạnh   M:biến dạng rõ          Xe SUV bị móp méo và hư hỏng nặng phần đầu xe, xe tải ben bị hư hỏng phần hông bên trái.
+O0089  #17    1         M:va chạm mạnh   M:biến dạng rõ          Xe SUV bị móp méo và hư hỏng nặng phần đầu, xe ben xanh đen bị hư hỏng phần đầu.
+O0090  #17    1         M:va chạm mạnh   M:biến dạng rõ          Xe SUV bị móp méo và hư hỏng nặng đầu xe bên, xe tải ben bị hư hỏng phần hông bên phải.
+O0091  #17    1         M:va chạm mạnh   M:biến dạng rõ          Xe màu đen bị móp méo và hư hỏng nặng đầu xe
+O0092  #17    1         M:va chạm mạnh   M:biến dạng rõ          xe tải benbị móp méo và hư hỏng nặng phần hông và đầu xe bên trái, Xe SUV bị hư hỏng phần đầu.
+O0093  #18    5         M:va chạm vừa    M:người ngã             Hai người lái xe bị ngã xuống đường, phương tiện bị đổ nhưng không thấy hư hỏng nặng.
+O0094  #18    1         M:va chạm vừa    M:người ngã             Người lái xe đạp màu bạc bị ngã xuống đường, phương tiện bị đổ nhưng không thấy hư hỏng nặng.
+O0095  #18    1         M:va chạm vừa    M:người ngã             Người đi xe đạp bị té xuống đường.
+O0096  #19    1         T                T                       Người điều khiển xe máy hơi mất thăng bằng nhưng không có va chạm mạnh nên tiếp tục di chuyển.
+O0097  #19    1         T                T                       Va chạm với phần đâu xe gắn camera hành trình.
+O0098  #19    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái ngã mất thăng bằng nhưng có thể tự đứng dậy ngay sau đó.
+O0099  #19    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái ngã xuống đường nhưng có thể tự đứng dậy ngay sau đó.
+O0100  #19    1         M:va chạm vừa    M:người ngã             Xe máy màu xanh đen mất thâng bằng, người lái ngã xuống đường nhưng có thể tự đứng dậy ngay sau đó.
+O0101  #19    1         T                T                       Xe máy mất thăng bằng nhưng không đổ xuống đường.
+O0102  #19    1         T                T                       Xe máy và ô tô không sao có thể tự đứng dậy ngay sau đó.
+O0103  #20    1         M:không va chạm  M:không có              Không có bất kì va chạm nào xảy ra
+O0104  #20    1         M:không va chạm  M:không có              Không có va chạm xảy ra.
+O0105  #20    1         M:không va chạm  M:không có              Không có va chạm.
+O0106  #20    1         M:không va chạm  M:không có              Suýt va chạm.
+O0107  #20    1         M:không va chạm  M:không có              Xe máy và xe ô tô gắn camera không xảy ra va chạm giao thông.
+O0108  #20    1         T                T                       Xe máy đi ngang qua mặt xe ô tô camera
+O0109  #20    1         T                T                       hậu quả không có thật
+O0110  #21    1         T                T                       Phần đầu của cả xe ô tô trắng bị hư hỏng và phần hông xe màu xanh bị hư hỏng.
+O0111  #21    6         T                T                       Phần đầu của cả xe ô tô trắng và xe taxi xanh đều bị hư hỏng do lực đâm mạnh.
+O0112  #22    1         M:không rõ       T                       Không quan sát thấy va chạm hoặc hư hỏng phương tiện
+O0113  #22    1         M:không va chạm  M:không có              Xe ô tô suýt va chạm với xe đạp
+O0114  #22    1         M:không va chạm  M:không có              hai xe dừng lại đột ngột và không xảy ra va chạm.
+O0115  #23    1         M:va chạm mạnh   M:bị văng               Cả hai xe máy đều bị đổ, xe máy màu tối và người điều khiển văng xuống mặt đường.
+O0116  #23    1         M:va chạm vừa    M:người ngã             Người điều khiển xe tay ga vẫn tiếp tục di chuyển, người và xe máy màu tối ngã xuống đường.
+O0117  #23    1         M:va chạm vừa    M:xe ngã                Xe máy màu đen do người đàn ông mặc áo sọc điều khiển té giữa đường.
+O0118  #23    1         M:va chạm vừa    M:người ngã             người lái và xe máy tối màu bị ngã.
+O0119  #23    1         M:va chạm mạnh   M:bị văng               xe máy màu tối bị đổ, người lái xe ngã văng xuống mặt đường.
+O0120  #23    1         M:va chạm vừa    M:xe ngã                xe máy màu đen bị ngã xuống mặt đường.
+O0121  #23    1         M:va chạm vừa    M:người ngã             xe và người điểu khiển xe máy ngã xuống đường
+O0122  #24    1         T                T                       Xe máy loạng choạng, xe ô tô bạc bị trầy xước phần đầu, không quan sát thấy hư hỏng ở xe máy
+O0123  #24    1         M:va chạm vừa    M:lệch hướng            Xe máy lệch hướng, mất thăng bằng.
+O0124  #24    1         T                T                       Xe máy màu trắng do thanh niên không đội mũ điều khiển bị mất thăng bằng tại vị trí va chạm; Xe ô tô màu xám bị trầy.
+O0125  #24    1         T                T                       Xe máy mất thằng bằng nhưng không bị đổ.
+O0126  #24    1         T                T                       Xe máy và ô tô bị hư hại do va chạm.
+O0127  #24    1         M:va chạm nhẹ    T                       Xe máy đâm nhẹ đầu ô tô gắn camera, sau liên hoàn đâm móp nhẹ phần hông xe ô tô con màu bạc, xe máy không giữ được thăng bằng.
+O0128  #24    1         T                T                       xe ô tô con màu bạc bị trầy xước bên hông xe.
+O0129  #25    7         M:va chạm vừa    M:người ngã             Người đi xe đạp bị ngã xuống đường, không thấy hư hỏng nặng cho các phương tiện.
+O0130  #26    1         M:không va chạm  M:không có              Hai xe dừng lại kịp thời nên không có hậu quả gì quan sát được.
+O0131  #26    1         M:không va chạm  M:không có              Không quan sát thấy va chạm hoặc hư hỏng giữa xe máy màu đỏ và ô tô có camera hành trình.
+O0132  #26    1         M:không va chạm  M:không có              Một chiếc xe ô tô (có camera hành trình) và xe máy màu đỏ do phụ nữ áo đen chở 2 người dừng lại kịp thời không va chạm.
+O0133  #26    1         M:không va chạm  M:không có              Suýt va chạm.
+O0134  #26    1         M:không va chạm  M:không có              hai xe phanh gặp dừng lại tại chỗ và không có va chạm xảy ra
+O0135  #26    1         T                T                       không có hư hại.
+O0136  #26    1         M:không va chạm  M:không có              xe máy và xe ô tô gắn camera phải dừng đột ngột, không xảy ra va chạm.
+O0137  #27    1         M:va chạm nhẹ    T                       Va chạm nhẹ, có khả năng méo móp, xước sơn của xe ô tô màu trắng và xe bán tải Ford Ranger màu đen
+O0138  #27    6         M:va chạm nhẹ    T                       Va chạm nhẹ, không có hư hỏng phương tiện hay thương tích nghiêm trọng quan sát được.
+O0139  #28    6         M:va chạm mạnh   M:biến dạng rõ          Xe con bị đâm móp hông trái và bị đẩy lên dải phân cách, xe tải để lại vết phanh dài.
+O0140  #28    1         M:va chạm vừa    M:lệch hướng            Xe con bị đẩy lên dải phân cách, xe tải để lại vết phanh dài.
+O0141  #29    1         M:không va chạm  M:không có              Cả 2 xe không va chạm nhau.
+O0142  #29    1         M:không va chạm  M:không có              Hai ô tô tránh được va chạm, không quan sát thấy hư hỏng phương tiện.
+O0143  #29    1         M:không va chạm  M:không có              hai xe tránh được nhau và không xảy ra hư hỏng.
+O0144  #29    1         M:không va chạm  M:không có              không có chạm xảy ra nhưng xe bán tải màu đen đi lệch khỏi đường
+O0145  #29    1         T                T                       xe bán tải đi thẳng ra lề đường .
+O0146  #30    1         T                T                       Va chạm đuôi xe gây hư hỏng phần đầu xe camera hành trình và phần đuôi xe ô tô con màu trắng.
+O0147  #30    5         T                T                       Va chạm đuôi xe gây hư hỏng phần đầu xe camera và phần đuôi xe Kia trắng.
+O0148  #31    1         M:không va chạm  M:không có              Hai xe không xảy ra va chạm, nhưng xe gắn camera phải lần làn trái để tránh va chạm.
+O0149  #31    1         M:không va chạm  M:không có              Không quan sát thấy va chạm hoặc hư hỏng phương tiện.
+O0150  #31    1         M:không va chạm  M:không có              Xe camera suýt đâm vào đầu xe bồn trắng
+O0151  #31    1         M:không va chạm  M:không có              Xe ô tô gắn camera hành trình lách qua đường ngược chiều nên không va chạm.
+O0152  #31    1         T                T                       không có hư hại nào.
+O0153  #31    1         M:không va chạm  M:không có              suýt va chạm.
+O0154  #32    1         M:không va chạm  M:không có              Hai phương tiện không xảy ra va chạm.
+O0155  #32    1         M:không va chạm  M:không có              Không quan sát thấy va chạm hoặc hư hỏng phương tiện.
+O0156  #32    1         M:không rõ       T                       Không thể xác định khi
+O0157  #32    1         M:không va chạm  M:không có              Suýt va chạm.
+O0158  #32    1         M:không va chạm  M:không có              Xe gắn camera phải chuyển làn xử lý nên không xảy ra va chạm
+O0159  #32    1         T                T                       Xe ô tô cammera phải né và di chuyển sang phía làn bên phải để né xe tải trắng cùng tiến vào giao ngã tư.
+O0160  #32    1         T                T                       không hư hại nào
+O0161  #33    1         T                T                       Va chạm gây hư hỏng phần đầu xe tải và đuôi xe ô tô màu đen
+O0162  #33    1         T                T                       Va chạm hư phần sau của xe ô tô màu đen.
+O0163  #33    1         M:va chạm mạnh   T                       Va chạm mạnh gây hư hỏng phần đuôi xe hatchback.
+O0164  #33    1         M:va chạm mạnh   T                       Va chạm mạnh gây hư hỏng phần đuôi xe ô tô màu đen.
+O0165  #33    1         M:va chạm nhẹ    T                       Va chạm nhẹ gây hư hỏng phần đuôi xe hatchback.
+O0166  #33    1         M:va chạm nhẹ    T                       Va chạm nhẹ vào xe ô tô màu đen dẫn đến hư hỏng hông xe.
+O0167  #33    1         M:va chạm nhẹ    T                       Va chạm nhẹ ở đầu xe tải xám đen và xe ô tô con đen
+O0168  #34    1         M:va chạm vừa    M:người ngã             Hai xee máy bị đổ và trầy xước nhẹ, người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.
+O0169  #34    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ và trầy xước nhẹ, 2 người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.
+O0170  #34    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ và trầy xước nhẹ, người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.
+O0171  #34    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ và trầy xước nhẹ, người lái xe máy đỏ bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.
+O0172  #34    1         M:va chạm mạnh   M:bị văng               Xe máy bị đổ văng ra xa, người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó, người và xe máy màu đỏ ngã xuống đường.
+O0173  #34    1         M:va chạm vừa    M:người ngã             Xe máy bị đổ, trượt trúng người đi xe máy màu đen đi cùng chiều với ô tô màu đen và trầy xước nhẹ, người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó.
+O0174  #34    1         M:va chạm vừa    M:người ngã             Xe máy màu trắng bị trượt dài, người lái xe máy màu trắng bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó. Xe máy màu trắng trượt dài va chạm với xe máy màu đỏ giao hàng làm người cả điều khiển và xe máy màu đỏ té xuống đường.
+O0175  #35    1         M:không va chạm  M:không có              Không có va chạm và hư hỏng nhưng xe tải ben mất lái xoay chắn ngang đường.
+O0176  #35    1         M:không va chạm  M:không có              Không quan sát thấy xảy ra va chạm
+O0177  #35    1         M:không va chạm  M:không có              Không va chạm
+O0178  #35    1         M:không va chạm  M:không có              Suýt va chạm.
+O0179  #35    1         M:không va chạm  M:không có              Xe máy và xe tải ben không xảy ra va chạm, xe tải ben trượt do phanh gấp dẫn đến cản trở giao thông.
+O0180  #35    1         T                T                       Xe tải ben mất lại và vẫn kịp dừng lại an toàn.
+O0181  #35    1         T                T                       không có hư hại đáng kể nào.
+O0182  #36    1         M:không va chạm  M:không có              Không
+O0183  #36    1         M:không rõ       T                       Không thể xác định
+O0184  #36    1         M:không va chạm  M:không có              Suýt va chạm.
+O0185  #36    1         M:không va chạm  M:không có              Xe ô tô trắng va chạm với xe máy chưa va chạm với nhau.
+O0186  #37    1         M:va chạm vừa    M:người ngã             Cả hai xe máy bị đổ, cả hai người điều khiển trên xe ngã xuống đường, phương tiện có thể bị trầy xước nhẹ.
+O0187  #37    6         M:va chạm vừa    M:người ngã             Cả hai xe máy bị đổ, hai người trên xe ngã xuống đường, phương tiện có thể bị trầy xước nhẹ.
+O0188  #38    1         M:va chạm vừa    M:người ngã             Hai xe máy va chạm, xe máy màu tối đang lưu thông bị đổ, người lái xe này bị ngã ra đường.
+O0189  #38    1         M:va chạm vừa    M:người ngã             Hai xe máy va chạm, xe máy đen bị đổ, người lái xe này bị ngã ra đường.
+O0190  #38    4         M:va chạm vừa    M:người ngã             Hai xe máy va chạm, xe máy đi ngược chiều bị đổ, người lái xe này bị ngã ra đường.
+O0191  #38    1         M:va chạm vừa    M:người ngã             người lái xe này bị ngã ra đường.
+O0192  #39    1         M:không va chạm  M:không có              Hai xe đã kịp phanh và dừng lại trước khi xảy ra va chạm
+O0193  #39    1         M:không va chạm  M:không có              Không có va chạm và hư hỏng phương tiện.
+O0194  #39    1         M:không va chạm  M:không có              Không có va chạm.
+O0195  #39    1         M:không rõ       T                       Không quan sát thấy va chạm hoặc hư hỏng
+O0196  #39    1         M:không va chạm  M:không có              Suýt va chạm với xe gắn camera hành trình.
+O0197  #39    1         T                T                       không có hư hại đáng kể
+O0198  #39    1         M:không va chạm  M:không có              Ô tô gắn camera suýt đâm vào xe máy
+O0199  #40    1         M:va chạm vừa    M:người ngã             Bé gái ngã xuống đường.
+O0200  #40    1         M:va chạm mạnh   M:người nằm trên đường  Em học sinh mặc áo vàng bị va chạm nằm dưới đất.
+O0201  #40    1         M:va chạm vừa    M:người ngã             Tông trúng em bé đang sang đường và ngã xuống mặt đất.
+O0202  #40    1         M:va chạm mạnh   M:người nằm trên đường  bé gái nằm bất động giữa đường sau khi xảy ra va chạm.
+O0203  #40    1         M:va chạm vừa    M:người ngã             bé mặc đồ sáng bị tông trúng và ngã xuống đất, xe máy trắng vẫn chạy đi
+O0204  #40    1         K                T                       cô bé áo hồng bị đâm tai nạn nghiêm trọng và xe máy trắng tiếp tục di chuyển vượt quá tốc độ an toàn khi tham gia giao thông.
+O0205  #40    1         M:va chạm mạnh   M:người nằm trên đường  em bé bị xe máy đâm phải nằm ra đường.
+O0206  #41    1         M:không va chạm  M:không có              chưa có va chạm.
+O0207  #42    1         M:va chạm vừa    M:người ngã             Người và xe máy trắng ngã xuống đường
+O0208  #42    1         M:va chạm vừa    M:người ngã             Người đi xe máy màu trắng bị ngã ra đường.
+O0209  #42    1         M:va chạm vừa    M:người ngã             Người đi xe máy ngã xuống đường và xe ô tô gắn camera phải dừng lại đột ngột.
+O0210  #42    1         M:va chạm vừa    M:người ngã             Người đi xe máy trắng ngã xuống đường, va vào ô tô gắn camera
+O0211  #42    1         M:va chạm vừa    M:người ngã             Người đi xem máy màu xám bị ngã xuống mặt đường và xe gắn camera hành trình bị trầy xước nhẹ ở đầu xe bên phải.
+O0212  #42    1         M:va chạm vừa    M:xe ngã                Xe máy do người đàn ông áo đen điều khiển va chạm với xe gắn camera hành trình ngã xuống đường.
+O0213  #43    1         M:va chạm vừa    M:xe ngã                Va chạm , gây trầy xước hoặc móp méo phần đầu xe và va quẹt làm xe máy chở 2 người ngã
+O0214  #43    1         M:va chạm vừa    M:người ngã             Va chạm nhẹ với hông đuôi xe ô tô màu trắng và làm hai người trên xe máy cùng phương tiện ngã xuống đường.
+O0215  #43    1         M:va chạm nhẹ    T                       Va chạm nhẹ, gây trầy xước hoặc móp méo phần vỏ xe tại điểm tiếp xúc giữa đầu xe tải và đuôi xe ô tô con và xe máy.
+O0216  #43    1         M:va chạm vừa    M:xe ngã                Va chạm nhẹ, gây trầy xước hoặc móp méo phần vỏ xe tại điểm tiếp xúc giữa đầu xe tải và đuôi xe ô tô con, xe máy chở 2 người bị ngã
+O0217  #43    1         M:va chạm vừa    M:xe ngã                Xe ô tô con màu trắng bị trầy bên phải xe, xe máy màu đen do người áo đen điều khiển chở 2 ngã xuống đường.
+O0218  #43    1         M:va chạm vừa    M:người ngã             Đuôi xe ô tô trắng bị trầy xước, người đi xe máy bị ngã xuống mặt đường
+O0219  #44    1         T                T                       Các phương tiện dừng lại, và trầy xước đuôi ô tô trắng.
+O0220  #44    1         M:va chạm mạnh   M:bị văng               Một phần vỏ phía sau của xe ô tô bị văng ra.
+O0221  #44    1         T                T                       Xe ô tô con màu trắng bị va chạm rớt thanh chắn phía sau xe.
+O0222  #44    1         T                T                       phần sau của xe ô tô con bị hư hại.
+O0223  #44    1         M:va chạm mạnh   M:bị văng               phẩn cảng sau của xe ô tô màu trắng văng ra
+O0224  #44    1         T                T                       xe ô tô con bị rụng đuôi xe
+O0225  #45    1         M:va chạm vừa    M:xe ngã                Xe máy ngã xuống đường.
+O0226  #45    2         M:va chạm vừa    M:người ngã             Xe máy ngã, người lái ngã xuống đường, phương tiện bị hư hỏng nhẹ.
+O0227  #45    1         M:va chạm vừa    M:xe ngã                Xe máy ngã, người lái nhảy xuống xe, giao thông hỗn loạn.
+O0228  #45    1         M:va chạm vừa    M:xe ngã                Xe máy ngã, người lái nhảy xuống đường, phương tiện bị hư hỏng nhẹ.
+O0229  #45    1         M:va chạm vừa    M:xe ngã                Xe máy ngã, phương tiện bị hư hỏng nhẹ.
+O0230  #46    6         M:va chạm vừa    M:người ngã             Xe máy bị đổ, người lái ngã xuống đường, không thấy hư hỏng nặng cho các phương tiện khác.
+O0231  #47    5         T                T                       Xe tải leo lên dải phân cách cỏ, hư hỏng nhẹ phần gầm và lốp.
+O0232  #47    1         T                T                       Xe tải leo lên dải phân cách cỏ.
+O0233  #48    1         M:không va chạm  M:không có              Không có gì xảy ra
+O0234  #48    1         M:không va chạm  M:không có              Không có va chạm.
+O0235  #48    1         M:không va chạm  M:không có              Suýt va chạm.
+O0236  #48    1         M:không va chạm  M:không có              Xe ô tô phải phanh gấp. Không có va chạm và hư hỏng.
+O0237  #48    1         T                T                       không có hư hại.
+O0238  #48    1         M:không va chạm  M:không có              suýt va chạm
+O0239  #49    1         M:không va chạm  M:không có              Không có va chạm
+O0240  #49    1         M:không va chạm  M:không có              Không có van chạm.
+O0241  #49    1         M:không va chạm  M:không có              Không quan sát thấy va chạm hoặc hư hỏng phương tiện.
+O0242  #49    1         M:không va chạm  M:không có              Suýt va chạm.
+O0243  #49    1         T                T                       không hư hại đáng kể nào.
+O0244  #50    1         M:va chạm vừa    M:người ngã             Người và xe máy ngã xuống đường
+O0245  #50    1         M:va chạm vừa    M:người ngã             Người điều khiển xe máy và phương tiện bị ngã xuống đường.
+O0246  #50    1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ .
+O0247  #50    1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ nằm trên mặt đường sát dải phân cách.
+O0248  #50    1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ nằm trên mặt đường, xe ô tô đen bị trầy nhẹ ở phần đầu xe.
+O0249  #50    1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ nằm trên trước đầu xe ô tô màu đen.
+O0250  #51    1         M:va chạm vừa    M:lệch hướng            Người lái xe máy bị lạng tay lái
+O0251  #51    1         M:va chạm vừa    M:lệch hướng            Xe máy bị loạn choạn tay lái.
+O0252  #51    1         M:va chạm vừa    M:lệch hướng            Xe máy bị mất thăng bằng.
+O0253  #51    1         T                T                       Xe máy mất thăng bằng.
+O0254  #51    1         T                T                       Xe máy suýt ngã.
+O0255  #51    1         T                T                       không có hư hại
+O0256  #52    1         T                T                       Hai xe phải dừng lại, không quan sát thấy hư hỏng phương tiện.
+O0257  #52    1         T                T                       Xe ô tô màu trắng trầy sơn phía duôi, xe ben màu nâu trầy mặt trước.
+O0258  #52    1         T                T                       Xe ô tô trắng bị hư nhẹ phần bên trái xe.
+O0259  #52    1         T                T                       cả 2 xe bị hư hại nhẹ.
+O0260  #52    1         M:va chạm vừa    T                       va chạm vừa
+O0261  #52    1         T                T                       Đầu xe tải đâm vào đầu xe ô tô con trắng gây hư hỏng nhẹ
+O0262  #53    1         M:va chạm vừa    M:người ngã             Hai xe bị đổ và người điều khiển xe tay ga bị ngã xuống đường.
+O0263  #53    1         M:va chạm vừa    M:người ngã             Hai xe máy bị đổ, 3 người bị ngã xe, các phương tiện bị trầy xước nhẹ.
+O0264  #53    1         M:va chạm vừa    M:xe ngã                Hai xe máy bị đổ, các phương tiện bị trầy xước nhẹ.
+O0265  #53    1         M:va chạm vừa    M:xe ngã                Hai xe máy bị đổ,, các phương tiện bị trầy xước nhẹ.
+O0266  #53    1         M:va chạm vừa    M:xe ngã                Hai xe máy bị đổ.
+O0267  #54    1         M:không va chạm  M:không có              Không quan sát thấy va chạm hoặc hư hỏng phương tiện.
+O0268  #54    1         M:không va chạm  M:không có              Không quan sát thấy va chạm và hư hỏng phương tiện.
+O0269  #54    1         M:không rõ       T                       Không xác định
+O0270  #54    1         M:không va chạm  M:không có              Không xảy ra va chạm.
+O0271  #55    1         M:va chạm nhẹ    T                       Va chạm nhẹ, các phương tiện phải dừng lại, người ngồi sau xe máy bị thương nhẹ.
+O0272  #55    1         M:va chạm nhẹ    T                       Va chạm nhẹ, người đi xe máy dừng lại kiểm tra.
+O0273  #55    1         M:va chạm nhẹ    T                       Va chạm nhẹ.
+O0274  #55    1         T                K                       Xe máy chở 2 người bị kẹt giữa 2 xe người ngồi sau bị trầy da do cọ xát vào bánh xe bồn
+O0275  #55    1         T                K                       Xe máy màu đen do người áo trắng chở 2 bị kẹt giữa 2 xe khác.
+O0276  #56    1         M:không va chạm  M:không có              Không có va chạm
+O0277  #56    1         M:không va chạm  M:không có              Không có va chạm.
+O0278  #56    1         M:không va chạm  M:không có              Không quan sát thấy va chạm hoặc hư hỏng phương tiện.
+O0279  #56    1         T                T                       không có hư hại.
+O0280  #57    1         M:va chạm vừa    T                       2 xe va chạm vừa
+O0281  #57    1         T                T                       2 xe ô tô va chạm có xước ở đầu
+O0282  #57    1         T                T                       Hai xe phải dừng lại, không quan sát thấy hư hỏng phương tiện.
+O0283  #57    1         T                T                       Xe ô tô màu nâu bị xe ô tô màu đỏ va chạm trước đầu xe.
+O0284  #57    1         T                T                       Đầu xe của cả 2 e do va chạm bị trâyd nhẹ
+O0285  #58    2         M:va chạm vừa    M:người ngã             Xe máy bị đổ nghiêng ra đường, người điều khiển bị ngã xuống mặt đường nhưng sau đó đã tự đứng dậy được.
+O0286  #58    1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ nghiêng ra đường, người điều khiển gần bị ngã xuống mặt đường nhưng sau đó đã tự đứng dậy được.
+O0287  #58    1         M:va chạm vừa    M:xe ngã                Xe máy bị đổ nghiêng ra đường, người điều khiển mất thăng bằng và sau đó đứng thẳng lên được.
+O0288  #58    1         lỗi              lỗi                     Xe máy bị đổ ra đường, người điều khiển bị mất thăng bằng.
+O0289  #59    1         lỗi              lỗi                     Không quan sát thấy va chạm hoặc hư hỏng phương tiện.
+O0290  #59    1         lỗi              lỗi                     Không xảy ra va chạm.
+O0291  #59    1         lỗi              lỗi                     Xe con lao vào bụi cây và rãnh thoát nước ven đường
+O0292  #59    1         lỗi              lỗi                     Xe con phải lao vào lề cỏ ven đường và dừng lại.
+O0293  #59    1         lỗi              lỗi                     không có hư hại đáng kể
+O0294  #60    1         lỗi              lỗi                     Va chạm nhẹ gây trầy phía trước xe ô tô màu đỏ và trầy phía sau xe ô tô màu đen.
+O0295  #60    3         lỗi              lỗi                     Va chạm đuôi xe gây hư hỏng phần đầu xe sedan đỏ và phần đuôi xe SUV đen.

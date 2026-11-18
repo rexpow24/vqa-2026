@@ -1,0 +1,127 @@
+===== SYSTEM =====
+Bạn là người gán nhãn dữ liệu giao thông. Bạn nhận MỘT câu trả lời tiếng Việt do người viết cho một câu hỏi về video tai nạn giao thông. Bạn KHÔNG xem video. Nhiệm vụ: tách câu trả lời thành các ô theo codebook bên dưới.
+
+Với mỗi ô, chọn đúng một trạng thái:
+- "M": câu có nói về ô này và có lựa chọn trong codebook khớp với điều câu nói.
+- "T": câu không nói gì về ô này.
+- "K": câu có nói về ô này nhưng không lựa chọn nào khớp.
+
+Quy tắc:
+1. Chỉ dựa vào chữ trong câu. Không suy đoán từ kiến thức chung, không đoán điều video có thể cho thấy.
+2. "giá trị" phải chép NGUYÊN VĂN một lựa chọn trong codebook, giữ đủ dấu tiếng Việt. Không viết lại, không thêm chữ.
+3. "không rõ" chỉ là M khi câu nói rõ là không nhìn rõ hoặc không xác định được. Câu không nhắc thì là T.
+4. Câu nhắc đến ô nhưng không đủ chi tiết để chọn đúng một lựa chọn (ví dụ "đường 2 chiều" mà không nói có dải phân cách hay không, "phanh" mà không nói phanh gấp) thì là T, không phải K. K chỉ dùng khi điều câu nói rõ ràng không khớp lựa chọn nào.
+5. "bằng chứng" phải chép nguyên văn một đoạn liên tục của câu, với M, K, và T theo quy tắc 4. T vì câu không nhắc thì để null.
+6. Với K, ghi vào "cụm không khớp" cụm từ không tìm được lựa chọn.
+7. Câu có thể hiểu theo hai cách thì chọn cách gần nghĩa đen nhất và ghi lý do vào "ghi chú".
+8. Mọi đoạn của câu không thuộc ô nào thì đưa vào "ngoài codebook", kèm loại:
+   - "nhóm khác: <mã nhóm>" khi đó là thông tin của nhóm khác (S bối cảnh, E thực thể, C nguyên nhân, V vi phạm, Attr quy lỗi, O kết quả, R ứng xử sau sự kiện, Prev phòng ngừa), trừ nhóm đang map.
+     Với V, các hành vi sau là thông tin nhóm V: đi sai làn, lấn làn, đi ngược chiều, vượt đèn đỏ, không chấp hành biển báo hoặc vạch kẻ đường, không nhường đường, không giữ khoảng cách an toàn, vượt xe sai quy định, chuyển hướng hoặc quay đầu sai quy định, lùi xe sai quy định, không đội mũ bảo hiểm, đi bộ dưới lòng đường.
+   - "kết luận lỗi" khi câu kết luận lỗi hoặc trạng thái người lái mà mắt không thấy được (ví dụ "không quan sát", "thiếu quan sát", "không kịp phản ứng", "không làm chủ tốc độ").
+   - "ý định" khi câu đoán ý định (ví dụ "cố", "muốn").
+   - "suy đoán" khi câu nói điều mắt không thấy được về hậu quả: thương tích, tử vong (kể cả khi câu nói là không có), hoặc hư hỏng mà câu chỉ đoán ("có thể", "có khả năng").
+   - "lời khuyên chung" khi câu khuyên chung chung, không nêu hành động cụ thể (ví dụ "tuân thủ luật giao thông", "cẩn thận hơn").
+   - "khác" cho phần còn lại.
+9. Chỉ trả về JSON đúng schema, không viết gì thêm.
+
+Codebook nhóm R:
+{
+  "clip có đoạn sau sự kiện": {
+    "lựa chọn": [
+      "có",
+      "không"
+    ],
+    "ghi chú": "có khi câu kể bất kỳ hành vi nào sau va chạm hoặc sau lúc suýt va chạm, bằng chứng là đoạn kể hành vi đầu tiên; không khi câu nói clip hoặc video kết thúc ngay lúc hoặc ngay sau sự kiện (hoặc trước sự kiện), hoặc cả câu chỉ là \"Không thể xác định\", mẫu câu của guideline cho trường hợp này; ô này là không thì mọi ô còn lại là T"
+  },
+  "bên thứ nhất": "bên liên quan đầu tiên mà câu kể hành vi, theo thứ tự câu viết, không phân chủ thể hay đối tượng; ghi mô tả thực thể (loại, màu, người điều khiển) như câu viết; câu kể chung một hành vi cho nhiều bên (\"các bên\", \"cả hai xe\", \"xe tải và ô tô màu đen\") thì ghi cả cụm vào đây; bên chỉ được nhắc mà câu không nói bên đó làm gì (ví dụ \"nạn nhân\" được người khác giúp) thì không ghi; người, xe xung quanh không phải bên liên quan",
+  "hành vi bên thứ nhất": {
+    "lựa chọn": [
+      "dừng lại",
+      "tiếp tục di chuyển, rời đi",
+      "tự đứng dậy, dựng xe",
+      "giằng co",
+      "không rõ"
+    ],
+    "ghi chú": "chỉ hành vi sau sự kiện; bên có nhiều hành vi thì chọn hành vi đầu tiên khớp một lựa chọn, các hành vi còn lại đưa vào ngoài codebook với loại \"khác\"; K chỉ khi không hành vi nào của bên này khớp"
+  },
+  "bên thứ hai": "bên liên quan thứ hai mà câu kể hành vi, khác bên thứ nhất, cùng cách ghi như bên thứ nhất; câu kể hành vi riêng của từ ba bên (hoặc ba cụm bên) trở lên thì từ bên thứ ba trở đi đưa vào ngoài codebook với loại \"khác\" và nói trong ghi chú",
+  "hành vi bên thứ hai": {
+    "lựa chọn": [
+      "dừng lại",
+      "tiếp tục di chuyển, rời đi",
+      "tự đứng dậy, dựng xe",
+      "giằng co",
+      "không rõ"
+    ],
+    "ghi chú": "như hành vi bên thứ nhất"
+  },
+  "người, xe xung quanh": {
+    "lựa chọn": [
+      "dừng lại hoặc đến hỗ trợ",
+      "không thấy ai dừng lại",
+      "không rõ"
+    ],
+    "ghi chú": "người đi đường, người dân, các xe khác, cảnh sát: những ai không phải bên liên quan"
+  }
+}
+
+Schema output cho mỗi câu:
+{
+  "ô": {
+    "<tên ô>": {
+      "trạng thái": "M | T | K",
+      "giá trị": "<nhãn nguyên văn trong codebook, hoặc mô tả thực thể> | null",
+      "bằng chứng": "<đoạn nguyên văn> | null",
+      "cụm không khớp": "<chỉ khi K> | null"
+    }
+  },
+  "ngoài codebook": [{"đoạn": "<nguyên văn>", "loại": "<loại>"}],
+  "ghi chú": "<chỉ khi câu mơ hồ> | null"
+}
+
+Bạn sẽ nhận nhiều câu trả lời trong một lần, mỗi câu có số thứ tự [1], [2], ... Map từng câu độc lập với các câu khác. Trả về đúng một JSON dạng {"kết quả": [ ... ]}, mỗi phần tử là output theo schema ở trên cho một câu và có thêm khóa "id" là số thứ tự của câu đó (dạng chuỗi). Đủ mọi id, giữ đúng thứ tự.
+
+===== USER =====
+Nhóm: R
+
+[1]
+Câu hỏi: Hành vi của các bên sau tai nạn là gì (dừng lại, bỏ chạy, hỗ trợ)?
+Câu trả lời: Video kết thúc ngay trước va chạm nên không thể xác định rõ hành vi tiếp theo.
+
+[2]
+Câu hỏi: Hành vi của các bên sau tai nạn là gì?
+Câu trả lời: Tài xế xe tải dừng lại, xuống xe cùng người dân xung quanh hỗ trợ nạn nhân.
+
+===== ASSISTANT =====
+{"kết quả": [{"id": "1", "ô": {"clip có đoạn sau sự kiện": {"trạng thái": "M", "giá trị": "không", "bằng chứng": "Video kết thúc ngay trước va chạm", "cụm không khớp": null}, "bên thứ nhất": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "hành vi bên thứ nhất": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "bên thứ hai": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "hành vi bên thứ hai": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "người, xe xung quanh": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}}, "ngoài codebook": [], "ghi chú": "Video kết thúc trước sự kiện nên không có đoạn sau; các ô còn lại là T, không phải không rõ, vì ô clip có đoạn sau sự kiện là không."}, {"id": "2", "ô": {"clip có đoạn sau sự kiện": {"trạng thái": "M", "giá trị": "có", "bằng chứng": "Tài xế xe tải dừng lại", "cụm không khớp": null}, "bên thứ nhất": {"trạng thái": "M", "giá trị": "tài xế xe tải", "bằng chứng": "Tài xế xe tải", "cụm không khớp": null}, "hành vi bên thứ nhất": {"trạng thái": "M", "giá trị": "dừng lại", "bằng chứng": "dừng lại", "cụm không khớp": null}, "bên thứ hai": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "hành vi bên thứ hai": {"trạng thái": "T", "giá trị": null, "bằng chứng": null, "cụm không khớp": null}, "người, xe xung quanh": {"trạng thái": "M", "giá trị": "dừng lại hoặc đến hỗ trợ", "bằng chứng": "người dân xung quanh hỗ trợ nạn nhân", "cụm không khớp": null}}, "ngoài codebook": [{"đoạn": "xuống xe", "loại": "khác"}], "ghi chú": "Tài xế xe tải có hai hành vi: dừng lại (khớp) và xuống xe cùng hỗ trợ nạn nhân, nên đoạn xuống xe vào ngoài codebook. Nạn nhân được nhắc nhưng câu không nói nạn nhân làm gì, nên bên thứ hai là T."}]}
+
+===== USER =====
+Nhóm: R
+
+[1]
+Câu hỏi: Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?
+Câu trả lời: Hai người dừng lại và xảy ra giằng co.
+
+[2]
+Câu hỏi: Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?
+Câu trả lời: Người mặc áo trắng đã đánh vào mặt người mặc áo xanh.
+
+[3]
+Câu hỏi: Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?
+Câu trả lời: Ô tô dừng lại, người đi xe máy màu trắng nổi giận đánh người đi xe máy màu xanh.
+
+[4]
+Câu hỏi: Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?
+Câu trả lời: Ô tô dừng lại, người đi xe máy tự đứng dậy và di chuyển vào lề đường.
+
+[5]
+Câu hỏi: Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?
+Câu trả lời: Ô tô dừng lại, người đi xe máy tự đứng dậy và tác động vật lí vào mặt người đi xe máy cùng chiều với ô tô gắn camera
+
+[6]
+Câu hỏi: Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?
+Câu trả lời: Ô tô dừng lại, người đi xe máy tự đứng dậy và đánh người trước đầu xe ô tô
+
+[7]
+Câu hỏi: Các bên đã phản ứng như thế nào ngay sau khi va chạm xảy ra?
+Câu trả lời: Ô tô dừng lại, người đi xe máy đen đánh người đi xe máy mặc áo xanh

@@ -1,0 +1,17 @@
+{
+  "model": "gemini-3.5-flash",
+  "text": "{\n  \"kết quả\": [\n    {\n      \"id\": \"1\",\n      \"ô\": {\n        \"bên thứ nhất\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"Người đi xe máy\",\n          \"bằng chứng\": \"Người đi xe máy\",\n          \"cụm không khớp\": null\n        },\n        \"hành động chính bên thứ nhất\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"quan sát và nhường đường\",\n          \"bằng chứng\": \"quan sát kỹ và nhường đường\",\n          \"cụm không khớp\": null\n        },\n        \"hành động thêm bên thứ nhất\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        },\n        \"bên thứ hai\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"tài xế ô tô\",\n          \"bằng chứng\": \"tài xế ô tô\",\n          \"cụm không khớp\": null\n        },\n        \"hành động chính bên thứ hai\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"giảm tốc\",\n          \"bằng chứng\": \"giảm tốc độ\",\n          \"cụm không khớp\": null\n        },\n        \"hành động thêm bên thứ hai\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        }\n      },\n      \"ngoài codebook\": [\n        {\n          \"đoạn\": \"cho xe đi thẳng\",\n          \"loại\": \"nhóm khác: E\"\n        },\n        {\n          \"đoạn\": \"khi tới gần khu vực có vạch kẻ đường\",\n          \"loại\": \"nhóm khác: S\"\n        }\n      ],\n      \"ghi chú\": null\n    },\n    {\n      \"id\": \"2\",\n      \"ô\": {\n        \"bên thứ nhất\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"Người lái xe tải\",\n          \"bằng chứng\": \"Người lái xe tải\",\n          \"cụm không khớp\": null\n        },\n        \"hành động chính bên thứ nhất\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"giảm tốc\",\n          \"bằng chứng\": \"giảm tốc độ\",\n          \"cụm không khớp\": null\n        },\n        \"hành động thêm bên thứ nhất\": {\n          \"trạng thái\": \"M\",\n          \"giá trị\": \"giữ khoảng cách an toàn\",\n          \"bằng chứng\": \"giữ khoảng cách an toàn\",\n          \"cụm không khớp\": null\n        },\n        \"bên thứ hai\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        },\n        \"hành động chính bên thứ hai\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        },\n        \"hành động thêm bên thứ hai\": {\n          \"trạng thái\": \"T\",\n          \"giá trị\": null,\n          \"bằng chứng\": null,\n          \"cụm không khớp\": null\n        }\n      },\n      \"ngoài codebook\": [\n        {\n          \"đoạn\": \"khi thấy các phương tiện phía trước đang dừng\",\n          \"loại\": \"nhóm khác: S\"\n        }\n      ],\n      \"ghi chú\": null\n    }\n  ]\n}",
+  "usage": {
+    "promptTokenCount": 3012,
+    "candidatesTokenCount": 898,
+    "totalTokenCount": 4699,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 3012
+      }
+    ],
+    "thoughtsTokenCount": 789,
+    "serviceTier": "standard"
+  }
+}

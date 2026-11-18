@@ -1,0 +1,134 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hướng dẫn gán nhãn Nhóm V: vi phạm (Violation)</title><style>
+:root{--bg:#ffffff;--fg:#1f2328;--muted:#59636e;--line:#d1d9e0;--head:#f6f8fa;--link:#0969da}
+@media (prefers-color-scheme: dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--line:#3d444d;--head:#151b23;--link:#4493f8}}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:1.7em;border-bottom:1px solid var(--line);padding-bottom:.3em}
+h2{font-size:1.3em;margin-top:1.8em;border-bottom:1px solid var(--line);padding-bottom:.2em}
+table{border-collapse:collapse;width:100%;margin:1em 0;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--head)}
+code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:.92em}
+a{color:var(--link)}
+.nav{font-size:.9em;color:var(--muted);margin-bottom:1.5em}
+</style></head><body><main><div class="nav"><a href="../00-DOC-TRUOC.html">&larr; Mục lục</a></div><h1>Hướng dẫn gán nhãn Nhóm V: vi phạm (Violation)</h1>
+<ul>
+<li>Câu hỏi chuẩn: Có hành vi vi phạm quy tắc giao thông nào quan sát được không?</li>
+<li>Tên thực thể A, B, C lấy từ Nhóm E.</li>
+<li>Mỗi ô chọn đúng một giá trị. Có nhiều vi phạm thì chọn vi phạm gắn với hành động ở Nhóm C.</li>
+<li>Chỉ ghi hành vi nhìn thấy được. Không ghi quá tốc độ, nồng độ cồn, giấy phép, đăng kiểm, trạng thái người lái (mất tập trung, liều lĩnh).</li>
+<li>"Không thấy" khác "không có": chỉ chọn "không quan sát thấy" khi video đủ rõ để khẳng định.</li>
+</ul>
+<h2>Các ô</h2>
+<table>
+<thead>
+<tr>
+<th>Ô</th>
+<th>Lựa chọn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0. Kết quả</td>
+<td>có · không quan sát thấy · không rõ</td>
+</tr>
+<tr>
+<td>1. Bên vi phạm (khi có)</td>
+<td>chọn từ E · cả hai bên</td>
+</tr>
+<tr>
+<td>2. Hành vi (khi có)</td>
+<td>đi sai làn, lấn làn · đi ngược chiều · vượt đèn đỏ · không chấp hành biển báo, vạch kẻ đường · không nhường đường · không giữ khoảng cách an toàn · vượt xe sai quy định · chuyển hướng, quay đầu sai quy định · lùi xe sai quy định · không đội mũ bảo hiểm · đi bộ dưới lòng đường · không giảm tốc độ qua giao lộ · khác</td>
+</tr>
+</tbody>
+</table>
+<p>Ô 1 chọn "cả hai bên" thì mỗi bên một ô 2 riêng, như ô hành động của Nhóm C.</p>
+<p>Điều kiện cho ô 2:
+- Vượt đèn đỏ: chỉ khi thấy rõ đèn.
+- Không chấp hành biển báo, vạch kẻ đường: chỉ khi thấy rõ biển hoặc vạch. Người đi bộ sang đường khi đèn dành cho người đi bộ đỏ cũng chọn lựa chọn này.
+- Không nhường đường: chỉ khi thấy rõ bên có quyền đi trước (xe đang đi thẳng trên đường chính, người đi bộ trên vạch, xe trong giao lộ). Dùng cho cả xe và người đi bộ.
+- Vượt xe sai quy định: chỉ khi thấy rõ vượt qua vạch liền, tại giao lộ hoặc khúc cua.
+- Chuyển hướng, quay đầu sai quy định: chỉ khi thấy rõ biển cấm, vạch liền hoặc vị trí không được rẽ, quay đầu.
+- Không đội mũ bảo hiểm: chỉ khi thấy rõ đầu người trên xe máy.
+- Đi bộ dưới lòng đường: người đi bộ đứng hoặc đi dọc trong phần đường xe chạy, không phải băng qua.
+- Không giảm tốc độ qua giao lộ: chỉ khi thấy rõ là giao lộ và thấy rõ xe không giảm tốc khi vào giao lộ.
+- Khác: ghi ngắn hành vi nhìn thấy, không dùng từ "lỗi", "vi phạm điều/khoản", mức phạt.</p>
+<p>Form điền sẵn V khi V chưa lưu và C đã lưu: ô 0 là "có", ô 1 là chủ thể của C (kể cả "cả hai bên"), ô 2 theo bảng dưới; ô điền sẵn có nhãn "điền sẵn từ C".
+Annotator kiểm tra, sửa nếu cần, rồi vẫn phải bấm Lưu.</p>
+<p>Gợi ý điền sẵn ô 2 theo kiểu xung đột ở C (annotator đổi được):</p>
+<table>
+<thead>
+<tr>
+<th>Kiểu xung đột ở C</th>
+<th>Hành vi điền sẵn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K01-K03</td>
+<td>không giữ khoảng cách an toàn</td>
+</tr>
+<tr>
+<td>K04; K08 khi vào cua hoặc đi thẳng</td>
+<td>đi sai làn, lấn làn</td>
+</tr>
+<tr>
+<td>K05; K08 khi vượt</td>
+<td>vượt xe sai quy định</td>
+</tr>
+<tr>
+<td>K06, K10, K13</td>
+<td>chuyển hướng, quay đầu sai quy định</td>
+</tr>
+<tr>
+<td>K09</td>
+<td>đi ngược chiều</td>
+</tr>
+<tr>
+<td>K11, K12, K14, K15</td>
+<td>không nhường đường</td>
+</tr>
+<tr>
+<td>K17</td>
+<td>lùi xe sai quy định</td>
+</tr>
+</tbody>
+</table>
+<h2>Cơ sở</h2>
+<p>Danh sách ô 2 lấy từ MMUCC 5th Edition (NHTSA 2017), phần tử P14 "Driver Actions at Time of Crash", giữ các giá trị nhìn thấy được trên video (mã 01-08, 13, 14, 16, 98).
+Bỏ mã 09 và 10 (đánh giá trạng thái người lái), 11 và 15 (hành động né, thuộc C), 12 (chạy khỏi đường, thuộc C và O).
+"Không đội mũ bảo hiểm" theo MMUCC P8; "đi bộ dưới lòng đường" theo MMUCC NM3 mã 09.
+"Không giảm tốc độ qua giao lộ": Luật Trật tự, an toàn giao thông đường bộ số 36/2024/QH15, Điều 12 khoản 3 điểm d (phải quan sát, giảm tốc độ hoặc dừng lại ở nơi đường bộ giao nhau cùng mức).
+Thông tư 38/2024/TT-BGTVT, Điều 5 khoản 1 dẫn sang Điều 12 của Luật; văn bản Điều 12 mới đọc qua hethongphapluat.com, chưa đối chiếu Công báo.
+Chi tiết đối chiếu: <a href="../tham-khao-V/doi-chieu-MMUCC.html">tham-khao-V/doi-chieu-MMUCC.html</a>.</p>
+<h2>Mẫu câu</h2>
+<table>
+<thead>
+<tr>
+<th>Kết quả</th>
+<th>Mẫu câu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Có</td>
+<td>[1] [2].</td>
+</tr>
+<tr>
+<td>Có, cả hai bên</td>
+<td>[A] [2 của A], đồng thời [B] [2 của B].</td>
+</tr>
+<tr>
+<td>Có, cả hai bên cùng hành vi</td>
+<td>Cả [A] và [B] cùng [2].</td>
+</tr>
+<tr>
+<td>Không quan sát thấy</td>
+<td>Không quan sát thấy vi phạm quy tắc giao thông rõ ràng.</td>
+</tr>
+<tr>
+<td>Không rõ</td>
+<td>Không thể xác định.</td>
+</tr>
+</tbody>
+</table></main></body></html>

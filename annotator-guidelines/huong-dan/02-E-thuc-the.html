@@ -1,0 +1,113 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hướng dẫn gán nhãn Nhóm E: thực thể (Entities)</title><style>
+:root{--bg:#ffffff;--fg:#1f2328;--muted:#59636e;--line:#d1d9e0;--head:#f6f8fa;--link:#0969da}
+@media (prefers-color-scheme: dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--line:#3d444d;--head:#151b23;--link:#4493f8}}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:1.7em;border-bottom:1px solid var(--line);padding-bottom:.3em}
+h2{font-size:1.3em;margin-top:1.8em;border-bottom:1px solid var(--line);padding-bottom:.2em}
+table{border-collapse:collapse;width:100%;margin:1em 0;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--head)}
+code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:.92em}
+a{color:var(--link)}
+.nav{font-size:.9em;color:var(--muted);margin-bottom:1.5em}
+</style></head><body><main><div class="nav"><a href="../00-DOC-TRUOC.html">&larr; Mục lục</a></div><h1>Hướng dẫn gán nhãn Nhóm E: thực thể (Entities)</h1>
+<ul>
+<li>Câu hỏi chuẩn: Loại phương tiện và màu sắc của các bên liên quan là gì?</li>
+<li>Chỉ khai báo các bên trực tiếp va chạm hoặc suýt va chạm. Phương tiện nền chỉ khai báo khi có tác động đến sự việc.</li>
+<li>Mỗi bên được đặt tên A, B, C theo vị trí trong khung hình lúc các bên cùng xuất hiện: từ trái sang phải; hai bên nằm thẳng hàng dọc thì bên ở trên tính trước. Các nhóm C, V, O, R, Attr, Prev dùng lại đúng các tên này.</li>
+<li>Hai bên trùng cả loại và màu thì thêm chữ cái vào tên trong câu, ví dụ "xe máy màu trắng A" và "xe máy màu trắng B".</li>
+<li>Khi so giữa hai annotator, thực thể được ghép theo loại, màu và chữ cái.</li>
+<li>Mỗi ô chọn đúng một giá trị. Không nhìn rõ ô nào thì chọn "không rõ".</li>
+<li>Bên bị che hoàn toàn hoặc quá xa để nhận diện thì không khai báo; không khai báo được bên nào thì câu trả lời là "Không thể xác định".</li>
+</ul>
+<h2>Các ô (cho mỗi bên)</h2>
+<table>
+<thead>
+<tr>
+<th>Ô</th>
+<th>Lựa chọn</th>
+<th>Khi nào điền</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Loại</td>
+<td>ô tô · xe khách · xe tải · xe cứu thương · xe máy, xe hai bánh · xe máy điện, xe đạp điện · xe ba gác · người đi bộ · động vật · khác</td>
+<td>Luôn điền</td>
+</tr>
+<tr>
+<td>2. Cỡ</td>
+<td>to · nhỏ</td>
+<td>Chỉ với xe khách, xe tải</td>
+</tr>
+<tr>
+<td>3. Camera hành trình</td>
+<td>có · không</td>
+<td>Chỉ với ô tô</td>
+</tr>
+<tr>
+<td>4. Màu xe</td>
+<td>trắng · đen · xám, bạc · đỏ · xanh · vàng · nâu · màu khác · màu sáng · màu tối · không rõ</td>
+<td>Bỏ trống với ô tô có camera hành trình, người đi bộ, động vật</td>
+</tr>
+<tr>
+<td>5. Màu áo người điều khiển</td>
+<td>như ô 4</td>
+<td>Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện và người đi bộ</td>
+</tr>
+<tr>
+<td>6. Số người trên xe</td>
+<td>1 · 2 · 3 trở lên</td>
+<td>Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện</td>
+</tr>
+</tbody>
+</table>
+<p>Ghi màu cụ thể chỉ khi nhìn rõ. Ban đêm, xa hoặc ngược sáng thì chọn "màu sáng" hoặc "màu tối".
+Không ghi loại xe chi tiết hơn bảng trên (không "tay ga", không "24-29 chỗ"), không ghi biển số, khuôn mặt.
+Xe container và xe bán tải ghi là xe tải.</p>
+<h2>Mẫu câu</h2>
+<table>
+<thead>
+<tr>
+<th>Loại</th>
+<th>Mẫu câu cho một bên</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ô tô có camera hành trình</td>
+<td>Xe ô tô (có camera hành trình)</td>
+</tr>
+<tr>
+<td>Ô tô khác</td>
+<td>Xe ô tô màu [4]</td>
+</tr>
+<tr>
+<td>Xe khách, xe tải</td>
+<td>[1] [2] màu [4]</td>
+</tr>
+<tr>
+<td>Xe máy, xe hai bánh</td>
+<td>Xe máy màu [4] do người mặc áo [5] điều khiển (chở [6] người, khi từ 2 trở lên)</td>
+</tr>
+<tr>
+<td>Xe máy điện, xe đạp điện</td>
+<td>Xe máy điện màu [4] do người mặc áo [5] điều khiển (chở [6] người, khi từ 2 trở lên)</td>
+</tr>
+<tr>
+<td>Xe cứu thương, xe ba gác, khác</td>
+<td>[1] màu [4]</td>
+</tr>
+<tr>
+<td>Người đi bộ</td>
+<td>Người đi bộ mặc áo [5]</td>
+</tr>
+<tr>
+<td>Động vật</td>
+<td>Động vật</td>
+</tr>
+</tbody>
+</table>
+<p>Câu trả lời ghép các bên theo thứ tự A, B, C, nối bằng dấu phẩy, kết thúc bằng dấu chấm.
+Ô "không rõ" thì bỏ vế đó khỏi câu, ví dụ không rõ màu áo thì chỉ ghi "Xe máy màu đen".</p></main></body></html>

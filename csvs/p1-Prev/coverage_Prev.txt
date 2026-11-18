@@ -1,0 +1,552 @@
+BÁO CÁO ĐỘ PHỦ CODEBOOK, NHÓM Prev
+
+Câu trả lời khác nhau (đơn vị đếm): 201  | video: 60  | lượt viết của annotator: 382
+Map hợp lệ: 201  | lỗi, chưa tính: 0
+Độ phủ = M / n, n = M + K. Ô có n < 10: chưa đủ dữ liệu. Đạt khi độ phủ >= 80%.
+T chia hai: 'T thiếu chi tiết' (có nhắc nhưng không đủ để chọn) và 'T không nhắc'.
+
+1. ĐỘ PHỦ THEO Ô
+Ô                             M    K   T    T thiếu chi tiết  T không nhắc  n = M + K  Độ phủ = M / n  Kết luận
+----------------------------  ---  --  ---  ----------------  ------------  ---------  --------------  ---------------------
+bên thứ nhất                  72   0   129  0                 129           72         100%            đạt
+hành động chính bên thứ nhất  150  30  21   17                4             180        83%             đạt
+hành động thêm bên thứ nhất   72   21  108  18                90            93         77%             không đạt, phải sửa ô
+bên thứ hai                   8    0   193  0                 193           8          100%            chưa đủ dữ liệu
+hành động chính bên thứ hai   6    2   193  0                 193           8          75%             chưa đủ dữ liệu
+hành động thêm bên thứ hai    1    0   200  0                 200           1          100%            chưa đủ dữ liệu
+
+2. GIÁ TRỊ ĐƯỢC CHỌN (chỉ tính M)
+
+[bên thứ nhất]
+Giá trị                                     Số câu
+------------------------------------------  ------
+Tài xế xe tải                               12
+Người đi xe máy                             7
+Người lái xe                                6
+xe máy                                      5
+Người lái ô tô                              4
+Người lái xe tải                            3
+lái xe                                      2
+Người đi xe tải                             2
+Người điều khiển phương tiện                2
+tài xế ô tô                                 2
+Chủ vật nuôi                                1
+Các phương tiện                             1
+Cả hai bên                                  1
+Người dân                                   1
+Người lái xe ba gác                         1
+Người lái xe con                            1
+người lái xe máy                            1
+Người lái xe sedan màu đỏ                   1
+Người lái xe tải ben màu đỏ                 1
+Người lái xe tải ben đỏ                     1
+Người lái xe ô tô màu đỏ                    1
+Người lái xe đi ngược chiều                 1
+Người lái xe đi đường                       1
+Người lái xee tải ben màu đỏ                1
+Người lái ô tô màu nâu                      1
+Người đi bộ sang đường                      1
+Người đi xe ô tô trắng                      1
+Người điều khiển                            1
+Người điều khiển xe máy màu trắng phối đen  1
+Người điều khiển xe máy tay ga              1
+Tài xế                                      1
+Tài xế xe bên                               1
+Tài xế xe khách                             1
+tài xế xe máy                               1
+Tải xế xe tải                               1
+Xe ô tô con                                 1
+Xe ô tô trắng                               1
+
+[hành động chính bên thứ nhất]
+Giá trị                           Số câu
+--------------------------------  ------
+giảm tốc                          51
+giữ khoảng cách an toàn           26
+quan sát và nhường đường          15
+chỉ chuyển làn khi an toàn        20
+đi đúng phần đường                11
+giữ ổn định hướng lái             2
+dừng quan sát trước khi băng qua  25
+
+[hành động thêm bên thứ nhất]
+Giá trị                           Số câu
+--------------------------------  ------
+giảm tốc                          9
+giữ khoảng cách an toàn           18
+quan sát và nhường đường          16
+chỉ chuyển làn khi an toàn        10
+đi đúng phần đường                11
+giữ ổn định hướng lái             4
+dừng quan sát trước khi băng qua  4
+
+[bên thứ hai]
+Giá trị          Số câu
+---------------  ------
+người đi xe đạp  5
+lái xe           1
+người lái ô tô   1
+tài xế ô tô      1
+
+[hành động chính bên thứ hai]
+Giá trị                           Số câu
+--------------------------------  ------
+giảm tốc                          2
+giữ khoảng cách an toàn           0
+quan sát và nhường đường          0
+chỉ chuyển làn khi an toàn        0
+đi đúng phần đường                2
+giữ ổn định hướng lái             0
+dừng quan sát trước khi băng qua  2
+
+[hành động thêm bên thứ hai]
+Giá trị                           Số câu
+--------------------------------  ------
+giảm tốc                          0
+giữ khoảng cách an toàn           0
+quan sát và nhường đường          0
+chỉ chuyển làn khi an toàn        1
+đi đúng phần đường                0
+giữ ổn định hướng lái             0
+dừng quan sát trước khi băng qua  0
+
+3. MỌI CỤM BỊ K (codebook thiếu lựa chọn)
+Ô                             Cụm không khớp                                                            Bằng chứng                                                                            Video  Câu
+----------------------------  ------------------------------------------------------------------------  ------------------------------------------------------------------------------------  -----  --------
+hành động chính bên thứ hai   chú ý quan sát chướng ngại vật trước khi di chuyển                        chú ý quan sát chướng ngại vật trước khi di chuyển                                    #27    Prev0096
+hành động chính bên thứ hai   quan sát kỹ khi di chuyển giữa đường                                      quan sát kỹ khi di chuyển giữa đường                                                  #8     Prev0030
+hành động chính bên thứ nhất  Không dừng/phanh                                                          Không dừng/phanh                                                                      #14    Prev0048
+hành động chính bên thứ nhất  Không dừng/phanh                                                          Không dừng/phanh                                                                      #14    Prev0049
+hành động chính bên thứ nhất  Không dừng/phanh đột ngột giữa đường                                      Không dừng/phanh đột ngột giữa đường                                                  #14    Prev0047
+hành động chính bên thứ nhất  Không nên đi vào điểm mù                                                  Không nên đi vào điểm mù                                                              #4     Prev0013
+hành động chính bên thứ nhất  Không nên đi vào điểm mù xe lớn                                           Không nên đi vào điểm mù xe lớn                                                       #4     Prev0014
+hành động chính bên thứ nhất  Không vượt đèn đỏ                                                         Không vượt đèn đỏ                                                                     #43    Prev0151
+hành động chính bên thứ nhất  Kiểm tra xe định kỳ                                                       Kiểm tra xe định kỳ                                                                   #47    Prev0166
+hành động chính bên thứ nhất  chuyển hướng khi đảm bảo khoảng cách an toàn với các xe đang lưu thông    Chỉ thực hiện chuyển hướng khi đảm bảo khoảng cách an toàn với các xe đang lưu thông  #29    Prev0105
+hành động chính bên thứ nhất  chú ý quan sát chướng ngại vật trước khi di chuyển                        chú ý quan sát chướng ngại vật trước khi di chuyển                                    #27    Prev0098
+hành động chính bên thứ nhất  chú ý quan sát gương chiếu hậu                                            chú ý quan sát gương chiếu hậu                                                        #25    Prev0086
+hành động chính bên thứ nhất  chú ý quan sát tín hiệu đèn giao thông và chấp hành                       chú ý quan sát tín hiệu đèn giao thông và chấp hành                                   #43    Prev0154
+hành động chính bên thứ nhất  chấp hành đúng tín hiệu đèn giao thông                                    chấp hành đúng tín hiệu đèn giao thông                                                #43    Prev0150
+hành động chính bên thứ nhất  dừng lại quan sát kỹ                                                      dừng lại quan sát kỹ                                                                  #21    Prev0068
+hành động chính bên thứ nhất  hướng dẫn an toàn giao thông cho trẻ                                      hướng dẫn an toàn giao thông cho trẻ                                                  #40    Prev0137
+hành động chính bên thứ nhất  không nên xuống xe đứng giữa đường                                        không nên xuống xe đứng giữa đường                                                    #27    Prev0096
+hành động chính bên thứ nhất  không đè vạch                                                             không đè vạch                                                                         #29    Prev0107
+hành động chính bên thứ nhất  kiên nhẫn chờ xe bồn di chuyển                                            kiên nhẫn chờ xe bồn di chuyển                                                        #55    Prev0182
+hành động chính bên thứ nhất  kiểm tra kỹ gương chiếu hậu và các điểm mù trước khi nhấn ga              kiểm tra kỹ gương chiếu hậu và các điểm mù trước khi nhấn ga                          #57    Prev0185
+hành động chính bên thứ nhất  kiểm tra kỹ gương chiếu hậu và các điểm mù trước khi nhấn ga              kiểm tra kỹ gương chiếu hậu và các điểm mù trước khi nhấn ga                          #57    Prev0186
+hành động chính bên thứ nhất  kiểm tra kỹ gương chiếu hậu và các điểm mù trước khi nhấn ga              kiểm tra kỹ gương chiếu hậu và các điểm mù trước khi nhấn ga                          #57    Prev0187
+hành động chính bên thứ nhất  kiểm tra kỹ lưỡng xe trước khi khởi hành                                  kiểm tra kỹ lưỡng xe trước khi khởi hành                                              #9     Prev0032
+hành động chính bên thứ nhất  kiểm tra kỹ lốp xe                                                        kiểm tra kỹ lốp xe                                                                    #9     Prev0033
+hành động chính bên thứ nhất  kiểm tra tất cả bánh xe trước khi vận hành                                kiểm tra tất cả bánh xe trước khi vận hành                                            #9     Prev0035
+hành động chính bên thứ nhất  quan sát kỹ các phương tiện đang lưu thông trước khi di chuyển            quan sát kỹ các phương tiện đang lưu thông trước khi di chuyển                        #52    Prev0178
+hành động chính bên thứ nhất  quan sát kỹ trước khi tăng tốc                                            quan sát kỹ trước khi tăng tốc                                                        #25    Prev0084
+hành động chính bên thứ nhất  quan sát kỹ trước khi đánh lái                                            quan sát kỹ trước khi đánh lái                                                        #27    Prev0095
+hành động chính bên thứ nhất  quản lý chặt chẽ, xích hoặc nhốt chó không để chạy rông ra đường phố      quản lý chặt chẽ, xích hoặc nhốt chó không để chạy rông ra đường phố                  #6     Prev0020
+hành động chính bên thứ nhất  xi nhan sang đường                                                        xi nhan sang đường                                                                    #45    Prev0161
+hành động chính bên thứ nhất  xin đường khi chuyển hướng                                                xin đường khi chuyển hướng                                                            #48    Prev0169
+hành động chính bên thứ nhất  đi vào điểm mù của xe lớn                                                 Không đi vào điểm mù của xe lớn                                                       #44    Prev0157
+hành động thêm bên thứ nhất   bật xi nhan xin đường khi đổi hướng                                       phải bật xi nhan xin đường khi đổi hướng                                              #57    Prev0184
+hành động thêm bên thứ nhất   bật đèn tín hiệu                                                          bật đèn tín hiệu                                                                      #36    Prev0125
+hành động thêm bên thứ nhất   chỉ chuyển hướng khi an toàn                                              chỉ chuyển hướng khi an toàn                                                          #1     Prev0003
+hành động thêm bên thứ nhất   chủ động điều khiển xe tránh xa phương tiện đang đỗ bên đường             chủ động điều khiển xe tránh xa phương tiện đang đỗ bên đường                         #37    Prev0128
+hành động thêm bên thứ nhất   dừng lại                                                                  dừng lại                                                                              #10    Prev0036
+hành động thêm bên thứ nhất   dừng lại khi đèn tín hiệu chuyển sang màu đỏ                              dừng lại khi đèn tín hiệu chuyển sang màu đỏ                                          #5     Prev0018
+hành động thêm bên thứ nhất   hạn chế chuyển hướng đột ngột                                             hạn chế chuyển hướng đột ngột                                                         #9     Prev0031
+hành động thêm bên thứ nhất   kiểm tra điểm mù                                                          kiểm tra điểm mù                                                                      #43    Prev0153
+hành động thêm bên thứ nhất   ra tín hiệu rẽ từ sớm                                                     ra tín hiệu rẽ từ sớm trước khi chuyển làn                                            #28    Prev0100
+hành động thêm bên thứ nhất   ra tín hiệu rẽ từ sớm                                                     ra tín hiệu rẽ từ sớm trước khi chuyển làn                                            #28    Prev0103
+hành động thêm bên thứ nhất   ra tín hiệu rẽ từ sớm                                                     ra tín hiệu rẽ từ sớm trước khi chuyển làn                                            #28    Prev0104
+hành động thêm bên thứ nhất   ra tín hiệu xin đường                                                     ra tín hiệu xin đường                                                                 #48    Prev0167
+hành động thêm bên thứ nhất   ra tín hiệu xin đường                                                     ra tín hiệu xin đường                                                                 #48    Prev0168
+hành động thêm bên thứ nhất   tránh di chuyển quá sát bên hông xe tải lớn                               tránh di chuyển quá sát bên hông xe tải lớn                                           #4     Prev0015
+hành động thêm bên thứ nhất   tránh đi vào điểm mù xe to                                                tránh đi vào điểm mù xe to                                                            #52    Prev0176
+hành động thêm bên thứ nhất   tuyệt đối tránh đi vào điểm mù của xe tải lớn                             tuyệt đối tránh đi vào điểm mù của xe tải lớn                                         #7     Prev0022
+hành động thêm bên thứ nhất   tuyệt đối tránh đi vào điểm mù của xe tải lớn                             tuyệt đối tránh đi vào điểm mù của xe tải lớn                                         #7     Prev0023
+hành động thêm bên thứ nhất   tuyệt đối tránh đi vào điểm mù của xe tải lớn, đặc biệt là phía bên phải  tuyệt đối tránh đi vào điểm mù của xe tải lớn, đặc biệt là phía bên phải              #4     Prev0010
+hành động thêm bên thứ nhất   đội mũ bảo hiểm                                                           đội mũ bảo hiểm                                                                       #45    Prev0162
+hành động thêm bên thứ nhất   đội mũ bảo hiểm đúng quy định                                             đội mũ bảo hiểm đúng quy định                                                         #1     Prev0001
+hành động thêm bên thứ nhất   đội mũ bảo hiểm đúng quy định                                             đội mũ bảo hiểm đúng quy định                                                         #1     Prev0002
+
+4. MỌI T THIẾU CHI TIẾT
+Ô                             Bằng chứng                                               Video  Câu
+----------------------------  -------------------------------------------------------  -----  --------
+hành động chính bên thứ nhất  chú ý quan sát                                           #21    Prev0067
+hành động chính bên thứ nhất  chú ý quan sát                                           #50    Prev0171
+hành động chính bên thứ nhất  chú ý quan sát gương chiếu hậu                           #43    Prev0153
+hành động chính bên thứ nhất  quan sát kỹ                                              #2     Prev0006
+hành động chính bên thứ nhất  quan sát kỹ                                              #24    Prev0076
+hành động chính bên thứ nhất  quan sát kỹ                                              #24    Prev0077
+hành động chính bên thứ nhất  quan sát kỹ                                              #24    Prev0078
+hành động chính bên thứ nhất  quan sát kỹ                                              #24    Prev0079
+hành động chính bên thứ nhất  quan sát kỹ                                              #24    Prev0080
+hành động chính bên thứ nhất  quan sát kỹ cả hai phía                                  #40    Prev0141
+hành động chính bên thứ nhất  quan sát mặt đường                                       #42    Prev0144
+hành động chính bên thứ nhất  quan sát mặt đường                                       #42    Prev0145
+hành động chính bên thứ nhất  quan sát phương tiện xung quanh                          #2     Prev0007
+hành động chính bên thứ nhất  tập trung quan sát                                       #13    Prev0045
+hành động chính bên thứ nhất  tập trung quan sát                                       #38    Prev0130
+hành động chính bên thứ nhất  tập trung quan sát                                       #38    Prev0131
+hành động chính bên thứ nhất  tập trung quan sát phía trước                            #37    Prev0128
+hành động thêm bên thứ nhất   chú ý quan sát                                           #18    Prev0062
+hành động thêm bên thứ nhất   chú ý quan sát                                           #19    Prev0065
+hành động thêm bên thứ nhất   chú ý quan sát                                           #34    Prev0117
+hành động thêm bên thứ nhất   chú ý quan sát                                           #44    Prev0155
+hành động thêm bên thứ nhất   chú ý quan sát                                           #44    Prev0156
+hành động thêm bên thứ nhất   chú ý quan sát kỹ các hướng                              #32    Prev0113
+hành động thêm bên thứ nhất   chú ý quan sát kỹ các hướng                              #53    Prev0179
+hành động thêm bên thứ nhất   chú ý quan sát kỹ hơn                                    #18    Prev0063
+hành động thêm bên thứ nhất   chú ý quan sát kỹ hơn                                    #18    Prev0064
+hành động thêm bên thứ nhất   chú ý quan sát đa hướng                                  #23    Prev0074
+hành động thêm bên thứ nhất   chú ý quan sát đa hướng                                  #23    Prev0075
+hành động thêm bên thứ nhất   nhìn đường                                               #8     Prev0025
+hành động thêm bên thứ nhất   quan sát kỹ                                              #8     Prev0026
+hành động thêm bên thứ nhất   quan sát kỹ luồng giao thông                             #17    Prev0061
+hành động thêm bên thứ nhất   tập trung quan sát diễn biến giao thông phía trước       #60    Prev0200
+hành động thêm bên thứ nhất   tập trung quan sát diễn biến giao thông phía trước       #60    Prev0201
+hành động thêm bên thứ nhất   tập trung quan sát tín hiệu đèn phanh của xe phía trước  #51    Prev0172
+hành động thêm bên thứ nhất   tập trung quan sát xe phía trước                         #30    Prev0110
+
+5. NGOÀI CODEBOOK (gộp theo loại và đoạn)
+Loại              Đoạn                                                                                                 Số câu  Video
+----------------  ---------------------------------------------------------------------------------------------------  ------  -----------------------
+hành động thứ ba  nhường đường cho xe đi thẳng                                                                         3       #24
+hành động thứ ba  duy trì khoảng cách an toàn giữa các xe                                                              2       #14
+hành động thứ ba  giữ khoảng cách an toàn                                                                              2       #17 #24
+hành động thứ ba  kiên nhẫn đi sau                                                                                     2       #15
+hành động thứ ba  bấm còi cảnh báo                                                                                     1       #18
+hành động thứ ba  chỉ chuyển hướng khi bảo đảm an toàn                                                                 1       #3
+hành động thứ ba  chờ xe tải đi qua rồi rẽ                                                                             1       #4
+hành động thứ ba  duy trì khoảng cách an toàn                                                                          1       #43
+hành động thứ ba  hoặc lấn làn                                                                                         1       #27
+hành động thứ ba  không nên lách giữa các xe ô tô                                                                      1       #46
+hành động thứ ba  kiểm soát xe khi đổi làn                                                                             1       #9
+hành động thứ ba  nhường đường cho xe đi thẳng trước khi băng ngang qua đường                                          1       #24
+hành động thứ ba  nhường đường đúng theo luật quy định                                                                 1       #23
+hành động thứ ba  đi đúng phần đường quy định                                                                          1       #44
+hành động thứ ba  đội mũ bảo hiểm đúng quy định                                                                        1       #1
+khác              không cần làm gì cả                                                                                  1       #42
+khác              với các phương tiện phía trước                                                                       1       #33
+khác              đi                                                                                                   1       #38
+khác              đặc biệt là phía bên phải                                                                            1       #7
+khác              để tránh người đi đột ngột rẽ trái                                                                   1       #2
+khác              để tránh xảy ra sự cố bất ngờ                                                                        1       #9
+lời khuyên chung  làm chủ tốc độ                                                                                       9       #11 #29 #36 #38 #44 #50
+lời khuyên chung  cần cẩn trọng hơn                                                                                    2       #58
+lời khuyên chung  tập trung                                                                                            2       #42
+lời khuyên chung  để xử lý kịp thời                                                                                    2       #8 #30
+lời khuyên chung  chỉ di chuyển khi đảm bảo không an toàni                                                             1       #40
+lời khuyên chung  có tầm nhìn an toàn                                                                                  1       #45
+lời khuyên chung  di chuyển tốc độ an toàn                                                                             1       #40
+lời khuyên chung  giữ bình tĩnh                                                                                        1       #59
+lời khuyên chung  giữ bình tĩnh để                                                                                     1       #59
+lời khuyên chung  làm chủ tay lái                                                                                      1       #21
+lời khuyên chung  làm chủ tay lái xin đang điều khiển xe                                                               1       #29
+lời khuyên chung  phán đoán tình huống trên đường                                                                      1       #8
+lời khuyên chung  sang đường an toàn                                                                                   1       #45
+lời khuyên chung  sẵn sàng phanh                                                                                       1       #23
+lời khuyên chung  sẵn sàng xử lý tình huống                                                                            1       #19
+lời khuyên chung  tập trung làm chủ tay lái                                                                            1       #47
+lời khuyên chung  tập trung lái xe                                                                                     1       #9
+lời khuyên chung  tốc độ quy định                                                                                      1       #40
+lời khuyên chung  và kiểm soát tay lái tốt hơn                                                                         1       #34
+lời khuyên chung  và tốc độ quy định                                                                                   1       #59
+lời khuyên chung  đi đúng tốc độ                                                                                       1       #25
+lời khuyên chung  đảm bảo an toàn                                                                                      1       #45
+lời khuyên chung  đảm bảo tốc độ an toàn                                                                               1       #36
+nhóm khác: E      cho xe đi thẳng                                                                                      1       #45
+nhóm khác: E      người đi bộ không liên quan đến vụ va chạm                                                           1       #25
+nhóm khác: E      với các phương tiện thô sơ đi phía trước                                                             1       #25
+nhóm khác: O      gây cản trở và va chạm với các xe xung quanh                                                         1       #27
+nhóm khác: S      khi đi qua đoạn đường hẹp                                                                            5       #35
+nhóm khác: S      khi qua đường                                                                                        3       #39 #45
+nhóm khác: S      khi đi qua giao lộ                                                                                   3       #11 #45 #50
+nhóm khác: S      khi đến gần ngã tư                                                                                   3       #5
+nhóm khác: S      trước khi chuyển hướng                                                                               3       #2 #48
+nhóm khác: S      khi di chuyển trong không gian hẹp                                                                   2       #43
+nhóm khác: S      khi qua khúc cua                                                                                     2       #11 #59
+nhóm khác: S      khi tham gia giao thông                                                                              2       #7 #45
+nhóm khác: S      khi tránh xe ngược chiều                                                                             2       #59
+nhóm khác: S      khi đi qua khúc cua                                                                                  2       #21 #59
+nhóm khác: S      khi đến ngã tư                                                                                       2       #17
+nhóm khác: S      khi chuyển hướng                                                                                     1       #58
+nhóm khác: S      khi chạy trên cao tốc                                                                                1       #47
+nhóm khác: S      khi di chuyển dưới trời mưa                                                                          1       #39
+nhóm khác: S      khi di chuyển trong khu vực dân cư đông đúc                                                          1       #44
+nhóm khác: S      khi di chuyển trong tình trạng ùn tắc giao thông                                                     1       #27
+nhóm khác: S      khi không đảm bảo khoảng cách an toàn với xe đi ngược chiều                                          1       #54
+nhóm khác: S      khi lái xe đường có mật độ phương tiện đông                                                          1       #27
+nhóm khác: S      khi nhập làn                                                                                         1       #60
+nhóm khác: S      khi nhập làn đường chính                                                                             1       #58
+nhóm khác: S      khi qua giao lộ                                                                                      1       #58
+nhóm khác: S      khi sang đường                                                                                       1       #39
+nhóm khác: S      khi tham gia giao thông/                                                                             1       #9
+nhóm khác: S      khi thấy các phương tiện phía trước đang dừng                                                        1       #10
+nhóm khác: S      khi thấy có xe phía trước đang dừng                                                                  1       #10
+nhóm khác: S      khi thấy có xe qua đường                                                                             1       #2
+nhóm khác: S      khi tầm nhìn bị hạn chế bởi sương mù                                                                 1       #33
+nhóm khác: S      khi tới gần khu vực có vạch kẻ đường                                                                 1       #20
+nhóm khác: S      khi vào cua khuất tầm nhìn                                                                           1       #49
+nhóm khác: S      khi vào giao lộ                                                                                      1       #24
+nhóm khác: S      khi vào khúc cua                                                                                     1       #21
+nhóm khác: S      khi xe khác có tín hiệu xin chuyển làn                                                               1       #57
+nhóm khác: S      khi đang tắc giao thông                                                                              1       #27
+nhóm khác: S      khi đi qua các ngã tư đông đúc                                                                       1       #23
+nhóm khác: S      khi đi qua các điểm giao cắt                                                                         1       #34
+nhóm khác: S      khi đi qua ngã tư                                                                                    1       #53
+nhóm khác: S      khi đi qua nút giao                                                                                  1       #3
+nhóm khác: S      khi đi qua đoạn đường khu dân cư có mật độ đông người                                                1       #40
+nhóm khác: S      khi đi qua đầu ô tô                                                                                  1       #39
+nhóm khác: S      khi đi trên đường khi đi vào khúc cua                                                                1       #59
+nhóm khác: S      khi đi trên đường ướt                                                                                1       #59
+nhóm khác: S      khi đi vào giao lộ                                                                                   1       #18
+nhóm khác: S      khi đi vào góc cua khuất tầm nhìn                                                                    1       #18
+nhóm khác: S      khi đi vào ngã tư khuất tầm nhìn                                                                     1       #18
+nhóm khác: S      khi đi vào đường hẹp hoặc góc khuất                                                                  1       #19
+nhóm khác: S      khi điều khiển xe trên đường ướt, đặc biệt là khi thực hiện các thao tác chuyển hướng hoặc quay đầu  1       #58
+nhóm khác: S      khi điều khiển xe từ đường nhỏ ra đường lớn                                                          1       #58
+nhóm khác: S      khi đường nhỏ hẹp                                                                                    1       #33
+nhóm khác: S      khi đường đông xe                                                                                    1       #1
+nhóm khác: S      khi đến ngã ba và gần sát với xe máy                                                                 1       #36
+nhóm khác: S      sang đường                                                                                           1       #1
+nhóm khác: S      trong khu đô thị                                                                                     1       #25
+nhóm khác: S      trong thời tiết xấu hoặc môi trường đường trơn trượt                                                 1       #21
+nhóm khác: S      trên đường phố đông đúc                                                                              1       #40
+nhóm khác: S      trước khi thực hiện qua giao lộ                                                                      1       #24
+nhóm khác: S      trước khi thực hiện rẽ trái                                                                          1       #24
+nhóm khác: S      trước khi thực hiện sang đường                                                                       1       #24
+nhóm khác: S      trước khi tiến vào khu vực ngã tư                                                                    1       #32
+nhóm khác: S      trước khi vào làn đường giao thông                                                                   1       #58
+nhóm khác: S      tại giao lộ                                                                                          1       #39
+nhóm khác: S      tại khung đường cong                                                                                 1       #21
+nhóm khác: S      và tại đoạn đường có vạch kẻ liền                                                                    1       #33
+nhóm khác: S      đường khi đang tắc giao thông;                                                                       1       #27
+suy đoán          để tránh trường họp bị bể hư bánh xe                                                                 1       #9
+ý định            muốn                                                                                                 2       #36 #38
+ý định            thay vì cố tạt đầu xe tải lớn                                                                        1       #4
+ý định            thay vì cố vượt lên                                                                                  1       #4
+ý định            thay vì cố vượt lên trước đầu xe lớn                                                                 1       #4
+
+6. GHI CHÚ CỦA MODEL
+Video  Câu       Ghi chú
+-----  --------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#18    Prev0064  Chú ý quan sát đứng riêng, không gắn với thao tác cụ thể nên hành động thêm là T.
+#21    Prev0068  "dừng lại quan sát kỹ" là hành động cụ thể không khớp lựa chọn nào nên gán K. Thao tác "chuyển hướng" gắn với nhường đường cho xe đi thẳng được gán "quan sát và nhường đường".
+#30    Prev0110  Cụm 'tập trung quan sát xe phía trước' là quan sát đứng riêng nên ô hành động thêm là T.
+#37    Prev0128  Cụm 'tập trung quan sát phía trước' là quan sát đứng riêng chưa đủ chi tiết nên ô hành động chính là T; hành động lái xe tránh xa phương tiện không khớp lựa chọn nào nên ô hành động thêm là K.
+#38    Prev0129  Quan sát khi băng qua đường khớp nhãn dừng quan sát trước khi băng qua.
+#38    Prev0130  Tập trung quan sát đứng riêng là hành động chưa đủ chi tiết nên ô hành động chính là T; đi đúng phần đường quy định rơi vào ô hành động thêm.
+#38    Prev0131  Tập trung quan sát đứng riêng là hành động chưa đủ chi tiết nên ô hành động chính là T.
+#49    Prev0170  Lựa chọn 'đi đúng làn đường của mình' và 'không lấn làn' đều ứng với nhãn 'đi đúng phần đường', được nhóm lại làm hành động chính. Hoàn cảnh đi kèm được đưa vào nhóm S.
+#50    Prev0171  Cụm 'chú ý quan sát' đứng riêng không kèm thao tác cụ thể nên là T. Cụm 'làm chủ tốc độ' là lời khuyên chung.
+#51    Prev0172  Quan sát đèn phanh là quan sát đứng riêng không gắn với thao tác chuyển hướng/băng qua/chuyển làn nên ở ô hành động thêm là T kèm bằng chứng.
+#53    Prev0179  Quan sát đứng riêng không gắn thao tác nào nên hành động thêm là T kèm bằng chứng.
+#60    Prev0200  Hành động quan sát đứng riêng không gắn thao tác cụ thể nên ô hành động thêm là T với bằng chứng là cụm đó.
+#60    Prev0201  Hành động quan sát đứng riêng không gắn thao tác cụ thể nên ô hành động thêm là T với bằng chứng là cụm đó.
+
+7. LỖI (không tính vào độ phủ)
+(không có)
+
+8. TỪNG CÂU TRẢ LỜI
+Câu       Video  Số người  bên thứ nhất                                  hành động chính bên thứ nhất        hành động thêm bên thứ nhất         bên thứ hai        hành động chính bên thứ hai         hành động thêm bên thứ hai    Câu trả lời
+--------  -----  --------  --------------------------------------------  ----------------------------------  ----------------------------------  -----------------  ----------------------------------  ----------------------------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Prev0001  #1     1         M:Người đi xe máy                             M:giảm tốc                          K                                   T                  T                                   T                             Người đi xe máy nên chạy từ từ sang đường khi đường đông xe và đội mũ bảo hiểm đúng quy định.
+Prev0002  #1     5         M:Người đi xe máy                             M:dừng quan sát trước khi băng qua  K                                   T                  T                                   T                             Người đi xe máy nên quan sát kỹ trước khi sang đường và đội mũ bảo hiểm đúng quy định.
+Prev0003  #1     1         M:Người điều khiển xe máy tay ga              M:quan sát và nhường đường          K                                   T                  T                                   T                             Người điều khiển xe máy tay ga cần quan sát, nhường đường cho phương tiện đang đến và chỉ chuyển hướng khi an toàn và đội mũ bảo hiểm đúng quy định.
+Prev0004  #2     1         M:Người lái xe ba gác                         M:quan sát và nhường đường          T                                   M:người lái ô tô   M:giảm tốc                          T                             Người lái xe ba gác nên quan sát kỹ và chờ xe đi thẳng qua hết mới được thực hiện rẽ trái và người lái ô tô nên chủ động giảm tốc độ hơn khi thấy có xe qua đường.
+Prev0005  #2     3         T                                             M:quan sát và nhường đường          T                                   T                  T                                   T                             Nên quan sát kỹ và chờ xe đi thẳng qua hết mới được thực hiện rẽ trái.
+Prev0006  #2     1         T                                             T                                   T                                   T                  T                                   T                             Nên quan sát kỹ để tránh người đi đột ngột rẽ trái.
+Prev0007  #2     1         T                                             T                                   M:giữ khoảng cách an toàn           T                  T                                   T                             cần quan sát phương tiện xung quanh và bảo đảm khoảng cách an toàn trước khi chuyển hướng.
+Prev0008  #3     1         T                                             M:giảm tốc                          M:quan sát và nhường đường          T                  T                                   T                             Cần giảm tốc độ, chú ý quan sát các phương tiện xung quanh và nhường đường cho phương tiện đang đến và chỉ chuyển hướng khi bảo đảm an toàn.
+Prev0009  #3     6         T                                             M:giảm tốc                          M:quan sát và nhường đường          T                  T                                   T                             Cần giảm tốc độ, chú ý quan sát các phương tiện xung quanh và nhường đường khi đi qua nút giao.
+Prev0010  #4     1         T                                             M:giữ khoảng cách an toàn           K                                   T                  T                                   T                             Giữ khoảng cách an toàn, tuyệt đối tránh đi vào điểm mù của xe tải lớn, đặc biệt là phía bên phải.
+Prev0011  #4     1         T                                             M:chỉ chuyển làn khi an toàn        M:giữ khoảng cách an toàn           T                  T                                   T                             Không nên vượt khi ở điểm mù của xe khác và giữ khoảng cách an toàn.
+Prev0012  #4     1         T                                             M:chỉ chuyển làn khi an toàn        M:giữ khoảng cách an toàn           T                  T                                   T                             Không nên vượt sát xe lớn, nên giữ khoảng cách an toàn.
+Prev0013  #4     1         T                                             K                                   M:giữ khoảng cách an toàn           T                  T                                   T                             Không nên đi vào điểm mù và giữ khoảng cách an toàn thay vì cố tạt đầu xe tải lớn.
+Prev0014  #4     1         T                                             K                                   M:giữ khoảng cách an toàn           T                  T                                   T                             Không nên đi vào điểm mù xe lớn và giữ khoảng cách an toàn thay vì cố vượt lên trước đầu xe lớn.
+Prev0015  #4     1         T                                             M:giữ khoảng cách an toàn           K                                   T                  T                                   T                             cần giữ khoảng cách an toàn, tránh di chuyển quá sát bên hông xe tải lớn.
+Prev0016  #4     1         T                                             M:giảm tốc                          M:giữ khoảng cách an toàn           T                  T                                   T                             Đi chậm lại giữ khoảng cách an toàn chờ xe tải đi qua rồi rẽ thay vì cố vượt lên.
+Prev0017  #5     1         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ khi đến gần ngã tư
+Prev0018  #5     4         T                                             M:giảm tốc                          K                                   T                  T                                   T                             Nên giảm tốc độ khi đến gần ngã tư và dừng lại khi đèn tín hiệu chuyển sang màu đỏ.
+Prev0019  #5     2         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ khi đến gần ngã tư.
+Prev0020  #6     7         M:Chủ vật nuôi                                K                                   T                                   T                  T                                   T                             Chủ vật nuôi cần quản lý chặt chẽ, xích hoặc nhốt chó không để chạy rông ra đường phố.
+Prev0021  #7     1         T                                             M:giữ khoảng cách an toàn           M:quan sát và nhường đường          T                  T                                   T                             Giữ khoảng cách an toàn, nhường đường khi tham gia giao thông.
+Prev0022  #7     5         T                                             M:giữ khoảng cách an toàn           K                                   T                  T                                   T                             Giữ khoảng cách an toàn, tuyệt đối tránh đi vào điểm mù của xe tải lớn, đặc biệt là phía bên phải.
+Prev0023  #7     1         T                                             M:giữ khoảng cách an toàn           K                                   T                  T                                   T                             Giữ khoảng cách an toàn, tuyệt đối tránh đi vào điểm mù của xe tải lớn.
+Prev0024  #8     1         M:Tài xế xe tải                               M:giảm tốc                          T                                   M:người đi xe đạp  M:đi đúng phần đường                M:chỉ chuyển làn khi an toàn  Tài xế xe tải nên giảm tốc độ ; người đi xe đạp không nên đi ngược chiều và quan sát kỹ trước khi vượt.
+Prev0025  #8     1         M:Tài xế xe tải                               M:giảm tốc                          T                                   T                  T                                   T                             Tài xế xe tải nên giảm tốc độ và nhìn đường để xử lý kịp thời
+Prev0026  #8     1         M:Tài xế xe tải                               M:giảm tốc                          T                                   M:người đi xe đạp  M:dừng quan sát trước khi băng qua  T                             Tài xế xe tải nên giảm tốc độ và quan sát kỹ phán đoán tình huống trên đường; người đi xe đạp nên quan sát kỹ khi qua đường.
+Prev0027  #8     1         M:Tài xế xe tải                               M:giảm tốc                          M:chỉ chuyển làn khi an toàn        T                  T                                   T                             Tài xế xe tải nên giảm tốc độ và quan sát kỹ trước khi vượt.
+Prev0028  #8     1         M:Tài xế xe tải                               M:giảm tốc                          M:chỉ chuyển làn khi an toàn        M:người đi xe đạp  M:đi đúng phần đường                T                             Tài xế xe tải nên giảm tốc độ và quan sát kỹ trước khi vượt; người đi xe đạp không nên đi ngược chiều.
+Prev0029  #8     1         M:tài xế xe tải                               M:giảm tốc                          M:chỉ chuyển làn khi an toàn        M:người đi xe đạp  M:dừng quan sát trước khi băng qua  T                             Tài xế xe tải nên giảm tốc độ và quan sát kỹ trước khi vượt; người đi xe đạp nên quan sát khi sang đường.
+Prev0030  #8     1         M:tài xế xe tải                               M:giảm tốc                          M:chỉ chuyển làn khi an toàn        M:người đi xe đạp  K                                   T                             Tài xế xe tải nên giảm tốc độ và quan sát kỹ trước khi vượt; người đi xe đạp nên quan sát kỹ khi di chuyển giữa đường.
+Prev0031  #9     1         M:Người lái xe tải                            M:giữ ổn định hướng lái             K                                   T                  T                                   T                             Người lái xe tải cần giữ ổn định hướng lái, hạn chế chuyển hướng đột ngột và kiểm soát xe khi đổi làn.
+Prev0032  #9     1         M:Tài xế                                      K                                   T                                   T                  T                                   T                             Tài xế nên kiểm tra kỹ lưỡng xe trước khi khởi hành để tránh xảy ra sự cố bất ngờ.
+Prev0033  #9     1         M:Tài xế xe tải                               K                                   T                                   T                  T                                   T                             Tài xế xe tải nên kiểm tra kỹ lốp xe khi tham gia giao thông/
+Prev0034  #9     2         M:Tài xế xe tải                               M:đi đúng phần đường                T                                   T                  T                                   T                             Tài xế xe tải nên tập trung lái xe, giữ đúng làn đường.
+Prev0035  #9     1         M:Tải xế xe tải                               K                                   T                                   T                  T                                   T                             Tải xế xe tải nên kiểm tra tất cả bánh xe trước khi vận hành để tránh trường họp bị bể hư bánh xe.
+Prev0036  #10    1         M:người lái xe tải                            M:giảm tốc                          K                                   T                  T                                   T                             Người lái xe tải nên giảm tốc độ và dừng lại khi thấy có xe phía trước đang dừng.
+Prev0037  #10    6         M:người lái xe tải                            M:giảm tốc                          M:giữ khoảng cách an toàn           T                  T                                   T                             Người lái xe tải nên giảm tốc độ và giữ khoảng cách an toàn khi thấy các phương tiện phía trước đang dừng.
+Prev0038  #11    1         M:người lái xe máy                            M:giảm tốc                          T                                   T                  T                                   T                             Người lái xe máy nên giảm tốc độ khi đi qua giao lộ.
+Prev0039  #11    1         M:người đi xe máy                             M:giảm tốc                          T                                   T                  T                                   T                             Người đi xe máy nên đi chậm, làm chủ tốc độ khi qua khúc cua.
+Prev0040  #11    1         M:tài xế xe máy                               M:giảm tốc                          M:quan sát và nhường đường          T                  T                                   T                             Tài xế xe máy nên giảm tốc độ, chú ý quan sát kỹ các phương tiện đi thẳng từ hướng ngược lại và nhường đường cho họ trước khi rẽ.
+Prev0041  #11    2         M:tài xế ô tô                                 M:giảm tốc                          M:quan sát và nhường đường          T                  T                                   T                             Tài xế ô tô nên giảm tốc độ, chú ý quan sát kỹ các phương tiện đi thẳng từ hướng ngược lại và nhường đường cho họ trước khi rẽ.
+Prev0042  #11    1         M:xe máy                                      M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Xe máy nên làm chủ tốc độ và giữ khoảng cách phù hợp với các phương tiện phía trước.
+Prev0043  #11    1         T                                             M:giảm tốc                          M:quan sát và nhường đường          T                  T                                   T                             nên giảm tốc độ, chú ý quan sát kỹ các phương tiện và nhường đường cho họ rẽ trước.
+Prev0044  #12    7         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Nên quan sát kỹ gương chiếu hậu, điểm mù và chỉ chuyển làn khi có khoảng cách an toàn đủ lớn.
+Prev0045  #13    7         T                                             T                                   M:đi đúng phần đường                T                  T                                   T                             Nên tập trung quan sát và đi đúng phần đường, làn đường quy định.
+Prev0046  #14    1         T                                             M:chỉ chuyển làn khi an toàn        M:giữ khoảng cách an toàn           T                  T                                   T                             Không chuyển làn/rẽ hướng một cách đột ngột và duy trì khoảng cách an toàn giữa các xe.
+Prev0047  #14    1         T                                             K                                   M:giữ khoảng cách an toàn           T                  T                                   T                             Không dừng/phanh đột ngột giữa đường và duy trì khoảng cách an toàn giữa các xe.
+Prev0048  #14    1         T                                             K                                   M:chỉ chuyển làn khi an toàn        T                  T                                   T                             Không dừng/phanh, không chuyển hướng đột ngột giữa đường và duy trì khoảng cách an toàn giữa các xe.
+Prev0049  #14    1         T                                             K                                   M:đi đúng phần đường                T                  T                                   T                             Không dừng/phanh, lấn làn đột ngột giữa đường và duy trì khoảng cách an toàn giữa các xe.
+Prev0050  #14    1         T                                             M:quan sát và nhường đường          T                                   T                  T                                   T                             Không đột ngột quay đầu khi chưa quan sát
+Prev0051  #14    1         T                                             M:dừng quan sát trước khi băng qua  M:giữ khoảng cách an toàn           T                  T                                   T                             Quan sát kĩ khi sang đường và duy trì khoảng cách an toàn giữa các xe.
+Prev0052  #14    1         M:Xe ô tô con                                 M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Xe ô tô con nên nhìn phía sau kết hợp với xi nhan khi chuyển làn
+Prev0053  #15    1         T                                             M:giữ khoảng cách an toàn           M:chỉ chuyển làn khi an toàn        T                  T                                   T                             Nên giữ khoảng cách an toàn, kiên nhẫn đi sau hoặc chỉ nhập làn khi có đủ khoảng trống an toàn.
+Prev0054  #15    4         T                                             M:giữ khoảng cách an toàn           M:chỉ chuyển làn khi an toàn        T                  T                                   T                             Nên giữ khoảng cách an toàn, kiên nhẫn đi sau hoặc chỉ vượt khi có đủ khoảng trống an toàn.
+Prev0055  #15    1         T                                             M:giữ khoảng cách an toàn           M:quan sát và nhường đường          T                  T                                   T                             Nên giữ khoảng cách an toàn, quan sát đường, kiên nhẫn chờ xe đi hết rồi rẽ trái
+Prev0056  #16    4         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Nên dừng lại quan sát kỹ và chỉ băng qua đường khi đảm bảo không gây cản trở cho các xe đang đi thẳng.
+Prev0057  #16    1         T                                             M:giảm tốc                          M:dừng quan sát trước khi băng qua  T                  T                                   T                             Nên giảm tốc độ quan sát kỹ và chỉ băng qua đường khi đảm bảo không gây cản trở cho các xe đang đi thẳng.
+Prev0058  #16    1         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Nên quan sát kỹ và chỉ băng qua đường khi đảm bảo không gây cản trở cho các xe đang đi thẳng.
+Prev0059  #16    1         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Quan sát và nhường đường cho xe đang chạy đúng trước khi nhập làn.
+Prev0060  #17    5         T                                             M:giảm tốc                          M:dừng quan sát trước khi băng qua  T                  T                                   T                             Nên giảm tốc độ khi đến ngã tư và quan sát kỹ luồng giao thông đang cắt ngang trước khi tiến vào.
+Prev0061  #17    1         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ khi đến ngã tư và quan sát kỹ luồng giao thông, giữ khoảng cách an toàn.
+Prev0062  #18    1         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ, chú ý quan sát khi đi vào giao lộ
+Prev0063  #18    5         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ, chú ý quan sát kỹ hơn hoặc bấm còi cảnh báo khi đi vào góc cua khuất tầm nhìn.
+Prev0064  #18    1         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ, chú ý quan sát kỹ hơn khi đi vào ngã tư khuất tầm nhìn.
+Prev0065  #19    7         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ, chú ý quan sát và sẵn sàng xử lý tình huống khi đi vào đường hẹp hoặc góc khuất.
+Prev0066  #20    7         M:Người đi xe máy                             M:quan sát và nhường đường          T                                   M:tài xế ô tô      M:giảm tốc                          T                             Người đi xe máy nên quan sát kỹ và nhường đường cho xe đi thẳng; tài xế ô tô nên giảm tốc độ khi tới gần khu vực có vạch kẻ đường.
+Prev0067  #21    1         T                                             T                                   T                                   T                  T                                   T                             Nên chú ý quan sát khi vào khúc cua, làm chủ tay lái.
+Prev0068  #21    2         T                                             K                                   M:quan sát và nhường đường          T                  T                                   T                             Nên dừng lại quan sát kỹ và chỉ chuyển hướng khi đảm bảo khoảng cách an toàn với xe đang đi thẳng.
+Prev0069  #21    1         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên đi tốc độ chậm trong thời tiết xấu hoặc môi trường đường trơn trượt.
+Prev0070  #21    1         T                                             M:đi đúng phần đường                M:giữ ổn định hướng lái             T                  T                                   T                             Nên đi đúng làn đường quy định, khi đi qua khúc cua nên bẻ lái ôm theo đúng làn cua một cách an toàn.
+Prev0071  #21    1         T                                             M:đi đúng phần đường                M:giảm tốc                          T                  T                                   T                             Nên đi đúng làn đường với tốc độ chậm tại khung đường cong.
+Prev0072  #21    1         T                                             M:quan sát và nhường đường          M:đi đúng phần đường                T                  T                                   T                             khi chuyển hướng chú ý, quan sát đi đúng làn đường.
+Prev0073  #22    7         T                                             M:dừng quan sát trước khi băng qua  M:quan sát và nhường đường          T                  T                                   T                             Nên dừng lại quan sát kỹ cả hai hướng và nhường đường cho xe ô tô trước khi băng qua.
+Prev0074  #23    6         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Cần giảm tốc độ, chú ý quan sát đa hướng và sẵn sàng phanh khi đi qua các ngã tư đông đúc.
+Prev0075  #23    1         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Cần giảm tốc độ, chú ý quan sát đa hướng, nhường đường đúng theo luật quy định.
+Prev0076  #24    1         T                                             T                                   M:giảm tốc                          T                  T                                   T                             Nên quan sát kỹ, giảm tốc độ và giữ khoảng cách an toàn khi vào giao lộ.
+Prev0077  #24    1         T                                             T                                   M:giảm tốc                          T                  T                                   T                             Nên quan sát kỹ, giảm tốc độ và nhường đường cho xe đi thẳng trước khi băng ngang qua đường.
+Prev0078  #24    1         T                                             T                                   M:giảm tốc                          T                  T                                   T                             Nên quan sát kỹ, giảm tốc độ và nhường đường cho xe đi thẳng trước khi thực hiện qua giao lộ.
+Prev0079  #24    3         T                                             T                                   M:giảm tốc                          T                  T                                   T                             Nên quan sát kỹ, giảm tốc độ và nhường đường cho xe đi thẳng trước khi thực hiện rẽ trái.
+Prev0080  #24    1         T                                             T                                   M:giảm tốc                          T                  T                                   T                             Nên quan sát kỹ, giảm tốc độ và nhường đường cho xe đi thẳng trước khi thực hiện sang đường.
+Prev0081  #25    1         T                                             M:giảm tốc                          M:đi đúng phần đường                T                  T                                   T                             Chạy chậm và đúng làn đường
+Prev0082  #25    1         T                                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Nên giữ khoảng các an toàn với các phương tiện đi trước.
+Prev0083  #25    1         T                                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Nên giữ khoảng cách an toàn với phương tiện đi trước
+Prev0084  #25    1         T                                             K                                   T                                   T                  T                                   T                             Nên quan sát kỹ trước khi tăng tốc.
+Prev0085  #25    1         T                                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Nên đi đúng tốc độ trong khu đô thị và giữ khoảng cách an toàn.
+Prev0086  #25    1         M:Tài xế ô tô                                 K                                   M:giữ khoảng cách an toàn           T                  T                                   T                             Tài xế ô tô cần chú ý quan sát gương chiếu hậu và giữ khoảng cách an toàn với các phương tiện thô sơ đi phía trước.
+Prev0087  #25    1         T                                             T                                   T                                   T                  T                                   T                             người đi bộ không liên quan đến vụ va chạm.
+Prev0088  #26    1         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Nên dừng lại quan sát kỹ và nhường đường cho các phương tiện đi qua trước khi quyết định băng qua đường.
+Prev0089  #26    2         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Nên dừng lại quan sát kỹ và nhường đường cho xe tải đi qua trước khi quyết định băng qua đường.
+Prev0090  #26    1         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Nên dừng lại quan sát kỹ và nhường đường cho xe ô tô gắn camera đi qua trước khi quyết định băng qua đường.
+Prev0091  #26    1         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Nên dừng lại quan sát kỹ và nhường đường cho xe ô tô đi qua trước khi quyết định băng qua đường.
+Prev0092  #26    1         T                                             M:dừng quan sát trước khi băng qua  M:quan sát và nhường đường          T                  T                                   T                             Nên dừng lại quan sát kỹ và nhường đường cho xe đang đi thẳng qua trước khi quyết định băng qua đường.
+Prev0093  #26    1         T                                             M:dừng quan sát trước khi băng qua  M:quan sát và nhường đường          T                  T                                   T                             Nên dừng lại quan sát kỹ và nhường đường cho xe đi qua trước khi quyết định băng qua đường.
+Prev0094  #27    1         M:Các phương tiện                             M:giữ khoảng cách an toàn           M:chỉ chuyển làn khi an toàn        T                  T                                   T                             Các phương tiện khi di chuyển trong tình trạng ùn tắc giao thông cần giữ khoảng cách an toàn, tuyệt đối không cố vượt lên hoặc lấn làn gây cản trở và va chạm với các xe xung quanh.
+Prev0095  #27    1         T                                             K                                   T                                   T                  T                                   T                             Khi lái xe đường có mật độ phương tiện đông cần quan sát kỹ trước khi đánh lái.
+Prev0096  #27    2         M:Người dân                                   K                                   T                                   M:lái xe           K                                   T                             Người dân không nên xuống xe đứng giữa đường khi đang tắc giao thông; lái xe cần chú ý quan sát chướng ngại vật trước khi di chuyển.
+Prev0097  #27    1         T                                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             cần giữ khoảng cách ngang an toàn với các phương tiện tham gia giao thông
+Prev0098  #27    1         M:lái xe                                      K                                   T                                   T                  T                                   T                             lái xe cần chú ý quan sát chướng ngại vật trước khi di chuyển.
+Prev0099  #27    1         M:lái xe                                      M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             đường khi đang tắc giao thông; lái xe cần chú ý giữ khoảng cách an toàn.
+Prev0100  #28    3         M:Người lái xe con                            M:chỉ chuyển làn khi an toàn        K                                   T                  T                                   T                             Người lái xe con nên quan sát kỹ gương chiếu hậu và ra tín hiệu rẽ từ sớm trước khi chuyển làn.
+Prev0101  #28    1         M:Người lái xe tải ben màu đỏ                 M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Người lái xe tải ben màu đỏ nên quan sát kỹ trước khi chuyển làn.
+Prev0102  #28    1         M:Người lái xe tải ben đỏ                     M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Người lái xe tải ben đỏ nên quan sát kỹ khi chuyển làn.
+Prev0103  #28    1         M:Người lái xee tải ben màu đỏ                M:chỉ chuyển làn khi an toàn        K                                   T                  T                                   T                             Người lái xee tải ben màu đỏ nên quan sát kỹ gương chiếu hậu và ra tín hiệu rẽ từ sớm trước khi chuyển làn.
+Prev0104  #28    1         M:Người điều khiển                            M:chỉ chuyển làn khi an toàn        K                                   T                  T                                   T                             Người điều khiển nên quan sát và ra tín hiệu rẽ từ sớm trước khi chuyển làn.
+Prev0105  #29    1         T                                             K                                   T                                   T                  T                                   T                             Chỉ thực hiện chuyển hướng khi đảm bảo khoảng cách an toàn với các xe đang lưu thông.
+Prev0106  #29    1         T                                             M:đi đúng phần đường                T                                   T                  T                                   T                             Không đi ngược chiều.
+Prev0107  #29    1         T                                             K                                   M:đi đúng phần đường                T                  T                                   T                             Làm chủ tốc độ, không đè vạch và không đi vào làn ngược chiều
+Prev0108  #29    3         T                                             M:quan sát và nhường đường          T                                   T                  T                                   T                             Nên quan sát kỹ gương chiếu hậu, điểm mù và chỉ thực hiện chuyển hướng khi đảm bảo khoảng cách an toàn với các xe đang lưu thông.
+Prev0109  #29    1         T                                             T                                   T                                   T                  T                                   T                             nên làm chủ tốc độ, làm chủ tay lái xin đang điều khiển xe.
+Prev0110  #30    7         T                                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Giữ khoảng cách an toàn và tập trung quan sát xe phía trước để xử lý kịp thời.
+Prev0111  #31    6         T                                             M:quan sát và nhường đường          T                                   T                  T                                   T                             Nên dừng lại quan sát kỹ các phương tiện đang lưu thông trên đường chính và chỉ thực hiện việc nhập làn/rẽ khi đảm bảo khoảng cách an toàn.
+Prev0112  #31    1         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên đi chậm.
+Prev0113  #32    7         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ, chú ý quan sát kỹ các hướng trước khi tiến vào khu vực ngã tư.
+Prev0114  #33    1         T                                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Giữ khoảng cách an toàn với các phương tiện phía trước
+Prev0115  #33    5         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Không được vượt khi tầm nhìn bị hạn chế bởi sương mù và tại đoạn đường có vạch kẻ liền.
+Prev0116  #33    1         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Không được vượt khi đường nhỏ hẹp.
+Prev0117  #34    7         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ, chú ý quan sát và kiểm soát tay lái tốt hơn khi đi qua các điểm giao cắt.
+Prev0118  #35    1         M:Cả hai bên                                  M:giảm tốc                          M:quan sát và nhường đường          T                  T                                   T                             Cả hai bên nên giảm tốc độ và nhường đường khi đi qua đoạn đường hẹp.
+Prev0119  #35    1         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Cần quan sát kỹ khi quyết định vượt.
+Prev0120  #35    1         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Không nên vượt khi không quan sát được phía trước.
+Prev0121  #35    1         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Nên quan sát kĩ trước khi vượt khi đi qua đoạn đường hẹp.
+Prev0122  #35    1         T                                             M:giảm tốc                          M:quan sát và nhường đường          T                  T                                   T                             nên quan sát giảm tốc độ và nhường đường khi đi qua đoạn đường hẹp.
+Prev0123  #35    1         M:xe máy                                      M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             xe máy không nên vượt khi không đủ tầm nhìn an toàn khi đi qua đoạn đường hẹp.
+Prev0124  #35    1         M:xe máy                                      M:giảm tốc                          M:quan sát và nhường đường          T                  T                                   T                             xe máy nên giảm tốc độ và nhường đường khi đi qua đoạn đường hẹp.
+Prev0125  #36    2         M:Người đi xe máy                             M:quan sát và nhường đường          K                                   T                  T                                   T                             Người đi xe máy nên quan sát gương chiếu hậu, nhìn phía sau và bật đèn tín hiệu trước khi muốn chuyển hướng.
+Prev0126  #36    1         T                                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Nên làm chủ tốc độ, giữ khoảng cách an toàn với các xe phía trước
+Prev0127  #36    1         M:Xe ô tô trắng                               M:giảm tốc                          T                                   T                  T                                   T                             Xe ô tô trắng nênđảm bảo tốc độ an toàn và giảm tốc độ khi đến ngã ba và gần sát với xe máy.
+Prev0128  #37    7         M:Người lái xe                                T                                   K                                   T                  T                                   T                             Người lái xe nên tập trung quan sát phía trước và chủ động điều khiển xe tránh xa phương tiện đang đỗ bên đường.
+Prev0129  #38    1         M:Người lái xe                                M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Người lái xe muốn băng qua đường cần tập trung quan sát, thấy an toàn mới di chuyển
+Prev0130  #38    1         M:Người lái xe                                T                                   M:đi đúng phần đường                T                  T                                   T                             Người lái xe đi cần tập trung quan sát, làm chủ tốc độ và đi đúng phần đường quy định.
+Prev0131  #38    5         M:Người lái xe đi ngược chiều                 T                                   M:đi đúng phần đường                T                  T                                   T                             Người lái xe đi ngược chiều cần tập trung quan sát, làm chủ tốc độ và đi đúng phần đường quy định.
+Prev0132  #39    3         T                                             M:giảm tốc                          M:giữ khoảng cách an toàn           T                  T                                   T                             Cần giảm tốc độ và giữ khoảng cách an toàn khi di chuyển dưới trời mưa.
+Prev0133  #39    1         T                                             M:giảm tốc                          M:giữ khoảng cách an toàn           T                  T                                   T                             Cần giảm tốc độ và giữ khoảng cách an toàn khi sang đường
+Prev0134  #39    1         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Cần quan sát kỹ khi đi qua đường.
+Prev0135  #39    1         T                                             M:dừng quan sát trước khi băng qua  M:giữ khoảng cách an toàn           T                  T                                   T                             Cần quan sát kỹ và giữ khoảng cách an toàn khi qua đường.
+Prev0136  #39    1         M:Người điều khiển xe máy màu trắng phối đen  M:dừng quan sát trước khi băng qua  M:giữ khoảng cách an toàn           T                  T                                   T                             Người điều khiển xe máy màu trắng phối đen cần quan sát và giữ khoảng cách an toàn khi đi qua đầu ô tô tại giao lộ.
+Prev0137  #40    1         T                                             K                                   M:giảm tốc                          T                  T                                   T                             Cần hướng dẫn an toàn giao thông cho trẻ. Không chạy nhanh trên đường phố đông đúc.
+Prev0138  #40    1         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Khi băng qua đường phải dừng lại quan sát kỹ các phương tiện xung quanh.
+Prev0139  #40    1         M:Người lái xe                                M:giảm tốc                          T                                   T                  T                                   T                             Người lái xe cần phải di chuyển tốc độ an toàn và giảm tốc độ khi đi qua đoạn đường khu dân cư có mật độ đông người.
+Prev0140  #40    1         M:Người lái xe                                M:đi đúng phần đường                T                                   T                  T                                   T                             Người lái xe cần đi đúng phần đường và tốc độ quy định
+Prev0141  #40    1         M:Người lái xe đi đường                       T                                   T                                   T                  T                                   T                             Người lái xe đi đường cần quan sát kỹ cả hai phía và chỉ di chuyển khi đảm bảo không an toàni.
+Prev0142  #40    1         M:Người đi bộ sang đường                      M:dừng quan sát trước khi băng qua  M:quan sát và nhường đường          T                  T                                   T                             Người đi bộ sang đường cần dừng lại quan sát kỹ cả hai phía và chỉ di chuyển khi đảm bảo không gây cản trở cho xe đang tới.
+Prev0143  #41    4         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Cần dừng lại quan sát kỹ các phương tiện đang đi thẳng và chỉ sang đường khi đảm bảo an toàn.
+Prev0144  #42    1         T                                             T                                   M:giữ ổn định hướng lái             T                  T                                   T                             Cần tập trung quan sát mặt đường và duy trì sự thăng bằng khi lái xe.
+Prev0145  #42    1         T                                             T                                   M:quan sát và nhường đường          T                  T                                   T                             Cần tập trung quan sát mặt đường và nhường đường khi sang đường.
+Prev0146  #42    1         T                                             M:đi đúng phần đường                T                                   T                  T                                   T                             Cần đi đùng phần đường quy định
+Prev0147  #42    1         T                                             M:đi đúng phần đường                T                                   T                  T                                   T                             Không chạy xe ngược chiều.
+Prev0148  #42    1         T                                             M:đi đúng phần đường                T                                   T                  T                                   T                             Không nên đi ngược chiều, nên đi đúng làn xe chạy.
+Prev0149  #42    1         T                                             T                                   T                                   T                  T                                   T                             không cần làm gì cả
+Prev0150  #43    1         T                                             K                                   M:giữ khoảng cách an toàn           T                  T                                   T                             Cần chấp hành đúng tín hiệu đèn giao thông và giữ khoảng cách an toàn khi di chuyển trong không gian hẹp.
+Prev0151  #43    1         T                                             K                                   M:giữ khoảng cách an toàn           T                  T                                   T                             Không vượt đèn đỏ và giữa khoảng cách an toàn.
+Prev0152  #43    1         M:Tài xế xe tải                               M:đi đúng phần đường                M:chỉ chuyển làn khi an toàn        T                  T                                   T                             Tài xế xe tải không nên lấn làn và vượt khi không đảm bảo khoảng cách an toàn.
+Prev0153  #43    2         M:Tài xế xe tải                               T                                   K                                   T                  T                                   T                             Tài xế xe tải nên chú ý quan sát gương chiếu hậu, kiểm tra điểm mù và duy trì khoảng cách an toàn khi di chuyển trong không gian hẹp.
+Prev0154  #43    1         M:Tài xế xe tải                               K                                   T                                   T                  T                                   T                             Tài xế xe tải nên chú ý quan sát tín hiệu đèn giao thông và chấp hành.
+Prev0155  #44    4         T                                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Giữ khoảng cách an toàn, chú ý quan sát và làm chủ tốc độ khi di chuyển trong khu vực dân cư đông đúc.
+Prev0156  #44    1         T                                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Giữ khoảng cách an toàn, chú ý quan sát và đi đúng phần đường quy định
+Prev0157  #44    1         T                                             K                                   T                                   T                  T                                   T                             Không đi vào điểm mù của xe lớn.
+Prev0158  #45    1         T                                             M:dừng quan sát trước khi băng qua  M:giảm tốc                          T                  T                                   T                             Cần quan sát kỹ trước khi qua đường, giảm tốc độ khi đi qua giao lộ.
+Prev0159  #45    1         T                                             M:quan sát và nhường đường          T                                   T                  T                                   T                             Cần quan sát kỹ và nhường đường cho xe đi thẳng.
+Prev0160  #45    1         T                                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Khi sang đường nên quan sát, đảm bảo an toàn.
+Prev0161  #45    1         M:Xe máy                                      K                                   T                                   T                  T                                   T                             Xe máy cần xi nhan sang đường, có tầm nhìn an toàn và sang đường an toàn.
+Prev0162  #45    1         T                                             M:dừng quan sát trước khi băng qua  K                                   T                  T                                   T                             khi qua đường cần quan sát kỹ các phương tiện khác di chuyển và đội mũ bảo hiểm khi tham gia giao thông
+Prev0163  #45    1         M:xe máy                                      M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             xe máy khi qua đường nên quan sát kĩ
+Prev0164  #46    5         T                                             M:giữ khoảng cách an toàn           M:đi đúng phần đường                T                  T                                   T                             Nên giữ khoảng cách an toàn, đi đúng làn đường và không nên lách giữa các xe ô tô.
+Prev0165  #46    1         T                                             M:giữ khoảng cách an toàn           M:đi đúng phần đường                T                  T                                   T                             Nên giữ khoảng cách an toàn, đi đúng làn đường.
+Prev0166  #47    6         T                                             K                                   T                                   T                  T                                   T                             Kiểm tra xe định kỳ và tập trung làm chủ tay lái khi chạy trên cao tốc.
+Prev0167  #48    4         T                                             M:quan sát và nhường đường          K                                   T                  T                                   T                             Cần quan sát kỹ phía sau và ra tín hiệu xin đường trước khi chuyển hướng.
+Prev0168  #48    1         T                                             M:quan sát và nhường đường          K                                   T                  T                                   T                             Cần quan sát kỹ và ra tín hiệu xin đường trước khi chuyển hướng.
+Prev0169  #48    1         T                                             K                                   T                                   T                  T                                   T                             Cần xin đường khi chuyển hướng.
+Prev0170  #49    6         M:Tài xế xe khách                             M:đi đúng phần đường                M:giảm tốc                          T                  T                                   T                             Tài xế xe khách nên đi đúng làn đường của mình, không lấn làn và giảm tốc độ khi vào cua khuất tầm nhìn.
+Prev0171  #50    6         M:Người điều khiển phương tiện                T                                   T                                   T                  T                                   T                             Người điều khiển phương tiện nên chú ý quan sát và làm chủ tốc độ khi đi qua giao lộ.
+Prev0172  #51    6         M:Người đi xe máy                             M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Người đi xe máy nên giữ khoảng cách an toàn xa hơn và tập trung quan sát tín hiệu đèn phanh của xe phía trước.
+Prev0173  #52    1         M:Người đi xe tải                             M:giảm tốc                          M:dừng quan sát trước khi băng qua  T                  T                                   T                             Người đi xe tải cần giảm tốc độ và quan sát kỹ các phương tiện đang lưu thông trước khi sang đường.
+Prev0174  #52    1         M:Người đi xe tải                             M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Người đi xe tải cần quan sát kỹ các phương tiện đang lưu thông trước khi sang đường.
+Prev0175  #52    1         M:Người đi xe ô tô trắng                      M:giảm tốc                          M:dừng quan sát trước khi băng qua  T                  T                                   T                             Người đi xe ô tô trắng cần giảm tốc độ và quan sát kỹ các phương tiện đang lưu thông trước khi sang đường.
+Prev0176  #52    1         T                                             M:quan sát và nhường đường          K                                   T                  T                                   T                             Quan sát và nhường đường cho xe đi thẳng và tránh đi vào điểm mù xe to.
+Prev0177  #52    1         M:Tài xế xe bên                               M:dừng quan sát trước khi băng qua  T                                   T                  T                                   T                             Tài xế xe bên nên quan sát kỹ các phương tiện đang lưu thông trước khi sang đường.
+Prev0178  #52    1         T                                             K                                   T                                   T                  T                                   T                             cần quan sát kỹ các phương tiện đang lưu thông trước khi di chuyển.
+Prev0179  #53    5         M:Người điều khiển phương tiện                M:giảm tốc                          T                                   T                  T                                   T                             Người điều khiển phương tiện nên giảm tốc độ và chú ý quan sát kỹ các hướng khi đi qua ngã tư.
+Prev0180  #54    1         T                                             M:giảm tốc                          M:đi đúng phần đường                T                  T                                   T                             Không chạy nhanh và đi và đường ngược chiều.
+Prev0181  #54    4         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Không nên vượt ẩu khi không đảm bảo khoảng cách an toàn với xe đi ngược chiều.
+Prev0182  #55    5         T                                             K                                   M:chỉ chuyển làn khi an toàn        T                  T                                   T                             Nên kiên nhẫn chờ xe bồn di chuyển hoặc quan sát kỹ hơn trước khi quyết định vượt qua khe hẹp.
+Prev0183  #56    5         M:Người đi xe máy                             M:dừng quan sát trước khi băng qua  M:giữ khoảng cách an toàn           T                  T                                   T                             Người đi xe máy nên dừng lại quan sát kỹ và chỉ băng qua đường khi đảm bảo khoảng cách an toàn.
+Prev0184  #57    1         M:Người lái ô tô màu nâu                      M:giữ ổn định hướng lái             K                                   T                  T                                   T                             Người lái ô tô màu nâu không nên đột ngột đổi hướng và phải bật xi nhan xin đường khi đổi hướng.
+Prev0185  #57    1         M:Người lái ô tô                              K                                   T                                   T                  T                                   T                             Người lái ô tô nên kiểm tra kỹ gương chiếu hậu và các điểm mù trước khi nhấn ga
+Prev0186  #57    1         M:Người lái ô tô                              K                                   T                                   T                  T                                   T                             Người lái ô tô nên kiểm tra kỹ gương chiếu hậu và các điểm mù trước khi nhấn ga.
+Prev0187  #57    1         M:Người lái ô tô                              K                                   T                                   T                  T                                   T                             Người lái ô tô nên kiểm tra kỹ gương chiếu hậu và các điểm mù trước khi nhấn ga;
+Prev0188  #57    1         M:Người lái ô tô                              M:quan sát và nhường đường          T                                   T                  T                                   T                             Người lái ô tô nên quan sát kỹ các phương tiện xung quanh và nhường đường khi xe khác có tín hiệu xin chuyển làn.
+Prev0189  #58    1         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Cần cẩn trọng hơn khi chuyển hướng và đi chậm khi qua giao lộ
+Prev0190  #58    1         T                                             T                                   T                                   T                  T                                   T                             Cần cẩn trọng hơn khi điều khiển xe trên đường ướt, đặc biệt là khi thực hiện các thao tác chuyển hướng hoặc quay đầu.
+Prev0191  #58    1         T                                             M:quan sát và nhường đường          T                                   T                  T                                   T                             Cần cẩn trọng quan sát khi điều khiển xe từ đường nhỏ ra đường lớn.
+Prev0192  #58    1         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Cần cẩn trọng quan sát trước khi vào làn đường giao thông
+Prev0193  #58    1         T                                             M:chỉ chuyển làn khi an toàn        T                                   T                  T                                   T                             Cần quan sát kỹ các phương tiện xung quanh khi nhập làn đường chính.
+Prev0194  #59    1         T                                             M:giảm tốc                          M:đi đúng phần đường                T                  T                                   T                             Nên giảm tốc độ khi qua khúc cua và đi đúng làn đường.
+Prev0195  #59    1         T                                             M:giảm tốc                          M:giữ ổn định hướng lái             T                  T                                   T                             Nên giảm tốc độ khi đi qua khúc cua và giữ bình tĩnh để điều khiển xe ổn định khi tránh xe ngược chiều.
+Prev0196  #59    1         T                                             M:giảm tốc                          T                                   T                  T                                   T                             Nên giảm tốc độ khi đi trên đường khi đi vào khúc cua.
+Prev0197  #59    1         T                                             M:giảm tốc                          M:giữ ổn định hướng lái             T                  T                                   T                             Nên giảm tốc độ khi đi trên đường ướt và giữ bình tĩnh để điều khiển xe ổn định khi tránh xe ngược chiều.
+Prev0198  #59    1         T                                             M:đi đúng phần đường                T                                   T                  T                                   T                             Nên đi đúng phần đường và tốc độ quy định
+Prev0199  #60    1         M:Người lái xe                                M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Người lái xe nên giữ khoảng cách an toàn khi nhập làn.
+Prev0200  #60    3         M:Người lái xe sedan màu đỏ                   M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Người lái xe sedan màu đỏ nên giữ khoảng cách an toàn và tập trung quan sát diễn biến giao thông phía trước.
+Prev0201  #60    1         M:Người lái xe ô tô màu đỏ                    M:giữ khoảng cách an toàn           T                                   T                  T                                   T                             Người lái xe ô tô màu đỏ nên giữ khoảng cách an toàn và tập trung quan sát diễn biến giao thông phía trước.

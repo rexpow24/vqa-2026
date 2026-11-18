@@ -1,0 +1,228 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Đối chiếu danh sách vi phạm nhóm V với MMUCC</title><style>
+:root{--bg:#ffffff;--fg:#1f2328;--muted:#59636e;--line:#d1d9e0;--head:#f6f8fa;--link:#0969da}
+@media (prefers-color-scheme: dark){:root{--bg:#0d1117;--fg:#e6edf3;--muted:#9198a1;--line:#3d444d;--head:#151b23;--link:#4493f8}}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:1.7em;border-bottom:1px solid var(--line);padding-bottom:.3em}
+h2{font-size:1.3em;margin-top:1.8em;border-bottom:1px solid var(--line);padding-bottom:.2em}
+table{border-collapse:collapse;width:100%;margin:1em 0;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--head)}
+code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:.92em}
+a{color:var(--link)}
+.nav{font-size:.9em;color:var(--muted);margin-bottom:1.5em}
+</style></head><body><main><div class="nav"><a href="../00-DOC-TRUOC.html">&larr; Mục lục</a></div><h1>Đề xuất taxonomy cho Nhóm V (vi phạm)</h1>
+<p>Ngày 2026-11-14. Trạng thái: đã áp vào <code>docs/guidelines/V-vi-pham.md</code> cùng ngày.</p>
+<h2>Nguồn</h2>
+<ul>
+<li>MMUCC 5th Edition (2017), NHTSA, phần tử P14 "Driver Actions at Time of Crash", trang 73. Đã đọc bản gốc.
+  Đây là bộ tiêu chí tối thiểu mà các bang Hoa Kỳ dùng để ghi biên bản tai nạn; P14 là danh sách hành động của người lái góp phần gây tai nạn, chọn 1-4 giá trị.</li>
+<li>MMUCC 5th Edition, NM3 "Non-Motorist Contributing Action(s)/Circumstance(s)", trang 116, cho người đi bộ và xe đạp. Đã đọc bản gốc.</li>
+<li>MMUCC 5th Edition, P8 "Restraint Systems/Motorcycle Helmet Use", cho mũ bảo hiểm. Đã đọc bản gốc.</li>
+<li>Luật Trật tự, an toàn giao thông đường bộ số 36/2024/QH15, Chương II (quy tắc giao thông), để đối chiếu với luật Việt Nam. Mới kiểm qua tài liệu thứ cấp; số điều chưa đối chiếu với văn bản gốc nên chưa ghi.</li>
+</ul>
+<p>Lý do chọn P14 thay vì P15 "Violation Codes": P15 là mã vi phạm theo luật từng bang, không phải danh mục chung.</p>
+<h2>Đối chiếu P14 với guideline V</h2>
+<p>Guideline V chỉ ghi hành vi nhìn thấy được, không đoán tốc độ, trạng thái người lái hay ý định.
+Vì vậy các giá trị P14 dựa trên phán đoán của cảnh sát hoặc mô tả hành động né được loại ra.</p>
+<table>
+<thead>
+<tr>
+<th>Mã P14</th>
+<th>Tên gốc</th>
+<th>Nhãn đề xuất cho V</th>
+<th>Có trong V hiện tại</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>03</td>
+<td>Failed to Keep in Proper Lane</td>
+<td>đi sai làn, lấn làn</td>
+<td>có ("đi sai làn")</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Wrong Side or Wrong Way</td>
+<td>đi ngược chiều</td>
+<td>có</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Ran Red Light</td>
+<td>vượt đèn đỏ (chỉ khi thấy rõ đèn)</td>
+<td>có</td>
+</tr>
+<tr>
+<td>01, 02, 14</td>
+<td>Disregarded Other Road Markings; Disregarded Other Traffic Sign; Ran Stop Sign</td>
+<td>không chấp hành biển báo, vạch kẻ đường (chỉ khi thấy rõ biển hoặc vạch)</td>
+<td>chưa</td>
+</tr>
+<tr>
+<td>04</td>
+<td>Failed to Yield Right-of-Way</td>
+<td>không nhường đường</td>
+<td>có, nhưng đang tách làm hai ("tại giao lộ", "sang đường"); P14 chỉ có một</td>
+</tr>
+<tr>
+<td>05</td>
+<td>Followed Too Closely</td>
+<td>không giữ khoảng cách an toàn</td>
+<td>có</td>
+</tr>
+<tr>
+<td>07</td>
+<td>Improper Passing</td>
+<td>vượt xe sai quy định (chỉ khi thấy rõ vạch liền, giao lộ hoặc khúc cua)</td>
+<td>chưa</td>
+</tr>
+<tr>
+<td>08</td>
+<td>Improper Turn</td>
+<td>chuyển hướng, quay đầu sai quy định</td>
+<td>chưa</td>
+</tr>
+<tr>
+<td>06</td>
+<td>Improper Backing</td>
+<td>lùi xe sai quy định</td>
+<td>chưa</td>
+</tr>
+<tr>
+<td>98</td>
+<td>Other Contributing Action</td>
+<td>khác</td>
+<td>có</td>
+</tr>
+<tr>
+<td>00</td>
+<td>No Contributing Action</td>
+<td>(ô 0 "không quan sát thấy")</td>
+<td>có</td>
+</tr>
+<tr>
+<td>99</td>
+<td>Unknown</td>
+<td>(ô 0 "không rõ")</td>
+<td>có</td>
+</tr>
+</tbody>
+</table>
+<p>Loại ra:</p>
+<table>
+<thead>
+<tr>
+<th>Mã P14</th>
+<th>Tên gốc</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09</td>
+<td>Inattentive, Careless, Negligent, or Erratic Manner</td>
+<td>Đoán trạng thái người lái, guideline cấm</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Reckless or Aggressive Manner</td>
+<td>Kết luận đánh giá, không phải hành vi nhìn thấy</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Over-Correcting/Over-Steering</td>
+<td>Hành động né, thuộc C (cách né)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Ran Off Roadway</td>
+<td>Hậu quả, thuộc C (K18) và O</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Swerved or Avoided Due to ...</td>
+<td>Hành động né, thuộc C</td>
+</tr>
+</tbody>
+</table>
+<h2>Bổ sung ngoài P14</h2>
+<table>
+<thead>
+<tr>
+<th>Nhãn</th>
+<th>Nguồn</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>không đội mũ bảo hiểm</td>
+<td>MMUCC P8 (mũ bảo hiểm xe máy); Luật 36/2024</td>
+<td>Đã có trong V</td>
+</tr>
+<tr>
+<td>người đi bộ đi dưới lòng đường không đúng chỗ</td>
+<td>MMUCC NM3 mã 09 (In Roadway Improperly)</td>
+<td>Cho bên là người đi bộ</td>
+</tr>
+<tr>
+<td>người đi bộ không chấp hành tín hiệu</td>
+<td>MMUCC NM3 mã 04</td>
+<td>Chỉ khi thấy rõ đèn hoặc biển</td>
+</tr>
+</tbody>
+</table>
+<p>Người đi bộ dùng chung "không nhường đường" (NM3 mã 05) và "đi ngược chiều" (NM3 mã 11).
+NM3 mã 01 "Dart/Dash" (lao ra đột ngột) là hành động, đã nằm ở C (K15), không đưa vào V.</p>
+<h2>Danh sách ô 2 đề xuất</h2>
+<p>đi sai làn, lấn làn · đi ngược chiều · vượt đèn đỏ · không chấp hành biển báo, vạch kẻ đường · không nhường đường · không giữ khoảng cách an toàn · vượt xe sai quy định · chuyển hướng, quay đầu sai quy định · lùi xe sai quy định · không đội mũ bảo hiểm · đi bộ dưới lòng đường · khác</p>
+<p>So với V hiện tại: gộp hai lựa chọn "không nhường đường" thành một, thêm 5 lựa chọn (biển báo và vạch, vượt xe, chuyển hướng, lùi xe, đi bộ dưới lòng đường).</p>
+<h2>Liên hệ với C</h2>
+<table>
+<thead>
+<tr>
+<th>Kiểu xung đột ở C</th>
+<th>Vi phạm thường đi kèm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>K01-K03</td>
+<td>không giữ khoảng cách an toàn</td>
+</tr>
+<tr>
+<td>K04</td>
+<td>đi sai làn, lấn làn</td>
+</tr>
+<tr>
+<td>K05, K08 khi vượt</td>
+<td>vượt xe sai quy định</td>
+</tr>
+<tr>
+<td>K06, K10, K13</td>
+<td>chuyển hướng, quay đầu sai quy định; không nhường đường</td>
+</tr>
+<tr>
+<td>K08 khi vào cua, đi thẳng</td>
+<td>đi sai làn, lấn làn</td>
+</tr>
+<tr>
+<td>K09</td>
+<td>đi ngược chiều</td>
+</tr>
+<tr>
+<td>K11, K12, K14</td>
+<td>không nhường đường; vượt đèn đỏ khi thấy rõ đèn</td>
+</tr>
+<tr>
+<td>K15</td>
+<td>không nhường đường (bên xe); đi bộ dưới lòng đường (bên người đi bộ)</td>
+</tr>
+<tr>
+<td>K17</td>
+<td>lùi xe sai quy định</td>
+</tr>
+</tbody>
+</table>
+<p>Bảng này chỉ để gợi ý điền sẵn, giống Prev; V vẫn có thể là "không quan sát thấy" khi C có xung đột.</p></main></body></html>
