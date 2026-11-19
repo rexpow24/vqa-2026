@@ -5,7 +5,8 @@
 // frontend/, so the app cannot read the originals. The database seeds the same
 // files into codebook_versions (20261116100000_slot_data_model.sql for v1,
 // 20261116200000_codebook_v2.sql for S.v2, C.v2, V.v2 and Attr.v1,
-// 20261119100000_v_behavior_multiselect.sql for V.v3).
+// 20261119100000_v_behavior_multiselect.sql for V.v3 and
+// 20261119120000_v_animal_responsibility.sql for V.v4).
 //
 // A group is answered with cells exactly when it has a codebook here; there is
 // no second list of slot groups. Imports stay relative (no "@/") so that
@@ -24,6 +25,7 @@ import E2 from "./E.v2.json" with { type: "json" };
 import S2 from "./S.v2.json" with { type: "json" };
 import V2 from "./V.v2.json" with { type: "json" };
 import V3 from "./V.v3.json" with { type: "json" };
+import V4 from "./V.v4.json" with { type: "json" };
 
 export type CodebookOption = {
   id: string;
@@ -59,7 +61,7 @@ export type Codebook = {
 };
 
 const CODEBOOKS: Readonly<Record<string, Codebook>> = Object.fromEntries(
-  ([S1, E1, C1, V1, O1, R1, Prev1, S2, C2, V2, V3, Attr1, E2] as Codebook[]).map((book) => [`${book.group}.v${book.version}`, book]),
+  ([S1, E1, C1, V1, O1, R1, Prev1, S2, C2, V2, V3, V4, Attr1, E2] as Codebook[]).map((book) => [`${book.group}.v${book.version}`, book]),
 );
 
 /** The codebook with this id ("C.v1"), or undefined when there is none. */

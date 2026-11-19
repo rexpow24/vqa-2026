@@ -57,14 +57,14 @@ async function makeUser(label, role) {
 
 // Attr has been a slot group since codebook v2 (features/codebook-v2); N is the one text group.
 const SLOT_GROUPS = ["S", "E", "C", "V", "O", "R", "Attr", "Prev"];
-// Every frozen codebook: the seven v1 of P2, codebook v2, E.v2, and V.v3 multiselect.
-const CODEBOOK_IDS = ["S.v1", "E.v1", "C.v1", "V.v1", "O.v1", "R.v1", "Prev.v1", "S.v2", "C.v2", "V.v2", "V.v3", "Attr.v1", "E.v2"];
+// Every frozen codebook: the seven v1 of P2, codebook v2, E.v2, and V.v3/v4.
+const CODEBOOK_IDS = ["S.v1", "E.v1", "C.v1", "V.v1", "O.v1", "R.v1", "Prev.v1", "S.v2", "C.v2", "V.v2", "V.v3", "V.v4", "Attr.v1", "E.v2"];
 
 /** A1, A4, AC1 (codebook v2): one read-only row per frozen codebook file, equal to the file. */
 async function checkCodebooks(t) {
   const rows = must(await t.client.from("codebook_versions").select("id,qgroup,version,content,sha256,frozen_on").order("id"));
   check("AC1", rows.length === CODEBOOK_IDS.length && CODEBOOK_IDS.every((id) => rows.some((row) => row.id === id)),
-    "codebook_versions holds the seven v1 codebooks plus S.v2, C.v2, V.v2, V.v3, Attr.v1, E.v2", rows.map((row) => row.id));
+    "codebook_versions holds the seven v1 codebooks plus S.v2, C.v2, V.v2, V.v3, V.v4, Attr.v1, E.v2", rows.map((row) => row.id));
   for (const id of CODEBOOK_IDS) {
     const bytes = fs.readFileSync(path.join(REPO_ROOT, "codebook", `${id}.json`));
     const file = JSON.parse(bytes.toString("utf8"));

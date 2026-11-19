@@ -94,15 +94,19 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
   switch (qgroup) {
     case "S":
       return book.cells.map((cell) => field(book, cell.id, "outer"));
-    case "V":
+    case "V": {
+      // An animal can be an E/C participant, but never a V violator.
+      const responsibleKeys = context.entities.filter((entity) =>
+        (entity.cells.type as SlotValue | undefined)?.option !== "type.animal").map((entity) => entity.key).sort();
       out.push(field(book, "result", "outer"));
       if (optionOf(cells.result) === "result.yes") {
-        out.push(field(book, "violator", "outer", { required: true, entities: keys }));
-        // V.v2 "cả hai bên": one behaviour per party, as C does for subject.both.
+        out.push(field(book, "violator", "outer", { required: true, entities: responsibleKeys,
+          note: "Không chọn con vật làm bên vi phạm. Nếu vật nuôi đi rông và không thấy người điều khiển, chọn lựa chọn không xác định." }));
+        // V "cả hai bên": one behaviour per party, as C does for subject.both.
         if (optionOf(cells.violator) === "violator.both") {
           for (const index of [0, 1]) {
             out.push(field(book, "violator", index, { kind: "party", key: `${index}.party`, cellId: "party",
-              label: "Chọn bên", required: true, options: [], entities: keys }),
+              label: "Chọn bên", required: true, options: [], entities: responsibleKeys }),
             field(book, "behavior", index, { required: true }));
           }
         } else {
@@ -110,6 +114,7 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
         }
       }
       return out;
+    }
     case "Attr":
       // One or two parties from E, or "không rõ"; not tied to the C subject (codebook v2).
       out.push(field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: keys,
@@ -656,6 +661,7 @@ export function errorText(qgroup: string, code: string | undefined, message: str
     missing_slots: "Chưa chọn ô nào.",
     missing_answer: "Chưa ghép được câu từ các ô đã chọn.",
     codebook_version: `Cơ sở dữ liệu chưa nhận codebook ${currentVersion(qgroup) ?? "mới"}. Tải lại trang chỉ có tác dụng sau khi quản trị viên áp dụng migration codebook tương ứng.`,
+    animal_violator: "Không gán vật nuôi là bên vi phạm; chọn người điều khiển hoặc lựa chọn người chưa xác định.",
     stale_page: "Trang này đã cũ. Tải lại trang.",
     text_group: "Nhóm này trả lời bằng chữ, không chọn ô.",
     slot_group: "Nhóm này trả lời bằng ô. Tải lại trang.",

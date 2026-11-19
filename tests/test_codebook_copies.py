@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "codebook"
 COPY = ROOT / "frontend" / "src" / "lib" / "codebook"
 GROUPS = ["S", "E", "C", "V", "O", "R", "Prev"]
-# Every frozen codebook file, v1 and later (features/codebook-v2 added S.v2, C.v2, V.v2, Attr.v1).
-NAMES = [f"{g}.v1.json" for g in GROUPS] + ["S.v2.json", "C.v2.json", "V.v2.json", "Attr.v1.json", "E.v2.json"]
+# Every frozen codebook file, v1 and later.
+NAMES = [f"{g}.v1.json" for g in GROUPS] + ["S.v2.json", "C.v2.json", "V.v2.json", "V.v3.json", "V.v4.json", "Attr.v1.json", "E.v2.json"]
 
 
 def load(group):

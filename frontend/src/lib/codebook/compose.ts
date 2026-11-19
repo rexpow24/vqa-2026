@@ -295,8 +295,8 @@ function composeCauseV2(book: Codebook, slots: Slots, context: ComposeContext): 
 
 /**
  * V: "Có" is [bên vi phạm] [hành vi]; the other two results are fixed
- * sentences. V.v2 adds "cả hai bên" and V.v3 allows several behaviour tags
- * for each selected party.
+ * sentences. V.v2 adds "cả hai bên", V.v3 allows multiple behaviour tags,
+ * and V.v4 can state that no animal handler is visible.
  */
 function composeViolation(book: Codebook, slots: Slots, context: ComposeContext): string {
   const result = chosenOption(book, "result", slots.result);
@@ -331,6 +331,9 @@ function composeViolation(book: Codebook, slots: Slots, context: ComposeContext)
       return a === b
         ? render(templateText(book, "Có, cả hai bên cùng hành vi"), { A: name(first.party), B: name(second.party), behavior: a })
         : render(templateText(book, "Có, cả hai bên"), { A: name(first.party), behavior_A: a, B: name(second.party), behavior_B: b });
+    }
+    if ((slots.violator as SlotValue | undefined)?.option === "violator.unidentified") {
+      return render(templateText(book, "Có, chưa xác định người điều khiển vật nuôi"), { behavior: behavior(slots) });
     }
     return render(templateText(book, "Có"), { violator: name(slots.violator), behavior: behavior(slots) });
   }
