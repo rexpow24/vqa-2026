@@ -136,6 +136,17 @@ test("V uses the three guideline sentences, with the free text of 'khác'", () =
   assert.equal(compose("V", { result: o("result.unclear") }), "Không thể xác định.");
 });
 
+test("V.v3 composes multiple behaviour tags in codebook order", () => {
+  assert.equal(compose("V", { result: o("result.yes"), violator: e("B"),
+    behavior: { options: ["behavior.no_helmet", "behavior.wrong_lane"] } }, { entities: ENTITIES }),
+  "Xe máy màu đỏ đi sai làn, lấn làn và không đội mũ bảo hiểm.");
+  assert.equal(compose("V", { result: o("result.yes"), violator: o("violator.both"), parties: [
+    { party: e("A"), behavior: { options: ["behavior.wrong_lane", "behavior.no_helmet"] } },
+    { party: e("B"), behavior: { options: ["behavior.fail_to_yield"] } },
+  ] }, { entities: ENTITIES }),
+  "Xe ô tô (có camera hành trình) đi sai làn, lấn làn và không đội mũ bảo hiểm, đồng thời xe máy màu đỏ không nhường đường.");
+});
+
 test("O names both parties, one party, or uses the fixed sentences", () => {
   assert.equal(compose("O", { parties: [e("B"), e("A")], level: o("level.minor"), sign: o("sign.scrape_continued") },
     { entities: ENTITIES }), "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm nhẹ, chạm quẹt, vẫn đi tiếp.");

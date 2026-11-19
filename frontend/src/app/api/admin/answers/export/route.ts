@@ -8,6 +8,7 @@ export const maxDuration = 60;
 
 const HEADER = [
   "seq", "filename", "agreement", "annotator_email", "annotator_name", "assignment_status", "batch", "answer_format",
+  "codebook_version", "slots",
   "qgroup", "question", "draft_answer", "verdict", "reason_code", "reason_note", "edited_answer",
   "effective_answer", "human_keyframes_s", "annotated_at", "event_label", "draft_id", "video_id", "annotator_id",
 ];

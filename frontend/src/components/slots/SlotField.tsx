@@ -60,15 +60,26 @@ export function FreeText({ value, onChange, label }: { value: string; onChange: 
  * Options that carry a `group` (C conflict types) are listed under their
  * group, with their code. Clicking the chosen chip of an optional cell clears it.
  */
-export function OptionPicker({ options, entities, labels, value, required, onChange }: {
+export function OptionPicker({ options, entities, labels, value, required, multiple = false, onChange }: {
   options: CodebookOption[]; entities: string[] | null; labels: Record<string, string>;
-  value: SlotValue | undefined; required: boolean; onChange: (value: SlotValue | undefined) => void;
+  value: SlotValue | undefined; required: boolean; multiple?: boolean;
+  onChange: (value: SlotValue | undefined) => void;
 }) {
   const pick = (next: SlotValue, same: boolean) => onChange(same && !required ? undefined : next);
   const optionChip = (option: CodebookOption) => {
-    const pressed = value?.option === option.id;
+    const selected = value?.options ?? (value?.option ? [value.option] : []);
+    const pressed = multiple ? selected.includes(option.id) : value?.option === option.id;
+    const onOptionClick = () => {
+      if (!multiple) {
+        pick({ option: option.id, ...(option.free_text ? { text: value?.option === option.id ? value.text : "" } : {}) }, pressed);
+        return;
+      }
+      const next = pressed ? selected.filter((id) => id !== option.id) : [...selected, option.id];
+      const needsText = options.some((candidate) => candidate.free_text && next.includes(candidate.id));
+      onChange(next.length ? { options: next, ...(needsText && value?.text !== undefined ? { text: value.text } : {}) } : undefined);
+    };
     return <Chip key={option.id} pressed={pressed} title={typeof option.condition === "string" ? option.condition : undefined}
-      onClick={() => pick({ option: option.id, ...(option.free_text ? { text: value?.option === option.id ? value.text : "" } : {}) }, pressed)}>
+      onClick={onOptionClick}>
       {typeof option.code === "string" && <span className="mr-1.5 font-mono text-xs text-foreground/55">{option.code}</span>}
       {option.label}
     </Chip>;
@@ -88,5 +99,6 @@ export function OptionPicker({ options, entities, labels, value, required, onCha
         <div className="flex flex-wrap gap-1.5">{options.filter((option) => (option.group ?? "") === group).map(optionChip)}</div>
       </div>)}
     </div>}
+    {multiple && <span className="text-xs text-foreground/55">Có thể chọn nhiều lựa chọn.</span>}
   </>;
 }

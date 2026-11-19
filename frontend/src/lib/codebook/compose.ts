@@ -16,8 +16,8 @@
 
 import { currentVersion, getCodebook, type Codebook, type CodebookOption } from "./index.ts";
 
-/** One cell value: `{ option }`, `{ entity }`, or both, plus `text` for a free-text option. */
-export type SlotValue = { option?: string; entity?: string; text?: string };
+/** One cell value: `{ option }`, `{ options }`, `{ entity }`, or both, plus `text` for free-text options. */
+export type SlotValue = { option?: string; options?: string[]; entity?: string; text?: string };
 export type Slots = Record<string, unknown>;
 /** An entity as declared in E: its key and its E cells. */
 export type Entity = { key: string; cells: Slots };
@@ -295,8 +295,8 @@ function composeCauseV2(book: Codebook, slots: Slots, context: ComposeContext): 
 
 /**
  * V: "Có" is [bên vi phạm] [hành vi]; the other two results are fixed
- * sentences. V.v2 adds "cả hai bên": one behaviour per party, or one sentence
- * for both when they did the same.
+ * sentences. V.v2 adds "cả hai bên" and V.v3 allows several behaviour tags
+ * for each selected party.
  */
 function composeViolation(book: Codebook, slots: Slots, context: ComposeContext): string {
   const result = chosenOption(book, "result", slots.result);
@@ -304,7 +304,27 @@ function composeViolation(book: Codebook, slots: Slots, context: ComposeContext)
   if (result.id !== "result.yes") return templateText(book, "Không rõ");
   if (placeholders(book)) {
     const name = namer(context);
-    const behavior = (cells: Slots) => labelOf(chosenOption(book, "behavior", cells.behavior), cells.behavior);
+    const behavior = (cells: Slots) => {
+      const cell = book.cells.find((candidate) => candidate.id === "behavior");
+      if (!cell) throw new ComposeError("unknown_cell", `Ô "behavior" không có trong codebook ${book.group}.`);
+      const value = cells.behavior as SlotValue | undefined;
+      const ids = cell.multiple
+        ? value?.options ?? (value?.option ? [value.option] : [])
+        : value?.option ? [value.option] : [];
+      if (!ids.length) throw new ComposeError("missing_cell", `Chưa chọn ô "${cell.label}".`);
+      const uniqueIds = [...new Set(ids)];
+      if (uniqueIds.length !== ids.length) {
+        throw new ComposeError("invalid_value", `Ô "${cell.label}" có lựa chọn trùng nhau.`);
+      }
+      const order = new Map((cell.options ?? []).map((option, index) => [option.id, index]));
+      uniqueIds.sort((left, right) => (order.get(left) ?? Number.MAX_SAFE_INTEGER) - (order.get(right) ?? Number.MAX_SAFE_INTEGER));
+      const options = uniqueIds.map((id) => {
+        const option = cell.options?.find((candidate) => candidate.id === id);
+        if (!option) throw new ComposeError("unknown_option", `Lựa chọn "${id}" không thuộc ô "${cell.label}".`);
+        return labelOf(option, { ...value, option: id });
+      });
+      return options.length === 1 ? options[0] : `${options.slice(0, -1).join(", ")} và ${options[options.length - 1]}`;
+    };
     if ((slots.violator as SlotValue | undefined)?.option === "violator.both") {
       const [first, second] = twoParties(slots, "Chọn \"cả hai bên\" thì khai báo đúng hai bên khác nhau, mỗi bên một hành vi.");
       const [a, b] = [behavior(first), behavior(second)];

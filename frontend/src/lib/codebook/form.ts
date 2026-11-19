@@ -30,6 +30,7 @@ export type Field = {
   cellId: string;
   label: string;
   required: boolean;
+  multiple?: boolean;
   options: CodebookOption[];
   /** Entity keys the field offers, or null when it takes no entity. */
   entities: string[] | null;
@@ -73,7 +74,7 @@ function field(book: Codebook, cellId: string, scope: "outer" | number, extra: P
   const cell = cellOf(book, cellId);
   return {
     key: `${scope}.${cellId}`, scope, kind: "choice", cellId, label: cell.label, required: cell.required,
-    options: cell.options ?? [], entities: null, ...extra,
+    multiple: cell.multiple, options: cell.options ?? [], entities: null, ...extra,
   };
 }
 
@@ -199,6 +200,15 @@ export function currentValue(state: FormState, item: Field): SlotValue | undefin
   if (item.kind === "refs") return undefined;
   const value = rawValue(state, item) as SlotValue | undefined;
   if (!value) return undefined;
+  if (item.multiple) {
+    const selected = value.options ?? (value.option ? [value.option] : []);
+    const selectedIds = new Set(selected);
+    const options = item.options.filter((option) => selectedIds.has(option.id)).map((option) => option.id);
+    if (!options.length) return undefined;
+    const kept: SlotValue = { options };
+    if (options.some((id) => item.options.find((option) => option.id === id)?.free_text)) kept.text = value.text ?? "";
+    return kept;
+  }
   if (value.option !== undefined) {
     const option = item.options.find((candidate) => candidate.id === value.option);
     if (!option) return undefined;
@@ -357,9 +367,12 @@ export function staleChoices(qgroup: string, savedVersion: string | null, slots:
         if (!out.removed.includes(oldCell.label)) out.removed.push(oldCell.label);
         continue;
       }
-      const optionId = (value as SlotValue | undefined)?.option;
-      if (optionId && !cell.options?.some((option) => option.id === optionId)) {
-        out.cells[cellId] = oldCell.options?.find((option) => option.id === optionId)?.label ?? optionId;
+      const answer = value as SlotValue | undefined;
+      const optionIds = answer?.options ?? (answer?.option ? [answer.option] : []);
+      const stale = optionIds.filter((optionId) => !cell.options?.some((option) => option.id === optionId));
+      if (stale.length) {
+        out.cells[cellId] = stale.map((optionId) => oldCell.options?.find((option) => option.id === optionId)?.label ?? optionId)
+          .join(", ");
       }
     }
   };
@@ -467,8 +480,10 @@ export function problems(qgroup: string, state: FormState, context: FormContext)
         ? "Chưa có bên nào: khai báo các bên ở nhóm E trước." : "Chưa chọn.";
       continue;
     }
+    const selectedIds = value.options ?? (value.option ? [value.option] : []);
     const option = item.options.find((candidate) => candidate.id === value.option);
-    if (option?.free_text) {
+    const freeTextOption = item.options.find((candidate) => candidate.free_text && selectedIds.includes(candidate.id));
+    if (freeTextOption) {
       const text = value.text?.trim() ?? "";
       if (!text) out[item.key] = "Ghi ngắn nội dung cho lựa chọn \"khác\".";
       else if (text.length > MAX_TEXT) out[item.key] = `Tối đa ${MAX_TEXT} ký tự.`;

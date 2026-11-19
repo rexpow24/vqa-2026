@@ -3,7 +3,8 @@
 // breaks are quoted per RFC 4180.
 
 function cell(value: unknown): string {
-  const text = value === null || value === undefined ? "" : String(value);
+  const text = value === null || value === undefined ? ""
+    : typeof value === "object" ? JSON.stringify(value) : String(value);
   return /[",\r\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 

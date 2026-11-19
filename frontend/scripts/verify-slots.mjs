@@ -57,14 +57,14 @@ async function makeUser(label, role) {
 
 // Attr has been a slot group since codebook v2 (features/codebook-v2); N is the one text group.
 const SLOT_GROUPS = ["S", "E", "C", "V", "O", "R", "Attr", "Prev"];
-// Every frozen codebook: the seven v1 of P2, then S.v2, C.v2, V.v2 and Attr.v1 of codebook v2, then E.v2.
-const CODEBOOK_IDS = ["S.v1", "E.v1", "C.v1", "V.v1", "O.v1", "R.v1", "Prev.v1", "S.v2", "C.v2", "V.v2", "Attr.v1", "E.v2"];
+// Every frozen codebook: the seven v1 of P2, codebook v2, E.v2, and V.v3 multiselect.
+const CODEBOOK_IDS = ["S.v1", "E.v1", "C.v1", "V.v1", "O.v1", "R.v1", "Prev.v1", "S.v2", "C.v2", "V.v2", "V.v3", "Attr.v1", "E.v2"];
 
 /** A1, A4, AC1 (codebook v2): one read-only row per frozen codebook file, equal to the file. */
 async function checkCodebooks(t) {
   const rows = must(await t.client.from("codebook_versions").select("id,qgroup,version,content,sha256,frozen_on").order("id"));
   check("AC1", rows.length === CODEBOOK_IDS.length && CODEBOOK_IDS.every((id) => rows.some((row) => row.id === id)),
-    "codebook_versions holds exactly the seven v1 codebooks plus S.v2, C.v2, V.v2, Attr.v1, E.v2", rows.map((row) => row.id));
+    "codebook_versions holds the seven v1 codebooks plus S.v2, C.v2, V.v2, V.v3, Attr.v1, E.v2", rows.map((row) => row.id));
   for (const id of CODEBOOK_IDS) {
     const bytes = fs.readFileSync(path.join(REPO_ROOT, "codebook", `${id}.json`));
     const file = JSON.parse(bytes.toString("utf8"));
@@ -918,23 +918,30 @@ async function checkOutsideAgreement(admin, lead, video) {
     "adjudication_export has no row of the fixture video", exported.filter((row) => row.video_id === video.id));
 }
 
-/** A31: the answers export names each row's answer format, in the RPC and in the CSV right after batch. */
+/** A31: the answers export includes the multiple-choice cells and codebook version. */
 async function checkExport(admin, lead, x, y, video) {
   const rows = must(await admin.client.rpc("answers_export", { only_agreement: true, seq_from: null, seq_to: null }))
     .filter((row) => row.video_id === video.id);
   const formats = (annotator) => [...new Set(rows.filter((row) => row.annotator_id === annotator.id).map((row) => row.answer_format))];
   check("A31", rows.length === 27 && rows.every((row) => "answer_format" in row)
+    && rows.every((row) => "slots" in row && "codebook_version" in row)
     && isDeepStrictEqual(formats(lead), ["slots"]) && isDeepStrictEqual(formats(x), ["text"]) && isDeepStrictEqual(formats(y), ["text"]),
-  "answers_export carries answer_format: slots for Lead, text for X and Y",
+  "answers_export carries format, slot cells and codebook version for slot answers",
   { rows: rows.length, lead: formats(lead), x: formats(x), y: formats(y), keys: rows[0] && Object.keys(rows[0]) });
+  const leadScene = rows.find((row) => row.annotator_id === lead.id && row.qgroup === "S");
+  check("A31", leadScene?.codebook_version === "S.v2" && isDeepStrictEqual(leadScene?.slots, S2_SLOTS),
+    "answers_export returns the saved S.v2 choices as JSON",
+    { version: leadScene?.codebook_version, slots: leadScene?.slots });
 
   const csv = await request(base, "/api/admin/answers/export?scope=agreement", admin.cookie);
   const header = String(csv.data).replace(/^﻿/, "").split(/\r\n/)[0].split(",");
   const lines = String(csv.data).split(/\r\n/).filter((line) => line.includes(video.id));
   check("A31", csv.status === 200 && header.indexOf("answer_format") === header.indexOf("batch") + 1
-    && lines.length === 27 && lines.filter((line) => line.includes(",agreement,slots,")).length === 9,
-  "the CSV export has the answer_format column right after batch, slots on Lead's nine rows",
-  { status: csv.status, header, lines: lines.length });
+    && header.indexOf("codebook_version") === header.indexOf("answer_format") + 1
+    && header.indexOf("slots") === header.indexOf("codebook_version") + 1
+    && lines.length === 27 && lines.some((line) => line.includes("S.v2") && line.includes("weather.no_rain")),
+  "the CSV export includes codebook_version and JSON choice data",
+  { status: csv.status, header, lines: lines.length, hasChoice: String(csv.data).includes("weather.no_rain") });
 }
 
 /** A34: annotator-report reads a completed slot assignment without false alarms. */

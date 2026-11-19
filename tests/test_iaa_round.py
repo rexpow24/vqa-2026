@@ -6,6 +6,7 @@ so a formula error cannot hide behind a value the code itself produced.
 """
 
 import csv
+import json
 
 import pytest
 
@@ -48,7 +49,7 @@ OLD_HEADER = ["seq", "filename", "agreement", "annotator_email", "annotator_name
               "batch", "qgroup", "question", "draft_answer", "verdict", "reason_code", "reason_note",
               "edited_answer", "effective_answer", "human_keyframes_s", "annotated_at", "event_label",
               "draft_id", "video_id", "annotator_id"]
-HEADER = OLD_HEADER[:7] + ["answer_format"] + OLD_HEADER[7:]
+HEADER = OLD_HEADER[:7] + ["answer_format", "codebook_version", "slots"] + OLD_HEADER[7:]
 
 
 def _export(path, rows, header=OLD_HEADER):
@@ -105,15 +106,25 @@ def _mixed_round():
 
 
 def _slot_rows():
-    """The lead answering the same videos with the slot form: N stays text, but the assignment is slots."""
-    return [{
-        "seq": v[1], "filename": f"{v}.mp4", "annotator_name": "lead", "assignment_status": "completed",
-        "batch": "agreement", "answer_format": "slots", "qgroup": q, "question": f"{q}?", "draft_answer": "draft",
-        "verdict": "NOT_ANSWERABLE" if q == "N" else "SLOTS",
-        "edited_answer": "" if q == "N" else "Câu ghép từ ô.",
-        "effective_answer": "Không trả lời được" if q == "N" else "Câu ghép từ ô.",
-        "event_label": "near-miss", "draft_id": f"d{v}{q}", "video_id": v, "annotator_id": "lead",
-    } for v in ("v0", "v1", "v2") for q in ("S", "C", "N")]
+    """Two annotators answer the same questions with structured choices."""
+    rows = []
+    for v in ("v0", "v1", "v2"):
+        for q in ("S", "C", "N"):
+            for annotator in ("lead", "lead2"):
+                option = "option.same"
+                if v == "v2" and q == "C" and annotator == "lead2":
+                    option = "option.different"
+                rows.append({
+                    "seq": v[1], "filename": f"{v}.mp4", "annotator_name": annotator,
+                    "assignment_status": "completed", "batch": "agreement", "answer_format": "slots",
+                    "codebook_version": "test.v1", "slots": json.dumps({"choice": {"option": option}}),
+                    "qgroup": q, "question": f"{q}?", "draft_answer": "draft",
+                    "verdict": "NOT_ANSWERABLE" if q == "N" else "SLOTS",
+                    "edited_answer": "" if q == "N" else "Câu ghép từ ô.",
+                    "effective_answer": "Không trả lời được" if q == "N" else "Câu ghép từ ô.",
+                    "event_label": "near-miss", "draft_id": f"d{v}{q}", "video_id": v, "annotator_id": annotator,
+                })
+    return rows
 
 
 TIER1 = ("% đồng ý từng cặp", "Fleiss kappa", "Krippendorff alpha     ", "Gwet AC1")
@@ -125,14 +136,15 @@ def _run(tmp_path, name, rows, header, capsys):
     out = tmp_path / name
     main([str(source), "--out", str(out), "--boot", "50"])
     report = capsys.readouterr().out.replace(str(out), "<out>")  # the report names its output folder
-    return report, (out / "by_qgroup.csv").read_text(encoding="utf-8")
+    return report, (out / "by_qgroup.csv").read_text(encoding="utf-8"), out
 
 
 def test_slot_rows_leave_every_tier1_coefficient_unchanged(tmp_path, capsys):
-    text_report, text_by_q = _run(tmp_path, "text", _mixed_round(), HEADER, capsys)
-    slot_report, slot_by_q = _run(tmp_path, "slots", _mixed_round() + _slot_rows(), HEADER, capsys)
+    text_report, text_by_q, _ = _run(tmp_path, "text", _mixed_round(), HEADER, capsys)
+    slot_report, slot_by_q, _ = _run(tmp_path, "slots", _mixed_round() + _slot_rows(), HEADER, capsys)
 
-    tier1 = lambda report: [line for line in report.splitlines() if line.strip().startswith(TIER1)]
+    tier1 = lambda report: [line for line in report.split("TẦNG 3")[0].splitlines()
+                            if line.strip().startswith(TIER1)]
     assert len(tier1(text_report)) == 5  # pairwise, kappa, alpha, AC1, and the event-label agreement line
     assert tier1(slot_report) == tier1(text_report)
     assert slot_by_q == text_by_q
@@ -140,9 +152,28 @@ def test_slot_rows_leave_every_tier1_coefficient_unchanged(tmp_path, capsys):
 
 
 def test_export_without_answer_format_column_reads_as_all_text(tmp_path, capsys):
-    old_report, old_by_q = _run(tmp_path, "old", _mixed_round(), OLD_HEADER, capsys)
-    new_report, new_by_q = _run(tmp_path, "new", _mixed_round(), HEADER, capsys)
+    old_report, old_by_q, _ = _run(tmp_path, "old", _mixed_round(), OLD_HEADER, capsys)
+    new_report, new_by_q, _ = _run(tmp_path, "new", _mixed_round(), HEADER, capsys)
 
     assert "Fleiss kappa" in old_report
     assert old_report == new_report
     assert old_by_q == new_by_q
+
+
+def test_slot_choices_are_exported_as_a_separate_agreement_tier(tmp_path, capsys):
+    report, _, out = _run(tmp_path, "mixed", _mixed_round() + _slot_rows(), HEADER, capsys)
+
+    assert "TẦNG 3 - LỰA CHỌN THEO Ô" in report
+    assert "S / test.v1" in report
+    slot_summary = (out / "by_slot_group.csv").read_text(encoding="utf-8")
+    assert "qgroup,codebook_version,n_units,n_annotators,pct_exact_slots" in slot_summary
+    assert "C,test.v1,3,2,0.667" in slot_summary
+
+
+def test_slot_only_export_still_produces_choice_agreement(tmp_path, capsys):
+    report, _, out = _run(tmp_path, "slot_only", _slot_rows(), HEADER, capsys)
+
+    assert "TẦNG 3 - LỰA CHỌN THEO Ô" in report
+    assert "S / test.v1" in report
+    assert len((out / "by_slot_group.csv").read_text(encoding="utf-8").splitlines()) == 4
+

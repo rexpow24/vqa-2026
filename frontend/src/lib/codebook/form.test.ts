@@ -112,7 +112,7 @@ test("V asks for violator and behaviour only when there is a violation, with a s
     ["outer.behavior", { option: "behavior.other", text: "  " }]]);
   assert.equal(problems("V", state, TWO)["outer.behavior"], "Ghi ngắn nội dung cho lựa chọn \"khác\".");
   const named = fill("V", TWO, [["outer.behavior", { option: "behavior.other", text: " chở hàng cồng kềnh " }]], state);
-  assert.deepEqual(buildSlots("V", named, TWO).behavior, { option: "behavior.other", text: "chở hàng cồng kềnh" });
+  assert.deepEqual(buildSlots("V", named, TWO).behavior, { options: ["behavior.other"], text: "chở hàng cồng kềnh" });
   assert.equal(problems("V", fill("V", TWO, [["outer.behavior", { option: "behavior.other", text: "x".repeat(201) }]], state), TWO)
     ["outer.behavior"], "Tối đa 200 ký tự.");
 });
@@ -190,14 +190,15 @@ test("stored slots load back into the same form", () => {
   }
 });
 
-test("V.v2 \"cả hai bên\" gives one behaviour per party, filling the two parties", () => {
+test("V.v3 \"cả hai bên\" keeps multiple behaviour tags in each party", () => {
   const state = fill("V", TWO, [["outer.result", { option: "result.yes" }], ["outer.violator", { option: "violator.both" }],
-    ["0.behavior", { option: "behavior.wrong_lane" }], ["1.behavior", { option: "behavior.no_slowdown_intersection" }]]);
+    ["0.behavior", { options: ["behavior.wrong_lane", "behavior.no_helmet"] }],
+    ["1.behavior", { option: "behavior.no_slowdown_intersection" }]]);
   assert.deepEqual(keys("V", state, TWO), ["outer.result", "outer.violator", "0.party", "0.behavior", "1.party", "1.behavior"]);
   const slots = buildSlots("V", state, TWO);
   assert.deepEqual(slots, { result: { option: "result.yes" }, violator: { option: "violator.both" },
-    parties: [{ party: { entity: "A" }, behavior: { option: "behavior.wrong_lane" } },
-      { party: { entity: "B" }, behavior: { option: "behavior.no_slowdown_intersection" } }] });
+    parties: [{ party: { entity: "A" }, behavior: { options: ["behavior.wrong_lane", "behavior.no_helmet"] } },
+      { party: { entity: "B" }, behavior: { options: ["behavior.no_slowdown_intersection"] } }] });
   assert.deepEqual(problems("V", state, TWO), {});
   assert.deepEqual(buildSlots("V", stateFromSlots("V", slots, TWO), TWO), slots);
 });
@@ -206,14 +207,14 @@ test("F-V: V is filled from C, one party or both, behaviour by prefill_from_c", 
   const one = prefillFromCause("V", { ...TWO, cause: { event_type: { option: "event_type.collision" }, subject: { entity: "B" },
     object: { entity: "A" }, conflict_type: { option: "conflict_type.k08" }, action: { option: "action.k08.encroach_overtaking" } } });
   assert.deepEqual(buildSlots("V", one!, TWO), { result: { option: "result.yes" }, violator: { entity: "B" },
-    behavior: { option: "behavior.illegal_overtake" } });
+    behavior: { options: ["behavior.illegal_overtake"] } });
   const both = prefillFromCause("V", { ...TWO, cause: { event_type: { option: "event_type.collision" },
     subject: { option: "subject.both" }, conflict_type: { option: "conflict_type.k11" },
     parties: [{ party: { entity: "B" }, action: { option: "action.k11.right_to_left" } },
       { party: { entity: "A" }, action: { option: "action.k11.left_to_right" } }] } });
   assert.deepEqual(buildSlots("V", both!, TWO), { result: { option: "result.yes" }, violator: { option: "violator.both" },
-    parties: [{ party: { entity: "B" }, behavior: { option: "behavior.fail_to_yield" } },
-      { party: { entity: "A" }, behavior: { option: "behavior.fail_to_yield" } }] });
+    parties: [{ party: { entity: "B" }, behavior: { options: ["behavior.fail_to_yield"] } },
+      { party: { entity: "A" }, behavior: { options: ["behavior.fail_to_yield"] } }] });
   const noRule = prefillFromCause("V", { ...TWO, cause: { subject: { entity: "A" }, conflict_type: { option: "conflict_type.k18" } } });
   assert.deepEqual(buildSlots("V", noRule!, TWO), { result: { option: "result.yes" }, violator: { entity: "A" } });
   assert.equal(prefillFromCause("V", { ...TWO, cause: { subject: { option: "subject.unclear" } } }), null);

@@ -145,13 +145,15 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
       </FieldRow>;
     }
     const value = currentValue(form, item);
+    const selectedIds = value?.options ?? (value?.option ? [value.option] : []);
     const option = item.options.find((candidate) => candidate.id === value?.option);
+    const freeTextOption = item.options.find((candidate) => candidate.free_text && selectedIds.includes(candidate.id));
     return <FieldRow key={item.key} label={item.label} optional={!item.required} note={noteOf(item)} badge={badgeOf(item)}
       error={errorOf(item)}>
       <OptionPicker options={item.options} entities={item.entities} labels={labels} value={value}
-        required={item.required} onChange={(next) => update(item, next)} />
-      {option?.free_text && <FreeText label={`${item.label}: khác`} value={value?.text ?? ""}
-        onChange={(text) => update(item, { option: option.id, text })} />}
+        required={item.required} multiple={item.multiple} onChange={(next) => update(item, next)} />
+      {freeTextOption && <FreeText label={`${item.label}: khác`} value={value?.text ?? ""}
+        onChange={(text) => update(item, item.multiple ? { options: selectedIds, text } : { option: freeTextOption.id, text })} />}
       {option?.from_entities && <div className="flex flex-wrap items-center gap-1.5 border-l-2 border-accent/40 pl-2">
         <span className="text-xs text-foreground/70">Bên nào:</span>
         {item.optionEntities?.map((key) => <EntityChip key={key} entityKey={key} label={labels[key] ?? key}
