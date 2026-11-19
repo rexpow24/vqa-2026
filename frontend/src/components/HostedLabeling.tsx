@@ -13,6 +13,7 @@ import type { Entity, Slots } from "@/lib/codebook/compose";
 import { entityLabel } from "@/lib/codebook/form";
 import { EntityCard } from "@/components/slots/EntityCard";
 import { SlotCard, type SavedSlotRow } from "@/components/slots/SlotCard";
+import { AdminAnswerReview, type AdminAnswer } from "@/components/AdminAnswerReview";
 
 type Video = { id: string; seq: number; filename: string; duration_s: number };
 type Assignment = { id: string; status: string; completed_at: string | null };
@@ -58,11 +59,11 @@ async function requestJson<T>(url: string, body?: object): Promise<T> {
 }
 
 export function HostedLabeling({ video, initialAssignment, initialLabel, initialDrafts, labelDecision,
-  answerFormat = "text", initialEntities = [] }: {
+  answerFormat = "text", initialEntities = [], adminAnswers }: {
   video: Video; initialAssignment: Assignment | null; initialLabel: Label | null; initialDrafts: HostedDraft[];
   labelDecision: EventLabel | null;
   // "slots": S, E, C, V, O, R, Prev are answered with the slot form; N and Attr stay text.
-  answerFormat?: "text" | "slots"; initialEntities?: Entity[];
+  answerFormat?: "text" | "slots"; initialEntities?: Entity[]; adminAnswers?: AdminAnswer[];
 }) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -209,6 +210,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
         </div>}
       </div>
       <div className="flex flex-col gap-3">
+        {adminAnswers !== undefined && <AdminAnswerReview answers={adminAnswers} />}
         {shown.map((draft) => slotForm(draft) ? (draft.qgroup === "E"
           ? <EntityCard key={draft.id} videoId={video.id} draft={draft} saved={entities} canSave={!!assignment}
             onSaved={(saved, row) => { setEntities(saved); slotSaved(draft, [{ draft_id: draft.id, verdict: "SLOTS", ...row }]); }} />

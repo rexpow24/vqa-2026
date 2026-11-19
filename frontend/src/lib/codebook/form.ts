@@ -655,7 +655,7 @@ export function errorText(qgroup: string, code: string | undefined, message: str
     keyframes: "Đặt đủ 2 keyframe: start trước end.",
     missing_slots: "Chưa chọn ô nào.",
     missing_answer: "Chưa ghép được câu từ các ô đã chọn.",
-    codebook_version: "Codebook đã đổi. Tải lại trang.",
+    codebook_version: `Cơ sở dữ liệu chưa nhận codebook ${currentVersion(qgroup) ?? "mới"}. Tải lại trang chỉ có tác dụng sau khi quản trị viên áp dụng migration codebook tương ứng.`,
     stale_page: "Trang này đã cũ. Tải lại trang.",
     text_group: "Nhóm này trả lời bằng chữ, không chọn ô.",
     slot_group: "Nhóm này trả lời bằng ô. Tải lại trang.",

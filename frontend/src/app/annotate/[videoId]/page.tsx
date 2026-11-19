@@ -3,6 +3,7 @@ import { requireProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import { HostedLabeling, type HostedDraft } from "@/components/HostedLabeling";
 import { groupOrder } from "@/lib/qgroups";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type Context = { params: Promise<{ videoId: string }> };
 
@@ -46,10 +47,40 @@ export default async function VideoPage({ params }: Context) {
       decision: decisionResult.data?.find((item) => item.draft_id === draft.id) ?? null,
     };
   }).sort((a, b) => groupOrder(a.qgroup) - groupOrder(b.qgroup));
+  let adminAnswers: {
+    annotator_id: string; annotator_name: string; annotator_email: string; assignment_status: string;
+    answer_format: "text" | "slots"; qgroup: string; question: string; verdict: string | null;
+    edited_answer: string | null; slots: Record<string, unknown> | null; codebook_version: string | null;
+  }[] | undefined;
+  if (profile.role === "admin" && draftIds.length) {
+    const admin = createAdminClient();
+    const [adminAssignments, adminAnnotations] = await Promise.all([
+      admin.from("video_assignments").select("annotator_id,status,answer_format,user_profiles(name,email)").eq("video_id", videoId),
+      admin.from("qa_annotations").select("draft_id,annotator_id,verdict,edited_answer,slots,codebook_version").in("draft_id", draftIds),
+    ]);
+    const adminError = adminAssignments.error ?? adminAnnotations.error;
+    if (adminError) throw new Error(adminError.message);
+    const assignmentByAnnotator = new Map((adminAssignments.data ?? []).map((assignment) => [assignment.annotator_id, assignment]));
+    const draftById = new Map(drafts.map((draft) => [draft.id, draft]));
+    adminAnswers = (adminAnnotations.data ?? []).flatMap((annotation) => {
+      const assignment = assignmentByAnnotator.get(annotation.annotator_id);
+      const draft = draftById.get(annotation.draft_id);
+      if (!assignment || !draft) return [];
+      const user = assignment.user_profiles as unknown as { name: string | null; email: string | null } | null;
+      return [{ annotator_id: annotation.annotator_id, annotator_name: user?.name ?? "Chưa rõ tên",
+        annotator_email: user?.email ?? "", assignment_status: assignment.status,
+        answer_format: assignment.answer_format === "slots" ? "slots" as const : "text" as const,
+        qgroup: draft.qgroup, question: draft.question, verdict: annotation.verdict,
+        edited_answer: annotation.edited_answer, slots: annotation.slots as Record<string, unknown> | null,
+        codebook_version: annotation.codebook_version }];
+    }).sort((a, b) => a.annotator_name.localeCompare(b.annotator_name, "vi")
+      || groupOrder(a.qgroup) - groupOrder(b.qgroup));
+  }
   return <HostedLabeling video={video} initialAssignment={assignmentResult.data}
     initialLabel={labelResult.data as { event_label: "accident" | "near-miss" } | null}
     initialDrafts={initialDrafts as HostedDraft[]}
     labelDecision={(labelDecisionResult.data?.event_label ?? null) as "accident" | "near-miss" | null}
     answerFormat={slotForm ? "slots" : "text"}
-    initialEntities={(entityResult.data ?? []).map((row) => ({ key: row.entity_key as string, cells: row.cells as Record<string, unknown> }))} />;
+    initialEntities={(entityResult.data ?? []).map((row) => ({ key: row.entity_key as string, cells: row.cells as Record<string, unknown> }))}
+    adminAnswers={adminAnswers} />;
 }
