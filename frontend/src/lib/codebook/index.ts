@@ -6,7 +6,9 @@
 // files into codebook_versions (20261116100000_slot_data_model.sql for v1,
 // 20261116200000_codebook_v2.sql for S.v2, C.v2, V.v2 and Attr.v1,
 // 20261119100000_v_behavior_multiselect.sql for V.v3 and
-// 20261119120000_v_animal_responsibility.sql for V.v4).
+// 20261119120000_v_animal_responsibility.sql for V.v4 and
+// 20261119140000_v_animal_owner_evidence.sql for V.v5 and
+// 20261119150000_v_both_animal_keeper.sql for V.v6).
 //
 // A group is answered with cells exactly when it has a codebook here; there is
 // no second list of slot groups. Imports stay relative (no "@/") so that
@@ -26,6 +28,19 @@ import S2 from "./S.v2.json" with { type: "json" };
 import V2 from "./V.v2.json" with { type: "json" };
 import V3 from "./V.v3.json" with { type: "json" };
 import V4 from "./V.v4.json" with { type: "json" };
+import V5 from "./V.v5.json" with { type: "json" };
+import V6 from "./V.v6.json" with { type: "json" };
+import C3 from "./C.v3.json" with { type: "json" };
+import E3 from "./E.v3.json" with { type: "json" };
+import R2 from "./R.v2.json" with { type: "json" };
+import Prev2 from "./Prev.v2.json" with { type: "json" };
+import V7 from "./V.v7.json" with { type: "json" };
+import V8 from "./V.v8.json" with { type: "json" };
+import Prev3 from "./Prev.v3.json" with { type: "json" };
+import S3 from "./S.v3.json" with { type: "json" };
+import E4 from "./E.v4.json" with { type: "json" };
+import C4 from "./C.v4.json" with { type: "json" };
+import V9 from "./V.v9.json" with { type: "json" };
 
 export type CodebookOption = {
   id: string;
@@ -47,6 +62,8 @@ export type CodebookCell = {
   per_party_when?: string;
   multiple?: boolean;
   must_differ_from?: string;
+  note?: string;
+  per_party_options?: string[];
   [key: string]: unknown;
 };
 
@@ -61,7 +78,8 @@ export type Codebook = {
 };
 
 const CODEBOOKS: Readonly<Record<string, Codebook>> = Object.fromEntries(
-  ([S1, E1, C1, V1, O1, R1, Prev1, S2, C2, V2, V3, V4, Attr1, E2] as Codebook[]).map((book) => [`${book.group}.v${book.version}`, book]),
+  ([S1, E1, C1, V1, O1, R1, Prev1, S2, C2, V2, V3, V4, V5, V6, Attr1, E2, C3, E3, R2, Prev2, V7, V8, Prev3,
+    S3, E4, C4, V9] as Codebook[]).map((book) => [`${book.group}.v${book.version}`, book]),
 );
 
 /** The codebook with this id ("C.v1"), or undefined when there is none. */

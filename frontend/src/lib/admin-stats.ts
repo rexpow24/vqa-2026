@@ -14,7 +14,7 @@ export type UserStats = {
 
 // Shape of public.admin_stats(); the counting happens in Postgres so this page
 // costs one round trip rather than 4 + 4 per annotator. See the migration
-// 20261004_admin_stats.sql for why.
+// 20261004000003_admin_stats.sql for why.
 type StatsRow = Profile & {
   assigned: number;
   completed: number;

@@ -1,0 +1,107 @@
+{
+  "group": "Prev",
+  "version": 3,
+  "frozen_on": "2026-11-21",
+  "source": "docs/guidelines/Prev-phong-ngua.md",
+  "question": "Lẽ ra người lái hoặc người liên quan nên làm gì để tránh va chạm này?",
+  "templates": [
+    {
+      "case": "Một bên",
+      "text": "[Bên] nên [2] (và [3])."
+    },
+    {
+      "case": "Cả hai bên",
+      "text": "[A] nên [2 của A] (và [3 của A]); [B] nên [2 của B] (và [3 của B])."
+    },
+    {
+      "case": "C và Attr đều không rõ",
+      "text": "Không thể xác định."
+    }
+  ],
+  "cells": [
+    {
+      "id": "party",
+      "label": "Bên",
+      "required": true,
+      "from_entities": true,
+      "auto_fill": "Tự suy ra từ nhóm V; annotator không sửa.",
+      "options": [
+        {
+          "id": "party.both",
+          "label": "cả hai bên"
+        },
+        {
+          "id": "party.unclear",
+          "label": "không rõ"
+        }
+      ],
+      "read_only": true
+    },
+    {
+      "id": "main_action",
+      "label": "Hành động chính",
+      "required": true,
+      "per_party": true,
+      "options": [
+        {
+          "id": "main_action.slow_down",
+          "label": "giảm tốc"
+        },
+        {
+          "id": "main_action.keep_distance",
+          "label": "giữ khoảng cách an toàn"
+        },
+        {
+          "id": "main_action.observe_and_yield",
+          "label": "quan sát và nhường đường"
+        },
+        {
+          "id": "main_action.change_lane_safely",
+          "label": "chỉ chuyển làn khi an toàn"
+        },
+        {
+          "id": "main_action.stay_in_lane",
+          "label": "đi đúng phần đường"
+        },
+        {
+          "id": "main_action.steady_steering",
+          "label": "giữ ổn định hướng lái"
+        },
+        {
+          "id": "main_action.stop_and_look",
+          "label": "dừng quan sát trước khi băng qua"
+        },
+        {
+          "id": "main_action.signal",
+          "label": "bật xi nhan xin đường"
+        },
+        {
+          "id": "main_action.avoid_blind_spot",
+          "label": "tránh điểm mù xe lớn"
+        },
+        {
+          "id": "main_action.obey_signals",
+          "label": "chấp hành đèn tín hiệu"
+        },
+        {
+          "id": "main_action.check_vehicle",
+          "label": "kiểm tra xe trước khi đi"
+        },
+        {
+          "id": "main_action.wear_helmet",
+          "label": "đội mũ bảo hiểm"
+        },
+        {
+          "id": "main_action.other",
+          "label": "khác",
+          "free_text": true
+        }
+      ],
+      "read_only": true,
+      "auto_fill": "Tự suy ra từ nhóm V; annotator không sửa."
+    }
+  ],
+  "inferred_from": "V",
+  "read_only": true,
+  "derivation": "Tự sinh từ V; một hành vi chỉ ánh xạ khi quy tắc ánh xạ cho một hành động duy nhất, nếu không thì không thể xác định."
+}

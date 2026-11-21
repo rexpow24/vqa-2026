@@ -15,7 +15,7 @@ SOURCE = ROOT / "codebook"
 COPY = ROOT / "frontend" / "src" / "lib" / "codebook"
 GROUPS = ["S", "E", "C", "V", "O", "R", "Prev"]
 # Every frozen codebook file, v1 and later.
-NAMES = [f"{g}.v1.json" for g in GROUPS] + ["S.v2.json", "C.v2.json", "V.v2.json", "V.v3.json", "V.v4.json", "Attr.v1.json", "E.v2.json"]
+NAMES = [f"{g}.v1.json" for g in GROUPS] + ["S.v2.json", "C.v2.json", "V.v2.json", "V.v3.json", "V.v4.json", "V.v5.json", "V.v6.json", "Attr.v1.json", "E.v2.json", "C.v3.json", "E.v3.json", "R.v2.json", "Prev.v2.json", "V.v7.json", "V.v8.json", "Prev.v3.json", "S.v3.json", "E.v4.json", "C.v4.json", "V.v9.json"]
 
 
 def load(group):
@@ -120,3 +120,68 @@ def test_e_v2_adds_ambulance_and_electric_two_wheeler_and_keeps_every_e_v1_choic
     ids = lambda book: [o["id"] for c in book["cells"] for o in c.get("options", [])]
     assert set(ids(e2)) - set(ids(e1)) == {"type.ambulance", "type.electric_two_wheeler"}
     assert set(ids(e1)) <= set(ids(e2))
+
+
+def test_e_v3_applies_entity_taxonomy_and_required_car_details():
+    e3 = json.loads((SOURCE / "E.v3.json").read_text(encoding="utf-8"))
+    cells = {cell["id"]: cell for cell in e3["cells"]}
+    types = {option["id"] for option in cells["type"]["options"]}
+    vehicle_colors = {option["id"] for option in cells["vehicle_color"]["options"]}
+    clothing_colors = {option["id"] for option in cells["clothing_color"]["options"]}
+    assert "type.bicycle" in types and "type.motorbike" in types
+    assert not {"size", "riders"} & cells.keys()
+    assert "type.two_wheeler" not in types
+    assert vehicle_colors == {
+        "vehicle_color.white_gray_silver", "vehicle_color.black", "vehicle_color.red",
+        "vehicle_color.blue_green", "vehicle_color.yellow",
+    }
+    assert "vehicle_color.light" not in vehicle_colors and "vehicle_color.dark" not in vehicle_colors
+    assert cells["dashcam"]["required_when"] == "type.car"
+    assert cells["vehicle_color"]["required_when"] == "type.car"
+    assert cells["clothing_color"]["when"] == "Chỉ với người đi bộ"
+    assert clothing_colors == {
+        "clothing_color.white_gray_silver", "clothing_color.black", "clothing_color.red",
+        "clothing_color.blue_green", "clothing_color.yellow",
+    }
+
+
+def test_new_codebook_rules_keep_c_object_and_apply_requested_option_changes():
+    s3 = json.loads((SOURCE / "S.v3.json").read_text(encoding="utf-8"))
+    e4 = json.loads((SOURCE / "E.v4.json").read_text(encoding="utf-8"))
+    c4 = json.loads((SOURCE / "C.v4.json").read_text(encoding="utf-8"))
+    v9 = json.loads((SOURCE / "V.v9.json").read_text(encoding="utf-8"))
+    ids = lambda book, cell: {option["id"] for option in next(c for c in book["cells"] if c["id"] == cell)["options"]}
+    assert "surface_material.concrete" in ids(s3, "surface_material")
+    assert "type.bicycle" in ids(e4, "type")
+    assert next(c for c in e4["cells"] if c["id"] == "vehicle_color")["required"] is False
+    assert "object" in {c["id"] for c in c4["cells"]}
+    assert ids(c4, "event_type") == {"event_type.collision", "event_type.near_miss"}
+    assert next(o for o in next(c for c in c4["cells"] if c["id"] == "conflict_type")["options"]
+                if o["id"] == "conflict_type.k14")["label"] == "Băng ngang đường giữa đoạn, không ở giao lộ"
+    for cell_id in ("behavior", "additional_behavior"):
+        labels = {option["label"] for option in next(c for c in v9["cells"] if c["id"] == cell_id)["options"]}
+        assert "quay đầu sai quy định" in labels
+        assert not labels & {"không giảm tốc độ qua giao lộ", "vượt xe sai quy định", "không chấp hành biển báo, vạch kẻ đường"}
+
+
+def test_c_v3_removes_speed_without_mutating_c_v2():
+    c2 = json.loads((SOURCE / "C.v2.json").read_text(encoding="utf-8"))
+    c3 = json.loads((SOURCE / "C.v3.json").read_text(encoding="utf-8"))
+    assert any(cell["id"] == "speed" for cell in c2["cells"])
+    assert not any(cell["id"] == "speed" for cell in c3["cells"])
+    assert all("{speed}" not in template["text"] for template in c3["templates"])
+
+
+def test_r_prev_and_v_next_versions_encode_requested_removals_and_derivation():
+    r2 = json.loads((SOURCE / "R.v2.json").read_text(encoding="utf-8"))
+    prev2 = json.loads((SOURCE / "Prev.v2.json").read_text(encoding="utf-8"))
+    v7 = json.loads((SOURCE / "V.v7.json").read_text(encoding="utf-8"))
+    bystanders = next(cell for cell in r2["cells"] if cell["id"] == "bystanders")
+    assert {option["id"] for option in bystanders["options"]} == {"bystanders.helped", "bystanders.unclear"}
+    assert prev2["inferred_from"] == "V" and prev2["read_only"] is True
+    assert {cell["id"] for cell in prev2["cells"]} == {"party", "main_action"}
+    assert v7["inferred_from"] == "C"
+    behavior = next(cell for cell in v7["cells"] if cell["id"] == "behavior")
+    assert behavior["multiple"] is True
+    assert behavior["allow_manual_additions"] is True
+    assert behavior["additions_optional"] is True

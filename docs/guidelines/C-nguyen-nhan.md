@@ -13,7 +13,6 @@
 | 1. Chủ thể | chọn từ E · cả hai bên · không rõ |
 | 2. Kiểu xung đột | chọn nhóm, rồi chọn kiểu (bảng dưới) · không rõ |
 | 3. Hành động | lựa chọn theo kiểu xung đột (bảng dưới) |
-| 4. Tốc độ (không bắt buộc) | phanh gấp · dừng đột ngột · tăng tốc · không giảm tốc · đứng yên · tốc độ cao |
 | Mốc | Start · End |
 
 Ô 0 "va chạm" gồm cả trường hợp phương tiện tự lật hoặc văng khỏi đường dù không chạm bên nào, kể cả khi trước đó có né.
@@ -25,9 +24,8 @@ Cặp chính gồm chủ thể (bên thay đổi chuyển động trước) và 
 Bên né đâm vào bên thứ ba thì không tạo cặp mới.
 Từ codebook v2 (2026-11-16) không còn ô bên né, cách né, kết quả né.
 
-Cơ sở cho "tốc độ cao" ở ô 4: MMUCC 5th Edition (NHTSA 2017), phần tử P13 "Speeding-Related"; NHTSA ghi rằng phần tử này được mã hóa theo bằng chứng lời nói hoặc nhìn thấy.
 Danh sách giá trị của P13 chưa đọc được bản gốc.
-Tốc độ ước bằng mắt nên hai annotator có thể chọn khác nhau; xem lại ở vòng đồng thuận sau.
+Codebook C.v3 đã bỏ ô tốc độ vì tốc độ ước lượng bằng mắt không ổn định giữa annotator.
 
 Đối tượng: video có 2 thực thể thì hệ thống tự điền bên còn lại; từ 3 thực thể trở lên thì chọn từ E.
 Quan hệ được tự điền theo kiểu xung đột.
@@ -75,9 +73,9 @@ Ví dụ thật từ nhóm agreement (mô tả lấy từ câu trả lời của
 
 | Trường hợp | Mẫu câu |
 | --- | --- |
-| Va chạm | [Chủ thể] [hành động] (và [tốc độ]), [quan hệ] [đối tượng], dẫn đến va chạm. |
-| Suýt va chạm | [Chủ thể] [hành động] (và [tốc độ]), [quan hệ] [đối tượng], suýt xảy ra va chạm. |
-| Không rõ loại sự kiện | [Chủ thể] [hành động] (và [tốc độ]), [quan hệ] [đối tượng]. |
+| Va chạm | [Chủ thể] [hành động], [quan hệ] [đối tượng], dẫn đến va chạm. |
+| Suýt va chạm | [Chủ thể] [hành động], [quan hệ] [đối tượng], suýt xảy ra va chạm. |
+| Không rõ loại sự kiện | [Chủ thể] [hành động], [quan hệ] [đối tượng]. |
 | Cả A và B | [A] [hành động của A], đồng thời [B] [hành động của B], đi vào đường đi của nhau, dẫn đến va chạm (hoặc: suýt xảy ra va chạm). |
 
 "Tốc độ cao" vào câu là "chạy tốc độ cao".

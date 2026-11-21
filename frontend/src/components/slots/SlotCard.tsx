@@ -36,10 +36,17 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const [state, setState] = useState(() => stateFromSlots(qgroup, savedSlots, context));
   // O starts with the C pair; until the annotator touches it, it follows C as C is saved.
   const [refsTouched, setRefsTouched] = useState(savedSlots !== null);
-  // A V never saved is filled from the saved C, and follows C until the annotator touches it.
-  const prefill = savedSlots ? null : prefillFromCause(qgroup, context);
+  // V's core and Prev are always derived from their source group; only V's extra observed tags are editable.
+  const derived = qgroup === "V" || qgroup === "Prev" ? prefillFromCause(qgroup, context, savedSlots) : null;
+  const prefill = qgroup === "V" || qgroup === "Prev" ? derived : savedSlots ? null : prefillFromCause(qgroup, context);
   const [touched, setTouched] = useState(false);
-  const form = prefill && !touched ? prefill
+  const form = qgroup === "V" && derived ? {
+    ...state,
+    cells: { ...state.cells, result: derived.cells.result, violator: derived.cells.violator,
+      behavior: derived.cells.behavior, additional_violator: state.cells.additional_violator,
+      additional_behavior: state.cells.additional_behavior },
+    parties: derived.parties,
+  } : qgroup === "Prev" && derived ? derived : prefill && !touched ? prefill
     : qgroup === "O" && !refsTouched ? { ...state, refs: causePair(context.cause) } : state;
   const prefilled = prefilledKeys(qgroup, form, prefill, context);
   const savedMarks = draft.human_keyframes_s.map(Number);
@@ -50,11 +57,14 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const [saving, setSaving] = useState(false);
   const [tried, setTried] = useState(false);
   const [serverError, setServerError] = useState<SaveError | null>(null);
-  const needsMarks = needsKeyframes(qgroup);
+  const needsMarks = needsKeyframes(qgroup) && qgroup !== "V";
   // The stored sentence is a hand edit when it differs from what the stored cells compose to.
   const [edit, setEdit] = useState<string | null>(() => {
-    if (!savedSlots || !draft.edited_answer || draft.codebook_version !== version) return null;
-    return preview(qgroup, savedSlots, context) === draft.edited_answer ? null : draft.edited_answer;
+    if (!savedSlots || !draft.edited_answer) return null;
+    const current = preview(qgroup, savedSlots, context);
+    // Keep compatible hand edits when upgrading an otherwise unchanged codebook sentence.
+    return !current || current === draft.edited_answer || editProblem(current, draft.edited_answer)
+      ? null : draft.edited_answer;
   });
   const [editNotice, setEditNotice] = useState<string | null>(null);
 
@@ -73,6 +83,7 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     || (needsMarks && !sameSlots(marks, savedMarks)) || (stored !== null && stored !== draft.edited_answer);
 
   function update(item: Field, value: SlotValue | string[] | undefined) {
+    if (item.readOnly) return;
     if (item.kind === "refs") setRefsTouched(true);
     setTouched(true);
     setState(choose(qgroup, form, item, value, context));
@@ -115,7 +126,8 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     const old = item.scope === "outer" && !currentValue(form, item) ? stale.cells[item.cellId] : undefined;
     return [item.note, old && `Bản cũ chọn "${old}"; lựa chọn này đã bỏ ở bản mới, chọn lại.`].filter(Boolean).join(" ") || undefined;
   };
-  const badgeOf = (item: Field) => prefilled.has(item.key) ? "điền sẵn từ C" : undefined;
+  const badgeOf = (item: Field) => item.readOnly && (qgroup === "V" || qgroup === "Prev")
+    ? "tự suy ra, không sửa" : prefilled.has(item.key) ? "điền sẵn từ C" : undefined;
   const outer = visible.filter((item) => item.scope === "outer");
   const scopes = [...new Set(visible.filter((item) => item.scope !== "outer").map((item) => item.scope as number))];
   const twoParties = visible.some((item) => item.kind === "party");
@@ -129,19 +141,19 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
       return <FieldRow key={item.key} label={item.label} note={item.note} optional={!item.required} error={errorOf(item)}>
         <div className="flex flex-wrap gap-1.5">{item.entities?.map((key) => {
           const pressed = form.refs.includes(key) && !option;
-          return <EntityChip key={key} entityKey={key} label={labels[key] ?? key} pressed={pressed}
+          return <EntityChip key={key} entityKey={key} label={labels[key] ?? key} pressed={pressed} disabled={item.readOnly}
             onClick={() => update(item, pressed ? form.refs.filter((ref) => ref !== key)
               : [...(option ? [] : form.refs), key].slice(-2))} />;
         })}
-        {item.options.map((choice) => <Chip key={choice.id} pressed={option === choice.id}
+        {item.options.map((choice) => <Chip key={choice.id} pressed={option === choice.id} disabled={item.readOnly}
           onClick={() => update(item, option === choice.id ? [] : { option: choice.id })}>{choice.label}</Chip>)}</div>
       </FieldRow>;
     }
     if (item.kind === "party") {
       const value = rawValue(form, item) as SlotValue | undefined;
       return <FieldRow key={item.key} label={item.label} badge={badgeOf(item)} error={errorOf(item)}>
-        <div className="flex flex-wrap gap-1.5">{item.entities?.map((key) => <EntityChip key={key} entityKey={key}
-          label={labels[key] ?? key} pressed={value?.entity === key} onClick={() => update(item, { entity: key })} />)}</div>
+        <OptionPicker options={item.options} entities={item.entities} labels={labels} value={value}
+          required={item.required} disabled={item.readOnly} onChange={(next) => update(item, next)} />
       </FieldRow>;
     }
     const value = currentValue(form, item);
@@ -150,10 +162,10 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     const freeTextOption = item.options.find((candidate) => candidate.free_text && selectedIds.includes(candidate.id));
     return <FieldRow key={item.key} label={item.label} optional={!item.required} note={noteOf(item)} badge={badgeOf(item)}
       error={errorOf(item)}>
-      <OptionPicker options={item.options} entities={item.entities} labels={labels} value={value}
-        required={item.required} multiple={item.multiple} onChange={(next) => update(item, next)} />
+        <OptionPicker options={item.options} entities={item.entities} labels={labels} value={value}
+          required={item.required} multiple={item.multiple} disabled={item.readOnly} onChange={(next) => update(item, next)} />
       {freeTextOption && <FreeText label={`${item.label}: khác`} value={value?.text ?? ""}
-        onChange={(text) => update(item, item.multiple ? { options: selectedIds, text } : { option: freeTextOption.id, text })} />}
+        disabled={item.readOnly} onChange={(text) => update(item, item.multiple ? { options: selectedIds, text } : { option: freeTextOption.id, text })} />}
       {option?.from_entities && <div className="flex flex-wrap items-center gap-1.5 border-l-2 border-accent/40 pl-2">
         <span className="text-xs text-foreground/70">Bên nào:</span>
         {item.optionEntities?.map((key) => <EntityChip key={key} entityKey={key} label={labels[key] ?? key}
@@ -168,8 +180,10 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     <div className="flex flex-col gap-3 border-t border-border px-4 py-3">
       {needsEntities && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
         Chưa có bên nào: khai báo và lưu các bên ở nhóm E trước.</p>}
-      {prefill && !touched && <p className="rounded border border-accent/50 bg-accent/10 px-3 py-2 text-xs text-foreground/85">
-        Đã điền sẵn từ nhóm C (ô có nhãn &quot;điền sẵn từ C&quot;). Kiểm tra, sửa nếu cần, rồi bấm Lưu.</p>}
+      {qgroup === "V" && <p className="rounded border border-accent/50 bg-accent/10 px-3 py-2 text-xs text-foreground/85">
+        Kết quả, bên và hành vi chính được suy ra từ C theo quy tắc thận trọng; chỉ được thêm hành vi quan sát rõ và gắn với một bên.</p>}
+      {qgroup === "Prev" && <p className="rounded border border-accent/50 bg-accent/10 px-3 py-2 text-xs text-foreground/85">
+        Hành động phòng tránh được sinh từ V; nếu không có ánh xạ duy nhất, hệ thống ghi &quot;không thể xác định&quot;.</p>}
       {savedSlots && draft.codebook_version !== version && <p
         className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
         Câu này lưu bằng codebook {draft.codebook_version}; bấm Lưu để lưu lại bằng {version}.

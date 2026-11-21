@@ -3,7 +3,7 @@ import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 
 // Admin assignment actions, each a thin wrapper over one RPC in
-// 20261108_assigned_labeling.sql and later migrations (the rules live there, not here).
+// 20261108000012_assigned_labeling.sql and later migrations (the rules live there, not here).
 export const maxDuration = 60;
 type Context = { params: Promise<{ action: string }> };
 

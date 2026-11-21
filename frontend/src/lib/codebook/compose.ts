@@ -138,25 +138,22 @@ function entityPhrase(book: Codebook, cells: Slots): { core: string; rest: strin
   const colored = (name: string) => (color ? `${name} màu ${color}` : name);
   const clothing = clearLabel(book, cells, "clothing_color");
   switch (type.id) {
-    case "type.car": // "Ô tô có camera hành trình" / "Ô tô khác"
-      return { core: (cells.dashcam as SlotValue | undefined)?.option === "dashcam.yes"
-        ? "xe ô tô (có camera hành trình)" : colored("xe ô tô"), rest: "" };
+    case "type.car": {
+      const dashcamChoice = (cells.dashcam as SlotValue | undefined)?.option;
+      const dashcam = dashcamChoice === "dashcam.yes" ? "(có camera hành trình)"
+        : dashcamChoice === "dashcam.no" ? "(không có camera hành trình)" : "";
+      return { core: [dashcamChoice === "dashcam.yes" ? "xe ô tô" : colored("xe ô tô"), dashcam].filter(Boolean).join(" "), rest: "" };
+    }
     case "type.bus":
     case "type.truck": { // "Xe khách, xe tải": [1] [2] màu [4]
       const size = clearLabel(book, cells, "size");
       return { core: colored(size ? `${type.label} ${size}` : type.label), rest: "" };
     }
-    case "type.motorbike": // "Xe máy, xe hai bánh"; riders only from two
-    case "type.electric_two_wheeler": { // E.v2 "Xe máy điện, xe đạp điện", same shape
-      const riders = cells.riders === undefined ? null : chosenOption(book, "riders", cells.riders);
-      // "chở [6] người": the count goes before "người", any qualifier after
-      // it ("3 trở lên" reads "chở 3 người trở lên").
-      const [count, ...qualifier] = riders ? riders.label.split(" ") : [];
-      return { core: colored(type.id === "type.motorbike" ? "xe máy" : "xe máy điện"),
-        rest: (clothing ? ` do người mặc áo ${clothing} điều khiển` : "")
-          + (riders && riders.id !== "riders.one" ? ` chở ${[count, "người", ...qualifier].join(" ")}` : "") };
-    }
-    case "type.pedestrian": // "Người đi bộ mặc áo [5]"
+    case "type.motorbike":
+      return { core: colored(type.label), rest: "" };
+    case "type.bicycle":
+      return { core: type.label, rest: "" };
+    case "type.pedestrian":
       return { core: clothing ? `người đi bộ mặc áo ${clothing}` : "người đi bộ", rest: "" };
     case "type.animal": // "Động vật"
       return { core: "động vật", rest: "" };
@@ -251,14 +248,21 @@ function composeBothParties(book: Codebook, slots: Slots, name: (value: unknown)
     event.id === "event_type.unclear" ? null : `dẫn đến ${event.label}`]);
 }
 
-/** The two parties of a per-party answer in E key order; a ComposeError unless they are two different entities. */
-function twoParties(slots: Slots, message: string): Slots[] {
+/** Two distinct parties, with entity references first and explicitly allowed non-entity options last. */
+function twoParties(slots: Slots, message: string, options: CodebookOption[] = []): Slots[] {
   const parties = Array.isArray(slots.parties) ? slots.parties as Slots[] : [];
-  const keys = parties.map((party) => (party.party as SlotValue | undefined)?.entity);
+  const keyOf = (party: Slots) => {
+    const value = party.party as SlotValue | undefined;
+    if (!value || Object.keys(value).length !== 1) return undefined;
+    if (typeof value.entity === "string") return `entity:${value.entity}`;
+    if (options.some((option) => option.id === value.option)) return `option:${value.option}`;
+    return undefined;
+  };
+  const keys = parties.map(keyOf);
   if (parties.length !== 2 || keys.some((key) => key === undefined) || keys[0] === keys[1]) {
     throw new ComposeError("parties", message);
   }
-  return [...parties].sort((a, b) => (a.party as SlotValue).entity!.localeCompare((b.party as SlotValue).entity!));
+  return [...parties].sort((a, b) => keyOf(a)!.localeCompare(keyOf(b)!));
 }
 
 const EVENT_CASE: Record<string, string> = {
@@ -296,9 +300,39 @@ function composeCauseV2(book: Codebook, slots: Slots, context: ComposeContext): 
 /**
  * V: "Có" is [bên vi phạm] [hành vi]; the other two results are fixed
  * sentences. V.v2 adds "cả hai bên", V.v3 allows multiple behaviour tags,
- * and V.v4 can state that no animal handler is visible.
+ * and V.v4 can state that no animal handler is visible. Additional behavior is optional.
  */
 function composeViolation(book: Codebook, slots: Slots, context: ComposeContext): string {
+  if (book.version < 8) return composeViolationLegacy(book, slots, context);
+  const additions = slots.additional_behavior as SlotValue | undefined;
+  const additionIds = additions?.options ?? (additions?.option ? [additions.option] : []);
+  const actor = slots.additional_violator;
+  if (additionIds.length && !(actor as SlotValue | undefined)?.entity) {
+    throw new ComposeError("parties", "Chọn bên thực hiện hành vi bổ sung.");
+  }
+  const base = { ...slots };
+  delete base.additional_violator;
+  delete base.additional_behavior;
+  const result = chosenOption(book, "result", base.result);
+  if (result.id !== "result.yes") return composeViolationLegacy(book, base, context);
+  const baseActor = base.violator as SlotValue | undefined;
+  const mirroredAddition = baseActor?.entity === (actor as SlotValue | undefined)?.entity
+    && JSON.stringify((base.behavior as SlotValue | undefined)?.options ?? [(base.behavior as SlotValue | undefined)?.option].filter(Boolean))
+      === JSON.stringify(additionIds);
+  const core = !mirroredAddition ? composeViolationLegacy(book, base, context) : "";
+  if (!additionIds.length) return core || templateText(book, "Không rõ");
+  const cell = book.cells.find((candidate) => candidate.id === "additional_behavior");
+  if (!cell) throw new ComposeError("unknown_cell", "Thiếu ô hành vi bổ sung trong codebook V.");
+  const labels = [...new Set(additionIds)].map((id) => {
+    const option = cell.options?.find((candidate) => candidate.id === id);
+    if (!option) throw new ComposeError("unknown_option", `Lựa chọn "${id}" không thuộc ô hành vi bổ sung.`);
+    return labelOf(option, { ...additions, option: id });
+  });
+  const addition = `${namer(context)(actor)} có hành vi bổ sung: ${labels.join(", ")}`;
+  return core ? `${core.replace(/\.$/, "")}; ngoài ra, ${addition}.` : `${capitalize(addition)}.`;
+}
+
+function composeViolationLegacy(book: Codebook, slots: Slots, context: ComposeContext): string {
   const result = chosenOption(book, "result", slots.result);
   if (result.id === "result.none_observed") return templateText(book, "Không quan sát thấy");
   if (result.id !== "result.yes") return templateText(book, "Không rõ");
@@ -326,11 +360,17 @@ function composeViolation(book: Codebook, slots: Slots, context: ComposeContext)
       return options.length === 1 ? options[0] : `${options.slice(0, -1).join(", ")} và ${options[options.length - 1]}`;
     };
     if ((slots.violator as SlotValue | undefined)?.option === "violator.both") {
-      const [first, second] = twoParties(slots, "Chọn \"cả hai bên\" thì khai báo đúng hai bên khác nhau, mỗi bên một hành vi.");
+      const cell = book.cells.find((candidate) => candidate.id === "violator");
+      const options = (cell?.options ?? []).filter((option) => cell?.per_party_options?.includes(option.id));
+      const partyName = (value: unknown) => {
+        const option = options.find((candidate) => candidate.id === (value as SlotValue | undefined)?.option);
+        return option ? String(option.party_label ?? option.label) : name(value);
+      };
+      const [first, second] = twoParties(slots, "Chọn \"cả hai bên\" thì khai báo đúng hai bên khác nhau, mỗi bên một hành vi.", options);
       const [a, b] = [behavior(first), behavior(second)];
       return a === b
-        ? render(templateText(book, "Có, cả hai bên cùng hành vi"), { A: name(first.party), B: name(second.party), behavior: a })
-        : render(templateText(book, "Có, cả hai bên"), { A: name(first.party), behavior_A: a, B: name(second.party), behavior_B: b });
+        ? render(templateText(book, "Có, cả hai bên cùng hành vi"), { A: partyName(first.party), B: partyName(second.party), behavior: a })
+        : render(templateText(book, "Có, cả hai bên"), { A: partyName(first.party), behavior_A: a, B: partyName(second.party), behavior_B: b });
     }
     if ((slots.violator as SlotValue | undefined)?.option === "violator.unidentified") {
       return render(templateText(book, "Có, chưa xác định người điều khiển vật nuôi"), { behavior: behavior(slots) });

@@ -2,7 +2,7 @@
 
 ## Data
 
-Migration `supabase/migrations/20261107_answer_adjudication.sql`.
+Migration `supabase/migrations/20261107000010_answer_adjudication.sql`.
 
 - `answer_adjudications(draft_id pk → video_drafts cascade, annotator_ids uuid[], final_verdict, final_answer, final_keyframes_s numeric(9,3)[], llm_suggestion, followed_llm boolean, decided_by → user_profiles set null, decided_at)`.
 - `label_adjudications(video_id pk → videos cascade, annotator_ids uuid[], event_label, llm_suggestion, followed_llm, decided_by, decided_at)`.

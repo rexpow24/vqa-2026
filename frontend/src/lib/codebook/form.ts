@@ -12,12 +12,13 @@
 
 import { getCodebook, currentVersion, type Codebook, type CodebookCell, type CodebookOption } from "./index.ts";
 import { compose, type Entity, type SlotValue, type Slots } from "./compose.ts";
+import { derivePrevention, deriveViolation } from "./derivation.ts";
 
 export type Cells = Record<string, SlotValue>;
-export type PartyState = { entity?: string; cells: Cells };
+export type PartyState = { entity?: string; option?: string; cells: Cells };
 export type FormState = { cells: Cells; parties: PartyState[]; refs: string[] };
 /** `entities`: the annotator's saved E list; `cause`: the saved C cells, which R and O read. */
-export type FormContext = { entities: Entity[]; cause?: Slots | null };
+export type FormContext = { entities: Entity[]; cause?: Slots | null; violation?: Slots | null };
 
 /**
  * One visible input. `scope` is "outer" or a party index; `kind` is a cell
@@ -37,6 +38,7 @@ export type Field = {
   /** Entity keys for an option that names one (C "chạm vào thực thể khác"). */
   optionEntities?: string[];
   note?: string;
+  readOnly?: boolean;
 };
 
 export const MAX_TEXT = 200;
@@ -56,6 +58,8 @@ const cellOf = (book: Codebook, id: string): CodebookCell => {
 };
 
 const keysOf = (context: FormContext) => [...context.entities].map((entity) => entity.key).sort();
+const responsibleKeysOf = (context: FormContext) => context.entities.filter((entity) =>
+  (entity.cells.type as SlotValue | undefined)?.option !== "type.animal").map((entity) => entity.key).sort();
 
 /** The C pair R and O read: [subject, object] of an entity subject, the two parties in key order for "cả hai bên". */
 export function causePair(cause: Slots | null | undefined): string[] {
@@ -74,7 +78,7 @@ function field(book: Codebook, cellId: string, scope: "outer" | number, extra: P
   const cell = cellOf(book, cellId);
   return {
     key: `${scope}.${cellId}`, scope, kind: "choice", cellId, label: cell.label, required: cell.required,
-    multiple: cell.multiple, options: cell.options ?? [], entities: null, ...extra,
+    multiple: cell.multiple, options: cell.options ?? [], entities: null, note: cell.note, ...extra,
   };
 }
 
@@ -96,22 +100,28 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
       return book.cells.map((cell) => field(book, cell.id, "outer"));
     case "V": {
       // An animal can be an E/C participant, but never a V violator.
-      const responsibleKeys = context.entities.filter((entity) =>
-        (entity.cells.type as SlotValue | undefined)?.option !== "type.animal").map((entity) => entity.key).sort();
-      out.push(field(book, "result", "outer"));
+      const responsibleKeys = responsibleKeysOf(context);
+      out.push(field(book, "result", "outer", { readOnly: true }));
       if (optionOf(cells.result) === "result.yes") {
-        out.push(field(book, "violator", "outer", { required: true, entities: responsibleKeys,
-          note: "Không chọn con vật làm bên vi phạm. Nếu vật nuôi đi rông và không thấy người điều khiển, chọn lựa chọn không xác định." }));
+        out.push(field(book, "violator", "outer", { required: true, entities: responsibleKeys, readOnly: true }));
         // V "cả hai bên": one behaviour per party, as C does for subject.both.
         if (optionOf(cells.violator) === "violator.both") {
+          const cell = cellOf(book, "violator");
+          const options = (cell.options ?? []).filter((option) => cell.per_party_options?.includes(option.id));
           for (const index of [0, 1]) {
             out.push(field(book, "violator", index, { kind: "party", key: `${index}.party`, cellId: "party",
-              label: "Chọn bên", required: true, options: [], entities: responsibleKeys }),
-            field(book, "behavior", index, { required: true }));
+              label: "Chọn bên", required: true, options, entities: responsibleKeys }),
+            field(book, "behavior", index, { required: true, readOnly: true }));
           }
         } else {
-          out.push(field(book, "behavior", "outer", { required: true }));
+          out.push(field(book, "behavior", "outer", { required: true, readOnly: true }));
         }
+      }
+      out.push(field(book, "additional_violator", "outer", { entities: responsibleKeys,
+        note: "Chọn người tham gia có hành vi bổ sung quan sát được; động vật không phải chủ thể vi phạm." }));
+      if (cells.additional_violator?.entity) {
+        out.push(field(book, "additional_behavior", "outer", { required: false, multiple: true,
+          note: "Chỉ chọn hành vi thấy rõ trong video; lựa chọn này được gắn với bên đã chọn ở trên." }));
       }
       return out;
     }
@@ -161,7 +171,7 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
         return out;
       }
       if (actions.length) out.push(field(book, "action", "outer", { options: actions }));
-      out.push(field(book, "speed", "outer"));
+      if (book.cells.some((cell) => cell.id === "speed")) out.push(field(book, "speed", "outer"));
       // C.v1 only: the evasion cells were removed in C.v2.
       if (optionOf(cells.event_type) === "event_type.near_miss" && book.cells.some((cell) => cell.id === "evader")) {
         out.push(field(book, "evader", "outer", { entities: keys }), field(book, "evasion", "outer"),
@@ -170,15 +180,16 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
       return out;
     }
     case "Prev": {
-      out.push(field(book, "party", "outer", { entities: keys }));
+      out.push(field(book, "party", "outer", { entities: keys, readOnly: true }));
       const party = cells.party;
       const scopes = party?.entity !== undefined ? [0] : party?.option === "party.both" ? [0, 1] : [];
       for (const index of scopes) {
         if (scopes.length === 2) {
           out.push({ ...field(book, "party", index, { kind: "party", key: `${index}.party`,
-            label: "Chọn bên", required: true, options: [], entities: keys }) });
+            label: "Chọn bên", required: true, options: [], entities: keys, readOnly: true }) });
         }
-        out.push(field(book, "main_action", index), field(book, "extra_action", index));
+        out.push(field(book, "main_action", index, { readOnly: true }));
+        if (book.cells.some((cell) => cell.id === "extra_action")) out.push(field(book, "extra_action", index, { readOnly: true }));
       }
       return out;
     }
@@ -194,8 +205,9 @@ const cellsOf = (state: FormState, scope: "outer" | number): Cells =>
 export function rawValue(state: FormState, item: Field): SlotValue | string[] | undefined {
   if (item.kind === "refs") return state.refs;
   if (item.kind === "party") {
-    const key = typeof item.scope === "number" ? state.parties[item.scope]?.entity : undefined;
-    return key === undefined ? undefined : { entity: key };
+    const party = typeof item.scope === "number" ? state.parties[item.scope] : undefined;
+    return party?.option !== undefined ? { option: party.option }
+      : party?.entity !== undefined ? { entity: party.entity } : undefined;
   }
   return cellsOf(state, item.scope)[item.cellId];
 }
@@ -271,6 +283,9 @@ export function buildSlots(qgroup: string, state: FormState, context: FormContex
       slots.parties = [{ ...(parties[0] ?? {}), party: { entity: party.entity } }];
     }
   }
+  // An additional actor without a selected behavior is not an annotation.
+  // Keep the optional actor choice in the in-memory form, but do not persist it alone.
+  if (qgroup === "V" && slots.additional_violator && !slots.additional_behavior) delete slots.additional_violator;
   return slots;
 }
 
@@ -281,7 +296,8 @@ export function stateFromSlots(qgroup: string, slots: Slots | null | undefined, 
   const list = Array.isArray(parties) ? parties as Slots[] : [];
   const partyState = (party: Slots): PartyState => {
     const { party: who, ...cells } = party;
-    return { entity: (who as SlotValue | undefined)?.entity, cells: cells as Cells };
+    const value = who as SlotValue | undefined;
+    return { entity: value?.entity, ...(value?.option ? { option: value.option } : {}), cells: cells as Cells };
   };
   if (qgroup === "O" || qgroup === "Attr") {
     const cells = (Array.isArray(parties) || parties === undefined ? rest : { ...rest, parties }) as Cells;
@@ -298,44 +314,11 @@ export function stateFromSlots(qgroup: string, slots: Slots | null | undefined, 
   return { cells: rest as Cells, parties: list.map(partyState), refs: [] };
 }
 
-type PrefillRule = { conflict_types: string[]; c_actions?: string[]; option: string };
-
-/** The V behaviour the codebook's `prefill_from_c` gives for a C conflict type and action, if any. */
-function prefillBehavior(book: Codebook, conflict: string | undefined, action: string | undefined): Cells {
-  const code = getCodebook(currentVersion("C") ?? "")?.cells.find((cell) => cell.id === "conflict_type")
-    ?.options?.find((option) => option.id === conflict)?.code;
-  const rules = (Array.isArray(book.prefill_from_c) ? book.prefill_from_c : []) as PrefillRule[];
-  const rule = rules.find((candidate) => typeof code === "string" && candidate.conflict_types.includes(code)
-    && (!candidate.c_actions || (action !== undefined && candidate.c_actions.includes(action))));
-  return rule ? { behavior: { option: rule.option } } : {};
-}
-
-/**
- * F-V (codebook v2): the V form filled from the saved C answer, for a V that
- * was never saved. The violator is the C subject ("cả hai bên" included), the
- * result "có", and each behaviour comes from `prefill_from_c` of the V
- * codebook by C conflict type and action; no rule leaves it empty. A C
- * subject that is "không rõ" fills nothing. Null when there is nothing to fill.
- */
-export function prefillFromCause(qgroup: string, context: FormContext): FormState | null {
-  const cause = context.cause;
-  if (qgroup !== "V" || !cause) return null;
-  const book = bookOf("V");
-  const keys = keysOf(context);
-  const conflict = optionOf(cause.conflict_type as SlotValue | undefined);
-  const subject = cause.subject as SlotValue | undefined;
-  if (subject?.option === "subject.both") {
-    if (!book.cells.find((cell) => cell.id === "violator")?.options?.some((option) => option.id === "violator.both")) return null;
-    const parties = (Array.isArray(cause.parties) ? cause.parties as Slots[] : [])
-      .map((party) => ({ entity: (party.party as SlotValue | undefined)?.entity,
-        cells: prefillBehavior(book, conflict, optionOf(party.action as SlotValue | undefined)) }))
-      .filter((party) => party.entity !== undefined && keys.includes(party.entity));
-    if (parties.length !== 2) return null;
-    return { cells: { result: { option: "result.yes" }, violator: { option: "violator.both" } }, parties, refs: [] };
-  }
-  if (subject?.entity === undefined || !keys.includes(subject.entity)) return null;
-  return { cells: { result: { option: "result.yes" }, violator: { entity: subject.entity },
-    ...prefillBehavior(book, conflict, optionOf(cause.action as SlotValue | undefined)) }, parties: [], refs: [] };
+/** Keep C-derived V fields synchronized while preserving the annotator's separately entered additions. */
+export function prefillFromCause(qgroup: string, context: FormContext, saved?: Slots | null): FormState | null {
+  if (qgroup === "V") return stateFromSlots("V", deriveViolation(context.cause, context.entities, saved), context);
+  if (qgroup === "Prev") return stateFromSlots("Prev", derivePrevention(context.violation ?? {}, context.entities), context);
+  return null;
 }
 
 /** The keys of the fields whose value is still the one `prefill` gave them. */
@@ -418,7 +401,8 @@ export function choose(qgroup: string, state: FormState, item: Field, value: Slo
   const slot = value as SlotValue | undefined;
   if (item.kind === "party") {
     const index = item.scope as number;
-    next.parties[index] = { ...(next.parties[index] ?? { cells: {} }), entity: slot?.entity };
+    next.parties[index] = { cells: next.parties[index]?.cells ?? {}, entity: slot?.entity,
+      ...(slot?.option ? { option: slot.option } : {}) };
     return next;
   }
   const target = item.scope === "outer" ? next.cells : (next.parties[item.scope] ??= { cells: {} }).cells;
@@ -433,7 +417,17 @@ export function choose(qgroup: string, state: FormState, item: Field, value: Slo
     if (slot?.option === "subject.both") fillTwoParties(next, keys);
   }
   if (qgroup === "V" && item.cellId === "violator" && item.scope === "outer" && slot?.option === "violator.both") {
-    fillTwoParties(next, keys);
+    const responsible = responsibleKeysOf(context);
+    const allowed = cellOf(bookOf("V"), "violator").per_party_options ?? [];
+    next.parties = [0, 1].map((index) => {
+      const party = next.parties[index];
+      return party && ((party.entity !== undefined && responsible.includes(party.entity))
+        || (party.option !== undefined && allowed.includes(party.option)))
+        ? party : { cells: party?.cells ?? {} };
+    });
+    for (const party of next.parties) if (party.entity === undefined && party.option === undefined) {
+      party.entity = responsible.find((key) => !next.parties.some((chosen) => chosen.entity === key));
+    }
   }
   if (qgroup === "Prev" && item.cellId === "party" && item.scope === "outer") {
     if (slot?.option === "party.both") fillTwoParties(next, keys);
@@ -505,7 +499,11 @@ export function problems(qgroup: string, state: FormState, context: FormContext)
   }
   const partyFields = visible.filter((item) => item.kind === "party");
   if (partyFields.length === 2) {
-    const [first, second] = partyFields.map((item) => currentValue(state, item)?.entity);
+    const [first, second] = partyFields.map((item) => {
+      const value = currentValue(state, item);
+      return value?.option !== undefined ? `option:${value.option}`
+        : value?.entity !== undefined ? `entity:${value.entity}` : undefined;
+    });
     if (first !== undefined && first === second) out[partyFields[1].key] = "Hai bên phải khác nhau.";
   }
   const refs = visible.find((item) => item.kind === "refs");
@@ -543,23 +541,26 @@ const E_BOOK = () => bookOf("E");
 
 /**
  * The E cells shown for an entity, by the codebook's "when" conditions
- * (E.v1.json `when`): size only for bus and truck, dashcam only for a car,
- * no vehicle colour for a car with a dashcam, a pedestrian or an animal,
- * clothing colour for a two-wheeler (motorbike, or electric in E.v2) or a
- * pedestrian, riders for a two-wheeler.
+ * E.v4 `when`: ask a car about colour only when it has no dashcam; no vehicle
+ * colour for bicycles, pedestrians or animals; clothing colour only for pedestrians.
  */
 export function entityCells(cells: Cells): CodebookCell[] {
   const book = E_BOOK();
   const type = cells.type?.option;
+  const carWithoutDashcam = type === "type.car" && cells.dashcam?.option === "dashcam.no";
+  const colorRequired = carWithoutDashcam || Boolean(type && !["type.car", "type.bicycle", "type.pedestrian", "type.animal"].includes(type));
   const shown = new Set(["type"]);
-  if (type === "type.bus" || type === "type.truck") shown.add("size");
-  if (type === "type.car") shown.add("dashcam");
-  if (type && !["type.pedestrian", "type.animal"].includes(type)
-      && !(type === "type.car" && cells.dashcam?.option === "dashcam.yes")) shown.add("vehicle_color");
-  const twoWheeler = type === "type.motorbike" || type === "type.electric_two_wheeler"; // E.v2 adds the electric one
-  if (twoWheeler || type === "type.pedestrian") shown.add("clothing_color");
-  if (twoWheeler) shown.add("riders");
-  return book.cells.filter((cell) => shown.has(cell.id));
+  if (type === "type.car") {
+    shown.add("dashcam");
+    if (cells.dashcam?.option === "dashcam.no") shown.add("vehicle_color");
+  }
+  if (type && !["type.car", "type.bicycle", "type.pedestrian", "type.animal"].includes(type)) shown.add("vehicle_color");
+  if (type === "type.pedestrian") shown.add("clothing_color");
+  return book.cells.filter((cell) => shown.has(cell.id)).map((cell) => ({
+    ...cell,
+    required: cell.id === "type" || cell.id === "dashcam" && type === "type.car"
+      || cell.id === "vehicle_color" && colorRequired,
+  }));
 }
 
 /** An entity's cells as the entities route takes them: shown cells only, trimmed free text. */
@@ -582,6 +583,16 @@ export function entityProblems(entities: Entity[]): Record<string, string> {
     if (!cells.type) out[`${entity.key}.type`] = "Chưa chọn loại.";
     else if (cells.type.text !== undefined && !cells.type.text) out[`${entity.key}.type`] = "Ghi ngắn loại cho lựa chọn \"khác\".";
     else if ((cells.type.text?.length ?? 0) > MAX_TEXT) out[`${entity.key}.type`] = `Tối đa ${MAX_TEXT} ký tự.`;
+    const type = cells.type?.option;
+    if (type === "type.car" && !cells.dashcam) {
+      out[`${entity.key}.dashcam`] = "Ô tô bắt buộc chọn có hoặc không có camera hành trình.";
+    }
+    const colorRequired = type !== undefined && !["type.car", "type.bicycle", "type.pedestrian", "type.animal"].includes(type)
+      || type === "type.car" && cells.dashcam?.option === "dashcam.no";
+    if (colorRequired && !cells.vehicle_color) out[`${entity.key}.vehicle_color`] = "Bắt buộc chọn màu xe.";
+    if (type === "type.car" && cells.dashcam?.option === "dashcam.yes" && cells.vehicle_color) {
+      out[`${entity.key}.vehicle_color`] = "Ô tô có dashcam không chọn màu xe.";
+    }
   }
   return out;
 }
@@ -654,7 +665,8 @@ export function errorText(qgroup: string, code: string | undefined, message: str
     unexpected_text: `Ô${named} không ghi chữ.`,
     text_too_long: `Chữ ghi ở lựa chọn "khác" dài quá ${MAX_TEXT} ký tự.`,
     must_differ: "Hành động thêm phải khác hành động chính.",
-    parties: "Chọn đúng các bên: \"cả hai bên\" là hai bên khác nhau đã khai báo ở nhóm E.",
+    parties: qgroup === "V" ? "Chọn hai bên khác nhau; mỗi bên có hành vi riêng."
+      : "Chọn đúng các bên: \"cả hai bên\" là hai bên khác nhau đã khai báo ở nhóm E.",
     per_party: "Với \"cả hai bên\", mỗi bên một ô hành động.",
     cause_missing: "Lưu nhóm C trước khi lưu nhóm R.",
     keyframes: "Đặt đủ 2 keyframe: start trước end.",

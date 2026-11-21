@@ -12,7 +12,7 @@
 | 0. Clip có đoạn sau sự kiện | có · không |
 | 1. Chủ thể | dừng lại · tiếp tục di chuyển, rời đi · tự đứng dậy, dựng xe · giằng co · không rõ |
 | 2. Đối tượng (bỏ khi C không có đối tượng, ví dụ K18) | như ô 1 |
-| 3. Người, xe xung quanh | dừng lại hoặc đến hỗ trợ · không thấy ai dừng lại · không rõ |
+| 3. Người, xe xung quanh | dừng lại hoặc đến hỗ trợ · không rõ |
 
 ## Mẫu câu
 
@@ -24,4 +24,4 @@
 | Không có đoạn sau | Không thể xác định. |
 
 Ô nào "không rõ" thì bỏ vế đó khỏi câu.
-Ô 3 là "không thấy ai dừng lại" thì bỏ vế người và xe xung quanh.
+Không suy luận rằng không ai dừng lại chỉ vì video không cho thấy người hỗ trợ.

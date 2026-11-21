@@ -2,7 +2,7 @@
 
 ## Shipped
 
-- Migration `20261107_answer_adjudication.sql`, applied to production on 2026-11-07:
+- Migration `20261107000010_answer_adjudication.sql`, applied to production on 2026-11-07:
   - verdict/answer consistency trigger;
   - decision tables with RLS;
   - `final_answers` / `final_video_labels` views;

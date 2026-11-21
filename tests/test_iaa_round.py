@@ -10,7 +10,29 @@ import json
 
 import pytest
 
-from scripts.iaa_round import fleiss_kappa, gwet_ac1, kripp_alpha, main, nominal, pairwise_pct
+from scripts.iaa_round import fleiss_kappa, gwet_ac1, kripp_alpha, main, nominal, pairwise_pct, slot_signature
+
+
+@pytest.fixture
+def synthetic_slot_codebook(monkeypatch):
+    """The synthetic test.v1 fixture has no optional cells; real versions keep real validation."""
+    from scripts import iaa_round
+
+    original = iaa_round.optional_cell_ids
+    monkeypatch.setattr(iaa_round, "optional_cell_ids",
+                        lambda version: frozenset() if version == "test.v1" else original(version))
+
+
+def test_v6_party_order_does_not_create_an_agreement_conflict():
+    answer = {"result": {"option": "result.yes"}, "violator": {"option": "violator.both"}, "parties": [
+        {"party": {"entity": "A"}, "behavior": {"options": ["behavior.wrong_lane"]}},
+        {"party": {"option": "violator.unidentified"}, "behavior": {"options": ["behavior.other"], "text": "để vật nuôi đi rông"}},
+    ]}
+    reverse = {**answer, "parties": list(reversed(answer["parties"]))}
+    assert slot_signature(answer, "V.v6") == slot_signature(reverse, "V.v6")
+    assert slot_signature(answer, "V.v5") != slot_signature(reverse, "V.v5")
+    changed = {**answer, "parties": [{**answer["parties"][0], "party": {"entity": "B"}}, answer["parties"][1]]}
+    assert slot_signature(answer, "V.v6") != slot_signature(changed, "V.v6")
 
 # Fleiss' kappa example: 10 subjects, 14 raters, 5 categories, kappa = 0.210.
 FLEISS_COUNTS = [
@@ -139,7 +161,7 @@ def _run(tmp_path, name, rows, header, capsys):
     return report, (out / "by_qgroup.csv").read_text(encoding="utf-8"), out
 
 
-def test_slot_rows_leave_every_tier1_coefficient_unchanged(tmp_path, capsys):
+def test_slot_rows_leave_every_tier1_coefficient_unchanged(tmp_path, capsys, synthetic_slot_codebook):
     text_report, text_by_q, _ = _run(tmp_path, "text", _mixed_round(), HEADER, capsys)
     slot_report, slot_by_q, _ = _run(tmp_path, "slots", _mixed_round() + _slot_rows(), HEADER, capsys)
 
@@ -148,7 +170,7 @@ def test_slot_rows_leave_every_tier1_coefficient_unchanged(tmp_path, capsys):
     assert len(tier1(text_report)) == 5  # pairwise, kappa, alpha, AC1, and the event-label agreement line
     assert tier1(slot_report) == tier1(text_report)
     assert slot_by_q == text_by_q
-    assert "Annotators: 2 " in slot_report and "lead" not in slot_report and "SLOTS" not in slot_report
+    assert "Dữ liệu văn bản: 2 người" in slot_report and "lead" not in slot_report and "SLOTS" not in slot_report
 
 
 def test_export_without_answer_format_column_reads_as_all_text(tmp_path, capsys):
@@ -160,17 +182,20 @@ def test_export_without_answer_format_column_reads_as_all_text(tmp_path, capsys)
     assert old_by_q == new_by_q
 
 
-def test_slot_choices_are_exported_as_a_separate_agreement_tier(tmp_path, capsys):
+def test_slot_choices_are_exported_as_a_separate_agreement_tier(tmp_path, capsys, synthetic_slot_codebook):
     report, _, out = _run(tmp_path, "mixed", _mixed_round() + _slot_rows(), HEADER, capsys)
 
     assert "TẦNG 3 - LỰA CHỌN THEO Ô" in report
     assert "S / test.v1" in report
     slot_summary = (out / "by_slot_group.csv").read_text(encoding="utf-8")
-    assert "qgroup,codebook_version,n_units,n_annotators,pct_exact_slots" in slot_summary
-    assert "C,test.v1,3,2,0.667" in slot_summary
+    summary = list(csv.DictReader(slot_summary.splitlines()))
+    cause = next(row for row in summary if row["qgroup"] == "C" and row["codebook_version"] == "test.v1")
+    assert cause["n_units"] == "3" and cause["n_annotators"] == "2"
+    assert float(cause["pct_exact_slots"]) == pytest.approx(2 / 3, abs=0.001)
+    assert cause["optional_cells_excluded"] == ""
 
 
-def test_slot_only_export_still_produces_choice_agreement(tmp_path, capsys):
+def test_slot_only_export_still_produces_choice_agreement(tmp_path, capsys, synthetic_slot_codebook):
     report, _, out = _run(tmp_path, "slot_only", _slot_rows(), HEADER, capsys)
 
     assert "TẦNG 3 - LỰA CHỌN THEO Ô" in report

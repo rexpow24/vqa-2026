@@ -1,6 +1,6 @@
 # Architecture
 
-Migration `supabase/migrations/20261108_assigned_labeling.sql`.
+Migration `supabase/migrations/20261108000012_assigned_labeling.sql`.
 
 ## Schema
 

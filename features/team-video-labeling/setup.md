@@ -8,7 +8,7 @@ Queue, Run, Review, Relabel, Prompts, Export, local media, and sidecar routes re
 
 ## Supabase
 
-Both [`20261003_team_video_labeling.sql`](../../supabase/migrations/20261003_team_video_labeling.sql) and [`20261003_qa_labeling.sql`](../../supabase/migrations/20261003_qa_labeling.sql) were applied to Supabase project `xjktuhpvcmkjshmutcdv`.
+Both [`20261003000001_team_video_labeling.sql`](../../supabase/migrations/20261003000001_team_video_labeling.sql) and [`20261003000002_qa_labeling.sql`](../../supabase/migrations/20261003000002_qa_labeling.sql) were applied to Supabase project `xjktuhpvcmkjshmutcdv`.
 The root [migration runner](../../scripts/apply-team-labeling-migration.mjs) reads the ignored `DB_CONNECTION` value from `.env` and accepts a migration filename as its first argument.
 The first admin is already created.
 Its temporary password is in ignored `frontend/.admin-credentials`; remove that file after storing the password securely.

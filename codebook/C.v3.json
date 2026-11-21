@@ -1,0 +1,418 @@
+{
+  "group": "C",
+  "version": 3,
+  "frozen_on": "2026-11-20",
+  "source": "docs/guidelines/C-nguyen-nhan.md",
+  "question": "Nguyên nhân trực tiếp hoặc hành động ngay trước va chạm là gì?",
+  "templates": [
+    {
+      "case": "Va chạm",
+      "text": "{subject} {action}, {relation} {object}, dẫn đến va chạm."
+    },
+    {
+      "case": "Suýt va chạm",
+      "text": "{subject} {action}, {relation} {object}, suýt xảy ra va chạm."
+    },
+    {
+      "case": "Không rõ loại sự kiện",
+      "text": "{subject} {action}, {relation} {object}."
+    },
+    {
+      "case": "Cả A và B, va chạm",
+      "text": "{A} {action_A}, đồng thời {B} {action_B}, đi vào đường đi của nhau, dẫn đến va chạm."
+    },
+    {
+      "case": "Cả A và B, suýt va chạm",
+      "text": "{A} {action_A}, đồng thời {B} {action_B}, đi vào đường đi của nhau, suýt xảy ra va chạm."
+    },
+    {
+      "case": "Cả A và B, không rõ loại sự kiện",
+      "text": "{A} {action_A}, đồng thời {B} {action_B}, đi vào đường đi của nhau."
+    }
+  ],
+  "keyframes": [
+    "start",
+    "end"
+  ],
+  "cells": [
+    {
+      "id": "event_type",
+      "label": "Loại sự kiện",
+      "required": true,
+      "options": [
+        {
+          "id": "event_type.collision",
+          "label": "va chạm"
+        },
+        {
+          "id": "event_type.near_miss",
+          "label": "suýt va chạm"
+        },
+        {
+          "id": "event_type.unclear",
+          "label": "không rõ"
+        }
+      ]
+    },
+    {
+      "id": "subject",
+      "label": "Chủ thể",
+      "required": true,
+      "from_entities": true,
+      "options": [
+        {
+          "id": "subject.both",
+          "label": "cả hai bên"
+        },
+        {
+          "id": "subject.unclear",
+          "label": "không rõ"
+        }
+      ]
+    },
+    {
+      "id": "object",
+      "label": "Đối tượng",
+      "required": false,
+      "from_entities": true,
+      "auto_fill": "Đối tượng: video có 2 thực thể thì hệ thống tự điền bên còn lại; từ 3 thực thể trở lên thì chọn từ E.",
+      "options": []
+    },
+    {
+      "id": "conflict_type",
+      "label": "Kiểu xung đột",
+      "required": true,
+      "options": [
+        {
+          "id": "conflict_type.k01",
+          "label": "Xe phía trước dừng hoặc đứng yên",
+          "code": "K01",
+          "group": "Cùng chiều, phía trước",
+          "relation": "tiến sát phía sau"
+        },
+        {
+          "id": "conflict_type.k02",
+          "label": "Xe phía trước phanh, giảm tốc",
+          "code": "K02",
+          "group": "Cùng chiều, phía trước",
+          "relation": "ở ngay phía trước"
+        },
+        {
+          "id": "conflict_type.k03",
+          "label": "Tiến sát xe phía trước chạy chậm",
+          "code": "K03",
+          "group": "Cùng chiều, phía trước",
+          "relation": "tiến sát phía sau"
+        },
+        {
+          "id": "conflict_type.k04",
+          "label": "Chuyển làn, nhập làn",
+          "code": "K04",
+          "group": "Cùng chiều, bên cạnh",
+          "relation": "đi vào đường đi của"
+        },
+        {
+          "id": "conflict_type.k05",
+          "label": "Vượt, len giữa các xe",
+          "code": "K05",
+          "group": "Cùng chiều, bên cạnh",
+          "relation": "tiến sát bên hông"
+        },
+        {
+          "id": "conflict_type.k06",
+          "label": "Rẽ cắt qua xe đi cùng chiều bên cạnh",
+          "code": "K06",
+          "group": "Cùng chiều, bên cạnh",
+          "relation": "cắt ngang phía trước"
+        },
+        {
+          "id": "conflict_type.k07",
+          "label": "Xe đỗ ven đường, mở cửa, ra khỏi chỗ đỗ",
+          "code": "K07",
+          "group": "Cùng chiều, bên cạnh",
+          "relation": "đi vào đường đi của"
+        },
+        {
+          "id": "conflict_type.k08",
+          "label": "Lấn sang phần đường ngược chiều",
+          "code": "K08",
+          "group": "Ngược chiều",
+          "relation": "đi đối đầu với"
+        },
+        {
+          "id": "conflict_type.k09",
+          "label": "Đi ngược chiều trên làn của người khác",
+          "code": "K09",
+          "group": "Ngược chiều",
+          "relation": "đi đối đầu với"
+        },
+        {
+          "id": "conflict_type.k10",
+          "label": "Rẽ trái hoặc quay đầu cắt đầu xe ngược chiều",
+          "code": "K10",
+          "group": "Ngược chiều",
+          "relation": "cắt ngang phía trước"
+        },
+        {
+          "id": "conflict_type.k11",
+          "label": "Hai hướng cắt nhau tại giao lộ, cùng đi thẳng",
+          "code": "K11",
+          "group": "Cắt ngang",
+          "relation": "cắt ngang phía trước"
+        },
+        {
+          "id": "conflict_type.k12",
+          "label": "Ra từ đường nhánh, hẻm, bãi xe",
+          "code": "K12",
+          "group": "Cắt ngang",
+          "relation": "đi vào đường đi của"
+        },
+        {
+          "id": "conflict_type.k13",
+          "label": "Quay đầu giữa đường",
+          "code": "K13",
+          "group": "Cắt ngang",
+          "relation": "cắt ngang phía trước"
+        },
+        {
+          "id": "conflict_type.k14",
+          "label": "Băng ngang đường giữa đoạn",
+          "code": "K14",
+          "group": "Cắt ngang",
+          "relation": "cắt ngang phía trước"
+        },
+        {
+          "id": "conflict_type.k15",
+          "label": "Người đi bộ băng qua hoặc đi dưới lòng đường",
+          "code": "K15",
+          "group": "Người đi bộ, động vật",
+          "relation": "cắt ngang phía trước"
+        },
+        {
+          "id": "conflict_type.k16",
+          "label": "Động vật lao ra đường",
+          "code": "K16",
+          "group": "Người đi bộ, động vật",
+          "relation": "cắt ngang phía trước"
+        },
+        {
+          "id": "conflict_type.k17",
+          "label": "Lùi xe vào bên khác",
+          "code": "K17",
+          "group": "Khác",
+          "relation": "tiến sát phía sau"
+        },
+        {
+          "id": "conflict_type.k18",
+          "label": "Một bên trượt, văng, không do bên kia",
+          "code": "K18",
+          "group": "Khác",
+          "relation": "không có"
+        },
+        {
+          "id": "conflict_type.unclear",
+          "label": "không rõ"
+        }
+      ]
+    },
+    {
+      "id": "action",
+      "label": "Hành động",
+      "required": true,
+      "parent_cell": "conflict_type",
+      "per_party_when": "subject.both",
+      "options": [
+        {
+          "id": "action.k01.no_slowdown",
+          "label": "không giảm tốc",
+          "parent": "conflict_type.k01"
+        },
+        {
+          "id": "action.k01.accelerate",
+          "label": "tăng tốc",
+          "parent": "conflict_type.k01"
+        },
+        {
+          "id": "action.k02.hard_brake",
+          "label": "phanh gấp",
+          "parent": "conflict_type.k02"
+        },
+        {
+          "id": "action.k02.sudden_stop",
+          "label": "dừng đột ngột",
+          "parent": "conflict_type.k02"
+        },
+        {
+          "id": "action.k03.no_slowdown",
+          "label": "không giảm tốc",
+          "parent": "conflict_type.k03"
+        },
+        {
+          "id": "action.k03.accelerate",
+          "label": "tăng tốc",
+          "parent": "conflict_type.k03"
+        },
+        {
+          "id": "action.k04.lane_change_left",
+          "label": "chuyển sang làn bên trái",
+          "parent": "conflict_type.k04"
+        },
+        {
+          "id": "action.k04.lane_change_right",
+          "label": "chuyển sang làn bên phải",
+          "parent": "conflict_type.k04"
+        },
+        {
+          "id": "action.k05.overtake_left",
+          "label": "vượt bên trái",
+          "parent": "conflict_type.k05"
+        },
+        {
+          "id": "action.k05.overtake_right",
+          "label": "vượt bên phải",
+          "parent": "conflict_type.k05"
+        },
+        {
+          "id": "action.k05.filter_between",
+          "label": "len giữa",
+          "parent": "conflict_type.k05"
+        },
+        {
+          "id": "action.k06.turn_left",
+          "label": "rẽ trái",
+          "parent": "conflict_type.k06"
+        },
+        {
+          "id": "action.k06.turn_right",
+          "label": "rẽ phải",
+          "parent": "conflict_type.k06"
+        },
+        {
+          "id": "action.k07.open_door",
+          "label": "mở cửa xe",
+          "parent": "conflict_type.k07"
+        },
+        {
+          "id": "action.k07.pull_out",
+          "label": "ra khỏi chỗ đỗ",
+          "parent": "conflict_type.k07"
+        },
+        {
+          "id": "action.k08.encroach_overtaking",
+          "label": "lấn khi vượt",
+          "parent": "conflict_type.k08"
+        },
+        {
+          "id": "action.k08.encroach_curve",
+          "label": "lấn khi vào cua",
+          "parent": "conflict_type.k08"
+        },
+        {
+          "id": "action.k08.encroach_straight",
+          "label": "lấn khi đi thẳng",
+          "parent": "conflict_type.k08"
+        },
+        {
+          "id": "action.k09.wrong_way_straight",
+          "label": "đi thẳng ngược chiều",
+          "parent": "conflict_type.k09"
+        },
+        {
+          "id": "action.k10.turn_left",
+          "label": "rẽ trái",
+          "parent": "conflict_type.k10"
+        },
+        {
+          "id": "action.k10.u_turn",
+          "label": "quay đầu",
+          "parent": "conflict_type.k10"
+        },
+        {
+          "id": "action.k11.left_to_right",
+          "label": "từ trái sang phải",
+          "parent": "conflict_type.k11"
+        },
+        {
+          "id": "action.k11.right_to_left",
+          "label": "từ phải sang trái",
+          "parent": "conflict_type.k11"
+        },
+        {
+          "id": "action.k12.exit_from_left",
+          "label": "ra từ bên trái",
+          "parent": "conflict_type.k12"
+        },
+        {
+          "id": "action.k12.exit_from_right",
+          "label": "ra từ bên phải",
+          "parent": "conflict_type.k12"
+        },
+        {
+          "id": "action.k13.u_turn_left",
+          "label": "quay đầu sang trái",
+          "parent": "conflict_type.k13"
+        },
+        {
+          "id": "action.k13.u_turn_right",
+          "label": "quay đầu sang phải",
+          "parent": "conflict_type.k13"
+        },
+        {
+          "id": "action.k14.left_to_right",
+          "label": "từ trái sang phải",
+          "parent": "conflict_type.k14"
+        },
+        {
+          "id": "action.k14.right_to_left",
+          "label": "từ phải sang trái",
+          "parent": "conflict_type.k14"
+        },
+        {
+          "id": "action.k15.left_to_right",
+          "label": "từ trái sang phải",
+          "parent": "conflict_type.k15"
+        },
+        {
+          "id": "action.k15.right_to_left",
+          "label": "từ phải sang trái",
+          "parent": "conflict_type.k15"
+        },
+        {
+          "id": "action.k15.along_road",
+          "label": "đi dọc đường",
+          "parent": "conflict_type.k15"
+        },
+        {
+          "id": "action.k16.left_to_right",
+          "label": "từ trái sang phải",
+          "parent": "conflict_type.k16"
+        },
+        {
+          "id": "action.k16.right_to_left",
+          "label": "từ phải sang trái",
+          "parent": "conflict_type.k16"
+        },
+        {
+          "id": "action.k17.reverse",
+          "label": "lùi xe",
+          "parent": "conflict_type.k17"
+        },
+        {
+          "id": "action.k18.skid",
+          "label": "trượt",
+          "parent": "conflict_type.k18"
+        },
+        {
+          "id": "action.k18.run_off_lane",
+          "label": "văng khỏi làn",
+          "parent": "conflict_type.k18"
+        },
+        {
+          "id": "action.k18.tire_blowout",
+          "label": "nổ lốp",
+          "parent": "conflict_type.k18"
+        }
+      ]
+    }
+  ]
+}

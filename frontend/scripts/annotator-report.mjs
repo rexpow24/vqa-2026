@@ -67,7 +67,7 @@ for (const assignment of assignments) {
     }
     if (!KEYFRAME_GROUPS.includes(group) && marks.length) problems.push(`${group}: keyframes on a group without evidence`);
     if (answer.verdict === "DISAGREE" && !answer.reason_code) problems.push(`${group}: DISAGREE without a reason`);
-    // Only a disagreement carries an edited answer, and it must carry one (20261107_answer_adjudication.sql);
+    // Only a disagreement carries an edited answer, and it must carry one (20261107000010_answer_adjudication.sql);
     // a slot answer carries the sentence composed from its cells the same way.
     if (!["DISAGREE", "SLOTS"].includes(answer.verdict) && answer.edited_answer) problems.push(`${group}: answer rewritten under ${answer.verdict}, choose Không đồng ý or restore the draft`);
     if (answer.verdict === "DISAGREE" && !answer.edited_answer) problems.push(`${group}: DISAGREE without a corrected answer`);

@@ -31,6 +31,7 @@ export type HostedDraft = {
   // "SLOTS" only on a slot answer of a slot assignment (S, E, C, V, O, R, Prev).
   verdict: StoredVerdict | null; reason_code: string | null; reason_note: string | null;
   edited_answer: string | null; human_keyframes_s: number[];
+  generated_answer?: string | null;
   slots: Slots | null; codebook_version: string | null;
   // Set once the annotators' disagreement on this question was decided; the
   // question is then locked for this annotator (answer_adjudications).
@@ -76,20 +77,44 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const derivedSyncVideo = useRef("");
   const ready = drafts.length === 9;
   // The saved parties of group E, which every other slot group picks from.
   const [entities, setEntities] = useState<Entity[]>(initialEntities);
   const causeDraft = drafts.find((draft) => draft.qgroup === "C");
-  const slotContext = { entities, cause: causeDraft?.verdict === "SLOTS" ? causeDraft.slots : null };
+  const violationDraft = drafts.find((draft) => draft.qgroup === "V");
+  const slotContext = { entities, cause: causeDraft?.verdict === "SLOTS" ? causeDraft.slots : null,
+    violation: violationDraft?.verdict === "SLOTS" ? violationDraft.slots : null };
   const entityLabels = Object.fromEntries(entities.map((entity) => [entity.key, entityLabel(entity)]));
   const slotForm = (draft: HostedDraft) => answerFormat === "slots" && isSlotGroup(draft.qgroup) && !draft.decision;
-  function slotSaved(draft: HostedDraft, rows: SavedSlotRow[]) {
+  useEffect(() => {
+    if (answerFormat !== "slots" || !assignment || derivedSyncVideo.current === video.id) return;
+    derivedSyncVideo.current = video.id;
+    void requestJson<{ rows: SavedSlotRow[] }>(`/api/videos/${video.id}/derive-v-prev`).then(({ rows }) => {
+      if (rows.length) setDrafts((current) => current.map((item) => {
+        const row = rows.find((candidate) => candidate.draft_id === item.id);
+        return row ? { ...item, ...row } : item;
+      }));
+    }).catch((cause) => setError(cause instanceof Error ? cause.message : "Không thể tự đồng bộ V và Prev."));
+  }, [answerFormat, assignment, video.id]);
+  async function slotSaved(draft: HostedDraft, rows: SavedSlotRow[]) {
     setDrafts((current) => current.map((item) => {
       const row = rows.find((candidate) => candidate.draft_id === item.id);
       return row ? { ...item, ...row } : item;
     }));
     setAssignment((current) => current?.status === "pending" ? { ...current, status: "in_progress" } : current);
     setMessage(`Đã lưu câu ${draft.qgroup}.`); setError("");
+    if (answerFormat === "slots") {
+      try {
+        const result = await requestJson<{ complete: boolean; missing?: string[]; draft_id?: string; verdict?: StoredVerdict;
+          generated_answer?: string | null }>(`/api/videos/${video.id}/derived-n`);
+        if (result.complete && result.draft_id) {
+          setDrafts((current) => current.map((item) => item.id === result.draft_id
+            ? { ...item, verdict: result.verdict ?? "AGREE", generated_answer: result.generated_answer ?? null } : item));
+          setMessage("Đã lưu và tự tạo câu N từ 8 nhóm đã gán nhãn.");
+        }
+      } catch (cause) { setError(cause instanceof Error ? cause.message : "Không thể tự tạo câu N."); }
+    }
   }
   const done = drafts.filter((draft) => draft.verdict).length;
   // F-N (codebook v2): the slot form shows N last, after the groups its summary
@@ -211,9 +236,20 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
       </div>
       <div className="flex flex-col gap-3">
         {adminAnswers !== undefined && <AdminAnswerReview answers={adminAnswers} />}
-        {shown.map((draft) => slotForm(draft) ? (draft.qgroup === "E"
+        {shown.map((draft) => answerFormat === "slots" && draft.qgroup === "N"
+          ? <DerivedSummaryCard key={draft.id} draft={draft} />
+          : slotForm(draft) ? (draft.qgroup === "E"
           ? <EntityCard key={draft.id} videoId={video.id} draft={draft} saved={entities} canSave={!!assignment}
-            onSaved={(saved, row) => { setEntities(saved); slotSaved(draft, [{ draft_id: draft.id, verdict: "SLOTS", ...row }]); }} />
+            onSaved={async (saved, row) => {
+              setEntities(saved);
+              try {
+                const { rows } = await requestJson<{ rows: SavedSlotRow[] }>(`/api/videos/${video.id}/derive-v-prev`);
+                await slotSaved(draft, [{ draft_id: draft.id, verdict: "SLOTS", ...row }, ...rows]);
+              } catch (cause) {
+                setError(cause instanceof Error ? cause.message : "Không thể đồng bộ V và Prev sau khi đổi thực thể.");
+                await slotSaved(draft, [{ draft_id: draft.id, verdict: "SLOTS", ...row }]);
+              }
+            }} />
           : <SlotCard key={draft.id} draft={draft} context={slotContext} labels={entityLabels} duration={Number(video.duration_s)}
             playhead={playhead} canSave={!!assignment} onSeek={seek}
             onSaved={({ also, ...row }) => slotSaved(draft, [{ ...row, draft_id: draft.id }, ...(also ?? [])])} />)
@@ -388,6 +424,23 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
 
 // A question whose disagreement was decided: read-only, showing what this
 // annotator answered next to the final answer.
+function DerivedSummaryCard({ draft }: { draft: HostedDraft }) {
+  return <article className="rounded-lg border border-border-strong bg-surface" data-qgroup="N">
+    <header className="flex items-start gap-3 border-b border-border px-4 py-3">
+      <span className="rounded border border-accent/60 bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">N</span>
+      <div className="min-w-0"><div className="text-base font-semibold">{draft.group_name}</div>
+        <div className={QUESTION}>{draft.question}</div></div>
+      <span className="ml-auto text-xs text-green">{draft.generated_answer ? "Tự tổng hợp · đã hoàn tất" : "Tự tổng hợp sau 8 nhóm"}</span>
+    </header>
+    <div className="px-4 py-3">
+      {draft.generated_answer
+        ? <p className="whitespace-pre-wrap text-sm leading-relaxed">{draft.generated_answer}</p>
+        : <p className="text-sm text-muted">N sẽ tự sinh và tự hoàn tất sau khi lưu đủ 8 nhóm còn lại.</p>}
+      <p className="mt-2 text-xs text-muted">N được tổng hợp từ nhãn của bạn; đây không phải nhãn độc lập để tính độ đồng thuận.</p>
+    </div>
+  </article>;
+}
+
 function DecidedCard({ draft, onSeek }: { draft: HostedDraft; onSeek: (time: number) => void }) {
   const decision = draft.decision!;
   return <article className="rounded-md border border-border bg-surface">

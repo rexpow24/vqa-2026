@@ -1,34 +1,36 @@
 # Hướng dẫn gán nhãn Nhóm V: vi phạm (Violation)
 
-- Câu hỏi chuẩn: Có hành vi vi phạm quy tắc giao thông nào quan sát được không?
+- Câu hỏi chuẩn: Có hành vi vi phạm quy tắc giao thông nào quan sát được hoặc suy ra hẹp từ C không?
 - Tên thực thể A, B, C lấy từ Nhóm E.
-- Ô hành vi cho phép chọn nhiều giá trị quan sát được.
-- Chọn hành vi gắn trực tiếp với diễn biến ở Nhóm C; thêm hành vi khác chỉ khi nhìn thấy rõ.
+- Kết quả, bên và hành vi chính được hệ thống suy ra từ nhóm C theo quy tắc hẹp; annotator không sửa các ô này.
+- Chỉ K09 của C mới tự sinh hành vi đi ngược chiều, và chỉ khi chủ thể là thực thể xác định, không phải động vật.
+- Với K01-K08, K10-K18 hoặc C không rõ, kết quả V tự sinh là “không rõ”; không suy ra lỗi chỉ từ kiểu xung đột.
+- Annotator có thể chọn nhiều hành vi bổ sung nhìn thấy rõ và phải gắn chúng với một thực thể người tham gia đã khai báo ở E.
 - Chỉ ghi hành vi nhìn thấy được. Không ghi quá tốc độ, nồng độ cồn, giấy phép, đăng kiểm, trạng thái người lái (mất tập trung, liều lĩnh).
-- "Không thấy" khác "không có": chỉ chọn "không quan sát thấy" khi video đủ rõ để khẳng định.
+- “Không thấy” khác “không có”; kết quả chính do hệ thống xác định và không được annotator tự đổi.
 
 ## Các ô
 
-| Ô | Lựa chọn |
+| Ô | Nội dung |
 | --- | --- |
-| 0. Kết quả | có · không quan sát thấy · không rõ |
-| 1. Bên vi phạm (khi có) | chọn người chịu trách nhiệm từ E · cả hai bên · không xác định được người điều khiển vật nuôi |
-| 2. Hành vi (khi có) | đi sai làn, lấn làn · đi ngược chiều · vượt đèn đỏ · không chấp hành biển báo, vạch kẻ đường · không nhường đường · không giữ khoảng cách an toàn · vượt xe sai quy định · chuyển hướng, quay đầu sai quy định · lùi xe sai quy định · không đội mũ bảo hiểm · đi bộ dưới lòng đường · không giảm tốc độ qua giao lộ · khác |
+| Kết quả, bên, hành vi chính | Tự suy ra từ C; không sửa được |
+| Bên có hành vi bổ sung | Chọn một thực thể người tham gia từ E; không chọn động vật |
+| Hành vi vi phạm bổ sung | Chọn nhiều tag khi nhìn thấy rõ; chỉ lưu cùng bên đã chọn ở ô trên |
 
-Ô 1 chọn "cả hai bên" thì mỗi bên một ô 2 riêng, như ô hành động của Nhóm C.
+Các tag bổ sung được gắn với đúng một bên đã chọn ở E để câu trả lời không mất attribution.
+Nếu người điều khiển vật nuôi nhìn thấy rõ, đã khai báo ở E, và hành vi của người đó nhìn thấy rõ, có thể chọn người đó.
 
 ## Vật nuôi và động vật
 
 - Không bao giờ chọn con vật làm bên vi phạm ở V.
 - Con vật vẫn có thể là thực thể trong E và là chủ thể/tác nhân trong C khi nó tham gia diễn biến va chạm.
-- Nếu nhìn thấy người đang điều khiển hoặc dẫn dắt vật nuôi và hành vi của người đó vi phạm quy tắc quan sát được, chọn người đó ở ô Bên vi phạm.
-- Nếu vật nuôi đi rông trên phần đường xe chạy, không thấy người điều khiển/dẫn dắt, và tình huống quan sát rõ là nguy cơ giao thông, chọn "không xác định được người điều khiển vật nuôi".
-- Với trường hợp này, chọn "khác" và chỉ mô tả điều nhìn thấy, ví dụ: "vật nuôi đi rông trên phần đường xe chạy".
-- Không khẳng định có chủ nuôi, người thả vật nuôi, hoặc người chịu trách nhiệm cụ thể nếu video không cho thấy điều đó.
-- Nếu không xác định được đó là vật nuôi hay động vật hoang dã, hoặc không đủ bằng chứng để kết luận có hành vi nguy hiểm, chọn "không rõ" hoặc "không quan sát thấy" theo mức độ quan sát được.
-- Chỉ dùng lựa chọn "không xác định được người điều khiển vật nuôi" cho tình huống vật nuôi đi rông; không dùng để bỏ qua một người điều khiển đang nhìn thấy rõ.
+- Nếu video cho thấy rõ người điều khiển hoặc dẫn dắt vật nuôi có hành vi vi phạm, khai báo người đó ở E rồi chọn người đó cùng tag vi phạm bổ sung.
+- Chỉ nhận diện được chủ nuôi, thấy họ đứng gần con vật hoặc đến nhận con vật sau sự việc chưa đủ để gán V cho họ.
+- Nếu không thấy rõ hành vi của người đó, không suy đoán trách nhiệm chỉ từ việc con vật gây tai nạn.
+- Nếu vật nuôi đi rông nhưng không thấy người điều khiển/dẫn dắt, không gán V cho con vật hoặc một người không xuất hiện; giữ V là “không rõ” trừ khi có một hành vi khác của người nhìn thấy rõ.
+- Nếu không xác định được đó là vật nuôi hay động vật hoang dã, không gán vi phạm cho con vật hoặc người không nhìn thấy.
 
-Điều kiện cho ô 2:
+Điều kiện cho các tag bổ sung:
 - Vượt đèn đỏ: chỉ khi thấy rõ đèn.
 - Không chấp hành biển báo, vạch kẻ đường: chỉ khi thấy rõ biển hoặc vạch. Người đi bộ sang đường khi đèn dành cho người đi bộ đỏ cũng chọn lựa chọn này.
 - Không nhường đường: chỉ khi thấy rõ bên có quyền đi trước (xe đang đi thẳng trên đường chính, người đi bộ trên vạch, xe trong giao lộ). Dùng cho cả xe và người đi bộ.
@@ -39,20 +41,7 @@
 - Không giảm tốc độ qua giao lộ: chỉ khi thấy rõ là giao lộ và thấy rõ xe không giảm tốc khi vào giao lộ.
 - Khác: ghi ngắn hành vi nhìn thấy, không dùng từ "lỗi", "vi phạm điều/khoản", mức phạt.
 
-Form điền sẵn V khi V chưa lưu và C đã lưu: ô 0 là "có", ô 1 là chủ thể của C (kể cả "cả hai bên"), ô 2 theo bảng dưới; ô điền sẵn có nhãn "điền sẵn từ C".
-Annotator kiểm tra, sửa nếu cần, rồi vẫn phải bấm Lưu.
-
-Gợi ý điền sẵn ô 2 theo kiểu xung đột ở C (annotator đổi được):
-
-| Kiểu xung đột ở C | Hành vi điền sẵn |
-| --- | --- |
-| K01-K03 | không giữ khoảng cách an toàn |
-| K04; K08 khi vào cua hoặc đi thẳng | đi sai làn, lấn làn |
-| K05; K08 khi vượt | vượt xe sai quy định |
-| K06, K10, K13 | chuyển hướng, quay đầu sai quy định |
-| K09 | đi ngược chiều |
-| K11, K12, K14, K15 | không nhường đường |
-| K17 | lùi xe sai quy định |
+Kết quả V được lưu cùng lần lưu C và tự đồng bộ khi mở lại video.
 
 ## Cơ sở phân loại
 
@@ -64,13 +53,21 @@ Các căn cứ pháp lý và đường dẫn nguồn chính thức được lưu
 Frontend chỉ hiển thị quy tắc gán nhãn, không hiển thị trích dẫn pháp luật.
 Chi tiết phân loại hành vi: `features/codebook-multiple-choice/v-taxonomy.md`.
 
+## Cơ sở suy luận và trích dẫn
+
+V chỉ kế thừa K09 từ C vì mã này nói rõ đi ngược chiều trên làn của bên khác.
+
+Các hành vi chuyển làn, vượt, rẽ, quay đầu, băng ngang và lùi xe có thể phụ thuộc biển/vạch, quyền ưu tiên, vị trí hoặc điều kiện không thể suy ra từ mã C.
+
+Luật và nghiên cứu hỗ trợ cách tách sự kiện khỏi lỗi; bảng quy tắc chi tiết của dự án được ghi tại `docs/research/v-prev-derivation-evidence.md`.
+
 ## Mẫu câu
 
 | Kết quả | Mẫu câu |
 | --- | --- |
 | Có | [1] [2]. |
-| Có, chưa xác định người điều khiển vật nuôi | Quan sát thấy [2]; không xác định được người điều khiển vật nuôi. |
 | Có, cả hai bên | [A] [2 của A], đồng thời [B] [2 của B]. |
 | Có, cả hai bên cùng hành vi | Cả [A] và [B] cùng [2]. |
-| Không quan sát thấy | Không quan sát thấy vi phạm quy tắc giao thông rõ ràng. |
 | Không rõ | Không thể xác định. |
+
+Tag bổ sung được ghép thành câu riêng, nêu bên đã chọn và các hành vi bổ sung.

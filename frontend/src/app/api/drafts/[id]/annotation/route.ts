@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { needsKeyframes } from "@/lib/qgroups";
 import { ComposeError, compose, type Slots } from "@/lib/codebook/compose";
 import { editProblem, sentenceToStore } from "@/lib/codebook/edit";
-import { isSlotGroup } from "@/lib/codebook";
+import { currentVersion, isSlotGroup } from "@/lib/codebook";
+import { derivePrevention, deriveViolation } from "@/lib/codebook/derivation";
 
 type Context = { params: Promise<{ id: string }> };
 const VERDICTS = ["AGREE", "NOT_ANSWERABLE", "DISAGREE"];
@@ -27,7 +28,7 @@ export async function POST(request: Request, context: Context) {
   if (draftError || !draft) return Response.json({ error: "Không tìm thấy bản nháp." }, { status: 404 });
   // Groups without evidence frames store none, even from a client that still sends some.
   // Groups that take them store exactly two: [start, end] of the event, start
-  // before end (same rule as validate_qa_annotation, 20261112_keyframes_start_end.sql).
+  // before end (same rule as validate_qa_annotation, 20261112000016_keyframes_start_end.sql).
   const required = needsKeyframes(draft.qgroup);
   if (verdict === "SLOTS") return saveSlotAnswer(supabase, profile.id, id, draft, body);
   // A text answer never carries cells (validate_qa_annotation refuses them too).
@@ -76,20 +77,40 @@ type Draft = { video_id: string; qgroup: string; answer: string; predicted_keyfr
 type Client = Awaited<ReturnType<typeof createClient>>;
 const slotError = (code: string, error: string, status = 422) => Response.json({ error, code }, { status });
 
-type SlotRow = { draft_id: string; slots: Slots; codebook_version: string; edited_answer: string };
+type SlotRow = { draft_id: string; slots: Slots; codebook_version: string; edited_answer: string; human_keyframes_s: number[] };
 
 /** The caller's slot answer to another group of the same video, or null. */
 async function slotAnswer(supabase: Client, annotatorId: string, videoId: string, qgroup: string): Promise<SlotRow | null> {
   const { data: other } = await supabase.from("video_drafts").select("id")
     .eq("video_id", videoId).eq("qgroup", qgroup).maybeSingle();
   if (!other) return null;
-  const { data } = await supabase.from("qa_annotations").select("draft_id,slots,codebook_version,edited_answer")
+  const { data } = await supabase.from("qa_annotations").select("draft_id,slots,codebook_version,edited_answer,human_keyframes_s")
     .eq("draft_id", other.id).eq("annotator_id", annotatorId).eq("verdict", "SLOTS").maybeSingle();
   return data as SlotRow | null;
 }
 
+async function questionDraftId(supabase: Client, videoId: string, qgroup: string): Promise<string | null> {
+  const { data } = await supabase.from("video_drafts").select("id").eq("video_id", videoId).eq("qgroup", qgroup).maybeSingle();
+  return data?.id ?? null;
+}
+
+function derivedAnswerRows(cause: Slots, savedV: SlotRow | null, entities: { key: string; cells: Slots }[], marks: number[], ids: { v: string | null; prev: string | null }) {
+  const vSlots = deriveViolation(cause, entities, savedV?.slots);
+  const prevSlots = derivePrevention(vSlots, entities);
+  const vVersion = currentVersion("V")!;
+  const prevVersion = currentVersion("Prev")!;
+  const rows: Record<string, unknown>[] = [];
+  if (ids.v) rows.push({ draft_id: ids.v, codebook_version: vVersion, slots: vSlots, human_keyframes_s: marks,
+    edited_answer: compose("V", vSlots, { version: vVersion, entities }) });
+  if (ids.prev) rows.push({ draft_id: ids.prev, codebook_version: prevVersion, slots: prevSlots, human_keyframes_s: [],
+    edited_answer: compose("Prev", prevSlots, { version: prevVersion, entities }) });
+  return rows;
+}
+
 /** Keyframes as the text branch accepts them: none outside C, V, Attr; there exactly [start, end]. */
 function keyframesOf(qgroup: string, value: unknown): number[] | null {
+  // V inherits the evidence window already marked for C; the server copies C's marks on every derived save.
+  if (qgroup === "V") return [];
   if (!needsKeyframes(qgroup)) return [];
   if (!Array.isArray(value) || value.length !== 2 ||
       !value.every((mark) => typeof mark === "number" && Number.isFinite(mark) && mark >= 0)) return null;
@@ -128,20 +149,41 @@ async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: st
   const entities = (declared ?? []).map((row) => ({ key: row.entity_key as string, cells: row.cells as Slots }));
   // R names its parties after the caller's C answer, so saving C re-composes
   // an R answer already there, and both rows go in one call (spec Open 6).
-  const linked = draft.qgroup === "C" || draft.qgroup === "R"
-    ? await slotAnswer(supabase, annotatorId, draft.video_id, draft.qgroup === "C" ? "R" : "C") : null;
+  const linked = draft.qgroup === "C" || draft.qgroup === "R" || draft.qgroup === "V" || draft.qgroup === "Prev"
+    ? await slotAnswer(supabase, annotatorId, draft.video_id,
+      draft.qgroup === "C" ? "R" : draft.qgroup === "R" ? "C" : "C") : null;
   if (draft.qgroup === "R" && !linked) return slotError("cause_missing", "Lưu nhóm C trước khi lưu nhóm R.");
+  if ((draft.qgroup === "V" || draft.qgroup === "Prev") && !linked) {
+    return slotError("cause_missing", "Lưu nhóm C trước để hệ thống tự sinh V và Prev.");
+  }
   // The caller's C as stored before this save: an R whose sentence the new C
   // does not change keeps its own sentence, hand edits included.
   const oldCause = draft.qgroup === "C" && linked ? await slotAnswer(supabase, annotatorId, draft.video_id, "C") : null;
   const rows: Record<string, unknown>[] = [];
   try {
-    const composed = compose(draft.qgroup, slots as Slots,
-      { version, entities, cause: draft.qgroup === "R" ? linked!.slots : undefined });
+    const canonicalSlots = draft.qgroup === "V"
+      ? deriveViolation(linked!.slots, entities, slots as Slots)
+      : draft.qgroup === "Prev"
+        ? derivePrevention(deriveViolation(linked!.slots, entities, await slotAnswer(supabase, annotatorId, draft.video_id, "V").then((row) => row?.slots)), entities)
+        : slots as Slots;
+    const canonicalVersion = (draft.qgroup === "V" || draft.qgroup === "Prev") ? currentVersion(draft.qgroup)! : version;
+    const composed = compose(draft.qgroup, canonicalSlots,
+      { version: canonicalVersion, entities, cause: draft.qgroup === "R" ? linked!.slots : undefined });
     const problem = edited === null || edited.trim() === composed ? null : editProblem(composed, edited);
     if (problem) return slotError("sentence_edit", problem);
-    rows.push({ draft_id: draftId, codebook_version: version, slots, human_keyframes_s: marks,
+    rows.push({ draft_id: draftId, codebook_version: canonicalVersion, slots: canonicalSlots,
+      human_keyframes_s: draft.qgroup === "V" ? (linked!.human_keyframes_s ?? []) : marks,
       edited_answer: sentenceToStore(composed, edited) });
+    if (draft.qgroup === "C" || draft.qgroup === "V" || draft.qgroup === "Prev") {
+      const cause = draft.qgroup === "C" ? slots as Slots : linked!.slots;
+      const existingV = draft.qgroup === "V" ? { draft_id: draftId, slots: canonicalSlots,
+        codebook_version: canonicalVersion, edited_answer: composed, human_keyframes_s: linked!.human_keyframes_s } as SlotRow
+        : await slotAnswer(supabase, annotatorId, draft.video_id, "V");
+      const ids = { v: draft.qgroup === "V" ? null : await questionDraftId(supabase, draft.video_id, "V"),
+        prev: draft.qgroup === "Prev" ? null : await questionDraftId(supabase, draft.video_id, "Prev") };
+      rows.push(...derivedAnswerRows(cause, existingV, entities,
+        draft.qgroup === "C" ? marks : linked!.human_keyframes_s ?? [], ids));
+    }
     if (draft.qgroup === "C" && linked) {
       const linkedContext = { version: linked.codebook_version, entities };
       const next = compose("R", linked.slots, { ...linkedContext, cause: slots as Slots });

@@ -20,6 +20,14 @@ Nếu vật nuôi đi rông và không thấy người điều khiển, codebook
 
 Không suy đoán chủ nuôi, người đã thả vật nuôi, hoặc trách nhiệm của người không xuất hiện trong video.
 
+Nhận diện được chủ nuôi không tự động đủ căn cứ để gán V cho họ.
+
+Quy ước gán nhãn cho phép chọn chủ nuôi hoặc người quản lý khi video cho thấy rõ người đó để vật nuôi lao ra đường gây mất an toàn, dựa trên hành vi được nêu tại Điều 11 khoản 1 điểm d Nghị định 168/2024/NĐ-CP.
+
+Chỉ thấy người đó đứng gần hoặc đến nhận con vật sau sự việc chưa chứng minh họ có hành vi này.
+
+Khi đủ bằng chứng, khai báo người đó ở E, chọn người đó ở V và dùng hành vi "khác" để mô tả điều quan sát được.
+
 Con vật vẫn có thể được khai báo ở E và được dùng làm thực thể/tác nhân ở C để phản ánh diễn biến.
 
 ## Văn bản và nguồn chính thức

@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 
 const root = path.resolve(import.meta.dirname, "..");
 const envPath = path.join(root, ".env");
-const migrationName = process.argv[2] || "20261003_team_video_labeling.sql";
+const migrationName = process.argv[2] || "20261003000001_team_video_labeling.sql";
 if (!/^[A-Za-z0-9_-]+\.sql$/.test(migrationName)) throw new Error("Invalid migration filename");
 const migrationPath = path.join(root, "supabase", "migrations", migrationName);
 if (!fs.existsSync(migrationPath)) throw new Error(`Migration not found: ${migrationName}`);

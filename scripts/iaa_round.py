@@ -278,6 +278,19 @@ def slot_signature(value, codebook_version=""):
         return node
 
     parsed = remove_optional(parsed)
+    # V.v6 introduced a non-entity party which can occupy either form position.
+    # Preserve historical-version scoring and the existing optional-cell policy.
+    group, _, revision = str(codebook_version).partition(".v")
+    if group == "V" and revision.isdigit() and int(revision) >= 6 and isinstance(parsed, dict):
+        parties = parsed.get("parties")
+        if isinstance(parties, list):
+            parsed["parties"] = sorted(
+                parties,
+                key=lambda party: json.dumps(
+                    party.get("party", {}) if isinstance(party, dict) else party,
+                    ensure_ascii=False, sort_keys=True,
+                ),
+            )
     return json.dumps(parsed, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 

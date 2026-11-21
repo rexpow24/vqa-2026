@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> Editing
+    Editing --> Validated: trường bắt buộc hợp lệ
+    Editing --> Editing: sửa lựa chọn / lỗi validation
+    Validated --> Saving: gửi gói answer
+    Saving --> Saved: mọi rows commit nguyên tử
+    Saving --> Editing: lỗi, transaction rollback
+    Saved --> Editing: sửa và lưu lại
+    Saved --> [*]: hoàn tất lượt gán nhãn
+    note right of Saved: Lưu lần hai upsert cùng key draft + annotator.
+    note right of Saved: Không có transition lưu một phần.

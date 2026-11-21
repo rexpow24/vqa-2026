@@ -113,7 +113,44 @@ def format_answer_lines(value, codebook_version, indent="      "):
         return [f"{indent}{answer}"]
 
     cell_labels, option_labels = codebook_labels(codebook_version)
+
+    def format_selection(selection):
+        if isinstance(selection, dict):
+            if "options" in selection:
+                selected = [option_labels.get(item, item) for item in selection["options"]]
+                display = ", ".join(selected) or "(chưa chọn)"
+            elif "option" in selection:
+                option_id = selection["option"]
+                display = option_labels.get(option_id, option_id)
+            elif "entity" in selection:
+                display = selection["entity"]
+            else:
+                display = json.dumps(selection, ensure_ascii=False, sort_keys=True)
+            if selection.get("text"):
+                display += f" ({selection['text']})"
+            return display
+        if isinstance(selection, list):
+            return ", ".join(format_selection(item) for item in selection)
+        return str(selection)
+
     lines = []
+    entities = answer.get("entities")
+    if isinstance(entities, list):
+        for index, entity in enumerate(entities, start=1):
+            if not isinstance(entity, dict):
+                lines.append(f"{indent}Thực thể {index}: {entity}")
+                continue
+            key = entity.get("key", str(index))
+            lines.append(f"{indent}Bên {key}:")
+            cells = entity.get("cells", {})
+            if not isinstance(cells, dict) or not cells:
+                lines.append(f"{indent}  (không có trường lựa chọn)")
+                continue
+            for cell_id, selection in cells.items():
+                field_label = cell_labels.get(cell_id, cell_id)
+                lines.append(f"{indent}  {field_label}: {format_selection(selection)}")
+        return lines or [f"{indent}(không có thực thể nào)"]
+
     for cell_id, selection in answer.items():
         field_label = cell_labels.get(cell_id, cell_id)
         if cell_id == "parties" and isinstance(selection, list):
@@ -121,23 +158,22 @@ def format_answer_lines(value, codebook_version, indent="      "):
                 if not isinstance(party, dict):
                     lines.append(f"{indent}{field_label}: {party}")
                     continue
-                entity = party.get("party", {}).get("entity", "?")
-                action = party.get("action", {})
+                reference = party.get("party", {})
+                entity = reference.get("entity") or option_labels.get(
+                    reference.get("option"), reference.get("option", "?")
+                )
+                action = party.get("action", party.get("behavior", {}))
                 action_id = action.get("option") if isinstance(action, dict) else None
                 action_label = option_labels.get(action_id, action_id or "(chưa chọn)")
+                if "behavior" in party and isinstance(action, dict):
+                    selected = action.get("options", [action_id] if action_id else [])
+                    action_label = ", ".join(option_labels.get(item, item) for item in selected) or "(chưa chọn)"
+                    if action.get("text"):
+                        action_label += f": {action['text']}"
                 lines.append(f"{indent}Bên {entity}: {action_label}")
             continue
 
-        if isinstance(selection, dict):
-            if "option" in selection:
-                option_id = selection["option"]
-                display = option_labels.get(option_id, option_id)
-            elif "entity" in selection:
-                display = selection["entity"]
-            else:
-                display = json.dumps(selection, ensure_ascii=False, sort_keys=True)
-        else:
-            display = str(selection)
+        display = format_selection(selection)
         lines.append(f"{indent}{field_label}: {display}")
     return lines or [f"{indent}(không có trường lựa chọn)"]
 
@@ -150,11 +186,19 @@ def format_difference_paths(raw_paths, codebook_version):
         path = path.strip()
         if not path:
             continue
+        if path.startswith("$.entities[key="):
+            entity_part, _, field_part = path[len("$.entities[key="):].partition("].cells.")
+            if field_part:
+                cell_id = field_part.split(".", 1)[0]
+                display.append(f"Bên {entity_part} - {cell_labels.get(cell_id, cell_id)}")
+                continue
+            display.append(f"Bên {entity_part} - thực thể")
+            continue
         cell_id = path[2:].split(".", 1)[0] if path.startswith("$.") else path
         display.append(cell_labels.get(cell_id, {
             "parties": "Các bên",
         }.get(cell_id, path)))
-    return display
+    return list(dict.fromkeys(display))
 
 
 def field_values(raw, codebook_version):
@@ -172,14 +216,169 @@ def field_values(raw, codebook_version):
     return {"$": slot_signature(raw, codebook_version)}
 
 
+@lru_cache(maxsize=None)
+def codebook_aspects(codebook_version):
+    """Map selectable cell IDs and display labels to their codebook metadata."""
+    path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "codebook", f"{codebook_version}.json",
+    )
+    if not os.path.isfile(path):
+        raise ValueError(f"Không tìm thấy codebook {codebook_version}: {path}")
+    with open(path, encoding="utf-8") as handle:
+        codebook = json.load(handle)
+    return {
+        cell["id"]: cell.get("label", cell["id"])
+        for cell in codebook.get("cells", [])
+        if "id" in cell
+    }
+
+
+def normalized_aspect(value):
+    return " ".join(str(value).casefold().split())
+
+
+def resolve_aspects(requested, versions):
+    """Resolve CLI aspect names or IDs against the selected codebook versions."""
+    available = {}
+    for version in versions:
+        for cell_id, label in codebook_aspects(version).items():
+            available.setdefault(normalized_aspect(cell_id), (cell_id, label))
+            available.setdefault(normalized_aspect(label), (cell_id, label))
+
+    resolved = []
+    unknown = []
+    for item in requested:
+        for value in item.split(","):
+            value = value.strip()
+            if not value:
+                continue
+            match = available.get(normalized_aspect(value))
+            if match is None:
+                unknown.append(value)
+            elif match not in resolved:
+                resolved.append(match)
+    if unknown:
+        choices = ", ".join(label for _, label in available.values())
+        raise ValueError(
+            "Không tìm thấy khía cạnh: " + ", ".join(unknown)
+            + ". Khía cạnh hợp lệ trong phạm vi này: " + choices
+        )
+    if not resolved:
+        raise ValueError("--aspects cần ít nhất một tên khía cạnh hoặc mã ô hợp lệ.")
+    return resolved
+
+
+def remove_aspect_cells(signature, excluded_ids):
+    """Remove selected codebook cells from an already canonical slot signature."""
+    answer = decode(signature)
+
+    def remove(node):
+        if isinstance(node, dict):
+            return {
+                key: remove(value)
+                for key, value in node.items()
+                if key not in excluded_ids
+            }
+        if isinstance(node, list):
+            return [remove(value) for value in node]
+        return node
+
+    return json.dumps(remove(answer), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def sensitivity_metrics(units):
+    pair_agree, pair_total = pairwise_counts(units)
+    assessable = [unit for unit in units if len(unit) >= 2]
+    unanimous = sum(len(set(unit)) == 1 for unit in assessable)
+    return {
+        "questions": len(assessable),
+        "pairwise_exact_agreement": pair_agree / pair_total if pair_total else np.nan,
+        "krippendorff_alpha_nominal": kripp_alpha(assessable, nominal),
+        "pct_unanimous_questions": unanimous / len(assessable) if assessable else np.nan,
+    }
+
+
+def print_aspect_sensitivity(data, aspects):
+    """Print agreement after excluding each requested aspect, separately by group/version."""
+    labels_by_version = {
+        version: codebook_aspects(version)
+        for version in data["codebook_version"].drop_duplicates()
+    }
+    rows = []
+    for (qgroup, version), group in data.groupby(
+        ["qgroup", "codebook_version"], dropna=False, sort=False,
+    ):
+        applicable = [
+            (cell_id, labels_by_version[version].get(cell_id, label))
+            for cell_id, label in aspects
+            if cell_id in labels_by_version[version]
+        ]
+        variants = [("Đầy đủ", frozenset())]
+        variants.extend((f"Bỏ {label}", frozenset({cell_id})) for cell_id, label in applicable)
+        if len(applicable) > 1:
+            variants.append((
+                "Bỏ tất cả: " + ", ".join(label for _, label in applicable),
+                frozenset(cell_id for cell_id, _ in applicable),
+            ))
+
+        for variant, excluded in variants:
+            units = []
+            for _, question in group.groupby("draft_id", sort=False):
+                signatures = question["slot_value"].tolist()
+                if excluded:
+                    signatures = [remove_aspect_cells(value, excluded) for value in signatures]
+                units.append(signatures)
+            metrics = sensitivity_metrics(units)
+            rows.append({
+                "qgroup": qgroup,
+                "codebook_version": version,
+                "variant": variant,
+                **metrics,
+            })
+
+    result = pd.DataFrame(rows)
+    print("\n" + "=" * 88)
+    print("PHÂN TÍCH ĐỘ NHẠY THEO KHÍA CẠNH")
+    print("Alpha danh nghĩa và đồng thuận cặp được tính lại trên cùng tập câu hỏi.")
+    for (qgroup, version), group in result.groupby(
+        ["qgroup", "codebook_version"], sort=False,
+    ):
+        print("\n" + "-" * 88)
+        print(f"NHÓM {qgroup} | {version}")
+        baseline = group.iloc[0]
+        print(f"{'Kịch bản':<42} {'Alpha':>9} {'Δ alpha':>10} {'Cặp khớp':>11} {'Δ điểm %':>10} {'Nhất trí':>10}")
+        print("-" * 96)
+        for _, row in group.iterrows():
+            alpha = row["krippendorff_alpha_nominal"]
+            base_alpha = baseline["krippendorff_alpha_nominal"]
+            exact = row["pairwise_exact_agreement"]
+            base_exact = baseline["pairwise_exact_agreement"]
+            delta_alpha = alpha - base_alpha if pd.notna(alpha) and pd.notna(base_alpha) else np.nan
+            delta_exact = (exact - base_exact) * 100 if pd.notna(exact) and pd.notna(base_exact) else np.nan
+            print(
+                f"{row['variant'][:42]:<42} "
+                f"{alpha:>9.3f} {delta_alpha:>+10.3f} "
+                f"{exact * 100:>10.1f}% {delta_exact:>+9.1f}pp "
+                f"{row['pct_unanimous_questions'] * 100:>9.1f}%"
+            )
+        print(f"Số câu có ít nhất 2 người chấm: {int(baseline['questions'])}")
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Audit multiple-choice disagreements per group and video.")
     parser.add_argument("csv", help="answer export CSV")
     parser.add_argument("--out", default="iaa_audit")
     parser.add_argument("--groups", nargs="+", metavar="QGROUP", help="audit only these question groups")
+    parser.add_argument("--aspects", nargs="+", metavar="ASPECT",
+                        help="compare agreement after excluding each named codebook cell; accepts labels or IDs")
     parser.add_argument("--include-unfinished", action="store_true",
                         help="include rows where assignment_status is not completed")
     args = parser.parse_args(argv)
+
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
 
     source = pd.read_csv(args.csv, dtype=str, keep_default_na=False, encoding="utf-8-sig")
     required = {"answer_format", "slots", "qgroup", "codebook_version", "video_id", "draft_id",
@@ -210,6 +409,12 @@ def main(argv=None):
     data["slot_value"] = data.apply(
         lambda row: slot_signature(row["slots"], row["codebook_version"]), axis=1,
     )
+    aspect_sensitivity = None
+    if args.aspects:
+        aspects = resolve_aspects(
+            args.aspects, data["codebook_version"].drop_duplicates().tolist(),
+        )
+        aspect_sensitivity = print_aspect_sensitivity(data, aspects)
     for column in GROUP_COLUMNS:
         if column not in data:
             data[column] = ""
@@ -340,14 +545,18 @@ def main(argv=None):
     video_summary.to_csv(video_path, index=False, encoding="utf-8-sig")
     annotator_summary.to_csv(annotator_path, index=False, encoding="utf-8-sig")
     field_summary.to_csv(field_path, index=False, encoding="utf-8-sig")
+    aspect_path = None
+    if aspect_sensitivity is not None:
+        aspect_path = os.path.join(args.out, "slot_audit_aspect_sensitivity.csv")
+        aspect_sensitivity.to_csv(aspect_path, index=False, encoding="utf-8-sig")
 
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8")
     print(f"Audited {sum(row['n_questions'] for row in video_rows)} selected-choice questions across {len(video_summary)} group/video pairs.")
     print(f"Question-person detail: {detail_path}")
     print(f"Per-video summary:      {video_path}")
     print(f"Per-annotator summary:  {annotator_path}")
     print(f"Per-field summary:      {field_path}")
+    if aspect_path:
+        print(f"Aspect sensitivity:     {aspect_path}")
     print("Agreement and audit differences ignore every codebook cell marked required=false.")
     print("Rows marked 'bất đồng với đa số nhóm' identify answers outside a unique group majority.")
 

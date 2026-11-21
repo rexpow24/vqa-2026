@@ -2,7 +2,7 @@
 
 ## Shipped (production, 2026-11-08)
 
-- Migration `20261108_assigned_labeling.sql`, applied in a single transaction. The first attempt rolled back cleanly: see "Found while testing".
+- Migration `20261108000012_assigned_labeling.sql`, applied in a single transaction. The first attempt rolled back cleanly: see "Found while testing".
 - Frontend deployed with `vercel deploy --prod`. The new routes answer 401 JSON when unauthenticated. This deploy also carried the answer-adjudication feature.
 - Drive ids:
   - no session client can read `drive_file_id`;

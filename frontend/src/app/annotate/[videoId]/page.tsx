@@ -28,7 +28,7 @@ export default async function VideoPage({ params }: Context) {
   const draftIds = drafts.map((draft) => draft.id);
   const slotForm = assignmentResult.data?.answer_format === "slots";
   const [annotationResult, decisionResult, entityResult] = draftIds.length ? await Promise.all([
-    supabase.from("qa_annotations").select("draft_id,verdict,reason_code,reason_note,edited_answer,human_keyframes_s,slots,codebook_version")
+    supabase.from("qa_annotations").select("draft_id,verdict,reason_code,reason_note,edited_answer,generated_answer,human_keyframes_s,slots,codebook_version")
       .eq("annotator_id", profile.id).in("draft_id", draftIds),
     supabase.from("answer_adjudications").select("draft_id,final_verdict,final_answer,final_keyframes_s").in("draft_id", draftIds),
     // The parties A, B, C of group E, only a slot assignment has them.
@@ -41,6 +41,7 @@ export default async function VideoPage({ params }: Context) {
     const mine = annotationResult.data?.find((item) => item.draft_id === draft.id);
     return { ...draft, verdict: mine?.verdict ?? null, reason_code: mine?.reason_code ?? null,
       reason_note: mine?.reason_note ?? null, edited_answer: mine?.edited_answer ?? null,
+      generated_answer: mine?.generated_answer ?? null,
       human_keyframes_s: mine?.human_keyframes_s ?? [],
       slots: mine?.slots ?? null, codebook_version: mine?.codebook_version ?? null,
       predicted_keyframes_s: mine ? draft.predicted_keyframes_s : null,

@@ -1,40 +1,46 @@
 # Hướng dẫn gán nhãn Nhóm Prev: phòng ngừa (Prevention)
 
 - Câu hỏi chuẩn: Lẽ ra người lái hoặc người liên quan nên làm gì để tránh va chạm này?
-- Tên thực thể A, B, C lấy từ Nhóm E.
-- Một bên hoặc cả hai bên. Ô 1 thường là bên góp phần chính ở Nhóm Attr; chọn thêm bên còn lại khi bên đó cũng tránh được va chạm bằng một hành động rõ ràng.
-- Hành động phải gắn với nguyên nhân ở C. Không ghi câu chung chung như "tuân thủ luật giao thông", "cẩn thận hơn".
-- Bảng dưới gợi ý hành động cho chủ thể ở C theo kiểu xung đột; form không điền sẵn, annotator tự chọn.
+- Prev được hệ thống tự sinh từ nhóm V theo quy tắc nội bộ của codebook Prev.v3.
+- Annotator không sửa bên hoặc hành động phòng tránh được sinh.
+- Prev là nhãn phản thực tế, không phải hành động quan sát trực tiếp trong video.
+- Ánh xạ chỉ áp dụng khi bên V xác định và mọi tag của bên đó dẫn đến cùng một hành động phòng tránh duy nhất.
+- Nếu thiếu bên, có hành vi chưa ánh xạ, hoặc cùng một bên cần nhiều hành động khác nhau, hệ thống ghi “Không thể xác định.”
+- Không thêm hành động phụ.
 
-## Các ô
+## Ánh xạ hiện hành
 
-| Ô | Lựa chọn |
+| Hành vi V | Hành động Prev |
 | --- | --- |
-| 1. Bên | một bên (chọn từ E) · cả hai bên · không rõ |
-| 2. Hành động chính (mỗi bên một ô) | giảm tốc · giữ khoảng cách an toàn · quan sát và nhường đường · chỉ chuyển làn khi an toàn · đi đúng phần đường · giữ ổn định hướng lái · dừng quan sát trước khi băng qua · bật xi nhan xin đường · tránh điểm mù xe lớn · chấp hành đèn tín hiệu · kiểm tra xe trước khi đi · đội mũ bảo hiểm · khác |
-| 3. Hành động thêm (không bắt buộc, mỗi bên một ô) | như ô 2, khác ô 2 |
+| Đi ngược chiều hoặc đi sai làn | Đi đúng phần đường |
+| Không giữ khoảng cách an toàn | Giữ khoảng cách an toàn |
+| Vượt đèn đỏ hoặc không chấp hành biển báo/vạch kẻ đường | Chấp hành đèn tín hiệu |
+| Không nhường đường | Quan sát và nhường đường |
+| Không đội mũ bảo hiểm | Đội mũ bảo hiểm |
+| Tag khác hoặc tag không nằm trong bảng | Không thể xác định |
 
-## Gợi ý theo kiểu xung đột ở C
+Nếu một bên có nhiều tag V nhưng các tag cùng ánh xạ về một hành động, hệ thống giữ hành động đó.
 
-| Kiểu xung đột | Hành động chính gợi ý cho chủ thể |
-| --- | --- |
-| K01-K03 (cùng chiều, phía trước) | giữ khoảng cách an toàn |
-| K04, K05 (chuyển làn, vượt, len) | chỉ chuyển làn khi an toàn |
-| K06, K10-K13 (rẽ, quay đầu, cắt ngang) | quan sát và nhường đường |
-| K07 (xe đỗ, mở cửa) | quan sát và nhường đường |
-| K08, K09 (lấn làn, ngược chiều) | đi đúng phần đường |
-| K14-K16 (băng ngang giữa đoạn, người đi bộ, động vật) | dừng quan sát trước khi băng qua |
-| K17 (lùi xe) | quan sát và nhường đường |
-| K18 (trượt, văng) | giảm tốc |
+Nếu cùng một bên có tag ánh xạ sang các hành động khác nhau, hệ thống không chọn tùy ý một hành động.
 
-Bên không phải chủ thể không có gợi ý.
+## Cơ sở và giới hạn
+
+Luật Trật tự, an toàn giao thông đường bộ quy định nghĩa vụ giao thông cụ thể, nhưng không khẳng định một hành động phản thực tế duy nhất sẽ tránh được một va chạm cụ thể.
+
+NHTSA tách sự kiện tiền va chạm khỏi thao tác né tránh đã thực hiện.
+
+FHWA khuyến nghị chẩn đoán vấn đề và yếu tố góp phần trước khi chọn biện pháp đối ứng.
+
+Do đó bảng trên là chính sách mã hóa của dự án, chưa được xác nhận là mô hình nhân quả hoặc khuyến nghị an toàn đã kiểm định.
+
+Các trích dẫn pháp lý và nghiên cứu được lưu tại `docs/research/v-prev-derivation-evidence.md`.
+
+Frontend không hiển thị citations; citations chỉ nằm trong tài liệu nội bộ để viết khóa luận.
 
 ## Mẫu câu
 
 | Trường hợp | Mẫu câu |
 | --- | --- |
-| Một bên | [Bên] nên [2] (và [3]). |
-| Cả hai bên | [A] nên [2 của A] (và [3 của A]); [B] nên [2 của B] (và [3 của B]). |
-| C và Attr đều không rõ | Không thể xác định. |
-
-Khi C và Attr đều không rõ, chỉ ghi hành động nếu có biện pháp hiển nhiên từ điều kiện nhìn rõ, ví dụ giảm tốc khi mặt đường ướt.
+| Một bên | [Bên] nên [hành động chính]. |
+| Hai bên | [A] nên [hành động A]; [B] nên [hành động B]. |
+| Thiếu căn cứ duy nhất | Không thể xác định. |

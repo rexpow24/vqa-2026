@@ -57,14 +57,14 @@ async function makeUser(label, role) {
 
 // Attr has been a slot group since codebook v2 (features/codebook-v2); N is the one text group.
 const SLOT_GROUPS = ["S", "E", "C", "V", "O", "R", "Attr", "Prev"];
-// Every frozen codebook: the seven v1 of P2, codebook v2, E.v2, and V.v3/v4.
-const CODEBOOK_IDS = ["S.v1", "E.v1", "C.v1", "V.v1", "O.v1", "R.v1", "Prev.v1", "S.v2", "C.v2", "V.v2", "V.v3", "V.v4", "Attr.v1", "E.v2"];
+// Every frozen codebook: the seven v1 of P2, codebook v2, E.v2, and V.v3/v4/v5.
+const CODEBOOK_IDS = ["S.v1", "E.v1", "C.v1", "V.v1", "O.v1", "R.v1", "Prev.v1", "S.v2", "C.v2", "V.v2", "V.v3", "V.v4", "V.v5", "V.v6", "Attr.v1", "E.v2"];
 
 /** A1, A4, AC1 (codebook v2): one read-only row per frozen codebook file, equal to the file. */
 async function checkCodebooks(t) {
   const rows = must(await t.client.from("codebook_versions").select("id,qgroup,version,content,sha256,frozen_on").order("id"));
   check("AC1", rows.length === CODEBOOK_IDS.length && CODEBOOK_IDS.every((id) => rows.some((row) => row.id === id)),
-    "codebook_versions holds the seven v1 codebooks plus S.v2, C.v2, V.v2, V.v3, V.v4, Attr.v1, E.v2", rows.map((row) => row.id));
+    "codebook_versions holds the seven v1 codebooks plus S.v2, C.v2, V.v2, V.v3, V.v4, V.v5, V.v6, Attr.v1, E.v2", rows.map((row) => row.id));
   for (const id of CODEBOOK_IDS) {
     const bytes = fs.readFileSync(path.join(REPO_ROOT, "codebook", `${id}.json`));
     const file = JSON.parse(bytes.toString("utf8"));
@@ -1010,6 +1010,83 @@ async function checkUnassign(admin, lead, agreed, extra) {
 
 const DRAFT_ANSWERS = { R: "Không thể xác định." };
 
+/** V.v4 must accept vehicle references while rejecting animals in either shape. */
+async function checkAnimalViolator(lead) {
+  const video = await makeVideo("animal-violator", { agreement: false });
+  must(await privileged.from("video_assignments").insert({
+    video_id: video.id, annotator_id: lead.id, status: "pending", answer_format: "slots",
+  }));
+  const entities = [ENTITIES[0], ENTITIES[1], { key: "C", cells: { type: opt("type.animal") } },
+    { key: "D", cells: { type: opt("type.pedestrian") } }];
+  const savedEntities = await request(base, `/api/videos/${video.id}/entities`, lead.cookie, "PUT",
+    { codebook_version: "E.v2", entities });
+  if (savedEntities.status !== 200) throw new Error(`Animal fixture entities: ${JSON.stringify(savedEntities)}`);
+
+  const one = { result: opt("result.yes"), violator: ent("A"),
+    behavior: { options: ["behavior.wrong_lane", "behavior.red_light"] } };
+  const savedOne = await saveVersion(lead, video, "V", "V.v4", one);
+  check("V4", savedOne.status === 200 && isDeepStrictEqual((await stored(video.drafts.V, lead.id))?.slots, one),
+    "V.v4 saves a vehicle violator with multiple behaviours", savedOne);
+
+  const both = { result: opt("result.yes"), violator: opt("violator.both"), parties: [
+    { party: ent("A"), behavior: { options: ["behavior.wrong_lane"] } },
+    { party: ent("B"), behavior: { options: ["behavior.red_light"] } },
+  ] };
+  const savedBoth = await saveVersion(lead, video, "V", "V.v4", both);
+  check("V4", savedBoth.status === 200 && isDeepStrictEqual((await stored(video.drafts.V, lead.id))?.slots, both),
+    "V.v4 saves two vehicle violators", savedBoth);
+
+  for (const [slots, name] of [
+    [{ ...one, violator: ent("C") }, "an animal as the sole violator"],
+    [{ ...both, parties: [both.parties[0], { ...both.parties[1], party: ent("C") }] }, "an animal among both violators"],
+  ]) {
+    await refuseSlots(lead, video, "V", "V.v4", slots, "animal_violator", name);
+    const before = await stored(video.drafts.V, lead.id);
+    const refused = await saveVersion(lead, video, "V", "V.v4", slots);
+    check("V4", refused.status === 422 && isDeepStrictEqual(await stored(video.drafts.V, lead.id), before),
+      `the annotation route refuses ${name} without changing the answer`, refused);
+  }
+  const unknown = { result: opt("result.yes"), violator: opt("violator.unidentified"),
+    behavior: { options: ["behavior.other"], text: "thả vật nuôi đi rông" } };
+  const savedUnknown = await saveVersion(lead, video, "V", "V.v4", unknown);
+  check("V4", savedUnknown.status === 200
+    && (await stored(video.drafts.V, lead.id))?.edited_answer.includes("không xác định được người điều khiển vật nuôi"),
+  "V.v4 saves an unidentified animal handler", savedUnknown);
+
+  const owner = { result: opt("result.yes"), violator: ent("D"),
+    behavior: { options: ["behavior.other"], text: "để vật nuôi lao ra phần đường xe chạy gây mất an toàn" } };
+  const savedOwner = await saveVersion(lead, video, "V", "V.v5", owner);
+  const ownerRow = await stored(video.drafts.V, lead.id);
+  check("V5", savedOwner.status === 200 && ownerRow?.codebook_version === "V.v5"
+    && isDeepStrictEqual(ownerRow.slots, owner)
+    && ownerRow.edited_answer === compose("V", owner, { entities, version: "V.v5" }),
+  "V.v5 saves the identified human with the observed animal-handling behaviour", savedOwner);
+  await refuseSlots(lead, video, "V", "V.v5", { ...owner, violator: ent("C") }, "animal_violator",
+    "an animal as the V.v5 violator");
+
+  const keeperBoth = { result: opt("result.yes"), violator: opt("violator.both"), parties: [
+    { party: ent("A"), behavior: { options: ["behavior.wrong_lane"] } },
+    { party: opt("violator.unidentified"), behavior: { options: ["behavior.other"], text: "để vật nuôi đi rông" } },
+  ] };
+  for (const parties of [keeperBoth.parties, [...keeperBoth.parties].reverse()]) {
+    const slots = { ...keeperBoth, parties };
+    const response = await saveVersion(lead, video, "V", "V.v6", slots);
+    const row = await stored(video.drafts.V, lead.id);
+    check("V6", response.status === 200 && row?.codebook_version === "V.v6"
+      && isDeepStrictEqual(row.slots, slots)
+      && row.edited_answer === compose("V", keeperBoth, { version: "V.v6", entities }),
+    "V.v6 saves a vehicle and unidentified keeper in either party order", response);
+  }
+  for (const [version, slots, hint, name] of [
+    ["V.v5", keeperBoth, "parties", "the special party under an older V codebook"],
+    ["V.v6", { ...keeperBoth, parties: [keeperBoth.parties[1], keeperBoth.parties[1]] }, "parties", "the same unidentified keeper twice"],
+    ["V.v6", { ...keeperBoth, parties: [{ ...keeperBoth.parties[0], party: ent("C") }, keeperBoth.parties[1]] }, "animal_violator", "an animal beside the unidentified keeper"],
+    ["V.v6", { ...keeperBoth, parties: [keeperBoth.parties[0], { ...keeperBoth.parties[1], party: opt("violator.both") }] }, "parties", "both as an individual party"],
+    ["V.v6", { ...keeperBoth, parties: [keeperBoth.parties[0], { ...keeperBoth.parties[1], party: { option: "violator.unidentified", entity: "D" } }] }, "parties", "a party with an option and an entity together"],
+    ["V.v6", { ...keeperBoth, parties: [keeperBoth.parties[0], { ...keeperBoth.parties[1], behavior: { options: ["behavior.other"] } }] }, "missing_text", "the keeper's other behaviour without text"],
+  ]) await refuseSlots(lead, video, "V", version, slots, hint, name);
+}
+
 async function makeVideo(label, { agreement }) {
   const video = must(await privileged.from("videos").insert({
     drive_file_id: `${tag}-${label}`, filename: `zzz-${tag}-${label}.mp4`, duration_s: 10, agreement_sample: agreement,
@@ -1135,6 +1212,9 @@ try {
 
   console.log("Unassigning:");
   await checkUnassign(lead, lead, agreed, extra);
+
+  console.log("Animal violator regression:");
+  await checkAnimalViolator(lead);
 } catch (error) {
   failures.push("fixture");
   console.log(`FAIL fixture: ${error.message ?? error}`);

@@ -1,0 +1,227 @@
+{
+  "group": "V",
+  "version": 8,
+  "frozen_on": "2026-11-21",
+  "source": "docs/guidelines/V-vi-pham.md",
+  "question": "Có hành vi vi phạm quy tắc giao thông nào quan sát được hoặc được suy ra theo quy tắc hẹp từ nhóm C không?",
+  "templates": [
+    {
+      "case": "Có",
+      "text": "{violator} {behavior}."
+    },
+    {
+      "case": "Có, chưa xác định người điều khiển vật nuôi",
+      "text": "Quan sát thấy {behavior}; không xác định được người điều khiển vật nuôi."
+    },
+    {
+      "case": "Có, cả hai bên",
+      "text": "{A} {behavior_A}, đồng thời {B} {behavior_B}."
+    },
+    {
+      "case": "Có, cả hai bên cùng hành vi",
+      "text": "Cả {A} và {B} cùng {behavior}."
+    },
+    {
+      "case": "Không quan sát thấy",
+      "text": "Không quan sát thấy vi phạm quy tắc giao thông rõ ràng."
+    },
+    {
+      "case": "Không rõ",
+      "text": "Không thể xác định."
+    }
+  ],
+  "cells": [
+    {
+      "id": "result",
+      "label": "Kết quả",
+      "required": true,
+      "options": [
+        {
+          "id": "result.yes",
+          "label": "có"
+        },
+        {
+          "id": "result.none_observed",
+          "label": "không quan sát thấy"
+        },
+        {
+          "id": "result.unclear",
+          "label": "không rõ"
+        }
+      ],
+      "read_only": true
+    },
+    {
+      "id": "violator",
+      "label": "Bên vi phạm",
+      "required": false,
+      "when": "khi có",
+      "from_entities": true,
+      "options": [
+        {
+          "id": "violator.both",
+          "label": "cả hai bên"
+        }
+      ],
+      "read_only": true
+    },
+    {
+      "id": "behavior",
+      "label": "Hành vi",
+      "required": false,
+      "when": "khi có",
+      "options": [
+        {
+          "id": "behavior.wrong_lane",
+          "label": "đi sai làn, lấn làn"
+        },
+        {
+          "id": "behavior.wrong_way",
+          "label": "đi ngược chiều"
+        },
+        {
+          "id": "behavior.red_light",
+          "label": "vượt đèn đỏ",
+          "condition": "chỉ khi thấy rõ đèn."
+        },
+        {
+          "id": "behavior.sign_or_marking",
+          "label": "không chấp hành biển báo, vạch kẻ đường",
+          "condition": "chỉ khi thấy rõ biển hoặc vạch. Người đi bộ sang đường khi đèn dành cho người đi bộ đỏ cũng chọn lựa chọn này."
+        },
+        {
+          "id": "behavior.fail_to_yield",
+          "label": "không nhường đường",
+          "condition": "chỉ khi thấy rõ bên có quyền đi trước (xe đang đi thẳng trên đường chính, người đi bộ trên vạch, xe trong giao lộ). Dùng cho cả xe và người đi bộ."
+        },
+        {
+          "id": "behavior.tailgating",
+          "label": "không giữ khoảng cách an toàn"
+        },
+        {
+          "id": "behavior.illegal_overtake",
+          "label": "vượt xe sai quy định",
+          "condition": "chỉ khi thấy rõ vượt qua vạch liền, tại giao lộ hoặc khúc cua."
+        },
+        {
+          "id": "behavior.illegal_turn",
+          "label": "chuyển hướng, quay đầu sai quy định",
+          "condition": "chỉ khi thấy rõ biển cấm, vạch liền hoặc vị trí không được rẽ, quay đầu."
+        },
+        {
+          "id": "behavior.illegal_reverse",
+          "label": "lùi xe sai quy định"
+        },
+        {
+          "id": "behavior.no_helmet",
+          "label": "không đội mũ bảo hiểm",
+          "condition": "chỉ khi thấy rõ đầu người trên xe máy."
+        },
+        {
+          "id": "behavior.walking_in_road",
+          "label": "đi bộ dưới lòng đường",
+          "condition": "người đi bộ đứng hoặc đi dọc trong phần đường xe chạy, không phải băng qua."
+        },
+        {
+          "id": "behavior.no_slowdown_intersection",
+          "label": "không giảm tốc độ qua giao lộ",
+          "condition": "chỉ khi thấy rõ là giao lộ và thấy rõ xe không giảm tốc khi vào giao lộ."
+        },
+        {
+          "id": "behavior.other",
+          "label": "khác",
+          "condition": "Ghi ngắn hành vi nhìn thấy được. Không suy đoán danh tính hoặc trách nhiệm của người không xuất hiện. Không dùng từ \"lỗi\", \"vi phạm điều/khoản\", mức phạt.",
+          "free_text": true
+        }
+      ],
+      "per_party_when": "violator.both",
+      "multiple": true,
+      "inferred_from": "C",
+      "allow_manual_additions": true,
+      "additions_optional": true,
+      "read_only": true
+    },
+    {
+      "note": "Không chọn động vật làm bên vi phạm.",
+      "id": "additional_violator",
+      "required": false,
+      "from_entities": true,
+      "label": "Bên có hành vi bổ sung",
+      "options": []
+    },
+    {
+      "note": "Chỉ chọn hành vi quan sát được rõ ràng.",
+      "id": "additional_behavior",
+      "options": [
+        {
+          "id": "behavior.wrong_lane",
+          "label": "đi sai làn, lấn làn"
+        },
+        {
+          "id": "behavior.wrong_way",
+          "label": "đi ngược chiều"
+        },
+        {
+          "id": "behavior.red_light",
+          "label": "vượt đèn đỏ",
+          "condition": "chỉ khi thấy rõ đèn."
+        },
+        {
+          "id": "behavior.sign_or_marking",
+          "label": "không chấp hành biển báo, vạch kẻ đường",
+          "condition": "chỉ khi thấy rõ biển hoặc vạch. Người đi bộ sang đường khi đèn dành cho người đi bộ đỏ cũng chọn lựa chọn này."
+        },
+        {
+          "id": "behavior.fail_to_yield",
+          "label": "không nhường đường",
+          "condition": "chỉ khi thấy rõ bên có quyền đi trước (xe đang đi thẳng trên đường chính, người đi bộ trên vạch, xe trong giao lộ). Dùng cho cả xe và người đi bộ."
+        },
+        {
+          "id": "behavior.tailgating",
+          "label": "không giữ khoảng cách an toàn"
+        },
+        {
+          "id": "behavior.illegal_overtake",
+          "label": "vượt xe sai quy định",
+          "condition": "chỉ khi thấy rõ vượt qua vạch liền, tại giao lộ hoặc khúc cua."
+        },
+        {
+          "id": "behavior.illegal_turn",
+          "label": "chuyển hướng, quay đầu sai quy định",
+          "condition": "chỉ khi thấy rõ biển cấm, vạch liền hoặc vị trí không được rẽ, quay đầu."
+        },
+        {
+          "id": "behavior.illegal_reverse",
+          "label": "lùi xe sai quy định"
+        },
+        {
+          "id": "behavior.no_helmet",
+          "label": "không đội mũ bảo hiểm",
+          "condition": "chỉ khi thấy rõ đầu người trên xe máy."
+        },
+        {
+          "id": "behavior.walking_in_road",
+          "label": "đi bộ dưới lòng đường",
+          "condition": "người đi bộ đứng hoặc đi dọc trong phần đường xe chạy, không phải băng qua."
+        },
+        {
+          "id": "behavior.no_slowdown_intersection",
+          "label": "không giảm tốc độ qua giao lộ",
+          "condition": "chỉ khi thấy rõ là giao lộ và thấy rõ xe không giảm tốc khi vào giao lộ."
+        },
+        {
+          "id": "behavior.other",
+          "label": "khác",
+          "condition": "Ghi ngắn hành vi nhìn thấy được. Không suy đoán danh tính hoặc trách nhiệm của người không xuất hiện. Không dùng từ \"lỗi\", \"vi phạm điều/khoản\", mức phạt.",
+          "free_text": true
+        }
+      ],
+      "required": false,
+      "label": "Hành vi vi phạm bổ sung",
+      "multiple": true
+    }
+  ],
+  "inferred_from": "C",
+  "inference_mode": "derived_with_optional_additions",
+  "derivation": "Core chỉ tự suy ra K09; các trường bổ sung là hành vi quan sát trực tiếp do annotator chọn."
+}

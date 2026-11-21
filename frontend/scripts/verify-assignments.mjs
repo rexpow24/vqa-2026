@@ -157,6 +157,16 @@ try {
   ] }));
   check(imported.saved === 12 && imported.unknown?.length === 1 && imported.invalid?.length === 1,
     "reference labels save by shot stem and report unknown and invalid rows", imported);
+  // Supply the 60-video planning pool ourselves, including on an empty local DB.
+  // These unassigned fixtures are outside the assignment/export ranges above.
+  for (let index = 0; index < 48; index += 1) {
+    const video = await makeVideo(100 + index);
+    videoIds.push(video.id);
+    must(await privileged.from("video_reference_labels").insert({
+      video_id: video.id, difficulty: ["easy", "medium", "high"][index % 3],
+      event_label: index % 2 ? "accident" : "near-miss",
+    }));
+  }
   const plan = must(await admin.client.rpc("plan_agreement_group", { group_size: 6 }));
   const strata = must(await admin.client.rpc("agreement_strata"));
   const pool = strata.reduce((sum, row) => sum + Number(row.available), 0);

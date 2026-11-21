@@ -158,7 +158,7 @@ Không kiểm ở database: điều kiện `when` bằng lời của E, ràng bu
 Thứ tự kiểm:
 
 1. Chủ sở hữu không đổi, câu đã thống nhất bị khóa: như cũ.
-2. Keyframe: như cũ (`20261112_keyframes_start_end.sql`), áp cho cả dòng `SLOTS`.
+2. Keyframe: như cũ (`20261112000016_keyframes_start_end.sql`), áp cho cả dòng `SLOTS`.
 3. Tra `answer_format` của phân công (video, annotator), khóa dòng phân công bằng `for update` (xem Luồng, tranh chấp); không có phân công thì coi là `text`.
 4. Dòng là dạng ô khi `answer_format = 'slots'` và nhóm có dòng trong `codebook_versions`.
 5. Dòng dạng ô: verdict phải là `SLOTS`; `reason_code`, `reason_note` phải null; `codebook_version` phải thuộc đúng nhóm của draft; `slots` phải có; `edited_answer` sau chuẩn hóa không rỗng và được phép trùng draft; với E thì ghi đè `slots` bằng bản chụp; với nhóm khác thì gọi `validate_slots`.
@@ -307,7 +307,7 @@ Commit 6 file trước khi sinh migration; `sha256` trong bảng cố định by
 
 - Supabase local đã chạy: Docker và Supabase CLI 3.1.0, workdir `C:/Users/Admin/AppData/Local/Temp/claude/6cfe3fe087aab76d/b3d6cc70-9e30-4971-99e7-fa26932a37e5/scratchpad/localdb`, container `supabase_db_localdb`, API cổng 54321, database cổng 54322; đủ 16 migration của repo đã áp.
 - Phát hiện: migration của repo **không** chạy lại được theo thứ tự tên file.
-  Hai cặp cùng ngày phải đảo: `20261003_team_video_labeling.sql` trước `20261003_qa_labeling.sql`, và `20261102_videos_agreement_sample.sql` trước `20261102_annotator_queue_agreement.sql`.
+  Hai cặp cùng ngày phải đảo: `20261003000001_team_video_labeling.sql` trước `20261003000002_qa_labeling.sql`, và `20261102000006_videos_agreement_sample.sql` trước `20261102000007_annotator_queue_agreement.sql`.
   Bản sao trong workdir được đặt tên `YYYYMMDD0000NN_<tên>.sql` theo thứ tự phụ thuộc; file trong repo không đổi tên (Non-goals).
 - Vì vậy migration P2 dùng tiền tố timestamp đầy đủ 14 số, duy nhất: `20261116100000_slot_data_model.sql`.
   Nó sắp sau mọi bản sao trong workdir và sau mọi file trong repo; runner production (`scripts/apply-team-labeling-migration.mjs`) nhận tên file bất kỳ khớp `^[A-Za-z0-9_-]+\.sql$`.

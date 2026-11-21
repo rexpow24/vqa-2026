@@ -1,0 +1,24 @@
+sequenceDiagram
+    actor Annotator as Người gán nhãn
+    participant UI as Form Next.js
+    participant API as API annotation
+    participant DB as Supabase local
+    Annotator->>UI: Chọn slots S/E/C/V
+    UI->>UI: Kiểm tra điều kiện và tạo preview
+    Annotator->>UI: Lưu
+    UI->>API: POST answer + entities
+    API->>DB: RPC save_slot_answers(rows)
+    alt Tất cả rows hợp lệ
+        DB-->>API: Commit toàn bộ rows
+        API-->>UI: Thành công
+        UI-->>Annotator: Hiển thị đã lưu
+    else Có row không hợp lệ
+        DB-->>DB: Rollback transaction
+        DB-->>API: Lỗi có mã/hint
+        API-->>UI: Lỗi lưu
+        UI-->>Annotator: Hiển thị lỗi, dữ liệu trước đó không đổi
+    end
+    Annotator->>UI: Refresh và lưu lại
+    UI->>API: Upsert cùng draft/annotator
+    API->>DB: RPC save_slot_answers(rows)
+    DB-->>UI: Một answer hiện hành trên mỗi draft/annotator
