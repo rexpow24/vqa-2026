@@ -23,7 +23,8 @@ The documents linked here remain the authoritative sources; this index does not 
 6. [C, V, and Prev label-dependency research note](../research/label-dependencies-c-v-prev.md) summarizes the evidence and limits for deriving violations and preventive actions from other annotation groups.
 7. [V and Prev derivation evidence](../research/v-prev-derivation-evidence.md) records the legal and research basis for the conservative C-to-V and V-to-Prev rules.
 8. [C-to-Prev derivation evidence](../research/c-prev-derivation-evidence.md) records the project decision, research and Vietnamese legal basis, candidate mappings, and limits for deriving preventive actions directly from conflict scenarios.
-9. [Decision and evidence map](decisions-and-evidence.md) points to decision records and records unresolved or implementation-dependent details.
+9. [E entity identity research note](../research/e-entity-identity.md) records the rationale and citations for assigning stable A/B/C identities to same-class vehicles.
+10. [Decision and evidence map](decisions-and-evidence.md) points to decision records and records unresolved or implementation-dependent details.
 
 ## Topic map
 

@@ -2,9 +2,12 @@
 
 - Câu hỏi chuẩn: Loại phương tiện và màu sắc của các bên liên quan là gì?
 - Chỉ khai báo các bên trực tiếp va chạm hoặc suýt va chạm. Phương tiện nền chỉ khai báo khi có tác động đến sự việc.
-- Mỗi bên được đặt tên A, B, C theo vị trí trong khung hình lúc các bên cùng xuất hiện: từ trái sang phải; hai bên nằm thẳng hàng dọc thì bên ở trên tính trước. Các nhóm C, V, O, R, Attr, Prev dùng lại đúng các tên này.
-- Hai bên trùng cả loại và màu thì thêm chữ cái vào tên trong câu, ví dụ "xe máy màu trắng A" và "xe máy màu trắng B".
-- Khi so giữa hai annotator, thực thể được ghép theo loại, màu và chữ cái.
+- Mỗi phương tiện hoặc bên liên quan là một thực thể riêng, có tên ổn định A, B, C xuyên suốt video; tên thực thể không phụ thuộc vào loại hoặc màu.
+- Khi các bên liên quan cùng nhìn thấy và nhận diện được, gán tên theo vị trí từ trái sang phải; nếu nằm gần như cùng một cột thì bên ở trên tính trước. Nếu các bên không cùng xuất hiện rõ trong một khung hình, gán theo thứ tự lần đầu nhận diện được.
+- Giữ nguyên tên khi các bên đổi vị trí, cắt ngang nhau, bị che khuất rồi xuất hiện lại. Dùng tính liên tục giữa các khung hình, quỹ đạo và vai trò trong sự kiện để theo dõi từng bên; không đổi tên theo vị trí mới.
+- Hai thực thể cùng loại vẫn nhận hai tên riêng, ví dụ "xe máy A" và "xe máy B" hoặc "ô tô A" và "ô tô B". Không cần dựa vào màu để phân biệt chúng.
+- Khi so giữa hai annotator, ghép thực thể theo danh tính của phương tiện trong video và tính liên tục theo thời gian, không chỉ theo loại hoặc màu. Nếu không thể xác định chắc chắn thực thể nào tương ứng, báo người phụ trách để phân xử thay vì đoán.
+- Các nhóm C, O, R, Attr và Prev dùng lại đúng tên A, B, C đã gán ở nhóm E.
 - Mỗi ô chọn đúng một giá trị. Không nhìn rõ ô nào thì chọn "không rõ".
 - Bên bị che hoàn toàn hoặc quá xa để nhận diện thì không khai báo; không khai báo được bên nào thì câu trả lời là "Không thể xác định".
 
