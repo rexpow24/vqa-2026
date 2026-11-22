@@ -9,12 +9,14 @@ Form đang cho phép thiếu dữ liệu màu/camera, chứa lựa chọn đã b
 - S cung cấp lựa chọn chất liệu “bê tông”.
 - E bắt buộc ghi nhận camera hành trình cho ô tô. Chỉ khi chọn không có camera mới hỏi màu ô tô; màu bắt buộc cho xe máy, xe khách, xe tải, xe cứu thương, xe ba gác và loại xe khác. Xe đạp không cần màu.
 - C chỉ cho chọn va chạm hoặc suýt va chạm, giữ ô nhập đối tượng như hiện tại, và trình bày nguyên văn đầy đủ nhãn kiểu xung đột.
-- V không ép nhập hành vi vi phạm bổ sung và không hiện các lựa chọn đã loại bỏ/đổi tên.
-- C và các nhóm dẫn xuất được lưu trong một transaction; lỗi ở bất kỳ hàng nào không để lại dữ liệu dở dang.
+- Bỏ nhóm V khỏi luồng gán nhãn mới vì annotator không có thẩm quyền kết luận vi phạm pháp luật.
+- Giữ các bản nháp và câu trả lời V lịch sử để bảo toàn dữ liệu nghiên cứu.
+- Prev được hệ thống suy trực tiếp từ C bằng quy tắc có điều kiện; annotator không tự kết luận vi phạm.
+- C và Prev dẫn xuất được lưu trong một transaction; lỗi ở bất kỳ hàng nào không để lại dữ liệu dở dang.
 
 ## Phạm vi
 
-- Tạo S.v3, E.v4, C.v4, V.v9.
+- Tạo S.v3, E.v4, C.v4 và Prev.v4; V.v9 chỉ còn trong lịch sử.
 - Đồng bộ codebook JSON ở root, frontend, migration.
 - Cập nhật logic form, validation, compose, server-side validation và migration DB.
 - Kiểm thử trên Supabase local và lưu ảnh chụp form thật trong `artifacts/`.
@@ -23,7 +25,7 @@ Form đang cho phép thiếu dữ liệu màu/camera, chứa lựa chọn đã b
 
 - Deploy production: yêu cầu hiện tại chỉ định kiểm thử local.
 - Sửa lại các câu trả lời lịch sử: answer giữ nguyên phiên bản codebook tại thời điểm lưu.
-- Thiết kế lại các nhóm ngoài S/E/C/V và nhóm R/P/O: chúng chỉ đổi khi cần tương thích với phiên bản codebook mới.
+- Thiết kế lại các nhóm ngoài S/E/C/Prev và nhóm R/P/O; V chỉ được giữ lại để đọc dữ liệu lịch sử.
 
 ## Quyết định
 

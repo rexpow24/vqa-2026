@@ -41,6 +41,7 @@ import S3 from "./S.v3.json" with { type: "json" };
 import E4 from "./E.v4.json" with { type: "json" };
 import C4 from "./C.v4.json" with { type: "json" };
 import V9 from "./V.v9.json" with { type: "json" };
+import Prev4 from "./Prev.v4.json" with { type: "json" };
 
 export type CodebookOption = {
   id: string;
@@ -79,7 +80,7 @@ export type Codebook = {
 
 const CODEBOOKS: Readonly<Record<string, Codebook>> = Object.fromEntries(
   ([S1, E1, C1, V1, O1, R1, Prev1, S2, C2, V2, V3, V4, V5, V6, Attr1, E2, C3, E3, R2, Prev2, V7, V8, Prev3,
-    S3, E4, C4, V9] as Codebook[]).map((book) => [`${book.group}.v${book.version}`, book]),
+    S3, E4, C4, V9, Prev4] as Codebook[]).map((book) => [`${book.group}.v${book.version}`, book]),
 );
 
 /** The codebook with this id ("C.v1"), or undefined when there is none. */

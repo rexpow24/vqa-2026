@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelGroup } from "@/components/LabelGroup";
 import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
 import { BTN, BTN_BASE, FOCUS, NEUTRAL, QUESTION } from "@/components/slots/styles";
-import { needsKeyframes } from "@/lib/qgroups";
+import { GROUP_CODES, needsKeyframes } from "@/lib/qgroups";
 import type { EventLabel, StoredVerdict, Verdict } from "@/lib/types";
 import { isSlotGroup } from "@/lib/codebook";
 import type { Entity, Slots } from "@/lib/codebook/compose";
@@ -28,7 +28,7 @@ export type HostedDraft = {
   truncated: boolean; completion_tokens: number | null; latency_ms: number | null;
   prompt_version: number; frame_times_s: number[]; predicted_keyframes_s: number[] | null;
   source_kind: "vlm" | "admin_csv";
-  // "SLOTS" only on a slot answer of a slot assignment (S, E, C, V, O, R, Prev).
+  // "SLOTS" only on a slot answer of a slot assignment (S, E, C, O, R, Prev).
   verdict: StoredVerdict | null; reason_code: string | null; reason_note: string | null;
   edited_answer: string | null; human_keyframes_s: number[];
   generated_answer?: string | null;
@@ -63,7 +63,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   answerFormat = "text", initialEntities = [], adminAnswers }: {
   video: Video; initialAssignment: Assignment | null; initialLabel: Label | null; initialDrafts: HostedDraft[];
   labelDecision: EventLabel | null;
-  // "slots": S, E, C, V, O, R, Prev are answered with the slot form; N and Attr stay text.
+  // "slots": S, E, C, O, R, Prev are answered with the slot form; N and Attr stay text.
   answerFormat?: "text" | "slots"; initialEntities?: Entity[]; adminAnswers?: AdminAnswer[];
 }) {
   const router = useRouter();
@@ -78,24 +78,22 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const derivedSyncVideo = useRef("");
-  const ready = drafts.length === 9;
+  const ready = drafts.length === GROUP_CODES.length;
   // The saved parties of group E, which every other slot group picks from.
   const [entities, setEntities] = useState<Entity[]>(initialEntities);
   const causeDraft = drafts.find((draft) => draft.qgroup === "C");
-  const violationDraft = drafts.find((draft) => draft.qgroup === "V");
-  const slotContext = { entities, cause: causeDraft?.verdict === "SLOTS" ? causeDraft.slots : null,
-    violation: violationDraft?.verdict === "SLOTS" ? violationDraft.slots : null };
+  const slotContext = { entities, cause: causeDraft?.verdict === "SLOTS" ? causeDraft.slots : null };
   const entityLabels = Object.fromEntries(entities.map((entity) => [entity.key, entityLabel(entity)]));
   const slotForm = (draft: HostedDraft) => answerFormat === "slots" && isSlotGroup(draft.qgroup) && !draft.decision;
   useEffect(() => {
     if (answerFormat !== "slots" || !assignment || derivedSyncVideo.current === video.id) return;
     derivedSyncVideo.current = video.id;
-    void requestJson<{ rows: SavedSlotRow[] }>(`/api/videos/${video.id}/derive-v-prev`).then(({ rows }) => {
+    void requestJson<{ rows: SavedSlotRow[] }>(`/api/videos/${video.id}/derive-prev`).then(({ rows }) => {
       if (rows.length) setDrafts((current) => current.map((item) => {
         const row = rows.find((candidate) => candidate.draft_id === item.id);
         return row ? { ...item, ...row } : item;
       }));
-    }).catch((cause) => setError(cause instanceof Error ? cause.message : "Không thể tự đồng bộ V và Prev."));
+    }).catch((cause) => setError(cause instanceof Error ? cause.message : "Không thể tự đồng bộ Prev từ C."));
   }, [answerFormat, assignment, video.id]);
   async function slotSaved(draft: HostedDraft, rows: SavedSlotRow[]) {
     setDrafts((current) => current.map((item) => {
@@ -111,7 +109,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
         if (result.complete && result.draft_id) {
           setDrafts((current) => current.map((item) => item.id === result.draft_id
             ? { ...item, verdict: result.verdict ?? "AGREE", generated_answer: result.generated_answer ?? null } : item));
-          setMessage("Đã lưu và tự tạo câu N từ 8 nhóm đã gán nhãn.");
+          setMessage(`Đã lưu và tự tạo câu N từ ${GROUP_CODES.length - 1} nhóm đã gán nhãn.`);
         }
       } catch (cause) { setError(cause instanceof Error ? cause.message : "Không thể tự tạo câu N."); }
     }
@@ -222,7 +220,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
             {drafts[0].frame_times_s.map((time) => Number(time).toFixed(1)).join(" · ")}</span></div>}
         </div>
         {ready && <div className="flex flex-col gap-3 rounded-md border border-border bg-surface p-3">
-          <div className="text-xs text-muted">Nhãn của video (1 nhãn cho cả 9 câu)</div>
+          <div className="text-xs text-muted">Nhãn của video (1 nhãn cho cả {GROUP_CODES.length} câu)</div>
           {labelDecision ? <p className="text-sm">
             Bạn chọn <b>{label?.event_label ?? "-"}</b>. Nhãn đã thống nhất: <b className="text-green">{labelDecision}</b>
             <span className="block text-xs text-muted">Đã khóa sau khi thống nhất.</span>
@@ -243,10 +241,10 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
             onSaved={async (saved, row) => {
               setEntities(saved);
               try {
-                const { rows } = await requestJson<{ rows: SavedSlotRow[] }>(`/api/videos/${video.id}/derive-v-prev`);
+                const { rows } = await requestJson<{ rows: SavedSlotRow[] }>(`/api/videos/${video.id}/derive-prev`);
                 await slotSaved(draft, [{ draft_id: draft.id, verdict: "SLOTS", ...row }, ...rows]);
               } catch (cause) {
-                setError(cause instanceof Error ? cause.message : "Không thể đồng bộ V và Prev sau khi đổi thực thể.");
+                setError(cause instanceof Error ? cause.message : "Không thể đồng bộ Prev từ C sau khi đổi thực thể.");
                 await slotSaved(draft, [{ draft_id: draft.id, verdict: "SLOTS", ...row }]);
               }
             }} />
@@ -259,7 +257,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
             setAssignment((current) => current?.status === "pending" ? { ...current, status: "in_progress" } : current);
             setMessage(`Đã lưu câu ${draft.qgroup}.`); setError("");
           }} onError={setError} />)}
-        {ready && <button type="button" disabled={busy || !label || done !== 9 || !assignment || assignment.status === "completed"}
+        {ready && <button type="button" disabled={busy || !label || done !== GROUP_CODES.length || !assignment || assignment.status === "completed"}
           onClick={complete} className={`self-end rounded-md border border-green bg-green px-5 py-2.5 text-sm font-semibold text-black
             transition-colors hover:bg-green/85 disabled:cursor-not-allowed disabled:border-border-strong disabled:bg-surface-2
             disabled:text-foreground/60 max-sm:self-stretch ${FOCUS}`}>
@@ -430,12 +428,12 @@ function DerivedSummaryCard({ draft }: { draft: HostedDraft }) {
       <span className="rounded border border-accent/60 bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">N</span>
       <div className="min-w-0"><div className="text-base font-semibold">{draft.group_name}</div>
         <div className={QUESTION}>{draft.question}</div></div>
-      <span className="ml-auto text-xs text-green">{draft.generated_answer ? "Tự tổng hợp · đã hoàn tất" : "Tự tổng hợp sau 8 nhóm"}</span>
+      <span className="ml-auto text-xs text-green">{draft.generated_answer ? "Tự tổng hợp · đã hoàn tất" : `Tự tổng hợp sau ${GROUP_CODES.length - 1} nhóm`}</span>
     </header>
     <div className="px-4 py-3">
       {draft.generated_answer
         ? <p className="whitespace-pre-wrap text-sm leading-relaxed">{draft.generated_answer}</p>
-        : <p className="text-sm text-muted">N sẽ tự sinh và tự hoàn tất sau khi lưu đủ 8 nhóm còn lại.</p>}
+        : <p className="text-sm text-muted">N sẽ tự sinh và tự hoàn tất sau khi lưu đủ {GROUP_CODES.length - 1} nhóm còn lại.</p>}
       <p className="mt-2 text-xs text-muted">N được tổng hợp từ nhãn của bạn; đây không phải nhãn độc lập để tính độ đồng thuận.</p>
     </div>
   </article>;

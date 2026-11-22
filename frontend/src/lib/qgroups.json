@@ -24,12 +24,6 @@
     "keyframes": true
   },
   {
-    "code": "V",
-    "name": "Vi phạm",
-    "question": "Có hành vi vi phạm quy tắc giao thông nào quan sát được không? Nếu có, nêu rõ bên nào vi phạm và vi phạm điều gì.",
-    "keyframes": true
-  },
-  {
     "code": "O",
     "name": "Hậu quả",
     "question": "Hậu quả của va chạm là gì? Nêu mức độ hư hỏng phương tiện và tình trạng người liên quan, chỉ trong phạm vi quan sát được.",

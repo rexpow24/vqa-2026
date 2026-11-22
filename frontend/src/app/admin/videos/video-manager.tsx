@@ -82,7 +82,7 @@ export function VideoManager({ rows: videos, total, query }: { rows: VideoRow[];
       }} className="mt-3 rounded bg-accent px-3 py-1.5 text-sm text-white disabled:opacity-40">Thêm video</button>
     </section>
     <section className="rounded-md border border-border bg-surface p-4">
-      <h3 className="mb-2 font-medium">Tải lên 9 câu hỏi và trả lời</h3>
+      <h3 className="mb-2 font-medium">Tải lên 8 câu hỏi và trả lời</h3>
       <p className="mb-3 text-xs text-muted">CSV UTF-8 gồm video_id,qgroup,question,answer,difficulty,event_label. Nhãn tham chiếu chỉ admin xem. Không thể thay bản nháp khi đã có người gán nhãn.</p>
       <div className="flex flex-wrap items-end gap-3">
         <label className="flex flex-col gap-1 text-sm">Video (trong trang đang xem)<select value={videoId} onChange={(event) => setVideoId(event.target.value)} className="max-w-72 rounded border border-border bg-background px-2 py-1.5">
@@ -114,7 +114,7 @@ export function VideoManager({ rows: videos, total, query }: { rows: VideoRow[];
         <Link href={`/annotate/${video.id}`} className="ml-auto text-accent">Xem video</Link></div>
       <div className="mt-1 break-all text-xs text-muted">Video ID: <code>{video.id}</code> · Drive ID: {video.drive_file_id}</div>
       <div className="mt-1 text-xs text-muted">
-        <span className={video.drafts === 9 ? "" : "text-amber"}>Bản nháp: {video.drafts}/9</span>
+        <span className={video.drafts === QGROUPS.length ? "" : "text-amber"}>Bản nháp: {video.drafts}/{QGROUPS.length}</span>
         {video.reference && <span className="ml-2">· Nhãn tham chiếu: {video.reference}</span>}
       </div>
       <div className="mt-1 text-xs text-muted">{video.assignees.join(" · ") || "Chưa phân công"}</div>

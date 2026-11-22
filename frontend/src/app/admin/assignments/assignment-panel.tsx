@@ -274,7 +274,7 @@ export function AssignmentPanel({ overview, strata, slotRanges }: {
     <section className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
       <h3 className="font-medium">4. Dạng trả lời</h3>
       <p className="text-xs text-muted">
-        Dạng ô: 7 nhóm S, E, C, V, O, R, Prev trả lời bằng cách chọn ô theo codebook; N và Attr vẫn là câu chữ. Dạng chữ là form hiện tại.
+        Dạng ô: 6 nhóm S, E, C, O, R, Prev trả lời bằng cách chọn ô theo codebook; N và Attr vẫn là câu chữ. Dạng chữ là form hiện tại.
         Chỉ đổi được video người đó chưa trả lời câu nào và chưa khai báo thực thể; video đã bắt đầu làm được bỏ qua và đếm lại. Video dạng ô không vào tính độ khó, thống nhất đáp án và độ đồng thuận.
       </p>
       <div className="flex flex-wrap items-end gap-3">

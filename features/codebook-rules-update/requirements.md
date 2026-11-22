@@ -9,12 +9,13 @@
 | C loại sự kiện và đối tượng | `C.v3` có `event_type.unclear` và ô `object` optional; form có thể hiển thị ô này | Bỏ lựa chọn “không rõ”; giữ ô đối tượng |
 | C kiểu xung đột hiển thị | UI slot option dùng layout tự xuống dòng, không có lớp cắt chữ; K14 trong JSON hiện là “Băng ngang đường giữa đoạn” | Cần cập nhật nhãn K14 theo wording đầy đủ đã yêu cầu trước đó: “Băng ngang đường giữa đoạn, không ở giao lộ” |
 | C lưu câu trả lời | `save_slot_answers` ở migration `20261116100000_slot_data_model.sql` giới hạn 1-2 rows; route annotation có thể gửi thêm các câu dẫn xuất C/V/Prev/R | RPC có thể từ chối payload hợp lệ nhiều hơn hai hàng và route hiển thị `invalid_slots` |
-| V vi phạm bổ sung | `V.v8` vẫn có các lựa chọn cần bỏ; `form.ts` ép `additional_behavior` thành required khi đã chọn người vi phạm bổ sung | UI trái với tính optional trong codebook |
+| V và thẩm quyền gán nhãn | Annotator không có thẩm quyền kết luận hành vi vi phạm pháp luật | Bỏ V khỏi tập câu hỏi mới; giữ các hàng V cũ trong database để bảo toàn dữ liệu lịch sử |
+| Prev suy từ C | `Prev.v3` khai báo suy ra từ V và còn hành động phụ | Tạo `Prev.v4`, suy ra từ C theo mapping có điều kiện, chỉ một hành động chính |
 | Phiên bản codebook | Các phiên bản hiện hành đã được đóng băng và được nhân đôi giữa `codebook/` và `frontend/src/lib/codebook/` | Tạo phiên bản mới, không sửa nội dung phiên bản cũ |
 
 ## Assumptions
 
-- `verified`: phiên bản hiện hành là S.v2, E.v3, C.v3, V.v8 theo `frontend/src/lib/codebook/index.ts` và các JSON đang được import.
+- `verified`: phiên bản hiện hành trước thay đổi là S.v2, E.v3, C.v3 và V.v8 theo codebook lúc mở feature; các phiên bản mới hơn được thêm bằng migration tiếp theo.
 - `verified`: codebook được lưu cùng migration SQL; DB validation và trigger cần khớp với JSON và form.
 - `verified`: `additional_behavior` bị ép bắt buộc tại `frontend/src/lib/codebook/form.ts`, dù định nghĩa JSON optional.
 - `verified`: ô C `object` đang được dùng để tạo câu ghép và làm nguồn cho R; giữ nguyên ô này và quy tắc tự điền/chọn hiện hành.
@@ -38,6 +39,10 @@
 - [ ] Lưu C cùng các câu trả lời dẫn xuất có thể cần thiết trong một giao dịch thành công trên Supabase local; payload sai không ghi dở dang.
 - [ ] V không còn ba lựa chọn đã nêu; nhãn lựa chọn còn lại là “quay đầu sai quy định”; hành vi vi phạm bổ sung không bắt buộc.
 - [ ] Cập nhật phiên bản codebook không làm thay đổi các JSON phiên bản cũ; bản gốc và bản frontend khớp nhau.
+- [ ] Tập câu hỏi mới có đúng 8 nhóm S, E, N, C, O, R, Attr, Prev; không tạo hoặc sửa câu V mới.
+- [ ] API từ chối ghi annotation V; dữ liệu V lịch sử vẫn đọc được và không bị migration xóa.
+- [ ] Prev.v4 được suy ra trực tiếp từ C, có một hành động chính mỗi bên, bỏ hành động phụ và không gán kết luận vi phạm.
+- [ ] K18 và các trường hợp thiếu actor/ngữ cảnh cần thiết cho kết quả “Không thể xác định từ tình huống C.”
 - [ ] Làm mới trang sau khi lưu vẫn đọc được dữ liệu đã lưu; lưu lần hai cập nhật cùng câu trả lời, không tạo bản ghi trùng.
 - [ ] Chạy các bài kiểm tra liên quan, lint/build frontend và migration reset trên Supabase local thành công.
 - [ ] Lưu ảnh chụp form thật từ app local vào `artifacts/`.

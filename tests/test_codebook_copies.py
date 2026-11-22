@@ -15,7 +15,7 @@ SOURCE = ROOT / "codebook"
 COPY = ROOT / "frontend" / "src" / "lib" / "codebook"
 GROUPS = ["S", "E", "C", "V", "O", "R", "Prev"]
 # Every frozen codebook file, v1 and later.
-NAMES = [f"{g}.v1.json" for g in GROUPS] + ["S.v2.json", "C.v2.json", "V.v2.json", "V.v3.json", "V.v4.json", "V.v5.json", "V.v6.json", "Attr.v1.json", "E.v2.json", "C.v3.json", "E.v3.json", "R.v2.json", "Prev.v2.json", "V.v7.json", "V.v8.json", "Prev.v3.json", "S.v3.json", "E.v4.json", "C.v4.json", "V.v9.json"]
+NAMES = [f"{g}.v1.json" for g in GROUPS] + ["S.v2.json", "C.v2.json", "V.v2.json", "V.v3.json", "V.v4.json", "V.v5.json", "V.v6.json", "Attr.v1.json", "E.v2.json", "C.v3.json", "E.v3.json", "R.v2.json", "Prev.v2.json", "V.v7.json", "V.v8.json", "Prev.v3.json", "S.v3.json", "E.v4.json", "C.v4.json", "V.v9.json", "Prev.v4.json"]
 
 
 def load(group):
@@ -143,6 +143,23 @@ def test_e_v3_applies_entity_taxonomy_and_required_car_details():
         "clothing_color.white_gray_silver", "clothing_color.black", "clothing_color.red",
         "clothing_color.blue_green", "clothing_color.yellow",
     }
+
+
+def test_prev_v4_is_derived_from_c_and_excludes_legal_violation_and_secondary_action():
+    book = json.loads((SOURCE / "Prev.v4.json").read_text(encoding="utf-8"))
+    cells = {cell["id"]: cell for cell in book["cells"]}
+    options = {option["id"] for option in cells["main_action"]["options"]}
+    assert book["inferred_from"] == "C"
+    assert "extra_action" not in cells
+    assert "main_action.wear_helmet" not in options
+    assert {"main_action.overtake_safely", "main_action.check_surroundings", "main_action.use_pedestrian_path"} <= options
+
+
+def test_remove_v_migration_seeds_prev_v4_exact_bytes():
+    migration = ROOT / "supabase" / "migrations" / "20261122160000_remove_v_from_active_workflow.sql"
+    seeded = dict(re.findall(r"\('([^']+)', 'Prev', 4, \$cb\$.*?\$cb\$::jsonb,\s*'([0-9a-f]{64})'",
+                             migration.read_text(encoding="utf-8"), re.S))
+    assert seeded.get("Prev.v4") == hashlib.sha256((SOURCE / "Prev.v4.json").read_bytes()).hexdigest()
 
 
 def test_new_codebook_rules_keep_c_object_and_apply_requested_option_changes():

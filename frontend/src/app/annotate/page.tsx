@@ -90,7 +90,7 @@ export default async function AnnotatePage({ searchParams }: PageProps<"/annotat
           <span className="w-14 shrink-0 font-semibold tabular-nums text-accent">{`#${row.seq}`}</span>
           <span className="min-w-0 flex-1 truncate">{row.filename}</span>
           {row.agreement && <span className="rounded border border-accent/50 px-1.5 text-xs text-accent">Agreement</span>}
-          <span className="tabular-nums text-xs text-muted">{Number(row.duration_s).toFixed(1)}s · {Number(row.answered)}/9 câu</span>
+          <span className="tabular-nums text-xs text-muted">{Number(row.duration_s).toFixed(1)}s · {Number(row.answered)}/8 câu</span>
           <span className={`w-28 text-right text-xs ${STATUS_CLASS[row.status] ?? "text-muted"}`}>{STATUS_LABEL[row.status] ?? row.status}</span>
         </Link>
       </li>)}

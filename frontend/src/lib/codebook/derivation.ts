@@ -101,3 +101,80 @@ export function derivePrevention(violation: Slots, entities: Entity[]): Slots {
     party: { entity: actor }, main_action: { option: [...actions][0] },
   })) };
 }
+
+const entityType = (entities: Entity[], key: string | undefined) => {
+  const found = entities.find((item) => item.key === key);
+  return found ? option(found.cells.type) : undefined;
+};
+
+const uncertainPrevention = (): Slots => ({ parties: [{ party: { option: "party.unclear" } }] });
+
+/**
+ * Infer a preventive action from the observed C scenario, not from a legal violation.
+ * The mapping is intentionally conservative where a road user's role or cause is unclear.
+ */
+export function derivePreventionFromCause(cause: Slots | null | undefined, entities: Entity[]): Slots {
+  if (!cause) return uncertainPrevention();
+  const code = cCode(cause);
+  const action = option(cause.action);
+  const subject = cause.subject as SlotValue | undefined;
+  const object = cause.object as SlotValue | undefined;
+  const nameFor = (key: string | undefined) => entities.some((item) => item.key === key) ? key : undefined;
+  const one = (actor: string | undefined, prevention: string): Slots => actor
+    ? { parties: [{ party: { entity: actor }, main_action: { option: prevention } }] }
+    : uncertainPrevention();
+  const both = (keys: (string | undefined)[], prevention: string): Slots => {
+    const actors = [...new Set(keys.map(nameFor).filter((key): key is string => !!key))].sort();
+    return actors.length === 2 ? { parties: actors.map((actor) => ({
+      party: { entity: actor }, main_action: { option: prevention },
+    })) } : uncertainPrevention();
+  };
+  const subjectKey = nameFor(subject?.entity);
+  const objectKey = nameFor(object?.entity);
+  const subjectIsPedestrian = entityType(entities, subjectKey) === "type.pedestrian";
+  const objectIsPedestrian = entityType(entities, objectKey) === "type.pedestrian";
+  const subjectIsAnimal = entityType(entities, subjectKey) === "type.animal";
+  const objectIsAnimal = entityType(entities, objectKey) === "type.animal";
+
+  if (subject?.option === "subject.both") {
+    const actors = (Array.isArray(cause.parties) ? cause.parties : []) as Slots[];
+    const keys = actors.map((party) => (party.party as SlotValue | undefined)?.entity);
+    if (code === "K11") return both(keys, "main_action.slow_down");
+    return uncertainPrevention();
+  }
+  if (!subjectKey) return uncertainPrevention();
+
+  switch (code) {
+    case "K01":
+    case "K03": return one(subjectKey, "main_action.keep_distance");
+    case "K02": return one(objectKey, "main_action.keep_distance");
+    case "K04": return one(subjectKey, "main_action.change_lane_safely");
+    case "K05": return one(subjectKey, "main_action.overtake_safely");
+    case "K06": return one(subjectKey, "main_action.observe_and_yield");
+    case "K07": return one(subjectKey, "main_action.check_surroundings");
+    case "K08": return one(subjectKey, action === "action.k08.encroach_overtaking"
+      ? "main_action.overtake_safely" : "main_action.stay_in_lane");
+    case "K09": return one(subjectKey, "main_action.stay_in_lane");
+    case "K10": return one(subjectKey, "main_action.observe_and_yield");
+    case "K11": return objectKey ? both([subjectKey, objectKey], "main_action.slow_down")
+      : one(subjectKey, "main_action.slow_down");
+    case "K12":
+    case "K13": return one(subjectKey, "main_action.observe_and_yield");
+    case "K14":
+      if (subjectIsPedestrian) return one(subjectKey, "main_action.stop_and_look");
+      if (objectIsPedestrian) return one(subjectKey, "main_action.slow_down");
+      return uncertainPrevention();
+    case "K15":
+      if (subjectIsPedestrian) return one(subjectKey, action === "action.k15.along_road"
+        ? "main_action.use_pedestrian_path" : "main_action.stop_and_look");
+      if (objectIsPedestrian) return one(subjectKey, "main_action.slow_down");
+      return uncertainPrevention();
+    case "K16":
+      if (subjectIsAnimal) return one(objectKey, "main_action.slow_down");
+      if (objectIsAnimal) return one(subjectKey, "main_action.slow_down");
+      return uncertainPrevention();
+    case "K17": return one(subjectKey, "main_action.check_surroundings");
+    case "K18":
+    default: return uncertainPrevention();
+  }
+}

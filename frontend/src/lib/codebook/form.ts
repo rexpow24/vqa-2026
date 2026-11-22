@@ -12,13 +12,13 @@
 
 import { getCodebook, currentVersion, type Codebook, type CodebookCell, type CodebookOption } from "./index.ts";
 import { compose, type Entity, type SlotValue, type Slots } from "./compose.ts";
-import { derivePrevention, deriveViolation } from "./derivation.ts";
+import { derivePreventionFromCause, deriveViolation } from "./derivation.ts";
 
 export type Cells = Record<string, SlotValue>;
 export type PartyState = { entity?: string; option?: string; cells: Cells };
 export type FormState = { cells: Cells; parties: PartyState[]; refs: string[] };
 /** `entities`: the annotator's saved E list; `cause`: the saved C cells, which R and O read. */
-export type FormContext = { entities: Entity[]; cause?: Slots | null; violation?: Slots | null };
+export type FormContext = { entities: Entity[]; cause?: Slots | null };
 
 /**
  * One visible input. `scope` is "outer" or a party index; `kind` is a cell
@@ -317,7 +317,7 @@ export function stateFromSlots(qgroup: string, slots: Slots | null | undefined, 
 /** Keep C-derived V fields synchronized while preserving the annotator's separately entered additions. */
 export function prefillFromCause(qgroup: string, context: FormContext, saved?: Slots | null): FormState | null {
   if (qgroup === "V") return stateFromSlots("V", deriveViolation(context.cause, context.entities, saved), context);
-  if (qgroup === "Prev") return stateFromSlots("Prev", derivePrevention(context.violation ?? {}, context.entities), context);
+  if (qgroup === "Prev") return stateFromSlots("Prev", derivePreventionFromCause(context.cause, context.entities), context);
   return null;
 }
 

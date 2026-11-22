@@ -23,7 +23,7 @@ export default async function VideosPage({ searchParams }: PageProps<"/admin/vid
   if (videos.error) throw new Error(videos.error.message);
   const ids = (videos.data ?? []).map((video) => video.id);
   const [drafts, references, assignments] = ids.length ? await Promise.all([
-    admin.from("video_drafts").select("video_id").in("video_id", ids),
+    admin.from("video_drafts").select("video_id").neq("qgroup", "V").in("video_id", ids),
     admin.from("video_reference_labels").select("video_id,difficulty,event_label").in("video_id", ids),
     admin.from("video_assignments").select("video_id,status,user_profiles(name)").in("video_id", ids),
   ]) : [{ data: [], error: null }, { data: [], error: null }, { data: [], error: null }];

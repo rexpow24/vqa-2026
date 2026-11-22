@@ -190,7 +190,7 @@ test("Prev does not repeat \"và\" when an action already holds one", () => {
 });
 
 test("Prev with an unclear party cannot be determined", () => {
-  assert.equal(compose("Prev", { parties: [{ party: o("party.unclear") }] }, { entities: ENTITIES }), "Không thể xác định.");
+  assert.equal(compose("Prev", { parties: [{ party: o("party.unclear") }] }, { entities: ENTITIES }), "Không thể xác định từ tình huống C.");
 });
 
 test("C with both parties uses the \"Cả A và B\" pattern, parties in key order", () => {

@@ -1,4 +1,4 @@
-// The nine question groups, in the one order the whole system agrees on.
+// The eight active question groups, in the one order the whole system agrees on.
 //
 // These used to be re-declared in six files -- three under src/ and three
 // scripts -- and the admin CSV template kept its prompts in a *separate*
@@ -7,11 +7,10 @@
 // prompt now travel together in qgroups.json, which the scripts read as JSON
 // too, so there is exactly one place to edit.
 //
-// The order is not cosmetic: the database enforces
-// `qgroup in ('S','E','N','C','V','O','R','Attr','Prev')` and the labelling
-// page sorts drafts by it. Changing codes here needs a migration.
+// V remains in the database only for historical records and is no longer
+// included in active assignments. New imports and the UI use this list.
 
-import data from "./qgroups.json";
+import data from "./qgroups.json" with { type: "json" };
 
 // `keyframes` marks the groups whose answer rests on one event (C, V, Attr):
 // annotators mark exactly two frames there, the event's start and end.
@@ -24,7 +23,7 @@ export const GROUP_CODES: readonly string[] = QGROUPS.map((group) => group.code)
 export const GROUP_NAMES: Readonly<Record<string, string>> =
   Object.fromEntries(QGROUPS.map((group) => [group.code, group.name]));
 
-/** Whether annotators must mark the start and end frames for this group. */
+/** Whether annotators must mark the start and end frames for this active group. */
 export function needsKeyframes(code: string): boolean {
   return QGROUPS.some((group) => group.code === code && group.keyframes);
 }

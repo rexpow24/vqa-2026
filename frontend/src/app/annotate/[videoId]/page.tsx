@@ -18,7 +18,7 @@ export default async function VideoPage({ params }: Context) {
     supabase.from("video_assignments").select("id,status,completed_at,answer_format").eq("video_id", videoId).eq("annotator_id", profile.id).maybeSingle(),
     supabase.from("video_labels").select("event_label").eq("video_id", videoId).eq("annotator_id", profile.id).maybeSingle(),
     supabase.from("video_drafts").select("id,qgroup,group_name,question,answer,source_kind,truncated,completion_tokens,latency_ms,prompt_version,frame_times_s,predicted_keyframes_s")
-      .eq("video_id", videoId),
+      .eq("video_id", videoId).neq("qgroup", "V"),
     // RLS returns a decision only to the annotators it was decided between.
     supabase.from("label_adjudications").select("event_label").eq("video_id", videoId).maybeSingle(),
   ]);

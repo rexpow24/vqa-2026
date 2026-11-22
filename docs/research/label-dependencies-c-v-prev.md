@@ -119,3 +119,11 @@ Annotator có thể bổ sung nhiều tag V quan sát rõ bằng cách gắn ch�
 Prev được tạo từ V theo bảng ánh xạ được ghi trong [quy tắc suy ra V và Prev](v-prev-derivation-evidence.md); trường hợp không có một hành động duy nhất được lưu thành không thể xác định.
 
 Đây là quyết định thiết kế dự án, không phải kết luận được xác nhận bởi các nguồn nghiên cứu đã nêu.
+
+Ngày 22/11/2026, trưởng dự án quyết định bỏ V khỏi luồng gán nhãn chính và nghiên cứu suy ra Prev trực tiếp từ C.
+
+Lý do là annotator không có thẩm quyền kết luận vi phạm pháp luật; các bản ghi V lịch sử vẫn được bảo toàn.
+
+Nguồn bên ngoài hỗ trợ việc dùng tình huống/xung đột để chẩn đoán an toàn và đề xuất biện pháp, nhưng không xác thực ánh xạ một-một cho mọi mã C.
+
+Phần căn cứ, các điều luật Việt Nam liên quan và giới hạn của giả định C → Prev được ghi tại [C-to-Prev derivation evidence](c-prev-derivation-evidence.md).

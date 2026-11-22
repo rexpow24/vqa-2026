@@ -18,9 +18,9 @@ export type SavedSlotRow = Partial<SlotDraft> & { draft_id: string };
 type Saved = SavedSlotRow & { also?: SavedSlotRow[] };
 
 /**
- * The slot form of one question (S, C, V, O, R, Attr, Prev). Starts empty
- * (decision 3 of the slot data model: no prefill from the draft), except V,
- * which a never-saved V takes from the saved C answer (codebook v2, F-V);
+ * The slot form of one question (S, C, O, R, Attr, Prev). Starts empty
+ * (decision 3 of the slot data model: no prefill from the draft), except Prev,
+ * which is derived from the saved C answer;
  * saves with the button, and shows the sentence the server composed. A
  * refused save keeps every choice. An answer saved with an older codebook
  * opens with what the current one still has and saves with the current one (F-v1).
@@ -36,17 +36,11 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const [state, setState] = useState(() => stateFromSlots(qgroup, savedSlots, context));
   // O starts with the C pair; until the annotator touches it, it follows C as C is saved.
   const [refsTouched, setRefsTouched] = useState(savedSlots !== null);
-  // V's core and Prev are always derived from their source group; only V's extra observed tags are editable.
-  const derived = qgroup === "V" || qgroup === "Prev" ? prefillFromCause(qgroup, context, savedSlots) : null;
-  const prefill = qgroup === "V" || qgroup === "Prev" ? derived : savedSlots ? null : prefillFromCause(qgroup, context);
+  // Prev is derived from C and cannot be manually edited.
+  const derived = qgroup === "Prev" ? prefillFromCause(qgroup, context, savedSlots) : null;
+  const prefill = qgroup === "Prev" ? derived : savedSlots ? null : prefillFromCause(qgroup, context);
   const [touched, setTouched] = useState(false);
-  const form = qgroup === "V" && derived ? {
-    ...state,
-    cells: { ...state.cells, result: derived.cells.result, violator: derived.cells.violator,
-      behavior: derived.cells.behavior, additional_violator: state.cells.additional_violator,
-      additional_behavior: state.cells.additional_behavior },
-    parties: derived.parties,
-  } : qgroup === "Prev" && derived ? derived : prefill && !touched ? prefill
+  const form = qgroup === "Prev" && derived ? derived : prefill && !touched ? prefill
     : qgroup === "O" && !refsTouched ? { ...state, refs: causePair(context.cause) } : state;
   const prefilled = prefilledKeys(qgroup, form, prefill, context);
   const savedMarks = draft.human_keyframes_s.map(Number);
@@ -57,7 +51,7 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const [saving, setSaving] = useState(false);
   const [tried, setTried] = useState(false);
   const [serverError, setServerError] = useState<SaveError | null>(null);
-  const needsMarks = needsKeyframes(qgroup) && qgroup !== "V";
+  const needsMarks = needsKeyframes(qgroup);
   // The stored sentence is a hand edit when it differs from what the stored cells compose to.
   const [edit, setEdit] = useState<string | null>(() => {
     if (!savedSlots || !draft.edited_answer) return null;
@@ -126,7 +120,7 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     const old = item.scope === "outer" && !currentValue(form, item) ? stale.cells[item.cellId] : undefined;
     return [item.note, old && `Bản cũ chọn "${old}"; lựa chọn này đã bỏ ở bản mới, chọn lại.`].filter(Boolean).join(" ") || undefined;
   };
-  const badgeOf = (item: Field) => item.readOnly && (qgroup === "V" || qgroup === "Prev")
+  const badgeOf = (item: Field) => item.readOnly && qgroup === "Prev"
     ? "tự suy ra, không sửa" : prefilled.has(item.key) ? "điền sẵn từ C" : undefined;
   const outer = visible.filter((item) => item.scope === "outer");
   const scopes = [...new Set(visible.filter((item) => item.scope !== "outer").map((item) => item.scope as number))];
@@ -180,10 +174,8 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     <div className="flex flex-col gap-3 border-t border-border px-4 py-3">
       {needsEntities && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
         Chưa có bên nào: khai báo và lưu các bên ở nhóm E trước.</p>}
-      {qgroup === "V" && <p className="rounded border border-accent/50 bg-accent/10 px-3 py-2 text-xs text-foreground/85">
-        Kết quả, bên và hành vi chính được suy ra từ C theo quy tắc thận trọng; chỉ được thêm hành vi quan sát rõ và gắn với một bên.</p>}
       {qgroup === "Prev" && <p className="rounded border border-accent/50 bg-accent/10 px-3 py-2 text-xs text-foreground/85">
-        Hành động phòng tránh được sinh từ V; nếu không có ánh xạ duy nhất, hệ thống ghi &quot;không thể xác định&quot;.</p>}
+        Hành động phòng tránh được suy ra trực tiếp từ tình huống C; nếu thiếu căn cứ về bên hoặc hành động, hệ thống ghi &quot;không thể xác định&quot;.</p>}
       {savedSlots && draft.codebook_version !== version && <p
         className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
         Câu này lưu bằng codebook {draft.codebook_version}; bấm Lưu để lưu lại bằng {version}.

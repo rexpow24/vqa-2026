@@ -1,0 +1,115 @@
+{
+  "group": "Prev",
+  "version": 4,
+  "frozen_on": "2026-11-22",
+  "source": "docs/guidelines/Prev-phong-ngua.md",
+  "question": "Từ tình huống và hành động đã ghi ở nhóm C, bên nào nên làm gì để phòng tránh xung đột?",
+  "templates": [
+    {
+      "case": "Một bên",
+      "text": "[Bên] nên [2]."
+    },
+    {
+      "case": "Cả hai bên",
+      "text": "[A] nên [2 của A]; [B] nên [2 của B]."
+    },
+    {
+      "case": "C không đủ căn cứ",
+      "text": "Không thể xác định từ tình huống C."
+    }
+  ],
+  "cells": [
+    {
+      "id": "party",
+      "label": "Bên",
+      "required": true,
+      "from_entities": true,
+      "auto_fill": "Tự suy ra từ nhóm C; annotator không sửa.",
+      "options": [
+        {
+          "id": "party.both",
+          "label": "cả hai bên"
+        },
+        {
+          "id": "party.unclear",
+          "label": "không rõ"
+        }
+      ],
+      "read_only": true
+    },
+    {
+      "id": "main_action",
+      "label": "Hành động chính",
+      "required": true,
+      "per_party": true,
+      "options": [
+        {
+          "id": "main_action.slow_down",
+          "label": "giảm tốc"
+        },
+        {
+          "id": "main_action.keep_distance",
+          "label": "giữ khoảng cách an toàn"
+        },
+        {
+          "id": "main_action.observe_and_yield",
+          "label": "quan sát và nhường đường"
+        },
+        {
+          "id": "main_action.change_lane_safely",
+          "label": "chỉ chuyển làn khi an toàn"
+        },
+        {
+          "id": "main_action.stay_in_lane",
+          "label": "đi đúng phần đường"
+        },
+        {
+          "id": "main_action.steady_steering",
+          "label": "giữ ổn định hướng lái"
+        },
+        {
+          "id": "main_action.stop_and_look",
+          "label": "dừng quan sát trước khi băng qua"
+        },
+        {
+          "id": "main_action.signal",
+          "label": "bật xi nhan xin đường"
+        },
+        {
+          "id": "main_action.avoid_blind_spot",
+          "label": "tránh điểm mù xe lớn"
+        },
+        {
+          "id": "main_action.obey_signals",
+          "label": "chấp hành đèn tín hiệu"
+        },
+        {
+          "id": "main_action.check_vehicle",
+          "label": "kiểm tra xe trước khi đi"
+        },
+        {
+          "id": "main_action.overtake_safely",
+          "label": "chỉ vượt khi đủ điều kiện an toàn"
+        },
+        {
+          "id": "main_action.check_surroundings",
+          "label": "quan sát xung quanh trước khi thao tác"
+        },
+        {
+          "id": "main_action.use_pedestrian_path",
+          "label": "đi trên lề hoặc vỉa hè nếu có"
+        },
+        {
+          "id": "main_action.other",
+          "label": "khác",
+          "free_text": true
+        }
+      ],
+      "read_only": true,
+      "auto_fill": "Tự suy ra từ nhóm C; annotator không sửa."
+    }
+  ],
+  "inferred_from": "C",
+  "read_only": true,
+  "derivation": "Tự sinh trực tiếp từ C theo quy tắc có điều kiện; nếu thiếu căn cứ để xác định bên hoặc hành động chính thì ghi không thể xác định."
+}

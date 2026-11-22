@@ -398,8 +398,8 @@ function composeOutcome(book: Codebook, slots: Slots, context: ComposeContext): 
 }
 
 /**
- * Prev: "[Bên] nên [2] (và [3])." per party, in key order, joined with a
- * semicolon; party.unclear is "C và Attr đều không rõ", a fixed sentence.
+ * Prev: one main action per party, ordered by entity key and joined with a
+ * semicolon; party.unclear is a fixed insufficient-evidence sentence.
  * party.both is never stored: the form sends it as two parties.
  */
 function composePrevention(book: Codebook, slots: Slots, context: ComposeContext): string {
@@ -407,7 +407,7 @@ function composePrevention(book: Codebook, slots: Slots, context: ComposeContext
   const parties = Array.isArray(slots.parties) ? slots.parties as Slots[] : [];
   const options = parties.map((party) => (party.party as SlotValue | undefined)?.option).filter(Boolean);
   if (options.length === 1 && options[0] === "party.unclear" && parties.length === 1) {
-    return templateText(book, "C và Attr đều không rõ");
+    return templateText(book, book.version >= 4 ? "C không đủ căn cứ" : "C và Attr đều không rõ");
   }
   if (parties.some((party) => (party.party as SlotValue | undefined)?.entity === undefined)) {
     throw new ComposeError("parties", "Mỗi bên của Prev là một bên đã khai báo ở E; \"không rõ\" là bên duy nhất.");

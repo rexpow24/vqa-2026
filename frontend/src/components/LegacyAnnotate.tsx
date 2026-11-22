@@ -304,7 +304,7 @@ export default function AnnotatePage() {
                   earlier reviewer's difficulty/event would anchor this
                   annotator to it, which is the same contamination the hidden
                   keyframe predictions exist to avoid. */}
-              <div className="text-xs text-muted">Nhãn của shot (1 cặp cho cả 9 câu)</div>
+              <div className="text-xs text-muted">Nhãn của shot (1 cặp cho cả 8 câu)</div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <LabelGroup
                   legend="Difficulty"

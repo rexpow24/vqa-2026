@@ -3,7 +3,8 @@ sequenceDiagram
     participant UI as Form Next.js
     participant API as API annotation
     participant DB as Supabase local
-    Annotator->>UI: Chọn slots S/E/C/V
+    Annotator->>UI: Chọn slots S/E/C
+    UI->>UI: Tự suy Prev từ C và E theo Prev.v4
     UI->>UI: Kiểm tra điều kiện và tạo preview
     Annotator->>UI: Lưu
     UI->>API: POST answer + entities

@@ -7,6 +7,7 @@ import {
   type FormContext, type FormState,
 } from "./form.ts";
 import { currentVersion, getCodebook } from "./index.ts";
+import { GROUP_CODES } from "../qgroups.ts";
 
 const entity = (key: string, cells: Record<string, string>) => ({
   key, cells: Object.fromEntries(Object.entries(cells).map(([cell, option]) => [cell, { option }])),
@@ -50,6 +51,58 @@ test("current rule codebooks add concrete, drop unclear C event, and retain C ob
   assert.ok(cause.cells.some((cell) => cell.id === "object"));
   assert.equal(cause.cells.find((cell) => cell.id === "conflict_type")!.options!.find((option) => option.id === "conflict_type.k14")!.label,
     "Băng ngang đường giữa đoạn, không ở giao lộ");
+});
+
+test("V is absent from new work and Prev.v4 is inferred from C", () => {
+  assert.deepEqual(GROUP_CODES, ["S", "E", "N", "C", "O", "R", "Attr", "Prev"]);
+  assert.equal(currentVersion("Prev"), "Prev.v4");
+  const book = getCodebook("Prev.v4")!;
+  assert.equal(book.inferred_from, "C");
+  assert.ok(!book.cells.some((cell) => cell.id === "extra_action"));
+  assert.ok(!book.cells.find((cell) => cell.id === "main_action")!.options!.some((option) => option.id === "main_action.wear_helmet"));
+});
+
+test("Prev derives one safe-distance action from a K01 scenario", () => {
+  const context: FormContext = { ...TWO, cause: {
+    subject: { entity: "B" }, object: { entity: "A" },
+    conflict_type: { option: "conflict_type.k01" }, action: { option: "action.k01.no_slowdown" },
+  } };
+  const state = prefillFromCause("Prev", context)!;
+  assert.deepEqual(buildSlots("Prev", state, context), { parties: [
+    { party: { entity: "B" }, main_action: { option: "main_action.keep_distance" } },
+  ] });
+  assert.equal(preview("Prev", buildSlots("Prev", state, context), context), "Xe máy màu đỏ nên giữ khoảng cách an toàn.");
+});
+
+test("Prev abstains for K18 and never infers a violation or blame", () => {
+  const context: FormContext = { ...TWO, cause: {
+    subject: { entity: "B" }, conflict_type: { option: "conflict_type.k18" },
+    action: { option: "action.k18.tire_blowout" },
+  } };
+  const state = prefillFromCause("Prev", context)!;
+  assert.deepEqual(buildSlots("Prev", state, context), { parties: [{ party: { option: "party.unclear" } }] });
+  assert.equal(preview("Prev", buildSlots("Prev", state, context), context), "Không thể xác định từ tình huống C.");
+});
+
+test("Prev uses pedestrian role in K14 and leaves it unclear when the road user is unknown", () => {
+  const crossingPedestrian: FormContext = { entities: [
+    entity("A", { type: "type.car", dashcam: "dashcam.yes" }),
+    entity("B", { type: "type.pedestrian" }),
+  ], cause: {
+    subject: { entity: "A" }, object: { entity: "B" },
+    conflict_type: { option: "conflict_type.k14" }, action: { option: "action.k14.left_to_right" },
+  } };
+  const state = prefillFromCause("Prev", crossingPedestrian)!;
+  assert.deepEqual(buildSlots("Prev", state, crossingPedestrian), { parties: [
+    { party: { entity: "A" }, main_action: { option: "main_action.slow_down" } },
+  ] });
+
+  const unknownRole: FormContext = { entities: TWO.entities, cause: {
+    subject: { entity: "B" }, object: { entity: "A" },
+    conflict_type: { option: "conflict_type.k14" }, action: { option: "action.k14.left_to_right" },
+  } };
+  const unclear = prefillFromCause("Prev", unknownRole)!;
+  assert.deepEqual(buildSlots("Prev", unclear, unknownRole), { parties: [{ party: { option: "party.unclear" } }] });
 });
 
 test("S names every missing required cell", () => {
@@ -169,7 +222,7 @@ test("R shows subject and object named after C, no object without one, nothing m
   assert.deepEqual(buildSlots("R", no, TWO), { has_aftermath: { option: "has_aftermath.no" } });
 });
 
-test("Prev.v3: one party, both parties with one action each, or unclear", () => {
+test("Prev.v4: one party, both parties with one action each, or unclear", () => {
   const one = fill("Prev", TWO, [["outer.party", { entity: "B" }], ["0.main_action", { option: "main_action.slow_down" }]]);
   assert.deepEqual(problems("Prev", one, TWO), {});
   assert.deepEqual(buildSlots("Prev", one, TWO),
@@ -184,7 +237,7 @@ test("Prev.v3: one party, both parties with one action each, or unclear", () => 
   const unclear = fill("Prev", TWO, [["outer.party", { option: "party.unclear" }]], both);
   assert.deepEqual(keys("Prev", unclear, TWO), ["outer.party"]);
   assert.deepEqual(buildSlots("Prev", unclear, TWO), { parties: [{ party: { option: "party.unclear" } }] });
-  assert.equal(preview("Prev", buildSlots("Prev", unclear, TWO), TWO), "Không thể xác định.");
+  assert.equal(preview("Prev", buildSlots("Prev", unclear, TWO), TWO), "Không thể xác định từ tình huống C.");
 });
 
 test("stored slots load back into the same form", () => {

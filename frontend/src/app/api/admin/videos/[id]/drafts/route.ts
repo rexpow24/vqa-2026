@@ -24,9 +24,9 @@ export async function POST(request: Request, context: Context) {
   } catch {
     return Response.json({ error: "CSV không hợp lệ hoặc không phải UTF-8." }, { status: 422 });
   }
-  if (parsed.length !== 9 || parsed.some((row) =>
+  if (parsed.length !== GROUPS.length || parsed.some((row) =>
     Object.keys(row).length !== COLUMNS.length || COLUMNS.some((column) => !(column in row)))) {
-    return Response.json({ error: "CSV cần đúng 9 dòng và các cột video_id,qgroup,question,answer,difficulty,event_label." }, { status: 422 });
+    return Response.json({ error: `CSV cần đúng ${GROUPS.length} dòng và các cột video_id,qgroup,question,answer,difficulty,event_label.` }, { status: 422 });
   }
   const seen = new Set<string>();
   let difficulty: string | null = null;
@@ -34,7 +34,7 @@ export async function POST(request: Request, context: Context) {
   for (const row of parsed) {
     if (row.video_id !== id || !GROUPS.includes(row.qgroup) || seen.has(row.qgroup) ||
         !row.question || !row.answer || row.question.length > 1000 || row.answer.length > 5000) {
-      return Response.json({ error: "video_id phải khớp; 9 nhóm không trùng và mỗi câu cần câu hỏi, câu trả lời." }, { status: 422 });
+      return Response.json({ error: `video_id phải khớp; ${GROUPS.length} nhóm không trùng và mỗi câu cần câu hỏi, câu trả lời.` }, { status: 422 });
     }
     seen.add(row.qgroup);
     const rowDifficulty = row.difficulty || null;
@@ -46,7 +46,7 @@ export async function POST(request: Request, context: Context) {
     }
     if (seen.size === 1) { difficulty = rowDifficulty; eventLabel = rowEvent; }
     else if (difficulty !== rowDifficulty || eventLabel !== rowEvent) {
-      return Response.json({ error: "Nhãn tham chiếu phải giống nhau ở cả 9 dòng." }, { status: 422 });
+      return Response.json({ error: `Nhãn tham chiếu phải giống nhau ở cả ${GROUPS.length} dòng.` }, { status: 422 });
     }
   }
   const rows = GROUPS.map((group) => {

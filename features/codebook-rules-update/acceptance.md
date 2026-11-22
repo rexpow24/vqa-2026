@@ -7,9 +7,9 @@
 | A3 | Xe máy/xe khách/xe tải/xe cứu thương/xe ba gác/loại xe khác cần màu; xe đạp/người đi bộ/động vật không có trường màu xe | Unit test entityCells/entityProblems và browser | E |
 | A4 | C không có event unclear; ô Đối tượng vẫn hiện/hoạt động; K01-K18 giữ nhãn đầy đủ, K14 không bị cắt | Kiểm tra C.v4 + screenshot browser | C |
 | A5 | Lưu C và answer dẫn xuất nhiều hơn hai rows thành công nguyên tử; payload không hợp lệ rollback | Migration đã áp dụng local; cần chạy RPC integration với gói C đầy đủ | Chưa xác minh bằng lượt UI |
-| A6 | V additional behavior optional và danh sách option khớp yêu cầu | Form test và codebook copy test | V |
-| A7 | Codebook JSON root/frontend/migration khớp và bản cũ không đổi | `python -m pytest tests/test_codebook_copies.py -q` + hash cũ | Versioning |
-| A8 | Refresh và lưu lần hai giữ một answer hiện hành cho cùng draft/annotator | Browser + query Supabase local | Second run/data owner |
-| A9 | Migration chạy trên Supabase và app production đăng nhập được | Migration đã chạy local và production; vtest đăng nhập production thành công rồi được xoá. S.v3/E.v4 có dữ liệu local; lượt production không tạo answer. C chưa lưu local vì fixture thiếu media/keyframes | Một phần |
-| A10 | Có ảnh thực tế của form local trong `artifacts/` | Mở PNG và kiểm tra ảnh chụp | Evidence |
-| A11 | Production deploy hoạt động và test data được dọn | Deployment Vercel READY; tài khoản vtest đã đăng xuất, Auth user/profile bị xoá, 0 assignment/annotation rows | PASS |
+| A6 | Tập câu mới bỏ V; API/DB từ chối ghi V mới; dữ liệu V cũ vẫn được giữ | CSV/form/API test và query DB trước/sau migration | V removal |
+| A7 | Prev.v4 suy trực tiếp từ C; chỉ có một hành động chính, không có hành động phụ hoặc kết luận vi phạm | Codebook copy test và unit test mapping | C → Prev |
+| A8 | Codebook JSON root/frontend/migration khớp và bản cũ không đổi | `python -m pytest tests/test_codebook_copies.py -q` + hash cũ | Versioning |
+| A9 | Refresh và lưu lần hai giữ một answer hiện hành cho cùng draft/annotator | Browser + query Supabase local | Second run/data owner |
+| A10 | Migration chạy trên Supabase local; N tự tổng hợp từ 7 nhóm nguồn; bản nháp V lịch sử không chặn assignment | Migration + UI + query local DB | Local E2E |
+| A11 | Có ảnh thực tế của form local trong `artifacts/` | Mở PNG và kiểm tra ảnh chụp | Evidence |
