@@ -11,12 +11,15 @@ th{background:var(--head)}
 code{background:var(--head);padding:1px 5px;border-radius:4px;font-size:.92em}
 a{color:var(--link)}
 .nav{font-size:.9em;color:var(--muted);margin-bottom:1.5em}
+figure img{display:block;max-width:100%;height:auto;margin:0 auto}
 </style></head><body><main><div class="nav"><a href="../00-DOC-TRUOC.html">&larr; Mục lục</a></div><h1>Hướng dẫn gán nhãn Nhóm E: thực thể (Entities)</h1>
 <ul>
 <li>Câu hỏi chuẩn: Loại phương tiện và màu sắc của các bên liên quan là gì?</li>
 <li>Chỉ khai báo các bên trực tiếp va chạm hoặc suýt va chạm. Phương tiện nền chỉ khai báo khi có tác động đến sự việc.</li>
 <li>Mỗi phương tiện hoặc bên liên quan là một thực thể riêng, có tên ổn định A, B, C xuyên suốt video; tên thực thể không phụ thuộc vào loại hoặc màu.</li>
-<li>Khi các bên liên quan cùng nhìn thấy và nhận diện được, gán tên theo vị trí từ trái sang phải; nếu nằm gần như cùng một cột thì bên ở trên tính trước. Nếu các bên không cùng xuất hiện rõ trong một khung hình, gán theo thứ tự lần đầu nhận diện được.</li>
+<li>Nếu trong các bên liên quan có đúng một xe có camera hành trình, gán xe đó là A. Gán các bên còn lại theo vị trí ở khung hình đầu tiên tất cả các bên liên quan cùng xuất hiện và nhận diện được: từ trái sang phải; nếu nằm gần như cùng một cột thì từ trên xuống dưới.</li>
+<li>Nếu không có xe camera hành trình, gán tất cả các bên theo vị trí ở khung hình đầu tiên tất cả các bên liên quan cùng xuất hiện và nhận diện được: từ trái sang phải; nếu nằm gần như cùng một cột thì từ trên xuống dưới.</li>
+<li>Nếu có nhiều hơn một xe camera hành trình, xếp các xe đó theo quy tắc trái-sang-phải, trên-xuống ở khung hình đầu tiên tất cả các bên cùng xuất hiện; xe camera đứng đầu là A, rồi gán các bên còn lại theo cùng thứ tự vị trí.</li>
 <li>Giữ nguyên tên khi các bên đổi vị trí, cắt ngang nhau, bị che khuất rồi xuất hiện lại. Dùng tính liên tục giữa các khung hình, quỹ đạo và vai trò trong sự kiện để theo dõi từng bên; không đổi tên theo vị trí mới.</li>
 <li>Hai thực thể cùng loại vẫn nhận hai tên riêng, ví dụ "xe máy A" và "xe máy B" hoặc "ô tô A" và "ô tô B". Không cần dựa vào màu để phân biệt chúng.</li>
 <li>Khi so giữa hai annotator, ghép thực thể theo danh tính của phương tiện trong video và tính liên tục theo thời gian, không chỉ theo loại hoặc màu. Nếu không thể xác định chắc chắn thực thể nào tương ứng, báo người phụ trách để phân xử thay vì đoán.</li>
@@ -24,6 +27,8 @@ a{color:var(--link)}
 <li>Mỗi ô chọn đúng một giá trị. Không nhìn rõ ô nào thì chọn "không rõ".</li>
 <li>Bên bị che hoàn toàn hoặc quá xa để nhận diện thì không khai báo; không khai báo được bên nào thì câu trả lời là "Không thể xác định".</li>
 </ul>
+<figure><img src="10-E-dinh-danh-A-B-C.png" alt="Sơ đồ gán A cho xe camera hành trình; nếu không có thì xếp trái sang phải, cùng cột xếp trên xuống dưới; giữ tên khi đổi vị trí."></figure>
+<figure><img src="11-E-nhan-dien-xe.png" alt="Sơ đồ gộp xe máy thường với xe máy điện, xe đạp thường với xe đạp điện; xe ba gác là nhãn riêng."></figure>
 <h2>Các ô (cho mỗi bên)</h2>
 <table>
 <thead>
@@ -36,7 +41,7 @@ a{color:var(--link)}
 <tbody>
 <tr>
 <td>1. Loại</td>
-<td>ô tô · xe khách · xe tải · xe cứu thương · xe máy, xe hai bánh · xe máy điện, xe đạp điện · xe ba gác · người đi bộ · động vật · khác</td>
+<td>ô tô · xe khách · xe tải · xe cứu thương · xe máy · xe đạp · xe ba gác · người đi bộ · động vật · khác</td>
 <td>Luôn điền</td>
 </tr>
 <tr>
@@ -57,18 +62,20 @@ a{color:var(--link)}
 <tr>
 <td>5. Màu áo người điều khiển</td>
 <td>như ô 4</td>
-<td>Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện và người đi bộ</td>
+<td>Chỉ với người đi bộ</td>
 </tr>
 <tr>
 <td>6. Số người trên xe</td>
 <td>1 · 2 · 3 trở lên</td>
-<td>Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện</td>
+<td>Chỉ với xe máy</td>
 </tr>
 </tbody>
 </table>
 <p>Ghi màu cụ thể chỉ khi nhìn rõ. Ban đêm, xa hoặc ngược sáng thì chọn "màu sáng" hoặc "màu tối".
 Không ghi loại xe chi tiết hơn bảng trên (không "tay ga", không "24-29 chỗ"), không ghi biển số, khuôn mặt.
-Xe container và xe bán tải ghi là xe tải.</p>
+Xe container và xe bán tải ghi là xe tải.
+Xe máy điện được ghi là xe máy; xe đạp điện được ghi là xe đạp.
+Xe ba gác là nhãn riêng cho xe ba bánh chở hàng.</p>
 <h2>Mẫu câu</h2>
 <table>
 <thead>
@@ -91,12 +98,12 @@ Xe container và xe bán tải ghi là xe tải.</p>
 <td>[1] [2] màu [4]</td>
 </tr>
 <tr>
-<td>Xe máy, xe hai bánh</td>
+<td>Xe máy</td>
 <td>Xe máy màu [4] do người mặc áo [5] điều khiển (chở [6] người, khi từ 2 trở lên)</td>
 </tr>
 <tr>
-<td>Xe máy điện, xe đạp điện</td>
-<td>Xe máy điện màu [4] do người mặc áo [5] điều khiển (chở [6] người, khi từ 2 trở lên)</td>
+<td>Xe đạp</td>
+<td>Xe đạp màu [4]</td>
 </tr>
 <tr>
 <td>Xe cứu thương, xe ba gác, khác</td>

@@ -3,7 +3,9 @@
 - Câu hỏi chuẩn: Loại phương tiện và màu sắc của các bên liên quan là gì?
 - Chỉ khai báo các bên trực tiếp va chạm hoặc suýt va chạm. Phương tiện nền chỉ khai báo khi có tác động đến sự việc.
 - Mỗi phương tiện hoặc bên liên quan là một thực thể riêng, có tên ổn định A, B, C xuyên suốt video; tên thực thể không phụ thuộc vào loại hoặc màu.
-- Khi các bên liên quan cùng nhìn thấy và nhận diện được, gán tên theo vị trí từ trái sang phải; nếu nằm gần như cùng một cột thì bên ở trên tính trước. Nếu các bên không cùng xuất hiện rõ trong một khung hình, gán theo thứ tự lần đầu nhận diện được.
+- Nếu trong các bên liên quan có đúng một xe có camera hành trình, gán xe đó là A. Gán các bên còn lại theo vị trí ở khung hình đầu tiên tất cả các bên liên quan cùng xuất hiện và nhận diện được: từ trái sang phải; nếu nằm gần như cùng một cột thì từ trên xuống dưới.
+- Nếu không có xe camera hành trình, gán tất cả các bên theo vị trí ở khung hình đầu tiên tất cả các bên liên quan cùng xuất hiện và nhận diện được: từ trái sang phải; nếu nằm gần như cùng một cột thì từ trên xuống dưới.
+- Nếu có nhiều hơn một xe camera hành trình, xếp các xe đó theo quy tắc trái-sang-phải, trên-xuống ở khung hình đầu tiên tất cả các bên cùng xuất hiện; xe camera đứng đầu là A, rồi gán các bên còn lại theo cùng thứ tự vị trí.
 - Giữ nguyên tên khi các bên đổi vị trí, cắt ngang nhau, bị che khuất rồi xuất hiện lại. Dùng tính liên tục giữa các khung hình, quỹ đạo và vai trò trong sự kiện để theo dõi từng bên; không đổi tên theo vị trí mới.
 - Hai thực thể cùng loại vẫn nhận hai tên riêng, ví dụ "xe máy A" và "xe máy B" hoặc "ô tô A" và "ô tô B". Không cần dựa vào màu để phân biệt chúng.
 - Khi so giữa hai annotator, ghép thực thể theo danh tính của phương tiện trong video và tính liên tục theo thời gian, không chỉ theo loại hoặc màu. Nếu không thể xác định chắc chắn thực thể nào tương ứng, đánh dấu để phân xử thay vì đoán.
@@ -25,10 +27,15 @@ Không dùng màu khác, không rõ, tối hoặc nâu; chỉ chọn màu trong 
 Xe máy điện được ghi là xe máy, xe đạp điện được ghi là xe đạp.
 Không khai báo màu áo người điều khiển xe máy hoặc xe đạp.
 Xe máy điện được ghi là xe máy; xe đạp điện được ghi là xe đạp.
+Xe ba gác là nhãn riêng cho xe ba bánh chở hàng, không gộp vào xe máy hoặc xe đạp.
 Không ghi loại xe chi tiết hơn bảng trên (không "tay ga", không "24-29 chỗ"), không ghi biển số, khuôn mặt.
 Xe container và xe bán tải ghi là xe tải.
 
-Quy tắc định danh theo thực thể và giữ ID xuyên suốt video phù hợp với cách các bộ dữ liệu theo dõi đa đối tượng định danh từng track độc lập với lớp đối tượng. Thứ tự trái-sang-phải và quy tắc đặt tên A/B/C là quy ước vận hành riêng của dự án; xem [ghi chú nghiên cứu về định danh thực thể E](../research/e-entity-identity.md).
+Quy tắc định danh theo thực thể và giữ ID xuyên suốt video phù hợp với cách các bộ dữ liệu theo dõi đa đối tượng định danh từng track độc lập với lớp đối tượng. Ưu tiên xe camera hành trình làm A và thứ tự trái-sang-phải, trên-xuống là quy ước vận hành riêng của dự án; xem [ghi chú nghiên cứu về định danh thực thể E](../research/e-entity-identity.md).
+
+![Sơ đồ quy tắc gán tên A, B, C](../../annotator-guidelines/huong-dan/10-E-dinh-danh-A-B-C.png)
+
+![Sơ đồ gộp loại xe trong nhóm E](../../annotator-guidelines/huong-dan/11-E-nhan-dien-xe.png)
 
 ## Mẫu câu
 

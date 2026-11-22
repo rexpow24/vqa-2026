@@ -8,7 +8,13 @@ Loại phương tiện và màu sắc là thuộc tính mô tả, không phải 
 
 Vì vậy, hai xe máy được ghi là "xe máy A" và "xe máy B", kể cả khi chúng cùng loại và không dùng màu để phân biệt.
 
-Khi các bên cùng nhìn thấy và nhận diện được, tên được gán từ trái sang phải; nếu gần như cùng một cột thì từ trên xuống dưới.
+Nếu chỉ có một bên liên quan có camera hành trình, bên đó được gán A.
+
+Các bên còn lại được gán theo vị trí ở khung hình đầu tiên tất cả các bên cùng xuất hiện và nhận diện được: trái sang phải, rồi trên xuống dưới nếu gần như cùng một cột.
+
+Nếu không có bên nào có camera hành trình, áp dụng thứ tự vị trí này cho tất cả các bên.
+
+Nếu có nhiều bên có camera hành trình, xếp các bên đó theo thứ tự vị trí trước; bên camera đứng đầu được gán A, rồi các bên còn lại được gán theo cùng thứ tự vị trí.
 
 Nếu không có khung hình nào cho thấy đồng thời các bên một cách rõ ràng, gán tên theo thứ tự nhận diện được lần đầu.
 
@@ -20,7 +26,17 @@ Nếu không thể xác định chắc chắn một phương tiện xuất hiệ
 
 Các nhóm C, O, R, Attr và Prev phải dùng lại tên thực thể từ nhóm E.
 
-Thứ tự trái-sang-phải và trên-xuống là quy ước vận hành của dự án, không phải thứ tự được các nghiên cứu dưới đây quy định.
+## Quy ước nhóm loại xe trong E
+
+Theo quyết định taxonomy của dự án, xe máy thường và xe máy điện cùng dùng nhãn "xe máy".
+
+Xe đạp thường và xe đạp điện cùng dùng nhãn "xe đạp".
+
+Xe ba gác được giữ là nhãn riêng, tương ứng với xe ba bánh chở hàng.
+
+Sơ đồ giải thích trực quan cho annotator nằm trong [hướng dẫn E](../../annotator-guidelines/huong-dan/11-E-nhan-dien-xe.png).
+
+Ưu tiên xe camera hành trình làm A và thứ tự trái-sang-phải, trên-xuống là quy ước vận hành của dự án, không phải quy tắc được các nghiên cứu dưới đây quy định.
 
 ## Cơ sở nghiên cứu và giới hạn áp dụng
 
