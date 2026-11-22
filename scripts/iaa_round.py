@@ -29,14 +29,16 @@ is given, and the report says when a question lacks some annotator.
 Rows of a slot assignment (answer_format = slots) are excluded from the text
 verdict and semantic-answer metrics. Their structured selections are compared
 separately in Tier 3, grouped by question group and codebook version. One unit
-is the canonicalized `slots` JSON after cells marked `required: false` in its
-codebook have been removed. An export without the answer_format column
-predates slot answers and is read as all text.
+is the canonicalized `slots` JSON after optional and non-applicable cells are
+removed according to the codebook. E.v3/v4's dashcam and vehicle-color cells
+are retained only where entity rules require them. Group V is excluded
+from current reports because the annotation policy no longer uses it.
 
 Usage:
   python scripts/iaa_round.py answers.csv --out out_dir
   python scripts/iaa_round.py answers.csv --exclude-groups N C V --out out_without_ncv
   python scripts/iaa_round.py answers.csv --exclude-annotators "Annotator Name" --out out_without_person
+  python scripts/iaa_round.py answers.csv --video-from 21 --video-to 40 --out out_videos_21_40
   # score out_dir/pairs_to_judge.csv with the LLM judge (column judge_score in 0..1), then:
   python scripts/iaa_round.py answers.csv --out out_dir --judge out_dir/pairs_judged.csv
 
@@ -63,6 +65,7 @@ NA_TOKEN = "<NA>"
 # NOT_ANSWERABLE row; the guideline's phrase is folded in too.
 NA_PHRASES = {"không trả lời được", "không thể xác định"}
 VERDICTS = ["AGREE", "DISAGREE", "NOT_ANSWERABLE"]
+DECISION_EXCLUDED_GROUPS = {"V"}
 
 
 def text_rows(df):
@@ -70,6 +73,23 @@ def text_rows(df):
     if "answer_format" not in df:
         return df
     return df[df["answer_format"] == "text"].copy()
+
+
+def filter_video_sequence_range(df, video_from=None, video_to=None):
+    """Filter an export by the admin page's displayed video sequence number (`seq`)."""
+    if video_from is None and video_to is None:
+        return df
+    if "seq" not in df:
+        raise ValueError("Lọc số thứ tự video cần cột 'seq' trong CSV export.")
+    sequence = pd.to_numeric(df["seq"], errors="coerce")
+    if sequence.isna().any():
+        raise ValueError("Cột 'seq' có dòng không phải số; không thể lọc khoảng video.")
+    mask = pd.Series(True, index=df.index)
+    if video_from is not None:
+        mask &= sequence >= video_from
+    if video_to is not None:
+        mask &= sequence <= video_to
+    return df.loc[mask].copy()
 
 
 # ----------------------------------------------------------------------------
@@ -250,6 +270,48 @@ def optional_cell_ids(codebook_version):
     )
 
 
+def conditional_scored_cell_ids(codebook_version):
+    """Cells required only for applicable entities in the current E codebook."""
+    if str(codebook_version) in {"E.v3", "E.v4"}:
+        return frozenset({"dashcam", "vehicle_color"})
+    return frozenset()
+
+
+def normalize_e_entities(parsed, codebook_version):
+    """Apply conditional E cell rules for the codebook version in each row."""
+    if not isinstance(parsed, dict) or not isinstance(parsed.get("entities"), list):
+        return parsed
+
+    if codebook_version == "E.v3":
+        for entity in parsed["entities"]:
+            if not isinstance(entity, dict) or not isinstance(entity.get("cells"), dict):
+                continue
+            cells = entity["cells"]
+            if (cells.get("type") or {}).get("option") != "type.car":
+                cells.pop("dashcam", None)
+                cells.pop("vehicle_color", None)
+        return parsed
+
+    no_vehicle_color = {"type.car", "type.bicycle", "type.pedestrian", "type.animal"}
+    for entity in parsed["entities"]:
+        if not isinstance(entity, dict) or not isinstance(entity.get("cells"), dict):
+            continue
+        cells = entity["cells"]
+        vehicle_type = (cells.get("type") or {}).get("option")
+        dashcam = (cells.get("dashcam") or {}).get("option")
+
+        # A car must have a dashcam choice. Vehicle color applies to vehicles
+        # with a color, except cars with a dashcam, bicycles, people, and animals.
+        if vehicle_type != "type.car":
+            cells.pop("dashcam", None)
+        color_applies = (
+            vehicle_type == "type.car" and dashcam == "dashcam.no"
+        ) or bool(vehicle_type and vehicle_type not in no_vehicle_color)
+        if not color_applies:
+            cells.pop("vehicle_color", None)
+    return parsed
+
+
 def slot_signature(value, codebook_version=""):
     """Canonical answer with optional codebook cells removed from agreement scoring."""
     if value is None or (isinstance(value, float) and np.isnan(value)) or value == "":
@@ -264,19 +326,23 @@ def slot_signature(value, codebook_version=""):
             "Câu trả lời dạng ô không có codebook_version; cần export CSV có phiên bản codebook "
             "để xác định các ô optional."
         )
-    optional_ids = optional_cell_ids(str(codebook_version or ""))
+    version = str(codebook_version or "")
+    optional_ids = optional_cell_ids(version)
+    conditional_ids = conditional_scored_cell_ids(version)
 
     def remove_optional(node):
         if isinstance(node, dict):
             return {
                 key: remove_optional(child)
                 for key, child in node.items()
-                if key not in optional_ids
+                if key not in optional_ids - conditional_ids
             }
         if isinstance(node, list):
             return [remove_optional(child) for child in node]
         return node
 
+    if version in {"E.v3", "E.v4"}:
+        parsed = normalize_e_entities(parsed, version)
     parsed = remove_optional(parsed)
     # V.v6 introduced a non-entity party which can occupy either form position.
     # Preserve historical-version scoring and the existing optional-cell policy.
@@ -404,6 +470,8 @@ def main(argv=None):
     ap.add_argument("--out", default="iaa_out")
     ap.add_argument("--judge", help="CSV with columns answer_a, answer_b, judge_score (0..1)")
     ap.add_argument("--boot", type=int, default=1000)
+    ap.add_argument("--video-from", type=int, help="first admin video sequence number to include (inclusive)")
+    ap.add_argument("--video-to", type=int, help="last admin video sequence number to include (inclusive)")
     ap.add_argument("--include-unfinished", action="store_true",
                     help="keep rows of annotators who have not completed the video (default: assignment_status = completed only)")
     ap.add_argument("--exclude-groups", nargs="+", metavar="QGROUP", default=[],
@@ -414,6 +482,13 @@ def main(argv=None):
     os.makedirs(args.out, exist_ok=True)
 
     source = pd.read_csv(args.csv, dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    if args.video_from is not None and args.video_from < 1:
+        raise ValueError("--video-from phải từ 1 trở lên.")
+    if args.video_to is not None and args.video_to < 1:
+        raise ValueError("--video-to phải từ 1 trở lên.")
+    if args.video_from is not None and args.video_to is not None and args.video_from > args.video_to:
+        raise ValueError("--video-from không được lớn hơn --video-to.")
+    source = filter_video_sequence_range(source, args.video_from, args.video_to)
     slot_df = source[source["answer_format"] == "slots"].copy() if "answer_format" in source else source.iloc[0:0].copy()
     df = text_rows(source)
     n_slot_rows = len(slot_df)
@@ -435,9 +510,10 @@ def main(argv=None):
     df["verdict"] = df["verdict"].str.strip().str.upper().str.replace("-", "_")
     df["ans"] = df.apply(norm_answer, axis=1)
 
-    excluded_groups = {group.strip().upper() for group in args.exclude_groups}
+    requested_excluded_groups = {group.strip().upper() for group in args.exclude_groups} - DECISION_EXCLUDED_GROUPS
+    excluded_groups = DECISION_EXCLUDED_GROUPS | requested_excluded_groups
     source_groups = set(df["qgroup"].astype(str).str.upper()) | set(slot_df["qgroup"].astype(str).str.upper())
-    unknown_groups = excluded_groups - source_groups
+    unknown_groups = requested_excluded_groups - source_groups
     if unknown_groups:
         raise ValueError(f"Không tìm thấy nhóm cần loại: {', '.join(sorted(unknown_groups))}. Nhóm có trong CSV: {', '.join(sorted(source_groups))}")
     if excluded_groups:
@@ -503,13 +579,14 @@ def main(argv=None):
 
     lines = []
     P = lines.append
-    if excluded_groups:
+    if requested_excluded_groups:
         P("PHÂN TÍCH ẢNH HƯỞNG KHI LOẠI NHÓM")
-        P(f"  Nhóm bị loại: {', '.join(sorted(excluded_groups))}")
+        P(f"  Nhóm bị loại thêm: {', '.join(sorted(requested_excluded_groups))}")
         if n_slot_rows:
             original_slots = source[source["answer_format"] == "slots"].copy() if "answer_format" in source else source.iloc[0:0].copy()
             if not args.include_unfinished and "assignment_status" in original_slots:
                 original_slots = original_slots[original_slots["assignment_status"] == "completed"].copy()
+            original_slots = original_slots[~original_slots["qgroup"].astype(str).str.upper().isin(DECISION_EXCLUDED_GROUPS)].copy()
             original_slots["slot_value"] = original_slots.apply(
                 lambda row: slot_signature(row["slots"], row.get("codebook_version", "")), axis=1,
             )
@@ -533,7 +610,7 @@ def main(argv=None):
             P(f"    Sau  : {after_alpha['reliable']} nhóm >= 0.800; {after_alpha['tentative']} nhóm 0.667-0.800; {after_alpha['below']} nhóm < 0.667.")
             P(f"    Alpha thấp nhất sau lọc: {after_alpha['min']:.3f} ({after_alpha['min_group']})" if after_alpha["groups"] else "    Alpha thấp nhất sau lọc: không tính được")
             P("  Từng nhóm bị loại:")
-            for qgroup in sorted(excluded_groups):
+            for qgroup in sorted(requested_excluded_groups):
                 group = original_slots[original_slots["qgroup"].astype(str).str.upper() == qgroup]
                 units = slot_answer_units(group)
                 agree, total = pairwise_counts(units)
@@ -578,7 +655,10 @@ def main(argv=None):
           + ("" if args.include_unfinished else f" (bỏ {n_rows_raw - n_rows_completed} dòng chưa completed)"))
     if n_slot_rows:
         P(f"Dữ liệu lựa chọn: {slot_df['annotator_id'].nunique()} người | {slot_df['video_id'].nunique()} video | {slot_df['draft_id'].nunique()} câu hỏi | {n_slot_rows} dòng.")
-        P("Ô có required=false trong codebook đã được bỏ khỏi phép tính đồng thuận.")
+        P("Nhóm V được loại theo quyết định taxonomy hiện hành.")
+        P("Ô optional bị bỏ; dashcam/màu xe của E.v3/v4 được tính theo điều kiện của từng thực thể.")
+        if args.video_from is not None or args.video_to is not None:
+            P(f"Phạm vi số thứ tự video: {args.video_from or 1}-{args.video_to or 'hết'} (cột seq trong CSV).")
     if excluded_groups:
         P(f"Đã loại thêm {n_rows_completed - len(df)} dòng văn bản và {n_slot_rows_completed - n_slot_rows} dòng dạng ô theo nhóm.")
     if len(df):
@@ -707,7 +787,7 @@ def main(argv=None):
     if len(qf):
         P(qf[["filename", "annotator", "qgroup", "issue"]].to_string(index=False))
 
-    # Slot answers are compared after removing optional codebook cells.
+    # Slot answers are compared after applying optional and conditional codebook cells.
     # Keep codebook versions separate because their option IDs may not be comparable.
     slot_rows = []
     for (qgroup, version), group in slot_df.groupby(
@@ -723,10 +803,15 @@ def main(argv=None):
         kappa = slot_kappa(group)
         ac1_value = slot_ac1(group)
         label = f"{qgroup} / {version}" if "codebook_version" in slot_df else str(qgroup)
-        optional_fields = optional_cell_ids(str(version)) if "codebook_version" in slot_df else frozenset()
+        optional_fields = (
+            optional_cell_ids(str(version)) - conditional_scored_cell_ids(str(version))
+            if "codebook_version" in slot_df else frozenset()
+        )
         P("")
         P(f"TẦNG 3 - LỰA CHỌN THEO Ô ({label}), 95% CI bootstrap theo video")
         P("  Ô tùy chọn bỏ qua       : " + (", ".join(sorted(optional_fields)) if optional_fields else "không có"))
+        if str(version) in {"E.v3", "E.v4"}:
+            P(f"  Ô {version} tính theo điều kiện: dashcam/màu xe theo loại thực thể và codebook.")
         P(f"  % đáp án ô trùng khớp : {pairwise_pct(units):.3f}")
         P(f"  Fleiss kappa           : {kappa:.3f}   CI [{ci_kappa[0]:.3f}, {ci_kappa[1]:.3f}]")
         P(f"  Krippendorff alpha     : {alpha:.3f}   CI [{ci_alpha[0]:.3f}, {ci_alpha[1]:.3f}]")

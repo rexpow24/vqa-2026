@@ -15,7 +15,14 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
-from iaa_round import kripp_alpha, nominal, pairwise_counts, slot_signature
+from iaa_round import (
+    DECISION_EXCLUDED_GROUPS,
+    filter_video_sequence_range,
+    kripp_alpha,
+    nominal,
+    pairwise_counts,
+    slot_signature,
+)
 
 
 GROUP_COLUMNS = ["qgroup", "codebook_version", "video_id", "draft_id"]
@@ -373,6 +380,8 @@ def main(argv=None):
     parser.add_argument("--groups", nargs="+", metavar="QGROUP", help="audit only these question groups")
     parser.add_argument("--aspects", nargs="+", metavar="ASPECT",
                         help="compare agreement after excluding each named codebook cell; accepts labels or IDs")
+    parser.add_argument("--video-from", type=int, help="first admin video sequence number to include (inclusive)")
+    parser.add_argument("--video-to", type=int, help="last admin video sequence number to include (inclusive)")
     parser.add_argument("--include-unfinished", action="store_true",
                         help="include rows where assignment_status is not completed")
     args = parser.parse_args(argv)
@@ -381,6 +390,13 @@ def main(argv=None):
         sys.stdout.reconfigure(encoding="utf-8")
 
     source = pd.read_csv(args.csv, dtype=str, keep_default_na=False, encoding="utf-8-sig")
+    if args.video_from is not None and args.video_from < 1:
+        raise ValueError("--video-from phải từ 1 trở lên.")
+    if args.video_to is not None and args.video_to < 1:
+        raise ValueError("--video-to phải từ 1 trở lên.")
+    if args.video_from is not None and args.video_to is not None and args.video_from > args.video_to:
+        raise ValueError("--video-from không được lớn hơn --video-to.")
+    source = filter_video_sequence_range(source, args.video_from, args.video_to)
     required = {"answer_format", "slots", "qgroup", "codebook_version", "video_id", "draft_id",
                 "annotator_id", "annotator_name", "filename"}
     missing = sorted(required - set(source.columns))
@@ -390,8 +406,11 @@ def main(argv=None):
     data = source[source["answer_format"].str.casefold() == "slots"].copy()
     if not args.include_unfinished and "assignment_status" in data:
         data = data[data["assignment_status"].str.casefold() == "completed"].copy()
+    data = data[~data["qgroup"].str.upper().isin(DECISION_EXCLUDED_GROUPS)].copy()
     if args.groups:
         wanted = {group.casefold() for group in args.groups}
+        if any(group.upper() in DECISION_EXCLUDED_GROUPS for group in wanted):
+            raise ValueError("Nhóm V đã bị loại theo quyết định taxonomy hiện hành.")
         available = set(data["qgroup"].str.casefold())
         unknown = wanted - available
         if unknown:
@@ -460,6 +479,7 @@ def main(argv=None):
                 "qgroup": qgroup,
                 "codebook_version": version,
                 "video_id": video_id,
+                "seq": getattr(row, "seq", ""),
                 "filename": filename,
                 "draft_id": draft_id,
                 "question": question,
@@ -491,6 +511,7 @@ def main(argv=None):
             "qgroup": qgroup,
             "codebook_version": version,
             "video_id": video_id,
+            "seq": group["seq"].iloc[0] if "seq" in group else "",
             "filename": filename,
             "n_questions": len(units),
             "questions_with_disagreement": sum(count > 1 for count in question_counts),
@@ -551,13 +572,16 @@ def main(argv=None):
         aspect_sensitivity.to_csv(aspect_path, index=False, encoding="utf-8-sig")
 
     print(f"Audited {sum(row['n_questions'] for row in video_rows)} selected-choice questions across {len(video_summary)} group/video pairs.")
+    print("Group V excluded by the current taxonomy decision.")
+    if args.video_from is not None or args.video_to is not None:
+        print(f"Video sequence range: {args.video_from or 1}-{args.video_to or 'end'} (CSV seq column).")
     print(f"Question-person detail: {detail_path}")
     print(f"Per-video summary:      {video_path}")
     print(f"Per-annotator summary:  {annotator_path}")
     print(f"Per-field summary:      {field_path}")
     if aspect_path:
         print(f"Aspect sensitivity:     {aspect_path}")
-    print("Agreement and audit differences ignore every codebook cell marked required=false.")
+    print("Optional cells are ignored; E.v3/v4 dashcam and vehicle color follow codebook applicability rules.")
     print("Rows marked 'bất đồng với đa số nhóm' identify answers outside a unique group majority.")
 
     print("\n" + "=" * 88)
@@ -568,8 +592,9 @@ def main(argv=None):
         ["qgroup", "codebook_version"], sort=False,
     ):
         total_videos = len(group_videos)
-        for number, video_id in enumerate(group_videos["video_id"], start=1):
-            video_order[(qgroup, version, video_id)] = (number, total_videos)
+        for number, row in enumerate(group_videos.itertuples(index=False), start=1):
+            sequence = str(getattr(row, "seq", "")).strip()
+            video_order[(qgroup, version, row.video_id)] = (sequence or number, total_videos)
 
     disagreements = detail[detail["question_has_disagreement"]].copy()
     if disagreements.empty:
@@ -581,10 +606,8 @@ def main(argv=None):
             first = question_rows.iloc[0]
             print("\n" + "-" * 88)
             video_number, total_videos = video_order[(qgroup, version, video_id)]
-            print(
-                f"VIDEO {video_number:02d}/{total_videos:02d} | "
-                f"NHÓM {qgroup} | {version} | {first['filename']}"
-            )
+            video_label = f"VIDEO #{int(video_number):02d}" if isinstance(video_number, str) and video_number.isdigit() else f"VIDEO {video_number:02d}/{total_videos:02d}"
+            print(f"{video_label} | NHÓM {qgroup} | {version} | {first['filename']}")
             print(f"Video ID: {video_id}")
             if first["question"]:
                 print(f"Câu hỏi: {first['question']}")
