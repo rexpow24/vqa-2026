@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K04 dùng khi một bên đổi làn hoặc nhập vào làn bên cạnh và đi vào đường đi của bên kia.",
+   "start": 0.5,
+   "end": 5.62
+  },
+  {
+   "text": "Quan sát vạch làn và hướng xe qua vài khung hình.",
+   "start": 6.17,
+   "end": 8.49
+  },
+  {
+   "text": "Nếu hành động chính là vượt qua xe hoặc len giữa dòng xe, phân biệt với K05.",
+   "start": 9.04,
+   "end": 13.2
+  },
+  {
+   "text": "Nếu xe rẽ cắt ngang đường đi của xe cùng chiều, xem K06.",
+   "start": 13.75,
+   "end": 17.35
+  }
+ ],
+ "duration": 18.75
+}

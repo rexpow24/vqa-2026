@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K01 dùng khi xe phía trước đã dừng hoặc đứng yên trước lúc xe phía sau tiến tới.",
+   "start": 0.5,
+   "end": 4.82
+  },
+  {
+   "text": "Hãy nhìn các khung hình trước điểm xung đột để biết xe trước đã đứng yên từ trước.",
+   "start": 5.37,
+   "end": 9.21
+  },
+  {
+   "text": "Nếu xe trước đang giảm tốc thì phân biệt với K02; nếu vẫn chạy chậm thì phân biệt với K03.",
+   "start": 9.76,
+   "end": 15.12
+  },
+  {
+   "text": "Không suy ra phanh chỉ từ việc khoảng cách giữa hai xe giảm.",
+   "start": 15.67,
+   "end": 18.39
+  }
+ ],
+ "duration": 19.79
+}

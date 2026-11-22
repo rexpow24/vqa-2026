@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K03 dùng khi xe trước vẫn di chuyển nhưng chậm, còn xe sau tiến sát.",
+   "start": 0.5,
+   "end": 4.58
+  },
+  {
+   "text": "Dấu hiệu chính là xe trước tiếp tục lăn bánh trong đoạn quan sát.",
+   "start": 5.13,
+   "end": 8.25
+  },
+  {
+   "text": "Nếu xe trước đã đứng yên từ trước, chọn K01.",
+   "start": 8.8,
+   "end": 11.44
+  },
+  {
+   "text": "Nếu thấy xe trước phanh hoặc giảm tốc ngay trước xung đột, chọn K02.",
+   "start": 11.99,
+   "end": 15.83
+  }
+ ],
+ "duration": 17.23
+}

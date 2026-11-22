@@ -1,0 +1,20 @@
+{
+ "sentences": [
+  {
+   "text": "K18 dùng khi một bên trượt, văng khỏi làn hoặc nổ lốp và sự kiện đó không do hành động của bên kia gây ra.",
+   "start": 0.5,
+   "end": 6.26
+  },
+  {
+   "text": "Chỉ chọn nguyên nhân nhìn thấy rõ; không đoán nổ lốp từ việc xe mất lái.",
+   "start": 6.81,
+   "end": 10.17
+  },
+  {
+   "text": "Nếu hành động của xe khác tạo ra xung đột trước rồi mới xảy ra trượt, hãy mã hóa tình huống xung đột đó thay vì mặc định K18.",
+   "start": 10.72,
+   "end": 17.6
+  }
+ ],
+ "duration": 19.0
+}

@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K02 dùng khi xe phía trước đang phanh hoặc giảm tốc và xe phía sau tiến sát.",
+   "start": 0.5,
+   "end": 4.98
+  },
+  {
+   "text": "Tìm dấu hiệu chuyển động qua nhiều khung hình; đèn phanh chỉ là manh mối, không đủ nếu không thấy xe giảm tốc.",
+   "start": 5.53,
+   "end": 10.57
+  },
+  {
+   "text": "K01 là xe trước đã đứng yên từ trước.",
+   "start": 11.12,
+   "end": 13.36
+  },
+  {
+   "text": "K03 là xe trước chạy chậm nhưng không thấy sự kiện phanh hay giảm tốc.",
+   "start": 13.91,
+   "end": 18.15
+  }
+ ],
+ "duration": 19.55
+}

@@ -1,0 +1,30 @@
+{
+ "sentences": [
+  {
+   "text": "Đây là cặp gây bất đồng ở video 22.",
+   "start": 0.5,
+   "end": 2.82
+  },
+  {
+   "text": "K10 cần thấy xe rẽ trái hoặc quay đầu cắt qua luồng xe ngược chiều.",
+   "start": 3.37,
+   "end": 6.97
+  },
+  {
+   "text": "K14 cần thấy phương tiện băng ngang đường giữa đoạn, không ở giao lộ.",
+   "start": 7.52,
+   "end": 10.88
+  },
+  {
+   "text": "Đừng dựa riêng vào hướng trái sang phải; hãy xem xe xuất phát từ đâu, quỹ đạo có phải rẽ không và có giao lộ hay không.",
+   "start": 11.43,
+   "end": 17.59
+  },
+  {
+   "text": "Nếu bối cảnh bị che hoặc crop, chọn không rõ.",
+   "start": 18.14,
+   "end": 20.62
+  }
+ ],
+ "duration": 22.02
+}

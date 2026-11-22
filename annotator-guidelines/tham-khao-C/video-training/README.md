@@ -6,7 +6,25 @@ Codebook chuẩn là `codebook/C.v4.json`.
 
 Lời thoại chỉ mô tả hành vi quan sát được, nhắc các trường hợp gần giống và hướng dẫn chọn “không rõ” khi video thiếu bối cảnh.
 
-Hình minh họa là sơ đồ giao thông tổng hợp, không phải footage thật và không đại diện cho một vụ tai nạn cụ thể.
+Hình là mô phỏng giao thông nhìn từ trên xuống, không phải footage thật và không đại diện cho một vụ tai nạn cụ thể.
+
+## Hình ảnh được dựng thế nào
+
+Mỗi mã có một tình huống chuyển động thật trong `anim/scenarios.js`: xe chạy theo quỹ đạo và profile tốc độ, rẽ, quay đầu, lùi, trượt, có đèn phanh, xi-nhan, đèn lùi.
+
+Giao thông theo chiều bên phải như ở Việt Nam: xe đi lên nằm ở nửa phải lòng đường.
+
+Thời điểm va chạm không viết tay mà do `anim/engine.js` mô phỏng: lần chồng lấn đầu tiên giữa hai thân xe là điểm va chạm.
+
+Mỗi câu thoại chọn một cảnh:
+
+- Câu nhắc mã khác thì chia màn hình, các tình huống chạy song song và va chạm cùng lúc, ví dụ K01 | K02 | K03 kèm đồ thị tốc độ của B.
+- Câu về thiếu bằng chứng thì che phần ngoài khung hình và hiện nhắc “chọn không rõ”.
+- Câu lặp lại cảnh cũ thì phát lại chậm 0.5× có vệt quỹ đạo đã đi và nét đứt quỹ đạo sắp đi.
+
+Một số câu chỉ định cảnh riêng qua trường `shots` trong `narration.vi.json`, ví dụ K13 so với quay đầu cắt xe ngược chiều (K10), K16 so với chó chỉ đi dọc vỉa hè, K18 so với trượt do xe khác chuyển làn trước.
+
+Cột phải lấy nhãn mã từ codebook và các gạch đầu dòng “nhìn vào đâu” từ trường `cues`.
 
 ## Cơ sở chọn clip đối chiếu
 
@@ -22,7 +40,7 @@ Clip K10/K14 nhắc video #22, nơi số phiếu cao nhất là 3/6 cho K10, cò
 
 ## Render
 
-Môi trường TTS dùng Python 3.12 và VieNeu-TTS v3 Turbo với giọng Hải Đăng.
+Cần Python 3.12, Google Chrome (dùng để vẽ frame), ffmpeg và Node.js (chỉ cho bước kiểm tra).
 
 Tạo môi trường cô lập và cài runtime:
 
@@ -31,25 +49,32 @@ py -3.12 -m venv .venv-c-video
 .\.venv-c-video\Scripts\python.exe -m pip install -r .\annotator-guidelines\tham-khao-C\video-training\requirements.txt
 ```
 
-Chạy preview một clip:
+Kiểm tra mô phỏng sau khi sửa một tình huống (in thời điểm va chạm, báo xe nền đâm vào xe chính hoặc điểm va chạm lệch khỏi khung):
 
 ```powershell
-.\.venv-c-video\Scripts\python.exe .\annotator-guidelines\tham-khao-C\video-training\render_training.py --limit 1
+node .\annotator-guidelines\tham-khao-C\video-training\anim\check.js
 ```
 
-Render toàn bộ series:
+Xuất ảnh review, mỗi cảnh một ảnh ngay trước xung đột, vào `output/stills/`:
 
 ```powershell
+.\.venv-c-video\Scripts\python.exe .\annotator-guidelines\tham-khao-C\video-training\render_training.py --stills K01 K10
+```
+
+Render một vài clip hoặc toàn bộ series:
+
+```powershell
+.\.venv-c-video\Scripts\python.exe .\annotator-guidelines\tham-khao-C\video-training\render_training.py K01 K02
 .\.venv-c-video\Scripts\python.exe .\annotator-guidelines\tham-khao-C\video-training\render_training.py
 ```
 
-Các file video nằm trong `annotator-guidelines/tham-khao-C/video-training/output/videos/`.
+Clip đã mới hơn mã nguồn và audio thì được bỏ qua; thêm `--force` để render lại.
+
+Giọng Hải Đăng được tổng hợp cục bộ bằng VieNeu-TTS theo từng câu, cache trong `output/audio/parts/`; `output/audio/<id>.timing.json` ghi mốc bắt đầu và kết thúc của từng câu.
+
+Các file video nằm trong `output/videos/`.
 
 `C-training-full.mp4` là playlist ghép theo thứ tự: ba clip nền tảng, K01–K18, rồi các clip so sánh.
-
-Mỗi video có một ảnh sơ đồ trong `output/stills/` và WAV giọng đọc tương ứng trong `output/audio/` để dễ review.
-
-Giọng được tổng hợp cục bộ; lần chạy đầu cần tải weights VieNeu-TTS Turbo nếu máy chưa có đủ model files.
 
 ## Cách dùng cho annotator
 

@@ -1,0 +1,20 @@
+{
+ "sentences": [
+  {
+   "text": "K16 dùng khi thấy động vật lao từ bên đường vào đường đi của phương tiện.",
+   "start": 0.5,
+   "end": 4.1
+  },
+  {
+   "text": "Hãy xác định chuyển động đi vào lòng đường trong các khung hình, không cần đoán loài hay chủ sở hữu.",
+   "start": 4.65,
+   "end": 9.13
+  },
+  {
+   "text": "Nếu động vật đã đứng yên hoặc đi dọc đường mà không thấy hành động lao ra, đừng ép vào K16; dùng lựa chọn phù hợp với bằng chứng hoặc chọn không rõ.",
+   "start": 9.68,
+   "end": 17.28
+  }
+ ],
+ "duration": 18.68
+}

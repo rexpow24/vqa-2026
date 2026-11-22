@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K14 dùng khi một phương tiện băng ngang qua đường giữa đoạn, không ở giao lộ.",
+   "start": 0.5,
+   "end": 4.26
+  },
+  {
+   "text": "Cần nhìn thấy xe đi ngang qua mặt đường và đủ bối cảnh để xác nhận không có nút giao.",
+   "start": 4.81,
+   "end": 8.89
+  },
+  {
+   "text": "Hai luồng đi thẳng cắt nhau tại giao lộ là K11; xe đi ra từ hẻm là K12; người đi bộ là K15.",
+   "start": 9.44,
+   "end": 15.36
+  },
+  {
+   "text": "Nếu khung hình bị cắt và không xác định được bối cảnh, chọn không rõ.",
+   "start": 15.91,
+   "end": 19.35
+  }
+ ],
+ "duration": 20.75
+}

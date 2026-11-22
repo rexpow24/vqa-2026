@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K10 dùng khi xe rẽ trái hoặc quay đầu cắt qua đường đi của xe đang đi ngược chiều.",
+   "start": 0.5,
+   "end": 4.66
+  },
+  {
+   "text": "Điểm phân biệt là quỹ đạo rẽ cắt luồng xe đối diện.",
+   "start": 5.21,
+   "end": 7.85
+  },
+  {
+   "text": "K08 là lấn sang phần đường ngược chiều nhưng không phải quỹ đạo rẽ cắt đầu.",
+   "start": 8.4,
+   "end": 12.4
+  },
+  {
+   "text": "K14 là phương tiện băng ngang đường giữa đoạn, không ở giao lộ; cần quan sát bối cảnh và hướng di chuyển trước khi chọn.",
+   "start": 12.95,
+   "end": 18.79
+  }
+ ],
+ "duration": 20.19
+}

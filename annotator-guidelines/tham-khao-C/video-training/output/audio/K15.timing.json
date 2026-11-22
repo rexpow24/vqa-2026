@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K15 dùng khi người đi bộ băng qua hoặc đi dọc dưới lòng đường và tạo tình huống xung đột với phương tiện.",
+   "start": 0.5,
+   "end": 5.54
+  },
+  {
+   "text": "Nhận diện theo chủ thể là người đi bộ, không theo hướng trái sang phải hay phải sang trái.",
+   "start": 6.09,
+   "end": 10.33
+  },
+  {
+   "text": "Phương tiện băng ngang đường là K14; động vật lao ra đường là K16.",
+   "start": 10.88,
+   "end": 14.56
+  },
+  {
+   "text": "Nếu chỉ thấy người ở xa mà không rõ họ đi trong lòng đường hay trên vỉa hè, không tự suy ra xung đột.",
+   "start": 15.11,
+   "end": 20.39
+  }
+ ],
+ "duration": 21.79
+}

@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K17 dùng khi xe đang lùi và lùi vào đường đi của một bên khác.",
+   "start": 0.5,
+   "end": 4.1
+  },
+  {
+   "text": "Quan sát hướng thân xe, bánh xe và chuyển động qua nhiều khung hình; góc camera có thể khiến xe trông như đang tiến.",
+   "start": 4.65,
+   "end": 10.49
+  },
+  {
+   "text": "Xe chạy tới một xe đã dừng là K01, không phải K17.",
+   "start": 11.04,
+   "end": 14.64
+  },
+  {
+   "text": "Nếu không xác định được xe đang tiến hay lùi, chọn không rõ.",
+   "start": 15.19,
+   "end": 18.31
+  }
+ ],
+ "duration": 19.71
+}

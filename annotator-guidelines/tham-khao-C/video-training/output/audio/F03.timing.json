@@ -1,0 +1,20 @@
+{
+ "sentences": [
+  {
+   "text": "Chọn không rõ khi video thiếu khung hình hoặc góc quay không cho thấy hướng đi, điểm xuất phát hay ranh giới đường cần để phân biệt mã.",
+   "start": 0.5,
+   "end": 6.98
+  },
+  {
+   "text": "Với nhiều xe, chỉ ghi cặp chính theo sự kiện đầu tiên; bỏ qua va chạm dây chuyền về sau.",
+   "start": 7.53,
+   "end": 12.09
+  },
+  {
+   "text": "Không dùng nhãn đông nhất trong audit để thay thế bằng chứng của video.",
+   "start": 12.64,
+   "end": 16.0
+  }
+ ],
+ "duration": 17.4
+}

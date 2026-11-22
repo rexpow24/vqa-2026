@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "So sánh K09 và K14.",
+   "start": 0.5,
+   "end": 2.74
+  },
+  {
+   "text": "K09 là xe chạy dọc theo làn của hướng ngược lại; K14 là phương tiện di chuyển ngang qua đường giữa đoạn.",
+   "start": 3.29,
+   "end": 9.05
+  },
+  {
+   "text": "Theo dõi xe qua nhiều khung hình để phân biệt hướng đi dọc với hướng băng ngang.",
+   "start": 9.6,
+   "end": 13.44
+  },
+  {
+   "text": "Một góc nhìn đơn lẻ có thể làm hai quỹ đạo trông giống nhau; khi không đủ bằng chứng, chọn không rõ.",
+   "start": 13.99,
+   "end": 18.95
+  }
+ ],
+ "duration": 20.35
+}

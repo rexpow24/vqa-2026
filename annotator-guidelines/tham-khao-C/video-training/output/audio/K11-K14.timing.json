@@ -1,0 +1,30 @@
+{
+ "sentences": [
+  {
+   "text": "So sánh K11 và K14.",
+   "start": 0.5,
+   "end": 2.5
+  },
+  {
+   "text": "Hai xe đi thẳng từ hai đường cắt nhau tại giao lộ là K11.",
+   "start": 3.05,
+   "end": 6.01
+  },
+  {
+   "text": "Một phương tiện băng ngang giữa đoạn, không ở giao lộ, là K14.",
+   "start": 6.56,
+   "end": 9.84
+  },
+  {
+   "text": "Trước tiên xác định có nút giao trong toàn cảnh hay không, sau đó mới xem quỹ đạo.",
+   "start": 10.39,
+   "end": 14.31
+  },
+  {
+   "text": "Nếu clip chỉ là một đoạn ngắn không cho thấy bối cảnh, dùng không rõ thay vì mặc định K14.",
+   "start": 14.86,
+   "end": 19.74
+  }
+ ],
+ "duration": 21.14
+}

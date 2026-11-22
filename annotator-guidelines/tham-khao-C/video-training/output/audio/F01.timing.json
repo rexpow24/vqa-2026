@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "Trong Nhóm C, chủ thể là bên thay đổi chuyển động trước trong tình huống xung đột.",
+   "start": 0.5,
+   "end": 4.5
+  },
+  {
+   "text": "Khi có va chạm, đối tượng là bên bị chủ thể chạm đầu tiên; nếu không có va chạm, đối tượng là bên đầu tiên phải né.",
+   "start": 5.05,
+   "end": 11.21
+  },
+  {
+   "text": "Chỉ ghi cặp chính của sự kiện đầu tiên, không thêm xe chỉ đứng gần hoặc xuất hiện sau đó.",
+   "start": 11.76,
+   "end": 16.16
+  },
+  {
+   "text": "Nếu không đủ bằng chứng để xác định, chọn không rõ.",
+   "start": 16.71,
+   "end": 19.27
+  }
+ ],
+ "duration": 20.67
+}

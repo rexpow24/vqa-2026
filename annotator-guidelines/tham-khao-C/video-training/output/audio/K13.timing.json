@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K13 dùng khi xe thực hiện quay đầu ở giữa đoạn đường.",
+   "start": 0.5,
+   "end": 3.06
+  },
+  {
+   "text": "Nhìn cung chuyển động quay đầu và bối cảnh không phải nút giao.",
+   "start": 3.61,
+   "end": 6.33
+  },
+  {
+   "text": "K10 cũng có thể có động tác quay đầu, nhưng dùng khi quỹ đạo đó cắt đường đi của xe ngược chiều.",
+   "start": 6.88,
+   "end": 11.76
+  },
+  {
+   "text": "Nếu không thấy rõ bối cảnh hoặc luồng xe bị cắt, không suy diễn từ riêng góc quay.",
+   "start": 12.31,
+   "end": 16.55
+  }
+ ],
+ "duration": 17.95
+}

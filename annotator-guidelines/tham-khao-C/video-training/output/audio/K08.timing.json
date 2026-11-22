@@ -1,0 +1,20 @@
+{
+ "sentences": [
+  {
+   "text": "K08 dùng khi xe đang đi theo hướng của mình rồi lấn qua ranh giới giữa đường sang phần đường ngược chiều, chẳng hạn khi vượt, vào cua hoặc đi thẳng.",
+   "start": 0.5,
+   "end": 7.54
+  },
+  {
+   "text": "Cần thấy quá trình xe đi từ phần đường ban đầu sang phía đối diện.",
+   "start": 8.09,
+   "end": 11.21
+  },
+  {
+   "text": "K09 là xe đã đi ngược chiều trên làn của người khác, không thấy chuyển từ làn đúng sang làn đối diện trong đoạn quan sát.",
+   "start": 11.76,
+   "end": 17.76
+  }
+ ],
+ "duration": 19.16
+}

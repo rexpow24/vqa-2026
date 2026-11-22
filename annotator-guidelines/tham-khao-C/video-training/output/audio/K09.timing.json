@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K09 dùng khi xe di chuyển ngược chiều trên làn dành cho hướng xe khác.",
+   "start": 0.5,
+   "end": 4.18
+  },
+  {
+   "text": "Hãy xem phần mở đầu của đoạn video để xác định xe có lấn qua ranh giới hay đã đi ngược chiều từ trước.",
+   "start": 4.73,
+   "end": 10.01
+  },
+  {
+   "text": "Thấy xe chuyển từ làn của mình sang phần đường đối diện thì K08.",
+   "start": 10.56,
+   "end": 13.92
+  },
+  {
+   "text": "Nếu không đủ khung hình để biết, chọn không rõ thay vì đoán.",
+   "start": 14.47,
+   "end": 17.43
+  }
+ ],
+ "duration": 18.83
+}

@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "So sánh K11 và K12.",
+   "start": 0.5,
+   "end": 2.5
+  },
+  {
+   "text": "K11 có hai luồng đi thẳng từ các hướng đường giao nhau.",
+   "start": 3.05,
+   "end": 6.01
+  },
+  {
+   "text": "K12 có một xe đi từ hẻm, đường nhánh hoặc lối ra bãi xe để nhập vào đường chính.",
+   "start": 6.56,
+   "end": 11.12
+  },
+  {
+   "text": "Hãy tìm miệng đường nối và hướng di chuyển của từng xe; đừng gọi mọi tình huống hình chữ T là cùng một mã nếu lối ra là hẻm hoặc bãi xe.",
+   "start": 11.67,
+   "end": 18.87
+  }
+ ],
+ "duration": 20.27
+}

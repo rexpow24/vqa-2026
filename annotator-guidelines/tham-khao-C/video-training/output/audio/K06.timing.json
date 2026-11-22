@@ -1,0 +1,20 @@
+{
+ "sentences": [
+  {
+   "text": "K06 dùng khi hai bên đang đi cùng chiều nhưng một bên rẽ trái hoặc rẽ phải, cắt qua đường đi của bên kia.",
+   "start": 0.5,
+   "end": 6.26
+  },
+  {
+   "text": "Dấu hiệu là quỹ đạo đổi hướng rẽ, không chỉ dịch chuyển sang làn bên cạnh.",
+   "start": 6.81,
+   "end": 10.41
+  },
+  {
+   "text": "Đổi làn thuần túy là K04; xe rẽ cắt dòng xe ngược chiều là K10.",
+   "start": 10.96,
+   "end": 14.8
+  }
+ ],
+ "duration": 16.2
+}

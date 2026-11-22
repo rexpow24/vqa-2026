@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K05 dùng khi một xe đi cùng chiều vượt xe khác ở bên trái, bên phải hoặc len giữa các xe.",
+   "start": 0.5,
+   "end": 5.54
+  },
+  {
+   "text": "Hãy xem xe có đi vượt lên trước hay đang luồn qua dòng xe.",
+   "start": 6.09,
+   "end": 9.45
+  },
+  {
+   "text": "Chỉ đổi làn hoặc nhập làn mà chưa thể hiện hành vi vượt thì là K04.",
+   "start": 10.0,
+   "end": 13.68
+  },
+  {
+   "text": "Rẽ ngang cắt qua xe cùng chiều là K06.",
+   "start": 14.23,
+   "end": 16.95
+  }
+ ],
+ "duration": 18.35
+}

@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K11 dùng khi hai luồng xe đi thẳng từ các hướng cắt nhau tại giao lộ.",
+   "start": 0.5,
+   "end": 4.1
+  },
+  {
+   "text": "Trước khi gán, kiểm tra có đường giao nhau hay không và cả hai xe có tiếp tục đi thẳng qua nút giao không.",
+   "start": 4.65,
+   "end": 9.85
+  },
+  {
+   "text": "Xe đi ra từ hẻm hoặc đường nhánh để nhập đường chính là K12.",
+   "start": 10.4,
+   "end": 13.68
+  },
+  {
+   "text": "Băng ngang giữa đoạn không có giao lộ là K14.",
+   "start": 14.23,
+   "end": 16.79
+  }
+ ],
+ "duration": 18.19
+}

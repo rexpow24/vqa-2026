@@ -1,0 +1,20 @@
+{
+ "sentences": [
+  {
+   "text": "K07 dùng khi xe đang đỗ ven đường mở cửa vào làn xe chạy, hoặc bắt đầu rời chỗ đỗ và đi vào đường đi của bên khác.",
+   "start": 0.5,
+   "end": 6.58
+  },
+  {
+   "text": "Hãy nhìn vị trí xe sát lề và động tác mở cửa hoặc rời chỗ đỗ.",
+   "start": 7.13,
+   "end": 10.57
+  },
+  {
+   "text": "Xe đi ra từ miệng hẻm, đường nhánh hay lối vào bãi xe là K12.",
+   "start": 11.12,
+   "end": 14.56
+  }
+ ],
+ "duration": 15.96
+}

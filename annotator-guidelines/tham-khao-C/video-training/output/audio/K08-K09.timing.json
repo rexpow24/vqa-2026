@@ -1,0 +1,30 @@
+{
+ "sentences": [
+  {
+   "text": "So sánh K08 và K09.",
+   "start": 0.5,
+   "end": 2.74
+  },
+  {
+   "text": "Ở K08, nhìn thấy xe bắt đầu ở phần đường của mình rồi lấn qua ranh giới.",
+   "start": 3.29,
+   "end": 7.37
+  },
+  {
+   "text": "Ở K09, xe đã đi ngược chiều trên làn của hướng khác trong đoạn quan sát.",
+   "start": 7.92,
+   "end": 12.24
+  },
+  {
+   "text": "Khác biệt nằm ở quá trình trước xung đột.",
+   "start": 12.79,
+   "end": 14.87
+  },
+  {
+   "text": "Nếu video không cho thấy đủ đoạn đường để xác định quá trình, chọn không rõ.",
+   "start": 15.42,
+   "end": 19.34
+  }
+ ],
+ "duration": 20.74
+}

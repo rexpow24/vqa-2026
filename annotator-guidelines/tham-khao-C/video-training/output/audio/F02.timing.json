@@ -1,0 +1,20 @@
+{
+ "sentences": [
+  {
+   "text": "Chọn va chạm khi video cho thấy va chạm hoặc sự kiện gây hại như xe tự lật, văng khỏi đường.",
+   "start": 0.5,
+   "end": 5.38
+  },
+  {
+   "text": "Chọn suýt va chạm khi chưa có thiệt hại và có tình huống phải né để tránh tai nạn.",
+   "start": 5.93,
+   "end": 10.09
+  },
+  {
+   "text": "Không dùng suýt va chạm chỉ vì góc quay không thấy điểm chạm; hãy xem toàn bộ đoạn có sẵn.",
+   "start": 10.64,
+   "end": 15.36
+  }
+ ],
+ "duration": 16.76
+}

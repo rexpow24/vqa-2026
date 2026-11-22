@@ -1,0 +1,25 @@
+{
+ "sentences": [
+  {
+   "text": "K12 dùng khi xe đi từ đường nhánh, hẻm hoặc lối ra bãi xe nhập vào đường chính và đi vào đường đi của xe khác.",
+   "start": 0.5,
+   "end": 6.58
+  },
+  {
+   "text": "Dấu hiệu là miệng đường hoặc lối ra nối với đường chính.",
+   "start": 7.13,
+   "end": 9.77
+  },
+  {
+   "text": "Hai luồng đi thẳng qua giao lộ là K11.",
+   "start": 10.32,
+   "end": 12.24
+  },
+  {
+   "text": "Xe rời vị trí đỗ sát lề là K07; xe băng ngang đường giữa đoạn là K14.",
+   "start": 12.79,
+   "end": 17.59
+  }
+ ],
+ "duration": 18.99
+}
