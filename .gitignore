@@ -1,5 +1,6 @@
 venv/
 .venv/
+.venv-c-video/
 __pycache__/
 *.pyc
 work/
