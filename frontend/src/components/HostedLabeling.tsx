@@ -207,18 +207,22 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
     {ready && !assignment && <p className="rounded border border-amber bg-surface p-3 text-sm text-amber">
       Video này chưa được giao cho bạn nên chỉ xem được. Giao video ở trang Phân công.
     </p>}
-    <div className={`grid items-start gap-5 ${reference ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
-      : "lg:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,600px)_minmax(0,1fr)]"}`}>
+    {/* Alone, the video column is as wide as a 16:9 video 60% of the screen tall and the cards keep
+        at least 28rem. With a reference clip (features/c-reference-hints) the cards narrow to a fixed
+        26-28rem and the two clips share the rest of the page side by side. */}
+    <div className={`grid items-start gap-5 ${reference
+      ? "lg:grid-cols-[minmax(0,1fr)_minmax(22rem,24rem)] xl:grid-cols-[minmax(0,1fr)_minmax(26rem,28rem)]"
+      : "lg:grid-cols-[minmax(0,1fr)_minmax(24rem,1fr)] xl:grid-cols-[minmax(0,calc(60vh*16/9))_minmax(28rem,1fr)]"}`}>
       <div className="flex flex-col gap-4 lg:sticky lg:top-4">
-        <div className={reference ? "grid gap-2 sm:grid-cols-2" : ""}>
+        <div className={reference ? "grid items-start gap-3 sm:grid-cols-2" : ""}>
           <video ref={videoRef} src={`/api/videos/${video.id}/stream`} controls loop playsInline preload="metadata"
             onTimeUpdate={(event) => setPlayhead(event.currentTarget.currentTime)}
             onError={() => setError("Không thể tải hoặc giải mã video. Hãy thử tải lại trang.")}
-            className="w-full rounded-md border border-border-strong bg-black" />
+            className="max-h-[60vh] w-full rounded-md border border-border-strong bg-black object-contain" />
           {reference && <figure data-reference={reference.id} className="flex flex-col gap-1.5">
             <video key={reference.id} src={`/api/references/${reference.id}/stream`} controls autoPlay muted loop playsInline
               preload="metadata" onError={() => setError("Không tải được video tham khảo.")}
-              className="w-full rounded-md border border-amber/60 bg-black" />
+              className="max-h-[60vh] w-full rounded-md border border-amber/60 bg-black object-contain" />
             <figcaption className="flex items-start gap-2 text-xs">
               <span className="min-w-0"><b className="text-amber">Tham khảo:</b> {reference.title}
                 {reference.cues.length > 0 && <span className="block text-foreground/70">{reference.cues.join(" · ")}</span>}</span>
