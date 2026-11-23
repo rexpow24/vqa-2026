@@ -205,37 +205,44 @@ test("V asks for violator and behaviour only when there is a violation, with a s
     ["outer.behavior"], "Tối đa 200 ký tự.");
 });
 
-test("O.v2 on a collision asks the level first, then only the signs of that level (features/o-level-first)", () => {
+test("O.v2 on a collision asks the signs, grouped by level, and derives the level as the highest (features/o-signs-max-grouped)", () => {
   const cause = { subject: { entity: "B" }, object: { entity: "A" }, event_type: { option: "event_type.collision" } };
   const context = { ...TWO, cause };
   const start = defaultState("O", context);
   assert.deepEqual(start.refs, ["B", "A"]);
-  assert.deepEqual(keys("O", start, context), ["outer.level", "outer.parties"]);
+  assert.deepEqual(keys("O", start, context), ["outer.level", "outer.signs", "outer.parties"]);
   const level = fields("O", start, context).find((item) => item.key === "outer.level")!;
-  assert.ok(!level.readOnly);
-  assert.deepEqual(level.options.map((item) => item.id), ["level.minor", "level.moderate", "level.severe"]);
-  assert.equal(problems("O", start, context)["outer.level"], "Chưa chọn.");
-  const moderate = fill("O", context, [["outer.level", { option: "level.moderate" }]], start);
-  assert.deepEqual(keys("O", moderate, context), ["outer.level", "outer.signs", "outer.parties"]);
-  assert.deepEqual(outcomeState(moderate, context).cells.level, { option: "level.moderate" });
-  const signsOf = (state: FormState) => fields("O", state, context).find((item) => item.key === "outer.signs")!.options.map((item) => item.id);
-  assert.deepEqual(signsOf(moderate), ["sign.vehicle_fell", "sign.person_fell", "sign.spun_or_lost_control", "sign.visible_body_damage"]);
-  assert.equal(problems("O", moderate, context)["outer.signs"], "Chưa chọn.");
-  const damaged = fill("O", context, [["outer.signs", { options: ["sign.visible_body_damage", "sign.person_fell", "sign.vehicle_fell"] }]], moderate);
+  assert.equal(level.readOnly, true);
+  assert.equal(problems("O", start, context)["outer.signs"], "Chưa chọn.");
+  // Every sign is offered, each under the label of its level, in codebook order.
+  const signField = fields("O", start, context).find((item) => item.key === "outer.signs")!;
+  assert.deepEqual(signField.options.map((item) => [item.id, item.group]), [
+    ["sign.contact_balanced", "va chạm nhẹ"],
+    ["sign.vehicle_fell", "va chạm vừa"], ["sign.person_fell", "va chạm vừa"],
+    ["sign.spun_or_lost_control", "va chạm vừa"], ["sign.visible_body_damage", "va chạm vừa"],
+    ["sign.overturned", "va chạm mạnh"], ["sign.person_thrown", "va chạm mạnh"],
+    ["sign.vehicle_thrown", "va chạm mạnh"], ["sign.major_deformation", "va chạm mạnh"],
+  ]);
+  const damaged = fill("O", context, [["outer.signs", { options: ["sign.visible_body_damage", "sign.person_fell", "sign.vehicle_fell"] }]], start);
+  assert.deepEqual(outcomeState(damaged, context).cells.level, { option: "level.moderate" });
   assert.deepEqual(buildSlots("O", damaged, context), { level: { option: "level.moderate" },
     signs: { options: ["sign.vehicle_fell", "sign.person_fell", "sign.visible_body_damage"] }, parties: [{ entity: "B" }, { entity: "A" }] });
   assert.deepEqual(problems("O", damaged, context), {});
   assert.equal(preview("O", buildSlots("O", damaged, context), context),
     "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm vừa, xe đổ tại chỗ, người ngã tại chỗ, có hư hỏng nhìn thấy được ở thân xe (ô tô).");
-  // A new level drops the signs of the old one; severe no longer offers "va chạm thứ cấp".
-  const severe = fill("O", context, [["outer.level", { option: "level.severe" }]], damaged);
-  assert.equal(severe.cells.signs, undefined);
-  assert.deepEqual(signsOf(severe), ["sign.overturned", "sign.person_thrown", "sign.vehicle_thrown", "sign.major_deformation"]);
-  assert.equal(problems("O", severe, context)["outer.signs"], "Chưa chọn.");
-  // "va chạm nhẹ" has one sign, which is ticked at once.
-  const minor = fill("O", context, [["outer.level", { option: "level.minor" }]], damaged);
-  assert.deepEqual(buildSlots("O", minor, context), { level: { option: "level.minor" },
-    signs: { options: ["sign.contact_balanced"] }, parties: [{ entity: "B" }, { entity: "A" }] });
+  // A severe sign lifts the level; the moderate signs stay recorded.
+  const thrown = fill("O", context, [["outer.signs", { options: ["sign.person_thrown", "sign.person_fell"] }]], damaged);
+  assert.deepEqual(buildSlots("O", thrown, context), { level: { option: "level.severe" },
+    signs: { options: ["sign.person_fell", "sign.person_thrown"] }, parties: [{ entity: "B" }, { entity: "A" }] });
+  // "có chạm nhưng các bên vẫn giữ thăng bằng" contradicts every other sign.
+  const balanced = fill("O", context, [["outer.signs", { options: ["sign.person_fell", "sign.person_thrown", "sign.contact_balanced"] }]], thrown);
+  assert.deepEqual(buildSlots("O", balanced, context).signs, { options: ["sign.contact_balanced"] });
+  assert.deepEqual(buildSlots("O", balanced, context).level, { option: "level.minor" });
+  const again = fill("O", context, [["outer.signs", { options: ["sign.contact_balanced", "sign.overturned"] }]], balanced);
+  assert.deepEqual(buildSlots("O", again, context).signs, { options: ["sign.overturned"] });
+  // A level the client sends is never used.
+  const forged = { ...damaged, cells: { ...damaged.cells, level: { option: "level.minor" } } };
+  assert.deepEqual(buildSlots("O", forged, context).level, { option: "level.moderate" });
 
   const nearMiss = { ...TWO, cause: { ...cause, event_type: { option: "event_type.near_miss" } } };
   assert.deepEqual(keys("O", defaultState("O", nearMiss), nearMiss), ["outer.level"]);
@@ -254,22 +261,23 @@ test("O.v2 on a collision asks the level first, then only the signs of that leve
     .some((option) => option.id === "level.unclear"));
 });
 
-test("deriveOutcome reads C: near miss and legacy unclear are none; a collision keeps the chosen level and only its signs", () => {
+test("deriveOutcome reads C: near miss and legacy unclear are none; a collision is the highest level of its signs", () => {
   const cause = { subject: { entity: "B" }, object: { entity: "A" }, event_type: { option: "event_type.collision" } };
   assert.equal(deriveOutcome(null, null), null);
   assert.deepEqual(deriveOutcome({ ...cause, event_type: { option: "event_type.near_miss" } }, { signs: { options: ["sign.overturned"] } }),
     { level: { option: "level.none" } });
   assert.deepEqual(deriveOutcome({ ...cause, event_type: { option: "event_type.unclear" } }, null), { level: { option: "level.none" } });
-  assert.deepEqual(deriveOutcome(cause, { level: { option: "level.moderate" },
+  // the client's level is ignored; signs keep codebook order
+  assert.deepEqual(deriveOutcome(cause, { level: { option: "level.minor" },
     signs: { options: ["sign.visible_body_damage", "sign.overturned", "sign.person_fell"] }, parties: [{ entity: "A" }] }),
-  { level: { option: "level.moderate" }, signs: { options: ["sign.person_fell", "sign.visible_body_damage"] }, parties: [{ entity: "A" }] });
-  // no level chosen, or "không va chạm" on a collision: no level yet, so the save is refused
-  assert.deepEqual(deriveOutcome(cause, { signs: { options: ["sign.overturned"] } }), { parties: [{ entity: "B" }, { entity: "A" }] });
-  assert.deepEqual(deriveOutcome(cause, { level: { option: "level.none" } }), { parties: [{ entity: "B" }, { entity: "A" }] });
+  { level: { option: "level.severe" }, signs: { options: ["sign.person_fell", "sign.visible_body_damage", "sign.overturned"] },
+    parties: [{ entity: "A" }] });
+  // no sign: no level yet, so the save is refused
+  assert.deepEqual(deriveOutcome(cause, { level: { option: "level.severe" } }), { parties: [{ entity: "B" }, { entity: "A" }] });
   assert.deepEqual(deriveOutcome(cause, null), { parties: [{ entity: "B" }, { entity: "A" }] });
-  // the removed secondary-collision sign is dropped
-  assert.deepEqual(deriveOutcome(cause, { level: { option: "level.severe" }, signs: { options: ["sign.secondary_collision"] } }),
-    { level: { option: "level.severe" }, parties: [{ entity: "B" }, { entity: "A" }] });
+  // unknown and removed signs ("va chạm thứ cấp") are dropped
+  assert.deepEqual(deriveOutcome(cause, { signs: { options: ["sign.secondary_collision", "sign.unknown"] } }),
+    { parties: [{ entity: "B" }, { entity: "A" }] });
   assert.equal(outcomeNeedsAnnotator(cause), true);
   assert.equal(outcomeNeedsAnnotator({ ...cause, event_type: { option: "event_type.near_miss" } }), false);
 });
@@ -319,7 +327,7 @@ test("stored slots load back into the same form", () => {
     ["Prev", fill("Prev", TWO, [["outer.party", { option: "party.both" }], ["0.main_action", { option: "main_action.slow_down" }],
       ["1.main_action", { option: "main_action.signal" }]]), TWO],
     ["Prev", fill("Prev", TWO, [["outer.party", { option: "party.unclear" }]]), TWO],
-    ["O", fill("O", O_COLLISION, [["outer.level", { option: "level.severe" }], ["outer.signs", { options: ["sign.person_thrown"] }],
+    ["O", fill("O", O_COLLISION, [["outer.signs", { options: ["sign.person_thrown"] }],
       ["outer.parties", ["A"]]]), O_COLLISION],
   ];
   for (const [qgroup, state, context] of cases) {
@@ -511,8 +519,8 @@ test("422 codes read in Vietnamese, naming the cell", () => {
   assert.match(errorText("S", "something_new", "Slot answer: whatever").message, /^Không lưu được \(something_new\)/);
   assert.deepEqual(errorText("O", "missing_cell", "Slot answer: cell signs is required for a collision level"),
     { message: "Chưa chọn ô \"Dấu hiệu nhìn thấy rõ\".", cellId: "signs" });
-  assert.match(errorText("O", "level_mismatch", "Slot answer: every sign must be a sign of level level.minor (found level.severe)").message,
-    /thuộc mức độ đã chọn/);
+  assert.match(errorText("O", "level_mismatch", "Slot answer: level level.minor is not the highest level of its signs (level.severe)").message,
+    /mức cao nhất/);
 });
 
 test("stored slots compare equal whatever their key order", async () => {

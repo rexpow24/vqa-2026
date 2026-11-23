@@ -2,7 +2,7 @@
 
 - Câu hỏi chuẩn: Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?
 - Tên thực thể A, B, C lấy từ Nhóm E. Các bên được tự điền từ cặp chủ thể và đối tượng của Nhóm C.
-- C va chạm: chọn mức độ trước, sau đó chọn các dấu hiệu thấy rõ của mức đó. C suýt va chạm: hệ thống tự điền "không va chạm".
+- C va chạm: chọn mọi dấu hiệu thấy rõ; mức độ tự suy ra là mức cao nhất trong các dấu hiệu đã chọn. C suýt va chạm: hệ thống tự điền "không va chạm".
 - Không ghi thương tích hay tử vong. Chỉ ghi hậu quả vật lý nhìn thấy.
 - Mức độ tính cho toàn sự kiện: lấy mức cao nhất trong các bên.
 
@@ -12,7 +12,7 @@
 | --- | --- |
 | Suýt va chạm | Tự điền "không va chạm", không cần chọn gì. |
 | Không rõ loại sự kiện (chỉ có ở câu C cũ) | Tự điền "không va chạm", không cần chọn gì. |
-| Va chạm | Chọn mức độ trước, rồi chọn mọi dấu hiệu thấy rõ của mức đó, ít nhất một dấu hiệu. |
+| Va chạm | Chọn mọi dấu hiệu thấy rõ, ít nhất một dấu hiệu; mức độ tự suy ra là mức cao nhất trong các dấu hiệu đã chọn. |
 
 Suýt va chạm chỉ dùng khi không có thiệt hại; bên né ngã, trượt hoặc chạm thực thể khác thì C là "va chạm" và ghi dấu hiệu theo hậu quả nhìn thấy.
 
@@ -21,7 +21,7 @@ Suýt va chạm chỉ dùng khi không có thiệt hại; bên né ngã, trượ
 | Ô | Lựa chọn |
 | --- | --- |
 | 1. Mức độ | không va chạm · va chạm nhẹ · va chạm vừa · va chạm mạnh |
-| 2. Dấu hiệu nhìn thấy rõ | nhiều lựa chọn, chỉ hiện dấu hiệu của mức đã chọn, theo bảng dưới |
+| 2. Dấu hiệu nhìn thấy rõ | nhiều lựa chọn, mọi dấu hiệu hiện ra, xếp theo mức độ như bảng dưới |
 
 | Mức độ | Dấu hiệu nhìn thấy rõ |
 | --- | --- |
@@ -29,7 +29,7 @@ Suýt va chạm chỉ dùng khi không có thiệt hại; bên né ngã, trượ
 | Va chạm vừa | xe đổ tại chỗ · người ngã tại chỗ · xoay ngang mất lái · có hư hỏng nhìn thấy được ở thân xe (ô tô) |
 | Va chạm mạnh | bị lật · người bị hất văng khỏi xe · xe bị hất khỏi quỹ đạo · biến dạng nghiêm trọng, cấu trúc xe bị phá vỡ rõ rệt |
 
-Chỉ hiện dấu hiệu của mức đã chọn; thấy dấu hiệu của nhiều mức thì chọn mức cao nhất.
+Thấy dấu hiệu của nhiều mức thì chọn hết; mức độ là mức cao nhất trong các dấu hiệu đã chọn, annotator không chọn mức độ.
 Chỉ chọn dấu hiệu khi thấy rõ trong video.
 Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đoán thêm; đã có chạm thì tối thiểu là "va chạm nhẹ".
 

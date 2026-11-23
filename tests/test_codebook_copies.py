@@ -225,8 +225,9 @@ def test_o_v2_drops_unclear_and_derives_the_level_from_multi_select_signs():
     # features/o-v2-sign-revision: "không đánh giá" merged into "không va chạm".
     assert levels == ["level.none", "level.minor", "level.moderate", "level.severe"]
     assert all(template["case"] != "C không rõ loại sự kiện" for template in o2["templates"])
-    # features/o-level-first: the annotator chooses the level on a collision, then its signs.
-    assert "read_only" not in cells["level"] and cells["level"]["required"] is True
+    # features/o-signs-max-grouped: the level is derived from the signs again, never chosen.
+    assert cells["level"]["read_only"] is True and cells["level"]["required"] is True
+    assert any("mức cao nhất" in rule for rule in o2["constraints"])
     assert "sign.secondary_collision" not in {option["id"] for option in cells["signs"]["options"]}
     signs = cells["signs"]
     assert signs["multiple"] is True and "parent_cell" not in signs
@@ -244,10 +245,16 @@ def test_o_v2_drops_unclear_and_derives_the_level_from_multi_select_signs():
 
 
 def test_o_v2_migration_seeds_exact_bytes():
-    migration = ROOT / "supabase" / "migrations" / "20261123100000_o_v2_visible_signs.sql"
-    seeded = dict(re.findall(r"\('([^']+)', 'O', 2, \$cb\$.*?\$cb\$::jsonb,\s*'([0-9a-f]{64})'",
-                             migration.read_text(encoding="utf-8"), re.S))
-    assert seeded.get("O.v2") == hashlib.sha256((SOURCE / "O.v2.json").read_bytes()).hexdigest()
+    """20261123100000 is applied in production and stays as it ran; the O.v2 row is revised
+    in place by 20261124100000 (features/o-signs-max-grouped), which must carry the file's bytes."""
+    migration = ROOT / "supabase" / "migrations" / "20261124100000_o_v2_signs_max.sql"
+    text = migration.read_text(encoding="utf-8")
+    content = re.search(r"set content = \$cb\$(.*?)\$cb\$::jsonb,\s*sha256 = '([0-9a-f]{64})'", text, re.S)
+    assert content, "the migration must update the O.v2 row's content and sha256"
+    source = (SOURCE / "O.v2.json").read_bytes()
+    assert content.group(2) == hashlib.sha256(source).hexdigest()
+    assert json.loads(content.group(1)) == json.loads(source.decode("utf-8"))
+    assert "where id = 'O.v2'" in text
 
 
 def test_e_v5_keeps_the_e_v4_cells_and_takes_at_most_two_parties():

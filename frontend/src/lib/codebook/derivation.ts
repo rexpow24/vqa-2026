@@ -76,30 +76,38 @@ function outcomeSigns(): { id: string; level: string; exclusive: boolean }[] {
   return (cell?.options ?? []).map((item) => ({ id: item.id, level: String(item.level), exclusive: item.exclusive === true }));
 }
 
-/** The O.v2 levels an annotator chooses on a C collision: every level but "không va chạm" (rank above 0). */
-export function collisionLevels(): string[] {
+/** The rank of an O.v2 level (none 0 ... severe 3). */
+function levelRank(level: string): number {
   const cell = getCodebook(currentVersion("O") ?? "")?.cells.find((item) => item.id === "level");
-  return (cell?.options ?? []).filter((item) => typeof item.rank === "number" && item.rank > 0).map((item) => item.id);
+  const rank = cell?.options?.find((item) => item.id === level)?.rank;
+  return typeof rank === "number" ? rank : -1;
 }
 
-/** The O.v2 signs of one level, in codebook order (features/o-level-first: signs show under their level). */
-export function signsOfLevel(level: string | undefined): string[] {
-  return outcomeSigns().filter((sign) => sign.level === level).map((sign) => sign.id);
+/** The level of a set of O.v2 signs: the highest level among them, or undefined for none. */
+export function outcomeLevel(signIds: string[]): string | undefined {
+  const levels = outcomeSigns().filter((sign) => signIds.includes(sign.id)).map((sign) => sign.level);
+  return levels.reduce<string | undefined>((best, level) =>
+    best === undefined || levelRank(level) > levelRank(best) ? level : best, undefined);
 }
 
-/** Whether O needs the annotator's level and signs (a C collision), as opposed to being fully derived from C. */
+/** The label of each O.v2 sign's level ("va chạm vừa"), which the form shows as the sign's group. */
+export function signLevelLabels(): Record<string, string> {
+  const levels = getCodebook(currentVersion("O") ?? "")?.cells.find((item) => item.id === "level")?.options ?? [];
+  return Object.fromEntries(outcomeSigns().map((sign) => [sign.id, levels.find((item) => item.id === sign.level)?.label ?? ""]));
+}
+
+/** Whether O needs the annotator's signs (a C collision), as opposed to being fully derived from C. */
 export function outcomeNeedsAnnotator(cause: Slots | null | undefined): boolean {
   return option(cause?.event_type) === "event_type.collision";
 }
 
 /**
- * O.v2 from the caller's C and the cells the annotator gave (codebook O.v2, `inferred_from`):
+ * O.v2 from the caller's C and the signs the annotator ticked (codebook O.v2, `inferred_from`):
  * near miss and a legacy C with an unclear event are "không va chạm" ("không đánh giá" was
- * merged into it, features/o-v2-sign-revision). On a collision the annotator chooses the
- * level first (features/o-level-first) and only the known signs of that level are kept, in
- * codebook order, so a sign left over from a level chosen before is dropped.
- * A collision without a chosen level has no level (the save is refused); no C gives null.
- * The client's level is used only on a collision, and only a collision level.
+ * merged into it, features/o-v2-sign-revision). A collision keeps the known signs in codebook
+ * order with the highest of their levels (features/o-signs-max-grouped, after the level-first
+ * trial of features/o-level-first). A collision without a sign has no level yet (the save is
+ * refused); no C gives null. The level the client sent is never used.
  */
 export function deriveOutcome(cause: Slots | null | undefined, submitted: Slots | null | undefined): Slots | null {
   const event = option(cause?.event_type);
@@ -107,14 +115,14 @@ export function deriveOutcome(cause: Slots | null | undefined, submitted: Slots 
   if (event !== "event_type.collision") return { level: { option: "level.none" } };
   const value = submitted?.signs as SlotValue | undefined;
   const chosen = new Set(value?.options ?? (value?.option ? [value.option] : []));
-  const level = option(submitted?.level);
+  const signs = outcomeSigns().filter((sign) => chosen.has(sign.id)).map((sign) => sign.id);
   const given = Array.isArray(submitted?.parties) ? (submitted!.parties as SlotValue[]).map((ref) => ref?.entity) : [];
   const parties = given.length && given.every((key): key is string => typeof key === "string") ? given : causePair(cause);
   const out: Slots = {};
-  if (level && collisionLevels().includes(level)) {
+  const level = outcomeLevel(signs);
+  if (level) {
     out.level = { option: level };
-    const signs = signsOfLevel(level).filter((id) => chosen.has(id));
-    if (signs.length) out.signs = { options: signs };
+    out.signs = { options: signs };
   }
   if (parties.length) out.parties = parties.slice(0, 2).map((key) => ({ entity: key }));
   return out;

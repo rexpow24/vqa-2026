@@ -1,7 +1,7 @@
 // Verifies O.v2 (features/o-codebook-v2/acceptance.md) through the real routes
 // and the local database: O is derived from the caller's C (a near miss fixes the
-// level; on a collision the annotator chooses the level first and only the signs
-// of that level are kept, features/o-level-first), the database refuses an inconsistent O.v2, O.v1 rows
+// level; on a collision the level is the highest level of the ticked signs,
+// features/o-signs-max-grouped), the database refuses an inconsistent O.v2, O.v1 rows
 // stay valid, and a video whose O contradicts C cannot be completed.
 //
 //   NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=... \
@@ -96,20 +96,20 @@ try {
 
   const noSign = await save("O", { level: opt("level.severe") });
   check("a collision O without a sign is refused", noSign.status === 422 && noSign.data?.code === "missing_cell", noSign);
-  // features/o-level-first: on a collision the level is chosen first; signs alone or "không va chạm" are refused.
-  const noLevel = await save("O", { signs: { options: ["sign.overturned"] } });
-  check("a collision O without a chosen level is refused", noLevel.status === 422 && noLevel.data?.code === "missing_cell", noLevel);
   const noneOnCollision = await save("O", { level: opt("level.none") });
-  check("a collision O with 'không va chạm' is refused", noneOnCollision.status === 422
+  check("a collision O with 'không va chạm' and no sign is refused", noneOnCollision.status === 422
     && noneOnCollision.data?.code === "missing_cell", noneOnCollision);
 
-  const ticked = await save("O", { level: opt("level.severe"), parties: [ent("B"), ent("A")],
-    signs: { options: ["sign.person_thrown", "sign.person_fell", "sign.overturned", "sign.contact_balanced"] } }, "O.v1");
+  // features/o-signs-max-grouped: the level is the highest of the signs; the client's level and version are ignored.
+  const ticked = await save("O", { level: opt("level.minor"), parties: [ent("B"), ent("A")],
+    signs: { options: ["sign.person_thrown", "sign.person_fell", "sign.overturned"] } }, "O.v1");
   const answer = await stored(drafts.O);
-  check("O stores the chosen level with only its own signs, in codebook order, as O.v2 whatever version the client sent",
+  check("O stores the highest sign level and every sign, in codebook order, as O.v2 whatever level and version the client sent",
     ticked.status === 200 && answer.codebook_version === "O.v2" && isDeepStrictEqual(answer.slots, {
-      level: opt("level.severe"), signs: { options: ["sign.overturned", "sign.person_thrown"] }, parties: [ent("B"), ent("A")],
-    }) && answer.edited_answer === "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm mạnh, bị lật, người bị hất văng khỏi xe.",
+      level: opt("level.severe"), signs: { options: ["sign.person_fell", "sign.overturned", "sign.person_thrown"] },
+      parties: [ent("B"), ent("A")],
+    }) && answer.edited_answer
+      === "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm mạnh, người ngã tại chỗ, bị lật, người bị hất văng khỏi xe.",
     { status: ticked.status, data: ticked.data, answer });
   const allowed = await request(base, `/api/videos/${video.id}/complete`, user.cookie, "POST");
   check("once O agrees with C, completion is not refused for O", allowed.data?.code !== "outcome_conflict", allowed);
@@ -135,13 +135,16 @@ try {
   const inconsistent = await user.client.from("qa_annotations").upsert({ draft_id: drafts.O, annotator_id: userId, verdict: "SLOTS",
     codebook_version: "O.v2", slots: { level: opt("level.minor"), signs: { options: ["sign.overturned"] } },
     edited_answer: "x", human_keyframes_s: [] }, { onConflict: "draft_id,annotator_id" });
-  check("the database refuses an O.v2 sign of another level", inconsistent.error?.hint === "level_mismatch",
+  check("the database refuses an O.v2 level below its highest sign", inconsistent.error?.hint === "level_mismatch",
     inconsistent.error);
+  const above = await user.client.from("qa_annotations").upsert({ draft_id: drafts.O, annotator_id: userId, verdict: "SLOTS",
+    codebook_version: "O.v2", slots: { level: opt("level.severe"), signs: { options: ["sign.vehicle_fell"] } },
+    edited_answer: "x", human_keyframes_s: [] }, { onConflict: "draft_id,annotator_id" });
+  check("the database refuses an O.v2 level above its highest sign", above.error?.hint === "level_mismatch", above.error);
   const mixed = await user.client.from("qa_annotations").upsert({ draft_id: drafts.O, annotator_id: userId, verdict: "SLOTS",
     codebook_version: "O.v2", slots: { level: opt("level.severe"), signs: { options: ["sign.vehicle_fell", "sign.overturned"] } },
     edited_answer: "x", human_keyframes_s: [] }, { onConflict: "draft_id,annotator_id" });
-  check("the database refuses a moderate sign under the severe level (no 'highest sign' any more)",
-    mixed.error?.hint === "level_mismatch", mixed.error);
+  check("the database accepts a moderate and a severe sign as severe", !mixed.error, mixed.error);
   const secondary = await user.client.from("qa_annotations").upsert({ draft_id: drafts.O, annotator_id: userId, verdict: "SLOTS",
     codebook_version: "O.v2", slots: { level: opt("level.severe"), signs: { options: ["sign.secondary_collision"] } },
     edited_answer: "x", human_keyframes_s: [] }, { onConflict: "draft_id,annotator_id" });

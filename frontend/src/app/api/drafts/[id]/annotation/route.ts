@@ -162,13 +162,13 @@ async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: st
   try {
     // Prev and O are derived from the caller's C: what the client sent for a
     // derived cell is never stored: a near miss fixes the O level, and a collision
-    // keeps only a collision level and the signs of that level
-    // (features/o-codebook-v2, features/o-level-first).
+    // takes the highest level of its signs (features/o-codebook-v2,
+    // features/o-signs-max-grouped).
     const canonicalSlots = draft.qgroup === "Prev" ? derivePreventionFromCause(linked!.slots, entities)
       : draft.qgroup === "O" ? deriveOutcome(linked!.slots, slots as Slots) ?? {} : slots as Slots;
     const canonicalVersion = draft.qgroup === "Prev" || draft.qgroup === "O" ? currentVersion(draft.qgroup)! : version;
     if (draft.qgroup === "O" && !canonicalSlots.level) {
-      return slotError("missing_cell", "Nhóm C là va chạm: chọn mức độ, rồi chọn ít nhất một dấu hiệu nhìn thấy rõ của mức đó.");
+      return slotError("missing_cell", "Nhóm C là va chạm: chọn ít nhất một dấu hiệu nhìn thấy rõ.");
     }
     const composed = compose(draft.qgroup, canonicalSlots,
       { version: canonicalVersion, entities, cause: draft.qgroup === "R" ? linked!.slots : undefined });

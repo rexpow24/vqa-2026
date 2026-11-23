@@ -188,11 +188,14 @@ test("O.v2 lists the chosen level and the visible signs of that level, with a fi
     { entities: ENTITIES }), "Xe máy màu đỏ: người ngã tại chỗ.");
   // the merged "xe hoặc người ngã tại chỗ" was split in two
   assert.throws(() => compose("O", { level: o("level.moderate"), signs: signs("sign.fell_in_place") }), { code: "unknown_option" });
-  // features/o-level-first: every sign belongs to the chosen level, so a severe level
-  // with a moderate sign is refused instead of being read as "the highest sign".
-  assert.throws(() => compose("O", { level: o("level.severe"), signs: signs("sign.vehicle_fell", "sign.person_thrown") }),
+  // features/o-signs-max-grouped: the level is the highest level of the signs, so a moderate
+  // and a severe sign together read as severe, and a level below its highest sign is refused.
+  assert.equal(compose("O", { parties: [e("B"), e("A")], level: o("level.severe"),
+    signs: signs("sign.person_thrown", "sign.vehicle_fell") }, { entities: ENTITIES }),
+  "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm mạnh, xe đổ tại chỗ, người bị hất văng khỏi xe.");
+  assert.throws(() => compose("O", { level: o("level.moderate"), signs: signs("sign.vehicle_fell", "sign.person_thrown") }),
     { code: "level_mismatch" });
-  assert.throws(() => compose("O", { level: o("level.moderate"), signs: signs("sign.overturned") }), { code: "level_mismatch" });
+  assert.throws(() => compose("O", { level: o("level.severe"), signs: signs("sign.vehicle_fell") }), { code: "level_mismatch" });
   // the secondary collision sign was removed from the severe level
   assert.throws(() => compose("O", { level: o("level.severe"), signs: signs("sign.secondary_collision") }), { code: "unknown_option" });
   // features/o-v2-sign-revision: the car body-damage sign is moderate and lists after the spin sign.

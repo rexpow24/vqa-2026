@@ -39,6 +39,6 @@ export function outcomeConflict(cause: Slots | null, stored: StoredOutcome): str
   const level = (stored.slots.level as SlotValue | undefined)?.option;
   if ((expected?.level as SlotValue | undefined)?.option === level) return null;
   return outcomeNeedsAnnotator(cause)
-    ? "Nhóm C là va chạm nhưng nhóm O chưa chọn mức độ và dấu hiệu: mở nhóm O, chọn mức độ, chọn dấu hiệu rồi lưu."
+    ? "Nhóm C là va chạm nhưng nhóm O chưa chọn dấu hiệu: mở nhóm O, chọn dấu hiệu rồi lưu."
     : "Nhóm O chưa khớp với nhóm C: tải lại trang để hệ thống suy ra lại nhóm O.";
 }

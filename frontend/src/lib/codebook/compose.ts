@@ -405,8 +405,8 @@ function composeOutcome(book: Codebook, slots: Slots, context: ComposeContext): 
 /**
  * O.v2: the sentence checks the level against the signs instead of trusting
  * it: none carries no sign and uses its fixed sentence; a collision level is
- * chosen first and every sign must be a sign of that level
- * (features/o-level-first), and the "giữ thăng bằng" sign stands alone.
+ * the highest level of its signs (features/o-signs-max-grouped), and the
+ * "giữ thăng bằng" sign stands alone.
  * Signs print in codebook order.
  */
 function composeOutcomeSigns(book: Codebook, slots: Slots, context: ComposeContext): string {
@@ -427,8 +427,10 @@ function composeOutcomeSigns(book: Codebook, slots: Slots, context: ComposeConte
   if (signs.length > 1 && signs.some((sign) => sign.exclusive === true)) {
     throw new ComposeError("exclusive_sign", "\"có chạm nhưng các bên vẫn giữ thăng bằng\" không đi cùng dấu hiệu khác.");
   }
-  if (signs.some((sign) => sign.level !== level.id)) {
-    throw new ComposeError("level_mismatch", "Mọi dấu hiệu đã chọn phải thuộc mức độ đã chọn.");
+  const rank = (id: unknown) => Number(book.cells.find((cell) => cell.id === "level")?.options?.find((item) => item.id === id)?.rank);
+  const highest = signs.reduce((best, sign) => (rank(sign.level) > rank(best.level) ? sign : best));
+  if (highest.level !== level.id) {
+    throw new ComposeError("level_mismatch", "Mức độ phải là mức cao nhất của các dấu hiệu đã chọn.");
   }
   const order = (signCell.options ?? []).map((item) => item.id);
   const text = signs.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)).map((sign) => sign.label).join(", ");

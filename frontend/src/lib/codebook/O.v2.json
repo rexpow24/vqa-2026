@@ -19,9 +19,9 @@
     }
   ],
   "constraints": [
-    "C suýt va chạm (hoặc C cũ không rõ loại sự kiện): mức độ tự điền \"không va chạm\", không có dấu hiệu.",
-    "C va chạm: chọn mức độ trước (va chạm nhẹ, vừa hoặc mạnh), sau đó chọn ít nhất một dấu hiệu thấy rõ của mức đó.",
-    "Mọi dấu hiệu đã chọn thuộc đúng mức độ đã chọn.",
+    "Mức độ tự suy ra từ C và dấu hiệu, annotator không chọn.",
+    "C suýt va chạm (hoặc C cũ không rõ loại sự kiện): mức độ là \"không va chạm\", không có dấu hiệu.",
+    "C va chạm: chọn ít nhất một dấu hiệu thấy rõ; mức độ là mức cao nhất trong các dấu hiệu đã chọn.",
     "\"có chạm nhưng các bên vẫn giữ thăng bằng\" không đi cùng dấu hiệu nào khác."
   ],
   "cells": [
@@ -37,7 +37,8 @@
       "id": "level",
       "label": "Mức độ",
       "required": true,
-      "auto_fill": "Tự điền \"không va chạm\" khi C là suýt va chạm (hoặc C cũ không rõ loại sự kiện); C va chạm thì annotator chọn mức độ.",
+      "read_only": true,
+      "auto_fill": "Tự suy ra: C suýt va chạm (hoặc C cũ không rõ loại sự kiện) thì không va chạm; C va chạm thì mức cao nhất của các dấu hiệu đã chọn.",
       "options": [
         {
           "id": "level.none",
@@ -66,7 +67,7 @@
       "label": "Dấu hiệu nhìn thấy rõ",
       "required": false,
       "multiple": true,
-      "note": "Chỉ chọn dấu hiệu thấy rõ trong video; chọn mọi dấu hiệu thấy được của mức đã chọn.",
+      "note": "Chỉ chọn dấu hiệu thấy rõ trong video; chọn mọi dấu hiệu thấy được, ở mọi mức.",
       "options": [
         {
           "id": "sign.contact_balanced",
@@ -118,7 +119,7 @@
     }
   ],
   "inferred_from": "C",
-  "derivation": "Annotator chọn mức độ, rồi chọn các dấu hiệu thấy rõ của mức đó làm bằng chứng (GraDE: một dấu hiệu Major thấy rõ là đủ; SHRP 2: chấm mức theo tiêu chí rời rạc).",
+  "derivation": "Mức độ = mức cao nhất trong các dấu hiệu thấy rõ (GraDE: một dấu hiệu Major thấy rõ là đủ; SHRP 2: chấm mức theo tiêu chí rời rạc).",
   "references": [
     "Darji, M. & Gondaliya, N. (2026). GraDE: A Severity-Graded Dashcam Event Dataset with Per-Video Adaptive Segmentation. Journal of Trends in Computer Science and Smart Technology 8(4), 1018-1045. doi:10.36548/jtcsst.2026.4.006",
     "SHRP 2 Naturalistic Driving Study crash severity levels 1-4, as summarised in Li, Hao, Gibbons & Medina (2023), Understanding Crashes Involving Roadway Objects with SHRP 2 Naturalistic Driving Study Data, report 23-UR-124."
