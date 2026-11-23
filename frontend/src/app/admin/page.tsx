@@ -6,8 +6,13 @@ import { AdjudicationPanel, type AdjudicationSummary } from "./adjudication-pane
 export default async function AdminPage() {
   await requireProfile("admin");
   const supabase = await createClient();
-  const [stats, summary] = await Promise.all([getAdminStats(), supabase.rpc("adjudication_summary")]);
+  const [stats, summary, references] = await Promise.all([getAdminStats(), supabase.rpc("adjudication_summary"),
+    supabase.rpc("reference_view_stats")]);
   if (summary.error) throw new Error(summary.error.message);
+  if (references.error) throw new Error(references.error.message);
+  // features/c-reference-hints: least opens first, so whoever skips the references tops the list.
+  const referenceRows = (references.data ?? []) as { annotator_id: string; name: string; label: string | null; opens: number;
+    videos_opened: number; c_answers: number; last_opened_at: string | null }[];
   const cards = [
     ["Người gán nhãn", stats.totalAnnotators],
     ["Video", stats.totalVideos],
@@ -42,5 +47,23 @@ export default async function AdminPage() {
         </tr>)}</tbody>
       </table>
     </div>
+    <section className="flex flex-col gap-2">
+      <h3 className="text-base font-semibold">Mở video tham khảo nhóm C</h3>
+      <p className="text-xs text-muted">Số lần mở video K hoặc video so sánh từ thẻ nhắc ở ô &quot;kiểu xung đột&quot;, cạnh số câu C đã lưu. Ít nhất xếp trên cùng.</p>
+      <div className="overflow-x-auto rounded-md border border-border bg-surface">
+        <table className="w-full text-left text-sm">
+          <thead className="border-b border-border text-xs text-muted"><tr>
+            <th className="p-3">Người gán nhãn</th><th className="p-3">Lượt mở</th><th className="p-3">Số video đã mở</th>
+            <th className="p-3">Câu C đã lưu</th><th className="p-3">Lần mở gần nhất</th>
+          </tr></thead>
+          <tbody>{referenceRows.map((row) => <tr key={row.annotator_id} className="border-b border-border last:border-0">
+            <td className="p-3">{row.name}{row.label && <span className="ml-2 text-xs text-muted">{row.label}</span>}</td>
+            <td className={`p-3 tabular-nums ${Number(row.opens) === 0 ? "text-amber" : ""}`}>{row.opens}</td>
+            <td className="p-3 tabular-nums">{row.videos_opened}</td><td className="p-3 tabular-nums">{row.c_answers}</td>
+            <td className="p-3 text-muted">{row.last_opened_at ? new Date(row.last_opened_at).toLocaleString("vi-VN") : "Chưa mở"}</td>
+          </tr>)}</tbody>
+        </table>
+      </div>
+    </section>
   </div>;
 }

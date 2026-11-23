@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelGroup } from "@/components/LabelGroup";
 import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
+import type { ReferenceClip } from "@/components/slots/ConflictHint";
 import { BTN, BTN_BASE, FOCUS, NEUTRAL, QUESTION } from "@/components/slots/styles";
 import { GROUP_CODES, groupName, needsKeyframes } from "@/lib/qgroups";
 import type { EventLabel, StoredVerdict, Verdict } from "@/lib/types";
@@ -78,6 +79,14 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const derivedSyncVideo = useRef("");
+  // Group C reference clip shown beside the video (features/c-reference-hints).
+  const [reference, setReference] = useState<ReferenceClip | null>(null);
+  function openReference(clip: ReferenceClip) {
+    setReference(clip);
+    // Logged so the admin can see who opens references least; a failed log never blocks labeling.
+    void fetch("/api/references/views", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reference: clip.id, chosen: clip.chosen, video_id: video.id }) }).catch(() => undefined);
+  }
   const ready = drafts.length === GROUP_CODES.length;
   // The saved parties of group E, which every other slot group picks from.
   const [entities, setEntities] = useState<Entity[]>(initialEntities);
@@ -198,12 +207,25 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
     {ready && !assignment && <p className="rounded border border-amber bg-surface p-3 text-sm text-amber">
       Video này chưa được giao cho bạn nên chỉ xem được. Giao video ở trang Phân công.
     </p>}
-    <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,600px)_minmax(0,1fr)]">
+    <div className={`grid items-start gap-5 ${reference ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+      : "lg:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,600px)_minmax(0,1fr)]"}`}>
       <div className="flex flex-col gap-4 lg:sticky lg:top-4">
-        <video ref={videoRef} src={`/api/videos/${video.id}/stream`} controls loop playsInline preload="metadata"
-          onTimeUpdate={(event) => setPlayhead(event.currentTarget.currentTime)}
-          onError={() => setError("Không thể tải hoặc giải mã video. Hãy thử tải lại trang.")}
-          className="w-full rounded-md border border-border-strong bg-black" />
+        <div className={reference ? "grid gap-2 sm:grid-cols-2" : ""}>
+          <video ref={videoRef} src={`/api/videos/${video.id}/stream`} controls loop playsInline preload="metadata"
+            onTimeUpdate={(event) => setPlayhead(event.currentTarget.currentTime)}
+            onError={() => setError("Không thể tải hoặc giải mã video. Hãy thử tải lại trang.")}
+            className="w-full rounded-md border border-border-strong bg-black" />
+          {reference && <figure data-reference={reference.id} className="flex flex-col gap-1.5">
+            <video key={reference.id} src={`/api/references/${reference.id}/stream`} controls autoPlay muted loop playsInline
+              preload="metadata" onError={() => setError("Không tải được video tham khảo.")}
+              className="w-full rounded-md border border-amber/60 bg-black" />
+            <figcaption className="flex items-start gap-2 text-xs">
+              <span className="min-w-0"><b className="text-amber">Tham khảo:</b> {reference.title}
+                {reference.cues.length > 0 && <span className="block text-foreground/70">{reference.cues.join(" · ")}</span>}</span>
+              <button type="button" onClick={() => setReference(null)} className={`${BTN} ml-auto shrink-0 px-2 py-0.5`}>Đóng</button>
+            </figcaption>
+          </figure>}
+        </div>
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <button type="button" onClick={() => stepVideo(-1)} className={`${BTN} px-3 py-1.5 tabular-nums`}>-{step.toFixed(2)}s</button>
           <button type="button" onClick={togglePlay} className={`${BTN} px-3 py-1.5`}>Play / Pause</button>
@@ -249,7 +271,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
               }
             }} />
           : <SlotCard key={draft.id} draft={draft} context={slotContext} labels={entityLabels} duration={Number(video.duration_s)}
-            playhead={playhead} canSave={!!assignment} onSeek={seek}
+            playhead={playhead} canSave={!!assignment} onSeek={seek} onReference={draft.qgroup === "C" ? openReference : undefined}
             onSaved={({ also, ...row }) => slotSaved(draft, [{ ...row, draft_id: draft.id }, ...(also ?? [])])} />)
           : draft.decision ? <DecidedCard key={draft.id} draft={draft} onSeek={seek} /> : <DraftCard key={draft.id} draft={draft} duration={Number(video.duration_s)}
           playhead={playhead} canSave={!!assignment} onSeek={seek} onSaved={(saved) => {

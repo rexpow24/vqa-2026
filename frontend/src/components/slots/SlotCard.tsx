@@ -12,6 +12,7 @@ import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
 import { CardHeader, DraftReference, EditableSentence, SaveBar, postJson, type SaveError, type SlotDraft } from "@/components/slots/common";
 import { editProblem } from "@/lib/codebook/edit";
 import { Chip, EntityChip, FieldRow, FreeText, OptionPicker } from "@/components/slots/SlotField";
+import { ConflictHint, type ReferenceClip } from "@/components/slots/ConflictHint";
 
 /** The draft rows the save route returns: the saved row, and the caller's R when C re-composed it. */
 export type SavedSlotRow = Partial<SlotDraft> & { draft_id: string };
@@ -25,9 +26,11 @@ type Saved = SavedSlotRow & { also?: SavedSlotRow[] };
  * refused save keeps every choice. An answer saved with an older codebook
  * opens with what the current one still has and saves with the current one (F-v1).
  */
-export function SlotCard({ draft, context, labels, duration, playhead, canSave, onSeek, onSaved }: {
+export function SlotCard({ draft, context, labels, duration, playhead, canSave, onSeek, onSaved, onReference }: {
   draft: SlotDraft; context: FormContext; labels: Record<string, string>; duration: number; playhead: number;
   canSave: boolean; onSeek: (time: number) => void; onSaved: (saved: Saved) => void;
+  /** Group C: open a reference clip beside the video (features/c-reference-hints). */
+  onReference?: (clip: ReferenceClip) => void;
 }) {
   const qgroup = draft.qgroup;
   const savedSlots = draft.verdict === "SLOTS" ? draft.slots : null;
@@ -167,6 +170,8 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
         {item.optionEntities?.map((key) => <EntityChip key={key} entityKey={key} label={labels[key] ?? key}
           pressed={value?.entity === key} onClick={() => update(item, { option: option.id, entity: key })} />)}
       </div>}
+      {qgroup === "C" && item.cellId === "conflict_type" && onReference
+        && <ConflictHint option={value?.option} onOpen={onReference} />}
     </FieldRow>;
   };
 
