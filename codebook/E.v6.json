@@ -3,19 +3,19 @@
   "version": 6,
   "frozen_on": "2026-11-23",
   "source": "docs/guidelines/E-thuc-the.md",
-  "question": "Loại phương tiện của các bên liên quan là gì?",
+  "question": "Loại phương tiện và màu xe của các bên liên quan là gì?",
   "templates": [
     {
       "case": "Ô tô",
-      "text": "Xe ô tô (có/không có camera hành trình)"
+      "text": "Xe ô tô màu [3] (có/không có camera hành trình)"
     },
     {
       "case": "Xe khách, xe tải",
-      "text": "[1]"
+      "text": "[1] màu [3]"
     },
     {
       "case": "Xe máy",
-      "text": "Xe máy"
+      "text": "Xe máy màu [3]"
     },
     {
       "case": "Xe đạp",
@@ -23,7 +23,7 @@
     },
     {
       "case": "Xe cứu thương, xe ba gác, khác",
-      "text": "[1]"
+      "text": "[1] màu [3]"
     },
     {
       "case": "Người đi bộ",
@@ -102,6 +102,34 @@
         }
       ],
       "required_when": "type.car"
+    },
+    {
+      "id": "vehicle_color",
+      "label": "Màu xe",
+      "required": false,
+      "when": "Bắt buộc với phương tiện có màu; không áp dụng ô tô có dashcam, xe đạp, người đi bộ và động vật",
+      "options": [
+        {
+          "id": "vehicle_color.white_gray_silver",
+          "label": "trắng, xám/bạc"
+        },
+        {
+          "id": "vehicle_color.black",
+          "label": "đen"
+        },
+        {
+          "id": "vehicle_color.red",
+          "label": "đỏ"
+        },
+        {
+          "id": "vehicle_color.blue_green",
+          "label": "xanh"
+        },
+        {
+          "id": "vehicle_color.yellow",
+          "label": "vàng"
+        }
+      ]
     }
   ]
 }

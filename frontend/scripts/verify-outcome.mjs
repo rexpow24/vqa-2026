@@ -1,6 +1,7 @@
 // Verifies O.v2 (features/o-codebook-v2/acceptance.md) through the real routes
-// and the local database: O is derived from the caller's C, the level is never
-// taken from the client, the database refuses an inconsistent O.v2, O.v1 rows
+// and the local database: O is derived from the caller's C (a near miss fixes the
+// level; on a collision the annotator chooses the level first and only the signs
+// of that level are kept, features/o-level-first), the database refuses an inconsistent O.v2, O.v1 rows
 // stay valid, and a video whose O contradicts C cannot be completed.
 //
 //   NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=... \
@@ -34,7 +35,7 @@ const opt = (option) => ({ option });
 const ent = (entity) => ({ entity });
 const ENTITIES = [
   { key: "A", cells: { type: opt("type.car"), dashcam: opt("dashcam.yes") } },
-  { key: "B", cells: { type: opt("type.motorbike") } }, // E.v6: no colour (features/e-v6-no-colors)
+  { key: "B", cells: { type: opt("type.motorbike"), vehicle_color: opt("vehicle_color.red") } }, // E.v6 asks the vehicle colour
 ];
 const C_COLLISION = { event_type: opt("event_type.collision"), subject: ent("B"), object: ent("A"),
   conflict_type: opt("conflict_type.k04"), action: opt("action.k04.lane_change_left") };
@@ -95,17 +96,20 @@ try {
 
   const noSign = await save("O", { level: opt("level.severe") });
   check("a collision O without a sign is refused", noSign.status === 422 && noSign.data?.code === "missing_cell", noSign);
-  const contradiction = await save("O", { signs: { options: ["sign.contact_balanced", "sign.overturned"] } });
-  check("the balanced sign with another sign is refused", contradiction.status === 422
-    && contradiction.data?.code === "exclusive_sign", contradiction);
+  // features/o-level-first: on a collision the level is chosen first; signs alone or "không va chạm" are refused.
+  const noLevel = await save("O", { signs: { options: ["sign.overturned"] } });
+  check("a collision O without a chosen level is refused", noLevel.status === 422 && noLevel.data?.code === "missing_cell", noLevel);
+  const noneOnCollision = await save("O", { level: opt("level.none") });
+  check("a collision O with 'không va chạm' is refused", noneOnCollision.status === 422
+    && noneOnCollision.data?.code === "missing_cell", noneOnCollision);
 
-  const ticked = await save("O", { level: opt("level.minor"), parties: [ent("B"), ent("A")],
-    signs: { options: ["sign.person_thrown", "sign.fell_in_place"] } }, "O.v1");
+  const ticked = await save("O", { level: opt("level.severe"), parties: [ent("B"), ent("A")],
+    signs: { options: ["sign.person_thrown", "sign.person_fell", "sign.overturned", "sign.contact_balanced"] } }, "O.v1");
   const answer = await stored(drafts.O);
-  check("O stores the derived level, signs in codebook order and O.v2, whatever level and version the client sent",
+  check("O stores the chosen level with only its own signs, in codebook order, as O.v2 whatever version the client sent",
     ticked.status === 200 && answer.codebook_version === "O.v2" && isDeepStrictEqual(answer.slots, {
-      level: opt("level.severe"), signs: { options: ["sign.fell_in_place", "sign.person_thrown"] }, parties: [ent("B"), ent("A")],
-    }) && answer.edited_answer === "Xe máy và xe ô tô (có camera hành trình) va chạm mạnh, ngã tại chỗ, người bị hất văng khỏi xe.",
+      level: opt("level.severe"), signs: { options: ["sign.overturned", "sign.person_thrown"] }, parties: [ent("B"), ent("A")],
+    }) && answer.edited_answer === "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm mạnh, bị lật, người bị hất văng khỏi xe.",
     { status: ticked.status, data: ticked.data, answer });
   const allowed = await request(base, `/api/videos/${video.id}/complete`, user.cookie, "POST");
   check("once O agrees with C, completion is not refused for O", allowed.data?.code !== "outcome_conflict", allowed);
@@ -131,8 +135,31 @@ try {
   const inconsistent = await user.client.from("qa_annotations").upsert({ draft_id: drafts.O, annotator_id: userId, verdict: "SLOTS",
     codebook_version: "O.v2", slots: { level: opt("level.minor"), signs: { options: ["sign.overturned"] } },
     edited_answer: "x", human_keyframes_s: [] }, { onConflict: "draft_id,annotator_id" });
-  check("the database refuses an O.v2 level that is not the highest sign level", inconsistent.error?.hint === "level_mismatch",
+  check("the database refuses an O.v2 sign of another level", inconsistent.error?.hint === "level_mismatch",
     inconsistent.error);
+  const mixed = await user.client.from("qa_annotations").upsert({ draft_id: drafts.O, annotator_id: userId, verdict: "SLOTS",
+    codebook_version: "O.v2", slots: { level: opt("level.severe"), signs: { options: ["sign.vehicle_fell", "sign.overturned"] } },
+    edited_answer: "x", human_keyframes_s: [] }, { onConflict: "draft_id,annotator_id" });
+  check("the database refuses a moderate sign under the severe level (no 'highest sign' any more)",
+    mixed.error?.hint === "level_mismatch", mixed.error);
+  const secondary = await user.client.from("qa_annotations").upsert({ draft_id: drafts.O, annotator_id: userId, verdict: "SLOTS",
+    codebook_version: "O.v2", slots: { level: opt("level.severe"), signs: { options: ["sign.secondary_collision"] } },
+    edited_answer: "x", human_keyframes_s: [] }, { onConflict: "draft_id,annotator_id" });
+  check("the database refuses the removed sign 'va chạm thứ cấp'", Boolean(secondary.error), secondary.error);
+
+  // features/o-v2-sign-revision: "không đánh giá" merged into "không va chạm"; car body damage is moderate.
+  const notAssessed = await user.client.from("qa_annotations").upsert({ draft_id: drafts.O, annotator_id: userId, verdict: "SLOTS",
+    codebook_version: "O.v2", slots: { level: opt("level.not_assessed") }, edited_answer: "x", human_keyframes_s: [] },
+  { onConflict: "draft_id,annotator_id" });
+  check("the database refuses the removed level 'không đánh giá'", Boolean(notAssessed.error), notAssessed.error);
+  must(await privileged.from("qa_annotations").delete().eq("draft_id", drafts.O).eq("annotator_id", userId));
+  await save("C", C_COLLISION);
+  const body = await save("O", { level: opt("level.moderate"), signs: { options: ["sign.visible_body_damage"] } });
+  const bodyO = await stored(drafts.O);
+  check("the car body-damage sign alone is stored as 'va chạm vừa'", body.status === 200 && isDeepStrictEqual(bodyO?.slots, {
+    level: opt("level.moderate"), signs: { options: ["sign.visible_body_damage"] }, parties: [ent("B"), ent("A")],
+  }) && bodyO.edited_answer === "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm vừa, có hư hỏng nhìn thấy được ở thân xe (ô tô).",
+  { status: body.status, data: body.data, bodyO });
 } finally {
   if (userId) {
     const { error } = await privileged.auth.admin.deleteUser(userId);

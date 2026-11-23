@@ -1,27 +1,27 @@
--- E.v6: group E asks no colour (features/e-v6-no-colors). Annotators disagreed
--- on vehicle and clothing colours, so E.v6 = E.v5 without `vehicle_color` and
--- `clothing_color`; parties are told apart by type and by their letter, named
--- by the positional rule. Stored E.v1-E.v5 rows keep their colours as stored:
--- the cell rules below are chosen by the row's own codebook_version.
+-- E.v6: group E asks no clothing colour (features/e-v6-no-colors, revised by
+-- features/o-level-first: the vehicle colour came back on the team's request).
+-- E.v6 = E.v5 without `clothing_color`; a pedestrian is named "người đi bộ".
+-- Stored E.v1-E.v5 rows keep their colours as stored: the cell rules below are
+-- chosen by the row's own codebook_version.
 insert into public.codebook_versions (id, qgroup, version, content, sha256, frozen_on)
 values ('E.v6', 'E', 6, $cb${
   "group": "E",
   "version": 6,
   "frozen_on": "2026-11-23",
   "source": "docs/guidelines/E-thuc-the.md",
-  "question": "Loại phương tiện của các bên liên quan là gì?",
+  "question": "Loại phương tiện và màu xe của các bên liên quan là gì?",
   "templates": [
     {
       "case": "Ô tô",
-      "text": "Xe ô tô (có/không có camera hành trình)"
+      "text": "Xe ô tô màu [3] (có/không có camera hành trình)"
     },
     {
       "case": "Xe khách, xe tải",
-      "text": "[1]"
+      "text": "[1] màu [3]"
     },
     {
       "case": "Xe máy",
-      "text": "Xe máy"
+      "text": "Xe máy màu [3]"
     },
     {
       "case": "Xe đạp",
@@ -29,7 +29,7 @@ values ('E.v6', 'E', 6, $cb${
     },
     {
       "case": "Xe cứu thương, xe ba gác, khác",
-      "text": "[1]"
+      "text": "[1] màu [3]"
     },
     {
       "case": "Người đi bộ",
@@ -108,12 +108,41 @@ values ('E.v6', 'E', 6, $cb${
         }
       ],
       "required_when": "type.car"
+    },
+    {
+      "id": "vehicle_color",
+      "label": "Màu xe",
+      "required": false,
+      "when": "Bắt buộc với phương tiện có màu; không áp dụng ô tô có dashcam, xe đạp, người đi bộ và động vật",
+      "options": [
+        {
+          "id": "vehicle_color.white_gray_silver",
+          "label": "trắng, xám/bạc"
+        },
+        {
+          "id": "vehicle_color.black",
+          "label": "đen"
+        },
+        {
+          "id": "vehicle_color.red",
+          "label": "đỏ"
+        },
+        {
+          "id": "vehicle_color.blue_green",
+          "label": "xanh"
+        },
+        {
+          "id": "vehicle_color.yellow",
+          "label": "vàng"
+        }
+      ]
     }
   ]
-}$cb$::jsonb, 'ed195a634476ce685be4ac7e8ca13c5805c80d0eab2135ca31d007e64f63b72a', '2026-11-23')
+}$cb$::jsonb, 'ee297a48feaeef1afc1814e6dede4ce82aef49fb148ab988d0e2ba15b93d8ef7', '2026-11-23')
 on conflict (id) do nothing;
 
--- E.v6 gets the dashcam rule only; E.v4 and E.v5 keep their colour rules.
+-- E.v6 keeps the vehicle colour rules of E.v4 and E.v5; it has no clothing
+-- colour cell, which validate_slots refuses as a cell the book does not define.
 create or replace function public.validate_video_entity()
 returns trigger language plpgsql security definer set search_path = '' as $$
 declare entity_type text;
@@ -133,15 +162,7 @@ begin
   if new.codebook_version = 'E.v3' and entity_type = 'type.car'
      and (new.cells -> 'dashcam' is null or new.cells -> 'vehicle_color' is null) then
     raise exception using message = 'Slot answer: car entities require dashcam and vehicle color', hint = 'missing_cell';
-  elsif new.codebook_version = 'E.v6' then
-    -- E.v6 has no colour cells (validate_slots refuses them); a car needs its
-    -- dashcam choice and only cars take one.
-    if entity_type = 'type.car' and dashcam_choice is null then
-      raise exception using message = 'Slot answer: car entities require dashcam', hint = 'missing_cell';
-    elsif entity_type is distinct from 'type.car' and new.cells ? 'dashcam' then
-      raise exception using message = 'Slot answer: only cars take a dashcam value', hint = 'unexpected_cell';
-    end if;
-  elsif new.codebook_version in ('E.v4', 'E.v5') then
+  elsif new.codebook_version in ('E.v4', 'E.v5', 'E.v6') then
     if entity_type = 'type.car' then
       if dashcam_choice is null then
         raise exception using message = 'Slot answer: car entities require dashcam', hint = 'missing_cell';

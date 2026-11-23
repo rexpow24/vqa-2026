@@ -74,7 +74,7 @@ test("Prev derives one safe-distance action from a K01 scenario", () => {
   assert.deepEqual(buildSlots("Prev", state, context), { parties: [
     { party: { entity: "B" }, main_action: { option: "main_action.keep_distance" } },
   ] });
-  assert.equal(preview("Prev", buildSlots("Prev", state, context), context), "Xe máy nên giữ khoảng cách an toàn.");
+  assert.equal(preview("Prev", buildSlots("Prev", state, context), context), "Xe máy màu đỏ nên giữ khoảng cách an toàn.");
 });
 
 test("Prev abstains for K18 and never infers a violation or blame", () => {
@@ -87,7 +87,7 @@ test("Prev abstains for K18 and never infers a violation or blame", () => {
   assert.equal(preview("Prev", buildSlots("Prev", state, context), context), "Không thể xác định từ tình huống C.");
 });
 
-test("Prev uses pedestrian role in K14 and leaves it unclear when the road user is unknown", () => {
+test("Prev uses the road user's role in K14: a pedestrian stops and looks, a crossing vehicle observes and yields", () => {
   const crossingPedestrian: FormContext = { entities: [
     entity("A", { type: "type.car", dashcam: "dashcam.yes" }),
     entity("B", { type: "type.pedestrian" }),
@@ -100,12 +100,30 @@ test("Prev uses pedestrian role in K14 and leaves it unclear when the road user 
     { party: { entity: "A" }, main_action: { option: "main_action.slow_down" } },
   ] });
 
-  const unknownRole: FormContext = { entities: TWO.entities, cause: {
+  // Prev guideline, K14 "phương tiện: quan sát và nhường đường": a motorbike crossing mid-block in front of a car.
+  const crossingVehicle: FormContext = { entities: TWO.entities, cause: {
     subject: { entity: "B" }, object: { entity: "A" },
     conflict_type: { option: "conflict_type.k14" }, action: { option: "action.k14.left_to_right" },
   } };
-  const unclear = prefillFromCause("Prev", unknownRole)!;
-  assert.deepEqual(buildSlots("Prev", unclear, unknownRole), { parties: [{ party: { option: "party.unclear" } }] });
+  const vehicle = prefillFromCause("Prev", crossingVehicle)!;
+  assert.deepEqual(buildSlots("Prev", vehicle, crossingVehicle), { parties: [
+    { party: { entity: "B" }, main_action: { option: "main_action.observe_and_yield" } },
+  ] });
+  assert.equal(preview("Prev", buildSlots("Prev", vehicle, crossingVehicle), crossingVehicle), "Xe máy màu đỏ nên quan sát và nhường đường.");
+
+  const crossingPedestrianSubject: FormContext = { entities: crossingPedestrian.entities, cause: {
+    subject: { entity: "B" }, object: { entity: "A" },
+    conflict_type: { option: "conflict_type.k14" }, action: { option: "action.k14.left_to_right" },
+  } };
+  assert.deepEqual(buildSlots("Prev", prefillFromCause("Prev", crossingPedestrianSubject)!, crossingPedestrianSubject), { parties: [
+    { party: { entity: "B" }, main_action: { option: "main_action.stop_and_look" } },
+  ] });
+
+  // no Prev for an animal
+  const animal: FormContext = { entities: [entity("A", { type: "type.car", dashcam: "dashcam.yes" }), entity("B", { type: "type.animal" })],
+    cause: { subject: { entity: "B" }, object: { entity: "A" },
+      conflict_type: { option: "conflict_type.k14" }, action: { option: "action.k14.left_to_right" } } };
+  assert.deepEqual(buildSlots("Prev", prefillFromCause("Prev", animal)!, animal), { parties: [{ party: { option: "party.unclear" } }] });
 });
 
 test("S names every missing required cell", () => {
@@ -187,36 +205,48 @@ test("V asks for violator and behaviour only when there is a violation, with a s
     ["outer.behavior"], "Tối đa 200 ký tự.");
 });
 
-test("O.v2 asks for visible signs only on a collision and derives the level from them", () => {
+test("O.v2 on a collision asks the level first, then only the signs of that level (features/o-level-first)", () => {
   const cause = { subject: { entity: "B" }, object: { entity: "A" }, event_type: { option: "event_type.collision" } };
   const context = { ...TWO, cause };
   const start = defaultState("O", context);
   assert.deepEqual(start.refs, ["B", "A"]);
-  assert.deepEqual(keys("O", start, context), ["outer.level", "outer.signs", "outer.parties"]);
+  assert.deepEqual(keys("O", start, context), ["outer.level", "outer.parties"]);
   const level = fields("O", start, context).find((item) => item.key === "outer.level")!;
-  assert.equal(level.readOnly, true);
-  assert.equal(problems("O", start, context)["outer.signs"], "Chưa chọn.");
-  const fell = fill("O", context, [["outer.signs", { options: ["sign.fell_in_place"] }]], start);
-  assert.deepEqual(outcomeState(fell, context).cells.level, { option: "level.moderate" });
-  const thrown = fill("O", context, [["outer.signs", { options: ["sign.person_thrown", "sign.fell_in_place"] }]], fell);
-  assert.deepEqual(buildSlots("O", thrown, context), { level: { option: "level.severe" },
-    signs: { options: ["sign.fell_in_place", "sign.person_thrown"] }, parties: [{ entity: "B" }, { entity: "A" }] });
-  assert.deepEqual(problems("O", thrown, context), {});
-  assert.equal(preview("O", buildSlots("O", thrown, context), context),
-    "Xe máy và xe ô tô (có camera hành trình) va chạm mạnh, ngã tại chỗ, người bị hất văng khỏi xe.");
-  // "có chạm nhưng các bên vẫn giữ thăng bằng" contradicts every other sign.
-  const balanced = fill("O", context, [["outer.signs", { options: ["sign.fell_in_place", "sign.person_thrown", "sign.contact_balanced"] }]], thrown);
-  assert.deepEqual(buildSlots("O", balanced, context).signs, { options: ["sign.contact_balanced"] });
-  assert.deepEqual(buildSlots("O", balanced, context).level, { option: "level.minor" });
-  const again = fill("O", context, [["outer.signs", { options: ["sign.contact_balanced", "sign.overturned"] }]], balanced);
-  assert.deepEqual(buildSlots("O", again, context).signs, { options: ["sign.overturned"] });
+  assert.ok(!level.readOnly);
+  assert.deepEqual(level.options.map((item) => item.id), ["level.minor", "level.moderate", "level.severe"]);
+  assert.equal(problems("O", start, context)["outer.level"], "Chưa chọn.");
+  const moderate = fill("O", context, [["outer.level", { option: "level.moderate" }]], start);
+  assert.deepEqual(keys("O", moderate, context), ["outer.level", "outer.signs", "outer.parties"]);
+  assert.deepEqual(outcomeState(moderate, context).cells.level, { option: "level.moderate" });
+  const signsOf = (state: FormState) => fields("O", state, context).find((item) => item.key === "outer.signs")!.options.map((item) => item.id);
+  assert.deepEqual(signsOf(moderate), ["sign.vehicle_fell", "sign.person_fell", "sign.spun_or_lost_control", "sign.visible_body_damage"]);
+  assert.equal(problems("O", moderate, context)["outer.signs"], "Chưa chọn.");
+  const damaged = fill("O", context, [["outer.signs", { options: ["sign.visible_body_damage", "sign.person_fell", "sign.vehicle_fell"] }]], moderate);
+  assert.deepEqual(buildSlots("O", damaged, context), { level: { option: "level.moderate" },
+    signs: { options: ["sign.vehicle_fell", "sign.person_fell", "sign.visible_body_damage"] }, parties: [{ entity: "B" }, { entity: "A" }] });
+  assert.deepEqual(problems("O", damaged, context), {});
+  assert.equal(preview("O", buildSlots("O", damaged, context), context),
+    "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm vừa, xe đổ tại chỗ, người ngã tại chỗ, có hư hỏng nhìn thấy được ở thân xe (ô tô).");
+  // A new level drops the signs of the old one; severe no longer offers "va chạm thứ cấp".
+  const severe = fill("O", context, [["outer.level", { option: "level.severe" }]], damaged);
+  assert.equal(severe.cells.signs, undefined);
+  assert.deepEqual(signsOf(severe), ["sign.overturned", "sign.person_thrown", "sign.vehicle_thrown", "sign.major_deformation"]);
+  assert.equal(problems("O", severe, context)["outer.signs"], "Chưa chọn.");
+  // "va chạm nhẹ" has one sign, which is ticked at once.
+  const minor = fill("O", context, [["outer.level", { option: "level.minor" }]], damaged);
+  assert.deepEqual(buildSlots("O", minor, context), { level: { option: "level.minor" },
+    signs: { options: ["sign.contact_balanced"] }, parties: [{ entity: "B" }, { entity: "A" }] });
 
   const nearMiss = { ...TWO, cause: { ...cause, event_type: { option: "event_type.near_miss" } } };
   assert.deepEqual(keys("O", defaultState("O", nearMiss), nearMiss), ["outer.level"]);
-  assert.deepEqual(buildSlots("O", thrown, nearMiss), { level: { option: "level.none" } });
-  assert.deepEqual(problems("O", thrown, nearMiss), {});
+  assert.equal(fields("O", defaultState("O", nearMiss), nearMiss)[0].readOnly, true);
+  assert.deepEqual(outcomeState(defaultState("O", nearMiss), nearMiss).cells.level, { option: "level.none" });
+  assert.deepEqual(buildSlots("O", damaged, nearMiss), { level: { option: "level.none" } });
+  assert.deepEqual(problems("O", damaged, nearMiss), {});
   const legacyUnclear = { ...TWO, cause: { ...cause, event_type: { option: "event_type.unclear" } } };
-  assert.deepEqual(buildSlots("O", start, legacyUnclear), { level: { option: "level.not_assessed" } });
+  // features/o-v2-sign-revision: "không đánh giá" was merged into "không va chạm".
+  assert.deepEqual(buildSlots("O", start, legacyUnclear), { level: { option: "level.none" } });
+  assert.deepEqual(keys("O", defaultState("O", legacyUnclear), legacyUnclear), ["outer.level"]);
   const noCause = { ...TWO, cause: null };
   assert.deepEqual(keys("O", emptyState(), noCause), ["outer.level"]);
   assert.equal(problems("O", emptyState(), noCause)["outer.level"], "Lưu nhóm C trước để hệ thống suy ra mức độ.");
@@ -224,17 +254,22 @@ test("O.v2 asks for visible signs only on a collision and derives the level from
     .some((option) => option.id === "level.unclear"));
 });
 
-test("deriveOutcome reads C: near miss is none, legacy unclear is not assessed, collision is the highest sign", () => {
+test("deriveOutcome reads C: near miss and legacy unclear are none; a collision keeps the chosen level and only its signs", () => {
   const cause = { subject: { entity: "B" }, object: { entity: "A" }, event_type: { option: "event_type.collision" } };
   assert.equal(deriveOutcome(null, null), null);
   assert.deepEqual(deriveOutcome({ ...cause, event_type: { option: "event_type.near_miss" } }, { signs: { options: ["sign.overturned"] } }),
     { level: { option: "level.none" } });
-  assert.deepEqual(deriveOutcome({ ...cause, event_type: { option: "event_type.unclear" } }, null), { level: { option: "level.not_assessed" } });
-  assert.deepEqual(deriveOutcome(cause, { level: { option: "level.minor" }, signs: { options: ["sign.secondary_collision", "sign.spun_or_lost_control"] },
-    parties: [{ entity: "A" }] }), { level: { option: "level.severe" },
-    signs: { options: ["sign.spun_or_lost_control", "sign.secondary_collision"] }, parties: [{ entity: "A" }] });
+  assert.deepEqual(deriveOutcome({ ...cause, event_type: { option: "event_type.unclear" } }, null), { level: { option: "level.none" } });
+  assert.deepEqual(deriveOutcome(cause, { level: { option: "level.moderate" },
+    signs: { options: ["sign.visible_body_damage", "sign.overturned", "sign.person_fell"] }, parties: [{ entity: "A" }] }),
+  { level: { option: "level.moderate" }, signs: { options: ["sign.person_fell", "sign.visible_body_damage"] }, parties: [{ entity: "A" }] });
+  // no level chosen, or "không va chạm" on a collision: no level yet, so the save is refused
+  assert.deepEqual(deriveOutcome(cause, { signs: { options: ["sign.overturned"] } }), { parties: [{ entity: "B" }, { entity: "A" }] });
+  assert.deepEqual(deriveOutcome(cause, { level: { option: "level.none" } }), { parties: [{ entity: "B" }, { entity: "A" }] });
   assert.deepEqual(deriveOutcome(cause, null), { parties: [{ entity: "B" }, { entity: "A" }] });
-  assert.deepEqual(deriveOutcome(cause, { signs: { options: ["sign.unknown"] } }), { parties: [{ entity: "B" }, { entity: "A" }] });
+  // the removed secondary-collision sign is dropped
+  assert.deepEqual(deriveOutcome(cause, { level: { option: "level.severe" }, signs: { options: ["sign.secondary_collision"] } }),
+    { level: { option: "level.severe" }, parties: [{ entity: "B" }, { entity: "A" }] });
   assert.equal(outcomeNeedsAnnotator(cause), true);
   assert.equal(outcomeNeedsAnnotator({ ...cause, event_type: { option: "event_type.near_miss" } }), false);
 });
@@ -284,7 +319,8 @@ test("stored slots load back into the same form", () => {
     ["Prev", fill("Prev", TWO, [["outer.party", { option: "party.both" }], ["0.main_action", { option: "main_action.slow_down" }],
       ["1.main_action", { option: "main_action.signal" }]]), TWO],
     ["Prev", fill("Prev", TWO, [["outer.party", { option: "party.unclear" }]]), TWO],
-    ["O", fill("O", O_COLLISION, [["outer.signs", { options: ["sign.person_thrown"] }], ["outer.parties", ["A"]]]), O_COLLISION],
+    ["O", fill("O", O_COLLISION, [["outer.level", { option: "level.severe" }], ["outer.signs", { options: ["sign.person_thrown"] }],
+      ["outer.parties", ["A"]]]), O_COLLISION],
   ];
   for (const [qgroup, state, context] of cases) {
     const slots = buildSlots(qgroup, state, context);
@@ -349,7 +385,7 @@ test("Attr: one or two parties, or \"không rõ\", which exclude each other", ()
   assert.equal(problems("Attr", emptyState(), TWO)["outer.parties"], "Chưa chọn.");
   const two = fill("Attr", TWO, [["outer.parties", ["B", "A"]]]);
   assert.deepEqual(buildSlots("Attr", two, TWO), { parties: [{ entity: "B" }, { entity: "A" }] });
-  assert.equal(preview("Attr", buildSlots("Attr", two, TWO), TWO), "Cả xe ô tô (có camera hành trình) và xe máy.");
+  assert.equal(preview("Attr", buildSlots("Attr", two, TWO), TWO), "Cả xe ô tô (có camera hành trình) và xe máy màu đỏ.");
   const unclear = fill("Attr", TWO, [["outer.parties", { option: "parties.unclear" }]], two);
   assert.deepEqual(buildSlots("Attr", unclear, TWO), { parties: { option: "parties.unclear" } });
   assert.deepEqual(problems("Attr", unclear, TWO), {});
@@ -385,13 +421,13 @@ test("E shows each cell only when its codebook condition holds, and sends only t
   assert.deepEqual(ids({}), ["type"]);
   assert.deepEqual(ids({ type: "type.car" }), ["type", "dashcam"]);
   assert.deepEqual(ids({ type: "type.car", dashcam: "dashcam.yes" }), ["type", "dashcam"]);
-  // E.v6 asks no colour (features/e-v6-no-colors)
-  assert.deepEqual(ids({ type: "type.car", dashcam: "dashcam.no" }), ["type", "dashcam"]);
-  assert.deepEqual(ids({ type: "type.truck" }), ["type"]);
-  assert.deepEqual(ids({ type: "type.motorbike" }), ["type"]);
+  assert.deepEqual(ids({ type: "type.car", dashcam: "dashcam.no" }), ["type", "dashcam", "vehicle_color"]);
+  assert.deepEqual(ids({ type: "type.truck" }), ["type", "vehicle_color"]);
+  assert.deepEqual(ids({ type: "type.motorbike" }), ["type", "vehicle_color"]);
+  // E.v6 asks no clothing colour
   assert.deepEqual(ids({ type: "type.pedestrian" }), ["type"]);
   assert.deepEqual(ids({ type: "type.animal" }), ["type"]);
-  assert.deepEqual(ids({ type: "type.ambulance" }), ["type"]);
+  assert.deepEqual(ids({ type: "type.ambulance" }), ["type", "vehicle_color"]);
   assert.deepEqual(ids({ type: "type.bicycle" }), ["type"]);
   assert.deepEqual(buildEntityCells(entity("A", { type: "type.car", dashcam: "dashcam.yes", vehicle_color: "vehicle_color.red" }).cells),
     { type: { option: "type.car" }, dashcam: { option: "dashcam.yes" } });
@@ -402,28 +438,32 @@ test("E shows each cell only when its codebook condition holds, and sends only t
 test("E needs a type, and a short text for \"khác\"", () => {
   assert.deepEqual(entityProblems([entity("A", {})]), { "A.type": "Chưa chọn loại." });
   assert.deepEqual(entityProblems([{ key: "B", cells: { type: { option: "type.other", text: " " } } }]),
-    { "B.type": "Ghi ngắn loại cho lựa chọn \"khác\"." });
+    { "B.type": "Ghi ngắn loại cho lựa chọn \"khác\".", "B.vehicle_color": "Bắt buộc chọn màu xe." });
   assert.deepEqual(entityProblems([{ key: "B", cells: { type: { option: "type.other", text: "xe lu" },
     vehicle_color: { option: "vehicle_color.yellow" } } }]), {});
   assert.equal(nextEntityKey(["A", "C"]), "B");
-  assert.equal(entityLabel(entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.red" })), "B · xe máy");
+  assert.equal(entityLabel(entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.red" })), "B · xe máy màu đỏ");
 });
 
-test("E requires dashcam for cars and, since E.v6, never a colour", () => {
+test("E requires dashcam for cars and a vehicle colour only when its field applies", () => {
   assert.deepEqual(entityCells({ type: { option: "type.car" }, dashcam: { option: "dashcam.yes" } })
     .map((cell) => [cell.id, cell.required]), [["type", true], ["dashcam", true]]);
   assert.deepEqual(entityCells({ type: { option: "type.car" }, dashcam: { option: "dashcam.no" } })
-    .map((cell) => [cell.id, cell.required]), [["type", true], ["dashcam", true]]);
+    .map((cell) => [cell.id, cell.required]), [["type", true], ["dashcam", true], ["vehicle_color", true]]);
   assert.deepEqual(entityCells({ type: { option: "type.bicycle" } }).map((cell) => [cell.id, cell.required]), [["type", true]]);
   assert.deepEqual(entityCells({ type: { option: "type.truck" } }).map((cell) => [cell.id, cell.required]),
-    [["type", true]]);
+    [["type", true], ["vehicle_color", true]]);
   assert.deepEqual(entityProblems([entity("A", { type: "type.car" })]), {
     "A.dashcam": "Ô tô bắt buộc chọn có hoặc không có camera hành trình.",
   });
   assert.deepEqual(entityProblems([entity("A", { type: "type.car", dashcam: "dashcam.yes" })]), {});
-  assert.deepEqual(entityProblems([entity("A", { type: "type.car", dashcam: "dashcam.no" })]), {});
+  assert.deepEqual(entityProblems([entity("A", { type: "type.car", dashcam: "dashcam.no" })]), {
+    "A.vehicle_color": "Bắt buộc chọn màu xe.",
+  });
   assert.deepEqual(entityProblems([entity("A", { type: "type.bicycle" })]), {});
-  assert.deepEqual(entityProblems([entity("A", { type: "type.motorbike" })]), {});
+  assert.deepEqual(entityProblems([entity("A", { type: "type.motorbike" })]), {
+    "A.vehicle_color": "Bắt buộc chọn màu xe.",
+  });
 });
 
 test("E.v5 declares at most the two main parties (features/two-entity-subject-rules)", () => {
@@ -471,8 +511,8 @@ test("422 codes read in Vietnamese, naming the cell", () => {
   assert.match(errorText("S", "something_new", "Slot answer: whatever").message, /^Không lưu được \(something_new\)/);
   assert.deepEqual(errorText("O", "missing_cell", "Slot answer: cell signs is required for a collision level"),
     { message: "Chưa chọn ô \"Dấu hiệu nhìn thấy rõ\".", cellId: "signs" });
-  assert.match(errorText("O", "level_mismatch", "Slot answer: level level.minor is not the highest level of its signs").message,
-    /mức cao nhất/);
+  assert.match(errorText("O", "level_mismatch", "Slot answer: every sign must be a sign of level level.minor (found level.severe)").message,
+    /thuộc mức độ đã chọn/);
 });
 
 test("stored slots compare equal whatever their key order", async () => {
@@ -482,18 +522,19 @@ test("stored slots compare equal whatever their key order", async () => {
   assert.ok(sameSlots(null, undefined));
 });
 
-test("E.v6 is current and asks no colour (features/e-v6-no-colors)", () => {
+test("E.v6 is current: the E.v5 cells without the clothing colour (features/o-level-first)", () => {
   assert.equal(currentVersion("E"), "E.v6");
   const e6 = getCodebook("E.v6")!;
-  assert.deepEqual(e6.cells.map((cell) => cell.id), ["type", "dashcam"]);
+  assert.deepEqual(e6.cells.map((cell) => cell.id), ["type", "dashcam", "vehicle_color"]);
   assert.equal(e6.max_entities, 2);
   const ids = (cells: Record<string, string>) => entityCells(entity("A", cells).cells).map((cell) => [cell.id, cell.required]);
-  assert.deepEqual(ids({ type: "type.motorbike" }), [["type", true]]);
-  assert.deepEqual(ids({ type: "type.car", dashcam: "dashcam.no" }), [["type", true], ["dashcam", true]]);
+  assert.deepEqual(ids({ type: "type.motorbike" }), [["type", true], ["vehicle_color", true]]);
+  assert.deepEqual(ids({ type: "type.car", dashcam: "dashcam.no" }), [["type", true], ["dashcam", true], ["vehicle_color", true]]);
   assert.deepEqual(ids({ type: "type.pedestrian" }), [["type", true]]);
-  assert.deepEqual(entityProblems([entity("A", { type: "type.motorbike" }), entity("B", { type: "type.car", dashcam: "dashcam.no" })]), {});
-  // a stored E.v5 entity keeps its colour in the database; the form sends only E.v6 cells
-  assert.deepEqual(buildEntityCells(entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.red" }).cells),
-    { type: { option: "type.motorbike" } });
-  assert.equal(entityLabel(entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.red" })), "B · xe máy");
+  assert.deepEqual(entityProblems([entity("A", { type: "type.motorbike", vehicle_color: "vehicle_color.red" }),
+    entity("B", { type: "type.pedestrian" })]), {});
+  // a stored E.v5 pedestrian keeps its clothing colour in the database; the form sends only E.v6 cells
+  assert.deepEqual(buildEntityCells(entity("B", { type: "type.pedestrian", clothing_color: "clothing_color.red" }).cells),
+    { type: { option: "type.pedestrian" } });
+  assert.equal(entityLabel(entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.red" })), "B · xe máy màu đỏ");
 });

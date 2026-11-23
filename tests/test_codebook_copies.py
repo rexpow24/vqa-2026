@@ -206,13 +206,14 @@ def test_r_prev_and_v_next_versions_encode_requested_removals_and_derivation():
 
 O_V2_SIGNS = {
     "sign.contact_balanced": "level.minor",
-    "sign.fell_in_place": "level.moderate",
+    "sign.vehicle_fell": "level.moderate",
+    "sign.person_fell": "level.moderate",
     "sign.spun_or_lost_control": "level.moderate",
+    "sign.visible_body_damage": "level.moderate",
     "sign.overturned": "level.severe",
     "sign.person_thrown": "level.severe",
     "sign.vehicle_thrown": "level.severe",
     "sign.major_deformation": "level.severe",
-    "sign.secondary_collision": "level.severe",
 }
 
 
@@ -221,11 +222,22 @@ def test_o_v2_drops_unclear_and_derives_the_level_from_multi_select_signs():
     cells = {cell["id"]: cell for cell in o2["cells"]}
     assert set(cells) == {"parties", "level", "signs"}
     levels = [option["id"] for option in cells["level"]["options"]]
-    assert levels == ["level.none", "level.minor", "level.moderate", "level.severe", "level.not_assessed"]
-    assert cells["level"]["read_only"] is True and cells["level"]["required"] is True
+    # features/o-v2-sign-revision: "không đánh giá" merged into "không va chạm".
+    assert levels == ["level.none", "level.minor", "level.moderate", "level.severe"]
+    assert all(template["case"] != "C không rõ loại sự kiện" for template in o2["templates"])
+    # features/o-level-first: the annotator chooses the level on a collision, then its signs.
+    assert "read_only" not in cells["level"] and cells["level"]["required"] is True
+    assert "sign.secondary_collision" not in {option["id"] for option in cells["signs"]["options"]}
     signs = cells["signs"]
     assert signs["multiple"] is True and "parent_cell" not in signs
     assert {option["id"]: option["level"] for option in signs["options"]} == O_V2_SIGNS
+    assert [option["id"] for option in signs["options"]] == list(O_V2_SIGNS)
+    labels = {option["id"]: option["label"] for option in signs["options"]}
+    assert labels["sign.spun_or_lost_control"] == "xoay ngang mất lái"
+    assert labels["sign.vehicle_fell"] == "xe đổ tại chỗ" and labels["sign.person_fell"] == "người ngã tại chỗ"
+    assert "sign.fell_in_place" not in labels
+    assert labels["sign.visible_body_damage"] == "có hư hỏng nhìn thấy được ở thân xe (ô tô)"
+    assert labels["sign.major_deformation"] == "biến dạng nghiêm trọng, cấu trúc xe bị phá vỡ rõ rệt"
     assert all(option["id"] != "level.unclear" for option in cells["level"]["options"])
     assert all(template["text"] != "Không thể xác định." for template in o2["templates"])
     assert o2["inferred_from"] == "C"
@@ -256,14 +268,15 @@ def test_e_v5_migration_seeds_exact_bytes_and_limits_the_list():
     assert "too_many_entities" in text and "max_entities" in text
 
 
-def test_e_v6_drops_colours_and_keeps_two_parties():
-    """features/e-v6-no-colors: annotators disagreed on colours; parties are named by type and letter."""
+def test_e_v6_drops_the_clothing_colour_and_keeps_the_vehicle_colour():
+    """features/e-v6-no-colors, revised by features/o-level-first: the vehicle colour came back."""
     e5 = json.loads((SOURCE / "E.v5.json").read_text(encoding="utf-8"))
     e6 = json.loads((SOURCE / "E.v6.json").read_text(encoding="utf-8"))
-    assert [cell["id"] for cell in e6["cells"]] == ["type", "dashcam"]
-    assert e6["cells"] == [cell for cell in e5["cells"] if cell["id"] in {"type", "dashcam"}]
+    assert [cell["id"] for cell in e6["cells"]] == ["type", "dashcam", "vehicle_color"]
+    assert e6["cells"] == [cell for cell in e5["cells"] if cell["id"] != "clothing_color"]
     assert e6["max_entities"] == 2 and e6["version"] == 6
-    assert not any("màu" in t["text"] or "áo" in t["text"] for t in e6["templates"])
+    assert not any("áo" in t["text"] for t in e6["templates"])
+    assert any("màu [3]" in t["text"] for t in e6["templates"])
 
 
 def test_e_v6_migration_seeds_exact_bytes_and_drops_colour_rules():

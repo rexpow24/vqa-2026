@@ -277,11 +277,9 @@ def optional_cell_ids(codebook_version):
 
 def conditional_scored_cell_ids(codebook_version):
     """Cells that are optional in the codebook but scored whenever the answer has them."""
-    if str(codebook_version) in {"E.v3", "E.v4", "E.v5"}:
+    # E.v6 asks the vehicle colour again but no clothing colour (features/o-level-first).
+    if str(codebook_version) in {"E.v3", "E.v4", "E.v5", "E.v6"}:
         return frozenset({"dashcam", "vehicle_color"})
-    # E.v6 asks no colour (features/e-v6-no-colors): only the car's dashcam is conditional.
-    if str(codebook_version) == "E.v6":
-        return frozenset({"dashcam"})
     # O.v2 signs are required on a collision and absent otherwise (the level decides),
     # so they are scored whenever present (features/o-codebook-v2).
     if str(codebook_version) == "O.v2":
@@ -841,7 +839,7 @@ def main(argv=None):
         P(f"TẦNG 3 - LỰA CHỌN THEO Ô ({label}), 95% CI bootstrap theo video")
         P("  Ô tùy chọn bỏ qua       : " + (", ".join(sorted(optional_fields)) if optional_fields else "không có"))
         if str(version) in {"E.v3", "E.v4", "E.v5", "E.v6"}:
-            P(f"  Ô {version} tính theo điều kiện: dashcam (và màu xe trước E.v6) theo loại thực thể và codebook.")
+            P(f"  Ô {version} tính theo điều kiện: dashcam và màu xe theo loại thực thể và codebook.")
         P(f"  % đáp án ô trùng khớp : {pairwise_pct(units):.3f}")
         P(f"  Fleiss kappa           : {kappa:.3f}   CI [{ci_kappa[0]:.3f}, {ci_kappa[1]:.3f}]")
         P(f"  Krippendorff alpha     : {alpha:.3f}   CI [{ci_alpha[0]:.3f}, {ci_alpha[1]:.3f}]")

@@ -15,7 +15,7 @@ a{color:var(--link)}
 <ul>
 <li>Câu hỏi chuẩn: Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?</li>
 <li>Tên thực thể A, B, C lấy từ Nhóm E. Các bên được tự điền từ cặp chủ thể và đối tượng của Nhóm C.</li>
-<li>Mức độ không chọn bằng tay. Hệ thống tự suy ra từ Nhóm C và các dấu hiệu bạn chọn.</li>
+<li>C va chạm: chọn mức độ trước, sau đó chọn các dấu hiệu thấy rõ của mức đó. C suýt va chạm: hệ thống tự điền "không va chạm".</li>
 <li>Không ghi thương tích hay tử vong. Chỉ ghi hậu quả vật lý nhìn thấy.</li>
 <li>Mức độ tính cho toàn sự kiện: lấy mức cao nhất trong các bên.</li>
 </ul>
@@ -34,11 +34,11 @@ a{color:var(--link)}
 </tr>
 <tr>
 <td>Không rõ loại sự kiện (chỉ có ở câu C cũ)</td>
-<td>Tự điền "không đánh giá", không cần chọn gì.</td>
+<td>Tự điền "không va chạm", không cần chọn gì.</td>
 </tr>
 <tr>
 <td>Va chạm</td>
-<td>Chọn mọi dấu hiệu thấy rõ, ít nhất một dấu hiệu.</td>
+<td>Chọn mức độ trước, rồi chọn mọi dấu hiệu thấy rõ của mức đó, ít nhất một dấu hiệu.</td>
 </tr>
 </tbody>
 </table>
@@ -53,12 +53,12 @@ a{color:var(--link)}
 </thead>
 <tbody>
 <tr>
-<td>1. Mức độ (tự suy ra)</td>
-<td>không va chạm · va chạm nhẹ · va chạm vừa · va chạm mạnh · không đánh giá</td>
+<td>1. Mức độ</td>
+<td>không va chạm · va chạm nhẹ · va chạm vừa · va chạm mạnh</td>
 </tr>
 <tr>
 <td>2. Dấu hiệu nhìn thấy rõ</td>
-<td>nhiều lựa chọn, theo bảng dưới</td>
+<td>nhiều lựa chọn, chỉ hiện dấu hiệu của mức đã chọn, theo bảng dưới</td>
 </tr>
 </tbody>
 </table>
@@ -76,15 +76,15 @@ a{color:var(--link)}
 </tr>
 <tr>
 <td>Va chạm vừa</td>
-<td>ngã tại chỗ · xoay ngang hoặc lệch hướng mất lái</td>
+<td>xe đổ tại chỗ · người ngã tại chỗ · xoay ngang mất lái · có hư hỏng nhìn thấy được ở thân xe (ô tô)</td>
 </tr>
 <tr>
 <td>Va chạm mạnh</td>
-<td>bị lật · người bị hất văng khỏi xe · xe bị hất khỏi quỹ đạo · thân hoặc khung xe biến dạng lớn · va chạm thứ cấp</td>
+<td>bị lật · người bị hất văng khỏi xe · xe bị hất khỏi quỹ đạo · biến dạng nghiêm trọng, cấu trúc xe bị phá vỡ rõ rệt</td>
 </tr>
 </tbody>
 </table>
-<p>Mức độ là mức cao nhất trong các dấu hiệu đã chọn.
+<p>Chỉ hiện dấu hiệu của mức đã chọn; thấy dấu hiệu của nhiều mức thì chọn mức cao nhất.
 Chỉ chọn dấu hiệu khi thấy rõ trong video.
 Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đoán thêm; đã có chạm thì tối thiểu là "va chạm nhẹ".</p>
 <h2>Định nghĩa dấu hiệu</h2>
@@ -101,12 +101,20 @@ Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đ
 <td>Có tiếp xúc, không bên nào ngã, xoay hay bị hất. Không đi cùng dấu hiệu khác.</td>
 </tr>
 <tr>
-<td>ngã tại chỗ</td>
-<td>Người hoặc xe đổ xuống cạnh điểm va chạm, người vẫn ở cạnh xe. Người ngã và xe ngã là cùng một dấu hiệu.</td>
+<td>xe đổ tại chỗ</td>
+<td>Xe đổ xuống cạnh điểm va chạm.</td>
 </tr>
 <tr>
-<td>xoay ngang hoặc lệch hướng mất lái</td>
-<td>Xe bị xoay ngang hoặc lệch khỏi hướng đi và mất lái sau cú va chạm.</td>
+<td>người ngã tại chỗ</td>
+<td>Người ngã xuống cạnh điểm va chạm, vẫn ở cạnh xe.</td>
+</tr>
+<tr>
+<td>xoay ngang mất lái</td>
+<td>Xe bị xoay ngang và mất lái sau cú va chạm.</td>
+</tr>
+<tr>
+<td>có hư hỏng nhìn thấy được ở thân xe (ô tô)</td>
+<td>Thân ô tô có hư hỏng nhìn thấy được.</td>
 </tr>
 <tr>
 <td>bị lật</td>
@@ -121,12 +129,8 @@ Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đ
 <td>Cả xe bị đẩy hoặc văng ra xa khỏi điểm va chạm.</td>
 </tr>
 <tr>
-<td>thân hoặc khung xe biến dạng lớn</td>
+<td>biến dạng nghiêm trọng, cấu trúc xe bị phá vỡ rõ rệt</td>
 <td>Thân hoặc khung xe bị bẹp. Trầy xước, vỡ đèn, vỡ gương hoặc móp nhỏ không tính.</td>
-</tr>
-<tr>
-<td>va chạm thứ cấp</td>
-<td>Sau va chạm đầu, một bên va tiếp vào xe, người hoặc vật khác.</td>
 </tr>
 </tbody>
 </table>
@@ -155,10 +159,6 @@ Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đ
 <tr>
 <td>Không va chạm</td>
 <td>Không quan sát thấy va chạm hoặc hư hỏng phương tiện.</td>
-</tr>
-<tr>
-<td>C không rõ loại sự kiện</td>
-<td>Không đánh giá hậu quả vì nhóm C không rõ loại sự kiện.</td>
 </tr>
 </tbody>
 </table></main></body></html>

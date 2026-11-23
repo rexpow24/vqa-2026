@@ -231,13 +231,13 @@ def test_e_v5_scores_its_conditional_cells_like_e_v4():
     assert slot_signature(json.dumps(row), "E.v5").count('"vehicle_color":') == 1  # the dashcam car's colour is dropped
 
 
-def test_e_v6_scores_the_dashcam_only_and_never_a_colour():
-    """features/e-v6-no-colors: E.v6 asks no colour, so only the car's dashcam is conditional."""
+def test_e_v6_scores_the_dashcam_and_the_vehicle_colour_like_e_v5():
+    """features/o-level-first: E.v6 asks the vehicle colour again (no clothing colour)."""
     from scripts.iaa_round import conditional_scored_cell_ids, slot_signature
     row = {"entities": [
         {"key": "A", "cells": {"type": {"option": "type.car"}, "dashcam": {"option": "dashcam.yes"}}},
-        {"key": "B", "cells": {"type": {"option": "type.motorbike"}}},
+        {"key": "B", "cells": {"type": {"option": "type.motorbike"}, "vehicle_color": {"option": "vehicle_color.red"}}},
     ]}
-    assert conditional_scored_cell_ids("E.v6") == {"dashcam"}
+    assert conditional_scored_cell_ids("E.v6") == {"dashcam", "vehicle_color"}
     signature = slot_signature(json.dumps(row), "E.v6")
-    assert "dashcam.yes" in signature and "color" not in signature
+    assert "dashcam.yes" in signature and "vehicle_color.red" in signature

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "@/lib/api";
+import { groupName } from "@/lib/qgroups";
 import { LabelGroup } from "@/components/LabelGroup";
 import type {
   AnnotateShot,
@@ -497,7 +498,7 @@ function DraftCard({
           {draft.qgroup}
         </span>
         <div className="min-w-0">
-          <div className="text-sm font-medium text-foreground">{draft.group_name}</div>
+          <div className="text-sm font-medium text-foreground">{groupName(draft.qgroup, draft.group_name)}</div>
           <div className="text-xs text-muted">{draft.question}</div>
         </div>
         <span className="ml-auto flex shrink-0 items-center gap-2 text-xs">

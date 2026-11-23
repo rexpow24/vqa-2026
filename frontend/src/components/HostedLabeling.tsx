@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelGroup } from "@/components/LabelGroup";
 import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
 import { BTN, BTN_BASE, FOCUS, NEUTRAL, QUESTION } from "@/components/slots/styles";
-import { GROUP_CODES, needsKeyframes } from "@/lib/qgroups";
+import { GROUP_CODES, groupName, needsKeyframes } from "@/lib/qgroups";
 import type { EventLabel, StoredVerdict, Verdict } from "@/lib/types";
 import { isSlotGroup } from "@/lib/codebook";
 import type { Entity, Slots } from "@/lib/codebook/compose";
@@ -367,7 +367,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
   return <article className="rounded-lg border border-border-strong bg-surface">
     <header className="flex items-start gap-3 border-b border-border px-4 py-3">
       <span className="shrink-0 rounded border border-accent/60 bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">{draft.qgroup}</span>
-      <div className="min-w-0"><div className="text-base font-semibold text-foreground">{draft.group_name}</div>
+      <div className="min-w-0"><div className="text-base font-semibold text-foreground">{groupName(draft.qgroup, draft.group_name)}</div>
         <div data-question className={QUESTION}>{draft.question}</div></div>
       {draft.verdict && <span className="ml-auto shrink-0 text-xs font-medium text-green">✓ {VERDICT_LABEL[draft.verdict as Verdict]}</span>}
     </header>
@@ -426,7 +426,7 @@ function DerivedSummaryCard({ draft }: { draft: HostedDraft }) {
   return <article className="rounded-lg border border-border-strong bg-surface" data-qgroup="N">
     <header className="flex items-start gap-3 border-b border-border px-4 py-3">
       <span className="rounded border border-accent/60 bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">N</span>
-      <div className="min-w-0"><div className="text-base font-semibold">{draft.group_name}</div>
+      <div className="min-w-0"><div className="text-base font-semibold">{groupName(draft.qgroup, draft.group_name)}</div>
         <div className={QUESTION}>{draft.question}</div></div>
       <span className="ml-auto text-xs text-green">{draft.generated_answer ? "Tự tổng hợp · đã hoàn tất" : `Tự tổng hợp sau ${GROUP_CODES.length - 1} nhóm`}</span>
     </header>
@@ -444,7 +444,7 @@ function DecidedCard({ draft, onSeek }: { draft: HostedDraft; onSeek: (time: num
   return <article className="rounded-md border border-border bg-surface">
     <header className="flex items-start gap-3 border-b border-border px-4 py-2.5">
       <span className="shrink-0 rounded border border-border bg-background px-2 py-0.5 text-xs font-semibold text-accent">{draft.qgroup}</span>
-      <div className="min-w-0"><div className="text-base font-semibold text-foreground">{draft.group_name}</div>
+      <div className="min-w-0"><div className="text-base font-semibold text-foreground">{groupName(draft.qgroup, draft.group_name)}</div>
         <div data-question className={QUESTION}>{draft.question}</div></div>
       <span className="ml-auto shrink-0 text-xs text-muted">Đã thống nhất · khóa</span>
     </header>

@@ -34,6 +34,6 @@ def test_o_v2_audit_displays_the_derived_level_and_every_sign(monkeypatch):
     from audit_slot_disagreements import format_answer_lines
 
     text = "\n".join(format_answer_lines({"level": {"option": "level.severe"},
-        "signs": {"options": ["sign.fell_in_place", "sign.person_thrown"]}}, "O.v2"))
+        "signs": {"options": ["sign.person_fell", "sign.person_thrown"]}}, "O.v2"))
     assert "Mức độ: va chạm mạnh" in text
     assert "ngã tại chỗ" in text and "người bị hất văng khỏi xe" in text

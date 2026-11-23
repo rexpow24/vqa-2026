@@ -1,6 +1,7 @@
 // Verifies E.v5 (features/two-entity-subject-rules/acceptance.md) and E.v6
 // (features/e-v6-no-colors/acceptance.md) through the real routes and the local
-// database: E takes at most the two main parties and no colour,
+// database: E takes at most the two main parties, a vehicle colour and no clothing
+// colour (E.v6 as revised by features/o-level-first),
 // the route saves E with the current book whatever an old page sends, a stored
 // legacy list of three stays as stored, and C fills its object from the other
 // party.
@@ -36,6 +37,7 @@ const opt = (option) => ({ option });
 const A = { key: "A", cells: { type: opt("type.car"), dashcam: opt("dashcam.yes") } };
 const B = { key: "B", cells: { type: opt("type.motorbike"), vehicle_color: opt("vehicle_color.red") } };
 const C = { key: "C", cells: { type: opt("type.pedestrian") } };
+const SHIRT = { key: "B", cells: { type: opt("type.pedestrian"), clothing_color: opt("clothing_color.red") } };
 const CURRENT = "E.v6";
 
 let userId;
@@ -82,11 +84,18 @@ try {
     && isDeepStrictEqual(rows, [{ entity_key: "A", codebook_version: CURRENT }, { entity_key: "B", codebook_version: CURRENT }]), { two, rows });
   const cellsB = must(await privileged.from("video_entities").select("cells").eq("video_id", video.id)
     .eq("annotator_id", userId).eq("entity_key", "B").single()).cells;
-  check("an old page's vehicle colour is dropped, not refused (E.v6)", isDeepStrictEqual(cellsB, { type: opt("type.motorbike") }), cellsB);
+  check("the vehicle colour is stored under E.v6", isDeepStrictEqual(cellsB, B.cells), cellsB);
   const eAnswer = must(await privileged.from("qa_annotations").select("codebook_version,edited_answer").eq("draft_id", drafts.E)
     .eq("annotator_id", userId).single());
-  check("the E answer is stored under the current E, named without colour", eAnswer.codebook_version === CURRENT
-    && eAnswer.edited_answer === "Xe ô tô (có camera hành trình), xe máy.", eAnswer);
+  check("the E answer is stored under the current E, named with the vehicle colour", eAnswer.codebook_version === CURRENT
+    && eAnswer.edited_answer === "Xe ô tô (có camera hành trình), xe máy màu đỏ.", eAnswer);
+  const shirt = await put([A, SHIRT], "E.v5");
+  const cellsShirt = must(await privileged.from("video_entities").select("cells").eq("video_id", video.id)
+    .eq("annotator_id", userId).eq("entity_key", "B").single()).cells;
+  check("an old page's clothing colour is dropped, not refused (E.v6)", shirt.status === 200
+    && isDeepStrictEqual(cellsShirt, { type: opt("type.pedestrian") }), { shirt, cellsShirt });
+  const noColour = await put([A, { key: "B", cells: { type: opt("type.motorbike") } }]);
+  check("a motorbike without a vehicle colour is refused", noColour.status === 422, noColour);
 
   const one = await put([A]);
   check("one party (single-vehicle event) saves", one.status === 200 && (await storedEntities()).length === 1, one);
@@ -96,8 +105,11 @@ try {
   check("the database refuses three parties under the current E when the route is bypassed", direct.error?.hint === "too_many_entities",
     direct.error);
   const colour = await user.client.rpc("save_video_entities", { target_video: video.id, version: CURRENT,
-    entities: [A, B], e_answer: "x" });
-  check("the database refuses a vehicle colour under E.v6 when the route is bypassed", Boolean(colour.error), colour);
+    entities: [A, SHIRT], e_answer: "x" });
+  check("the database refuses a clothing colour under E.v6 when the route is bypassed", Boolean(colour.error), colour);
+  const bare = await user.client.rpc("save_video_entities", { target_video: video.id, version: CURRENT,
+    entities: [A, { key: "B", cells: { type: opt("type.motorbike") } }], e_answer: "x" });
+  check("the database refuses a motorbike without a vehicle colour under E.v6", bare.error?.hint === "missing_cell", bare.error);
 
   // A legacy list: three E.v4 parties stored before E.v5 existed.
   must(await privileged.from("video_entities").delete().eq("video_id", videoId).eq("annotator_id", userId));
@@ -112,7 +124,7 @@ try {
   check("re-saving that video as two parties replaces the legacy list with the current E", resave.status === 200
     && isDeepStrictEqual((await storedEntities()).map((row) => row.codebook_version), [CURRENT, CURRENT]), resave);
 
-  // A stored E.v5 list with colours stays as stored, and C on that video still composes (names without colour).
+  // A stored E.v5 list with colours stays as stored, and C on that video names the vehicle colour.
   must(await privileged.from("video_entities").delete().eq("video_id", videoId).eq("annotator_id", userId));
   must(await privileged.from("video_entities").insert([A, B].map((entity) => ({ video_id: videoId, annotator_id: userId,
     entity_key: entity.key, cells: entity.cells, codebook_version: "E.v5" }))));
@@ -121,8 +133,8 @@ try {
   const cause = await request(base, `/api/drafts/${drafts.C}/annotation`, user.cookie, "POST", { verdict: "SLOTS",
     codebook_version: "C.v4", slots: { event_type: opt("event_type.collision"), subject: { entity: "B" }, object: { entity: "A" },
       conflict_type: opt("conflict_type.k04"), action: opt("action.k04.lane_change_left") }, human_keyframes_s: [1, 3] });
-  check("C on a video with stored coloured parties composes without colour", cause.status === 200
-    && cause.data?.edited_answer?.startsWith("Xe máy chuyển sang làn bên trái"), cause);
+  check("C on a video with stored coloured parties names the vehicle colour", cause.status === 200
+    && cause.data?.edited_answer?.startsWith("Xe máy màu đỏ chuyển sang làn bên trái"), cause);
 } finally {
   if (userId) {
     const { error } = await privileged.auth.admin.deleteUser(userId);

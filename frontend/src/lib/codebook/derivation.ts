@@ -76,47 +76,45 @@ function outcomeSigns(): { id: string; level: string; exclusive: boolean }[] {
   return (cell?.options ?? []).map((item) => ({ id: item.id, level: String(item.level), exclusive: item.exclusive === true }));
 }
 
-/** The rank of an O.v2 level (none 0 ... severe 3), or undefined for "không đánh giá". */
-function levelRank(level: string): number | undefined {
+/** The O.v2 levels an annotator chooses on a C collision: every level but "không va chạm" (rank above 0). */
+export function collisionLevels(): string[] {
   const cell = getCodebook(currentVersion("O") ?? "")?.cells.find((item) => item.id === "level");
-  const rank = cell?.options?.find((item) => item.id === level)?.rank;
-  return typeof rank === "number" ? rank : undefined;
+  return (cell?.options ?? []).filter((item) => typeof item.rank === "number" && item.rank > 0).map((item) => item.id);
 }
 
-/** The level of a set of O.v2 signs: the highest level among them, or undefined for none. */
-export function outcomeLevel(signIds: string[]): string | undefined {
-  const levels = outcomeSigns().filter((sign) => signIds.includes(sign.id)).map((sign) => sign.level);
-  return levels.reduce<string | undefined>((best, level) =>
-    best === undefined || (levelRank(level) ?? -1) > (levelRank(best) ?? -1) ? level : best, undefined);
+/** The O.v2 signs of one level, in codebook order (features/o-level-first: signs show under their level). */
+export function signsOfLevel(level: string | undefined): string[] {
+  return outcomeSigns().filter((sign) => sign.level === level).map((sign) => sign.id);
 }
 
-/** Whether O needs the annotator's signs (a C collision), as opposed to being fully derived from C. */
+/** Whether O needs the annotator's level and signs (a C collision), as opposed to being fully derived from C. */
 export function outcomeNeedsAnnotator(cause: Slots | null | undefined): boolean {
   return option(cause?.event_type) === "event_type.collision";
 }
 
 /**
  * O.v2 from the caller's C and the cells the annotator gave (codebook O.v2, `inferred_from`):
- * near miss is "không va chạm", a legacy C with an unclear event is "không đánh giá", and a
- * collision keeps the known signs in codebook order with the highest of their levels.
- * A collision without a sign has no level yet (the save is refused); no C gives null.
- * The level the client sent is never used.
+ * near miss and a legacy C with an unclear event are "không va chạm" ("không đánh giá" was
+ * merged into it, features/o-v2-sign-revision). On a collision the annotator chooses the
+ * level first (features/o-level-first) and only the known signs of that level are kept, in
+ * codebook order, so a sign left over from a level chosen before is dropped.
+ * A collision without a chosen level has no level (the save is refused); no C gives null.
+ * The client's level is used only on a collision, and only a collision level.
  */
 export function deriveOutcome(cause: Slots | null | undefined, submitted: Slots | null | undefined): Slots | null {
   const event = option(cause?.event_type);
   if (!cause || !event) return null;
-  if (event === "event_type.near_miss") return { level: { option: "level.none" } };
-  if (event !== "event_type.collision") return { level: { option: "level.not_assessed" } };
+  if (event !== "event_type.collision") return { level: { option: "level.none" } };
   const value = submitted?.signs as SlotValue | undefined;
   const chosen = new Set(value?.options ?? (value?.option ? [value.option] : []));
-  const signs = outcomeSigns().filter((sign) => chosen.has(sign.id)).map((sign) => sign.id);
+  const level = option(submitted?.level);
   const given = Array.isArray(submitted?.parties) ? (submitted!.parties as SlotValue[]).map((ref) => ref?.entity) : [];
   const parties = given.length && given.every((key): key is string => typeof key === "string") ? given : causePair(cause);
   const out: Slots = {};
-  const level = outcomeLevel(signs);
-  if (level) {
+  if (level && collisionLevels().includes(level)) {
     out.level = { option: level };
-    out.signs = { options: signs };
+    const signs = signsOfLevel(level).filter((id) => chosen.has(id));
+    if (signs.length) out.signs = { options: signs };
   }
   if (parties.length) out.parties = parties.slice(0, 2).map((key) => ({ entity: key }));
   return out;
@@ -226,9 +224,12 @@ export function derivePreventionFromCause(cause: Slots | null | undefined, entit
     case "K12":
     case "K13": return one(subjectKey, "main_action.observe_and_yield");
     case "K14":
+      // Prev guideline, K14: a pedestrian crossing stops and looks; a vehicle crossing observes
+      // and yields. A driver meeting a pedestrian slows down (as in K15); no Prev for an animal.
       if (subjectIsPedestrian) return one(subjectKey, "main_action.stop_and_look");
       if (objectIsPedestrian) return one(subjectKey, "main_action.slow_down");
-      return uncertainPrevention();
+      if (subjectIsAnimal || objectIsAnimal) return uncertainPrevention();
+      return one(subjectKey, "main_action.observe_and_yield");
     case "K15":
       if (subjectIsPedestrian) return one(subjectKey, action === "action.k15.along_road"
         ? "main_action.use_pedestrian_path" : "main_action.stop_and_look");

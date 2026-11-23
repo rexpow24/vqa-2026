@@ -2,7 +2,7 @@
 
 - Câu hỏi chuẩn: Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?
 - Tên thực thể A, B, C lấy từ Nhóm E. Các bên được tự điền từ cặp chủ thể và đối tượng của Nhóm C.
-- Mức độ không chọn bằng tay. Hệ thống tự suy ra từ Nhóm C và các dấu hiệu bạn chọn.
+- C va chạm: chọn mức độ trước, sau đó chọn các dấu hiệu thấy rõ của mức đó. C suýt va chạm: hệ thống tự điền "không va chạm".
 - Không ghi thương tích hay tử vong. Chỉ ghi hậu quả vật lý nhìn thấy.
 - Mức độ tính cho toàn sự kiện: lấy mức cao nhất trong các bên.
 
@@ -11,8 +11,8 @@
 | Nhóm C | Nhóm O |
 | --- | --- |
 | Suýt va chạm | Tự điền "không va chạm", không cần chọn gì. |
-| Không rõ loại sự kiện (chỉ có ở câu C cũ) | Tự điền "không đánh giá", không cần chọn gì. |
-| Va chạm | Chọn mọi dấu hiệu thấy rõ, ít nhất một dấu hiệu. |
+| Không rõ loại sự kiện (chỉ có ở câu C cũ) | Tự điền "không va chạm", không cần chọn gì. |
+| Va chạm | Chọn mức độ trước, rồi chọn mọi dấu hiệu thấy rõ của mức đó, ít nhất một dấu hiệu. |
 
 Suýt va chạm chỉ dùng khi không có thiệt hại; bên né ngã, trượt hoặc chạm thực thể khác thì C là "va chạm" và ghi dấu hiệu theo hậu quả nhìn thấy.
 
@@ -20,16 +20,16 @@ Suýt va chạm chỉ dùng khi không có thiệt hại; bên né ngã, trượ
 
 | Ô | Lựa chọn |
 | --- | --- |
-| 1. Mức độ (tự suy ra) | không va chạm · va chạm nhẹ · va chạm vừa · va chạm mạnh · không đánh giá |
-| 2. Dấu hiệu nhìn thấy rõ | nhiều lựa chọn, theo bảng dưới |
+| 1. Mức độ | không va chạm · va chạm nhẹ · va chạm vừa · va chạm mạnh |
+| 2. Dấu hiệu nhìn thấy rõ | nhiều lựa chọn, chỉ hiện dấu hiệu của mức đã chọn, theo bảng dưới |
 
 | Mức độ | Dấu hiệu nhìn thấy rõ |
 | --- | --- |
 | Va chạm nhẹ | có chạm nhưng các bên vẫn giữ thăng bằng |
-| Va chạm vừa | ngã tại chỗ · xoay ngang hoặc lệch hướng mất lái |
-| Va chạm mạnh | bị lật · người bị hất văng khỏi xe · xe bị hất khỏi quỹ đạo · thân hoặc khung xe biến dạng lớn · va chạm thứ cấp |
+| Va chạm vừa | xe đổ tại chỗ · người ngã tại chỗ · xoay ngang mất lái · có hư hỏng nhìn thấy được ở thân xe (ô tô) |
+| Va chạm mạnh | bị lật · người bị hất văng khỏi xe · xe bị hất khỏi quỹ đạo · biến dạng nghiêm trọng, cấu trúc xe bị phá vỡ rõ rệt |
 
-Mức độ là mức cao nhất trong các dấu hiệu đã chọn.
+Chỉ hiện dấu hiệu của mức đã chọn; thấy dấu hiệu của nhiều mức thì chọn mức cao nhất.
 Chỉ chọn dấu hiệu khi thấy rõ trong video.
 Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đoán thêm; đã có chạm thì tối thiểu là "va chạm nhẹ".
 
@@ -38,13 +38,14 @@ Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đ
 | Dấu hiệu | Khi nào chọn |
 | --- | --- |
 | có chạm nhưng các bên vẫn giữ thăng bằng | Có tiếp xúc, không bên nào ngã, xoay hay bị hất. Không đi cùng dấu hiệu khác. |
-| ngã tại chỗ | Người hoặc xe đổ xuống cạnh điểm va chạm, người vẫn ở cạnh xe. Người ngã và xe ngã là cùng một dấu hiệu. |
-| xoay ngang hoặc lệch hướng mất lái | Xe bị xoay ngang hoặc lệch khỏi hướng đi và mất lái sau cú va chạm. |
+| xe đổ tại chỗ | Xe đổ xuống cạnh điểm va chạm. |
+| người ngã tại chỗ | Người ngã xuống cạnh điểm va chạm, vẫn ở cạnh xe. |
+| xoay ngang mất lái | Xe bị xoay ngang và mất lái sau cú va chạm. |
+| có hư hỏng nhìn thấy được ở thân xe (ô tô) | Thân ô tô có hư hỏng nhìn thấy được. |
 | bị lật | Xe lật nghiêng hoặc lật ngửa. |
 | người bị hất văng khỏi xe | Người tách khỏi xe: bay lên, lên nắp ca-pô, lăn hoặc trượt ra khỏi chỗ xe đổ. |
 | xe bị hất khỏi quỹ đạo | Cả xe bị đẩy hoặc văng ra xa khỏi điểm va chạm. |
-| thân hoặc khung xe biến dạng lớn | Thân hoặc khung xe bị bẹp. Trầy xước, vỡ đèn, vỡ gương hoặc móp nhỏ không tính. |
-| va chạm thứ cấp | Sau va chạm đầu, một bên va tiếp vào xe, người hoặc vật khác. |
+| biến dạng nghiêm trọng, cấu trúc xe bị phá vỡ rõ rệt | Thân hoặc khung xe bị bẹp. Trầy xước, vỡ đèn, vỡ gương hoặc móp nhỏ không tính. |
 
 ## Cơ sở
 
@@ -58,4 +59,3 @@ Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đ
 | Có va chạm | [Chủ thể] và [đối tượng] [1], [2]. |
 | Chỉ một bên (C là K18, không có đối tượng) | [Chủ thể] [2]. |
 | Không va chạm | Không quan sát thấy va chạm hoặc hư hỏng phương tiện. |
-| C không rõ loại sự kiện | Không đánh giá hậu quả vì nhóm C không rõ loại sự kiện. |

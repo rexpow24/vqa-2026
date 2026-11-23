@@ -1,10 +1,10 @@
 # Hướng dẫn gán nhãn Nhóm E: thực thể (Entities)
 
-- Câu hỏi chuẩn: Loại phương tiện của các bên liên quan là gì?
+- Câu hỏi chuẩn: Loại phương tiện và màu xe của các bên liên quan là gì?
 - Chỉ khai báo tối đa 2 bên chính: cặp của va chạm đầu tiên; không có va chạm thì cặp của tình huống suýt va chạm đầu tiên.
 - Phương tiện tự trượt hoặc tự lật mà không có bên nào khác (C là K18) thì chỉ khai báo 1 bên.
 - Phương tiện nền và các bên của va chạm xảy ra sau đó không khai báo; form không cho thêm bên thứ ba (từ codebook E.v5, 2026-11-23).
-- Không ghi màu xe và màu áo (từ codebook E.v6, 2026-11-23); hai bên cùng loại phân biệt bằng tên A, B.
+- Không ghi màu áo người đi bộ (từ codebook E.v6, 2026-11-23); màu xe vẫn ghi. Hai bên cùng loại và cùng màu phân biệt bằng tên A, B.
 - Mỗi phương tiện hoặc bên liên quan là một thực thể riêng, có tên ổn định A, B, C xuyên suốt video; tên thực thể không phụ thuộc vào loại hoặc màu.
 - Nếu trong các bên liên quan có đúng một xe có camera hành trình, gán xe đó là A. Gán các bên còn lại theo vị trí ở khung hình đầu tiên tất cả các bên liên quan cùng xuất hiện và nhận diện được: từ trái sang phải; nếu nằm gần như cùng một cột thì từ trên xuống dưới.
 - Nếu không có xe camera hành trình, gán tất cả các bên theo vị trí ở khung hình đầu tiên tất cả các bên liên quan cùng xuất hiện và nhận diện được: từ trái sang phải; nếu nằm gần như cùng một cột thì từ trên xuống dưới.
@@ -28,7 +28,10 @@
 | 2. Cỡ | to · nhỏ | Chỉ với xe khách, xe tải |
 | 3. Camera hành trình | có · không | Chỉ với ô tô |
 | 4. Số người trên xe | 1 · 2 · 3 trở lên | Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện |
+| 5. Màu xe | trắng, xám/bạc · đen · đỏ · xanh · vàng | Bắt buộc với phương tiện có màu; không áp dụng ô tô có dashcam, xe đạp, người đi bộ và động vật |
 
+Gộp trắng, xám, ghi và bạc vào một lựa chọn "trắng, xám/bạc".
+Không dùng màu khác, không rõ, tối hoặc nâu; chỉ chọn màu trong danh sách hiện hành khi nhìn thấy đủ rõ.
 Không ghi loại xe chi tiết hơn bảng trên (không "tay ga", không "24-29 chỗ"), không ghi biển số, khuôn mặt.
 Xe container và xe bán tải ghi là xe tải.
 Xe máy điện được ghi là xe máy; xe đạp điện được ghi là xe đạp.
@@ -39,11 +42,11 @@ Xe ba gác là nhãn riêng cho xe ba bánh chở hàng.
 | Loại | Mẫu câu cho một bên |
 | --- | --- |
 | Ô tô có camera hành trình | Xe ô tô (có camera hành trình) |
-| Ô tô khác | Xe ô tô (không có camera hành trình) |
-| Xe khách, xe tải | [1] [2] |
-| Xe máy | Xe máy (chở [4] người, khi từ 2 trở lên) |
+| Ô tô khác | Xe ô tô màu [5] (không có camera hành trình) |
+| Xe khách, xe tải | [1] [2] màu [5] |
+| Xe máy | Xe máy màu [5] (chở [4] người, khi từ 2 trở lên) |
 | Xe đạp | Xe đạp |
-| Xe cứu thương, xe ba gác, khác | [1] |
+| Xe cứu thương, xe ba gác, khác | [1] màu [5] |
 | Người đi bộ | Người đi bộ |
 | Động vật | Động vật |
 

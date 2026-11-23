@@ -8,6 +8,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { loadEnv, refuseUnlessLocal, FRONTEND_DIR } from "./lib/env.mjs";
+import { GROUP_NAMES } from "./lib/qgroups.mjs";
 
 const env = loadEnv();
 refuseUnlessLocal("NEXT_PUBLIC_SUPABASE_URL", env.NEXT_PUBLIC_SUPABASE_URL);
@@ -43,7 +44,7 @@ for (const fixture of fixtures) {
   const video = must(await db.from("videos").insert({ drive_file_id: fixture.drive_file_id,
     filename: `review-${fixture.filename}`, duration_s: fixture.duration_s, agreement_sample: false }).select("id,seq").single());
   must(await db.from("video_drafts").insert(GROUPS.map((group) => ({
-    video_id: video.id, qgroup: group, group_name: group,
+    video_id: video.id, qgroup: group, group_name: GROUP_NAMES[group],
     question: fixture.drafts[group]?.question ?? `Câu hỏi nhóm ${group}`,
     answer: fixture.drafts[group]?.answer ?? `Bản nháp nhóm ${group}`,
     source_sha256: "0".repeat(64), source_kind: "admin_csv", prompt_version: 0,

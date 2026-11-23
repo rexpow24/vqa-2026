@@ -23,6 +23,15 @@ export const GROUP_CODES: readonly string[] = QGROUPS.map((group) => group.code)
 export const GROUP_NAMES: Readonly<Record<string, string>> =
   Object.fromEntries(QGROUPS.map((group) => [group.code, group.name]));
 
+/**
+ * The full name a card shows for a group ("Hậu quả" for O). `video_drafts.group_name`
+ * is whatever the importing CSV or script wrote (the local review seed wrote the
+ * code itself), so the configured name wins and the stored one is only a fallback.
+ */
+export function groupName(code: string, stored?: string | null): string {
+  return GROUP_NAMES[code] ?? (stored || code);
+}
+
 /** Whether annotators must mark the start and end frames for this active group. */
 export function needsKeyframes(code: string): boolean {
   return QGROUPS.some((group) => group.code === code && group.keyframes);

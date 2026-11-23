@@ -42,7 +42,7 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const [touched, setTouched] = useState(false);
   const chosen = qgroup === "Prev" && derived ? derived : prefill && !touched ? prefill
     : qgroup === "O" && !refsTouched ? { ...state, refs: causePair(context.cause) } : state;
-  // O.v2 shows the level it will store: derived from C and the ticked signs, never chosen.
+  // O.v2 shows the level it will store: fixed by a near miss, chosen on a collision (features/o-level-first).
   const form = qgroup === "O" ? outcomeState(chosen, context) : chosen;
   const prefilled = prefilledKeys(qgroup, form, prefill, context);
   const savedMarks = draft.human_keyframes_s.map(Number);

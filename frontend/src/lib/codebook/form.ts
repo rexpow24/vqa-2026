@@ -12,7 +12,8 @@
 
 import { getCodebook, currentVersion, type Codebook, type CodebookCell, type CodebookOption } from "./index.ts";
 import { compose, type Entity, type SlotValue, type Slots } from "./compose.ts";
-import { causePair, deriveOutcome, derivePreventionFromCause, deriveViolation, outcomeNeedsAnnotator } from "./derivation.ts";
+import { causePair, collisionLevels, deriveOutcome, derivePreventionFromCause, deriveViolation, outcomeNeedsAnnotator,
+  signsOfLevel } from "./derivation.ts";
 
 export type Cells = Record<string, SlotValue>;
 export type PartyState = { entity?: string; option?: string; cells: Cells };
@@ -120,15 +121,26 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
         note: "Chọn 1 hoặc 2 bên; không xác định được thì chọn \"không rõ\"." }));
       return out;
     case "O": {
-      // O.v2: the level is derived from C and the signs (outcomeState), never chosen;
-      // signs and parties are asked only on a C collision.
-      out.push(field(book, "level", "outer", { readOnly: true,
-        note: "Tự suy ra: C suýt va chạm là không va chạm; C va chạm là mức cao nhất của các dấu hiệu đã chọn." }));
-      if (outcomeNeedsAnnotator(context.cause)) {
-        out.push(field(book, "signs", "outer", { required: true }),
-          field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: keys,
-            note: "Tự điền từ chủ thể và đối tượng của nhóm C; chọn 1 hoặc 2 bên." }));
+      // O.v2 (features/o-level-first): a near miss fixes the level at "không va chạm"
+      // (outcomeState); on a C collision the annotator chooses the level first and
+      // then ticks the signs of that level only.
+      if (!outcomeNeedsAnnotator(context.cause)) {
+        out.push(field(book, "level", "outer", { readOnly: true,
+          note: "Tự điền: C suýt va chạm là không va chạm." }));
+        return out;
       }
+      const levels = collisionLevels();
+      out.push(field(book, "level", "outer", { required: true,
+        options: (cellOf(book, "level").options ?? []).filter((item) => levels.includes(item.id)),
+        note: "Chọn mức độ trước; dấu hiệu của mức đó hiện ra bên dưới." }));
+      const level = optionOf(cells.level);
+      if (level && levels.includes(level)) {
+        const ofLevel = signsOfLevel(level);
+        out.push(field(book, "signs", "outer", { required: true,
+          options: (cellOf(book, "signs").options ?? []).filter((item) => ofLevel.includes(item.id)) }));
+      }
+      out.push(field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: keys,
+        note: "Tự điền từ chủ thể và đối tượng của nhóm C; chọn 1 hoặc 2 bên." }));
       return out;
     }
     case "R": {
@@ -369,7 +381,7 @@ export function staleChoices(qgroup: string, savedVersion: string | null, slots:
  * buildSlots leaves them out because their fields are hidden.
  */
 export function outcomeState(state: FormState, context: FormContext): FormState {
-  const derived = deriveOutcome(context.cause, { signs: state.cells.signs });
+  const derived = deriveOutcome(context.cause, { level: state.cells.level, signs: state.cells.signs });
   const cells = { ...state.cells };
   const level = derived?.level as SlotValue | undefined;
   if (level) cells.level = level;
@@ -415,6 +427,12 @@ export function choose(qgroup: string, state: FormState, item: Field, value: Slo
   const target = item.scope === "outer" ? next.cells : (next.parties[item.scope] ??= { cells: {} }).cells;
   if (slot === undefined) delete target[item.cellId];
   else target[item.cellId] = qgroup === "O" && item.cellId === "signs" ? exclusiveSigns(item, currentValue(state, item), slot) : slot;
+  // O (features/o-level-first): a new level keeps only the signs of that level.
+  if (qgroup === "O" && item.cellId === "level") {
+    const kept = signsOfLevel(slot?.option).filter((id) => next.cells.signs?.options?.includes(id));
+    if (kept.length) next.cells.signs = { options: kept };
+    else delete next.cells.signs;
+  }
   const keys = keysOf(context);
   if (qgroup === "C" && item.cellId === "subject" && item.scope === "outer") {
     if (slot?.entity !== undefined && keys.length === 2) {
@@ -449,7 +467,7 @@ export function choose(qgroup: string, state: FormState, item: Field, value: Slo
     if (child.kind === "choice" && child.required && child.options.length === 1 && !child.entities
         && !currentValue(next, child)) {
       const cells = child.scope === "outer" ? next.cells : (next.parties[child.scope] ??= { cells: {} }).cells;
-      cells[child.cellId] = { option: child.options[0].id };
+      cells[child.cellId] = child.multiple ? { options: [child.options[0].id] } : { option: child.options[0].id };
     }
   }
   return next;
@@ -710,7 +728,7 @@ export function errorText(qgroup: string, code: string | undefined, message: str
     forbidden: "Video này không được giao cho bạn dạng chọn ô.",
     adjudicated: "Câu này đã được thống nhất, không sửa được nữa.",
     invalid_value: "Dữ liệu ô không hợp lệ. Tải lại trang rồi chọn lại.",
-    level_mismatch: "Mức độ phải là mức cao nhất của các dấu hiệu đã chọn. Tải lại trang rồi lưu lại.",
+    level_mismatch: "Mọi dấu hiệu đã chọn phải thuộc mức độ đã chọn. Tải lại trang rồi lưu lại.",
     exclusive_sign: "\"có chạm nhưng các bên vẫn giữ thăng bằng\" không đi cùng dấu hiệu khác.",
   };
   return { message: text[code ?? ""] ?? `Không lưu được (${code ?? "lỗi"}). Tải lại trang rồi thử lại.`, cellId: target };

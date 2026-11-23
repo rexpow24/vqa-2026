@@ -3,6 +3,7 @@
 import type { Slots } from "@/lib/codebook/compose";
 import type { StoredVerdict } from "@/lib/types";
 import { FOCUS, QUESTION } from "@/components/slots/styles";
+import { groupName } from "@/lib/qgroups";
 
 /** What the slot form reads of a question; HostedDraft in HostedLabeling.tsx carries all of it. */
 export type SlotDraft = {
@@ -28,7 +29,7 @@ export async function postJson<T>(url: string, method: "POST" | "PUT", body: obj
 export function CardHeader({ draft, saved }: { draft: SlotDraft; saved: boolean }) {
   return <header className="flex items-start gap-3 border-b border-border px-4 py-3">
     <span className="shrink-0 rounded border border-accent/60 bg-accent/15 px-2 py-0.5 text-xs font-bold text-accent">{draft.qgroup}</span>
-    <div className="min-w-0"><div className="text-base font-semibold text-foreground">{draft.group_name}</div>
+    <div className="min-w-0"><div className="text-base font-semibold text-foreground">{groupName(draft.qgroup, draft.group_name)}</div>
       <div data-question className={QUESTION}>{draft.question}</div></div>
     {saved && <span className="ml-auto shrink-0 text-xs font-medium text-green">✓ Đã chọn ô</span>}
   </header>;
