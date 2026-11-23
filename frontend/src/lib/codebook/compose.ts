@@ -434,7 +434,9 @@ function composeOutcomeSigns(book: Codebook, slots: Slots, context: ComposeConte
   const text = signs.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)).map((sign) => sign.label).join(", ");
   const name = namer(context);
   const parties = Array.isArray(slots.parties) ? slots.parties.map(name) : [];
-  if (parties.length === 1) return sentence([`${parties[0]} ${text}`]);
+  // One party takes a colon and no level ("[Chủ thể]: [2]."): the O.v2 sign labels
+  // are noun phrases ("người ngã tại chỗ") and cannot follow the party directly.
+  if (parties.length === 1) return sentence([`${parties[0]}: ${text}`]);
   return sentence([parties.length === 2 ? `${parties[0]} và ${parties[1]} ${level.label}` : level.label, text]);
 }
 

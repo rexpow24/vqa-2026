@@ -57,5 +57,5 @@ Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đ
 | Trường hợp | Mẫu câu |
 | --- | --- |
 | Có va chạm | [Chủ thể] và [đối tượng] [1], [2]. |
-| Chỉ một bên (C là K18, không có đối tượng) | [Chủ thể] [2]. |
+| Chỉ một bên (C là K18, không có đối tượng) | [Chủ thể]: [2]. |
 | Không va chạm | Không quan sát thấy va chạm hoặc hư hỏng phương tiện. |

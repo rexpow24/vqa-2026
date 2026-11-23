@@ -17,7 +17,7 @@ values ('O.v2', 'O', 2, $cb${
     },
     {
       "case": "Chỉ một bên (C là K18, không có đối tượng)",
-      "text": "[Chủ thể] [2]."
+      "text": "[Chủ thể]: [2]."
     },
     {
       "case": "Không va chạm",
@@ -130,7 +130,7 @@ values ('O.v2', 'O', 2, $cb${
     "SHRP 2 Naturalistic Driving Study crash severity levels 1-4, as summarised in Li, Hao, Gibbons & Medina (2023), Understanding Crashes Involving Roadway Objects with SHRP 2 Naturalistic Driving Study Data, report 23-UR-124."
   ]
 }$cb$::jsonb,
-        'baa2babaabfb7204c86939a932ac0652267126290fa9f9ce440903cafc2a4392', '2026-11-23');
+        '360a7f8914bb95c5fea8f28719b2465b6307b5fe0c609864ff830f29d7ffc5c6', '2026-11-23');
 
 -- The cross-cell rule of O.v2, after the generic cell checks have accepted every
 -- option: none carries no sign; a collision level is chosen first and carries

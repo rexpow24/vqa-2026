@@ -181,9 +181,11 @@ test("O.v2 lists the chosen level and the visible signs of that level, with a fi
     signs: signs("sign.person_thrown", "sign.overturned") }, { entities: ENTITIES }),
   "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm mạnh, bị lật, người bị hất văng khỏi xe.");
   assert.equal(compose("O", { parties: [e("B")], level: o("level.moderate"), signs: signs("sign.person_fell", "sign.vehicle_fell") },
-    { entities: ENTITIES }), "Xe máy màu đỏ xe đổ tại chỗ, người ngã tại chỗ.");
+    { entities: ENTITIES }), "Xe máy màu đỏ: xe đổ tại chỗ, người ngã tại chỗ.");
+  // One party is followed by a colon, without the level: the O.v2 sign labels are noun
+  // phrases ("người ngã tại chỗ"), so "[Chủ thể] [2]" read "Xe máy màu đỏ người ngã tại chỗ."
   assert.equal(compose("O", { parties: [e("B")], level: o("level.moderate"), signs: signs("sign.person_fell") },
-    { entities: ENTITIES }), "Xe máy màu đỏ người ngã tại chỗ.");
+    { entities: ENTITIES }), "Xe máy màu đỏ: người ngã tại chỗ.");
   // the merged "xe hoặc người ngã tại chỗ" was split in two
   assert.throws(() => compose("O", { level: o("level.moderate"), signs: signs("sign.fell_in_place") }), { code: "unknown_option" });
   // features/o-level-first: every sign belongs to the chosen level, so a severe level
