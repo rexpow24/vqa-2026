@@ -6,9 +6,6 @@ self-hosted Qwen3-VL-2B server behind an HTTP API in `vlm/` + `docker/`.
 
 Design docs: [`architecture.md`](./architecture.md) · [`TODO.md`](./TODO.md)
 
-**Open handoff (2026-11-23): codebook changes O.v2, E.v5/E.v6, C subject and R rules are committed but NOT in production; a teammate reviews the forms on a local copy first.**
-Read [`.claude/handoff/project-context.md`](./.claude/handoff/project-context.md), [`plan.md`](./.claude/handoff/plan.md), [`progress.md`](./.claude/handoff/progress.md) before touching codebooks, guidelines or deploying.
-
 ---
 
 ## CONSTITUTION — Preprocessing Pipeline
