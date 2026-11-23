@@ -8,7 +8,10 @@
 // 20261119100000_v_behavior_multiselect.sql for V.v3 and
 // 20261119120000_v_animal_responsibility.sql for V.v4 and
 // 20261119140000_v_animal_owner_evidence.sql for V.v5 and
-// 20261119150000_v_both_animal_keeper.sql for V.v6).
+// 20261119150000_v_both_animal_keeper.sql for V.v6, and later migrations for
+// the later versions, e.g. 20261123100000_o_v2_visible_signs.sql for O.v2 and
+// 20261123110000_e_v5_two_entities.sql for E.v5 and
+// 20261123120000_e_v6_no_colors.sql for E.v6).
 //
 // A group is answered with cells exactly when it has a codebook here; there is
 // no second list of slot groups. Imports stay relative (no "@/") so that
@@ -42,6 +45,9 @@ import E4 from "./E.v4.json" with { type: "json" };
 import C4 from "./C.v4.json" with { type: "json" };
 import V9 from "./V.v9.json" with { type: "json" };
 import Prev4 from "./Prev.v4.json" with { type: "json" };
+import O2 from "./O.v2.json" with { type: "json" };
+import E5 from "./E.v5.json" with { type: "json" };
+import E6 from "./E.v6.json" with { type: "json" };
 
 export type CodebookOption = {
   id: string;
@@ -80,7 +86,7 @@ export type Codebook = {
 
 const CODEBOOKS: Readonly<Record<string, Codebook>> = Object.fromEntries(
   ([S1, E1, C1, V1, O1, R1, Prev1, S2, C2, V2, V3, V4, V5, V6, Attr1, E2, C3, E3, R2, Prev2, V7, V8, Prev3,
-    S3, E4, C4, V9, Prev4] as Codebook[]).map((book) => [`${book.group}.v${book.version}`, book]),
+    S3, E4, C4, V9, Prev4, O2, E5, E6] as Codebook[]).map((book) => [`${book.group}.v${book.version}`, book]),
 );
 
 /** The codebook with this id ("C.v1"), or undefined when there is none. */

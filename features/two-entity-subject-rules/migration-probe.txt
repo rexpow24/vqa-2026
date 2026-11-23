@@ -1,0 +1,32 @@
+                              set_config                               
+-----------------------------------------------------------------------
+ {"sub":"853239b7-b5c8-42a1-a728-a373eaea3005","role":"authenticated"}
+(1 row)
+ ?column? | count 
+----------+-------
+ before   |     0
+(1 row)
+psql:/tmp/probe_e5c.sql:14: ERROR:  Slot answer: E.v5 takes at most 2 entities
+HINT:  too_many_entities
+ ?column? | ?column? 
+----------+----------
+ two_e5   | t
+(1 row)
+    ?column?     | array_agg 
+-----------------+-----------
+ stored_versions | {E.v5}
+(1 row)
+psql:/tmp/probe_e5c.sql:23: ERROR:  Slot answer: cars without dashcam require a vehicle color
+HINT:  missing_cell
+     ?column?      | ?column? 
+-------------------+----------
+ three_e4_still_ok | t
+(1 row)
+ ?column? | ?column? 
+----------+----------
+ zero_e5  | t
+(1 row)
+         ?column?         | count 
+--------------------------+-------
+ after_rollback_e5_exists |     0
+(1 row)

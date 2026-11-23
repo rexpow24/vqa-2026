@@ -1,0 +1,134 @@
+[
+ {
+  "case": "collision",
+  "filename": "dqZf2LTzIy8_305300_335567_t01.mp4",
+  "drive_file_id": "12KyV4hmIDM8G3Ei8FdXYOZlUaoB1d9Gu",
+  "duration_s": 14,
+  "drafts": {
+   "Attr": {
+    "question": "Dựa trên quan sát, bên nào đóng vai trò chính dẫn đến va chạm?",
+    "answer": "Cả hai người điều khiển xe máy đều thiếu quan sát khi vào giao lộ, nhưng xe tay ga màu trắng cắt ngang đường đi của xe kia."
+   },
+   "C": {
+    "question": "Nguyên nhân trực tiếp dẫn đến va chạm là gì?",
+    "answer": "Hai phương tiện cùng tiến vào giao lộ mà không quan sát kỹ hoặc không nhường đường cho nhau dẫn đến va chạm trực diện."
+   },
+   "E": {
+    "question": "Các phương tiện chính liên quan trực tiếp đến vụ va chạm là gì?",
+    "answer": "Một chiếc xe tay ga màu trắng/xám và một chiếc xe máy màu tối."
+   },
+   "N": {
+    "question": "Hãy tóm tắt diễn biến chính của vụ tai nạn.",
+    "answer": "Khi đang đi qua ngã tư, xe tay ga màu trắng va chạm với xe máy màu tối đang di chuyển từ hướng ngược lại hoặc đang rẽ, khiến cả hai xe và người lái ngã xuống đường."
+   },
+   "O": {
+    "question": "Hậu quả của vụ va chạm đối với người và phương tiện là gì?",
+    "answer": "Cả hai xe máy đều bị đổ, hai người lái xe ngã văng xuống mặt đường."
+   },
+   "Prev": {
+    "question": "Người lái xe nên làm gì để tránh tai nạn này?",
+    "answer": "Cần giảm tốc độ, chú ý quan sát đa hướng và sẵn sàng phanh khi đi qua các ngã tư đông đúc."
+   },
+   "R": {
+    "question": "Phản ứng của những người liên quan và xung quanh sau tai nạn như thế nào?",
+    "answer": "Các nạn nhân nằm trên đường, những người đi đường khác giảm tốc độ và bắt đầu quan sát để hỗ trợ."
+   },
+   "S": {
+    "question": "Thời tiết, ánh sáng và tình trạng mặt đường tại thời điểm xảy ra tai nạn như thế nào?",
+    "answer": "Trời nắng, ánh sáng ban ngày tốt, đường phố đô thị khô ráo."
+   },
+   "V": {
+    "question": "Có hành vi vi phạm quy tắc giao thông nào được quan sát thấy không?",
+    "answer": "Thiếu quan sát và không giảm tốc độ đảm bảo an toàn khi đi qua nơi đường giao nhau."
+   }
+  }
+ },
+ {
+  "case": "near_miss",
+  "filename": "bqH0eeeTBcE_114833_159400_t01.mp4",
+  "drive_file_id": "1AVJWLdEUwRhChvt7qg0NcuM6QaEmxF-x",
+  "duration_s": 8,
+  "drafts": {
+   "Attr": {
+    "question": "Dựa trên quan sát, bên nào chịu trách nhiệm chính trong vụ việc này?",
+    "answer": "Người điều khiển xe máy do đi lấn sang làn đường ngược chiều."
+   },
+   "C": {
+    "question": "Nguyên nhân trực tiếp dẫn đến va chạm là gì?",
+    "answer": "Xe máy đi ngược chiều lấn sang làn đường của xe ô tô."
+   },
+   "E": {
+    "question": "Các phương tiện chính liên quan đến vụ va chạm là gì?",
+    "answer": "Xe ô tô có camera hành trình và một xe máy màu trắng."
+   },
+   "N": {
+    "question": "Hãy tóm tắt diễn biến chính của vụ va chạm.",
+    "answer": "Xe ô tô đang di chuyển thẳng thì một xe máy đi ngược chiều bất ngờ lấn làn và đâm trực diện vào đầu xe."
+   },
+   "O": {
+    "question": "Hậu quả của vụ va chạm quan sát được là gì?",
+    "answer": "Va chạm trực diện khiến xe máy và người lái ngã xuống đường."
+   },
+   "Prev": {
+    "question": "Người lái xe máy nên làm gì để tránh tai nạn này?",
+    "answer": "Nên tập trung quan sát và đi đúng phần đường, làn đường quy định."
+   },
+   "R": {
+    "question": "Phản ứng của xe ô tô ngay sau khi va chạm xảy ra là gì?",
+    "answer": "Xe ô tô dừng lại ngay lập tức tại hiện trường."
+   },
+   "S": {
+    "question": "Thời tiết, ánh sáng và tình trạng đường xá trong video như thế nào?",
+    "answer": "Ban ngày, trời sáng, đường nhựa hai chiều khô ráo trong khu dân cư."
+   },
+   "V": {
+    "question": "Người lái xe máy có vi phạm quy tắc giao thông nào không?",
+    "answer": "Có, xe máy đi sai phần đường, làn đường quy định."
+   }
+  }
+ },
+ {
+  "case": "k18",
+  "filename": "qGmTgtNrMJw_787233_814700_t01.mp4",
+  "drive_file_id": "1SRmlAB7ZGbaBF9NfbdqdU385ZE1tmYyL",
+  "duration_s": 15,
+  "drafts": {
+   "Attr": {
+    "question": "Dựa trên quan sát, bên nào đóng vai trò chính dẫn đến tình huống nguy hiểm này?",
+    "answer": "Người điều khiển xe máy do tự trượt ngã khi xử lý tình huống tại ngã tư."
+   },
+   "C": {
+    "question": "Nguyên nhân trực tiếp dẫn đến việc người đi xe máy bị ngã là gì?",
+    "answer": "Người đi xe máy phanh gấp hoặc mất lái dẫn đến trượt bánh và ngã xuống đường khi gặp xe ô tô."
+   },
+   "E": {
+    "question": "Các phương tiện liên quan trực tiếp đến vụ việc gồm những loại nào và màu sắc gì?",
+    "answer": "Một chiếc xe ô tô MPV màu đen và một chiếc xe máy màu trắng."
+   },
+   "N": {
+    "question": "Tóm tắt diễn biến chính của sự việc xảy ra trong video.",
+    "answer": "Xe ô tô màu đen đang di chuyển qua ngã tư thì xe máy đi từ hướng ngược lại bất ngờ trượt ngã ngay trước đầu xe ô tô; tài xế ô tô đã dừng lại kịp thời."
+   },
+   "O": {
+    "question": "Hậu quả của vụ va chạm đối với người và phương tiện là gì?",
+    "answer": "Xe máy bị đổ và trầy xước nhẹ, người lái xe máy bị ngã xuống đường nhưng đã tự đứng dậy được ngay sau đó."
+   },
+   "Prev": {
+    "question": "Người đi xe máy nên làm gì để phòng tránh tai nạn trong tình huống này?",
+    "answer": "Nên giảm tốc độ, chú ý quan sát và kiểm soát tay lái tốt hơn khi đi qua các điểm giao cắt."
+   },
+   "R": {
+    "question": "Phản ứng của các bên liên quan sau khi xảy ra va chạm như thế nào?",
+    "answer": "Tài xế ô tô dừng xe lại, người đi xe máy tự đứng dậy dựng xe và có người đi đường dừng lại hỗ trợ."
+   },
+   "S": {
+    "question": "Thời tiết, ánh sáng và điều kiện đường xá tại hiện trường như thế nào?",
+    "answer": "Thời tiết nắng ráo, ánh sáng ban ngày tốt, mặt đường nhựa khô ráo tại một ngã tư."
+   },
+   "V": {
+    "question": "Có hành vi vi phạm quy tắc giao thông nào có thể quan sát được không?",
+    "answer": "Người đi xe máy không làm chủ được tốc độ và tay lái khi đi vào khu vực giao lộ."
+   }
+  }
+ }
+]

@@ -3,7 +3,9 @@
 - Câu hỏi chuẩn: Hành vi của các bên sau tai nạn là gì?
 - Tên thực thể A, B, C lấy từ Nhóm E. Chủ thể và đối tượng được tự điền từ Nhóm C.
 - Mỗi ô chọn đúng một giá trị. Chỉ ghi hành vi thấy trong clip sau va chạm hoặc sau lúc suýt va chạm.
-- Clip kết thúc ngay lúc hoặc ngay sau sự kiện thì chọn "không" ở ô 0. Đây là trường hợp thường gặp và hợp lệ.
+- Ô 0 chọn "có" khi sau mốc End của nhóm C clip vẫn tiếp tục và thấy được ít nhất một bên của cặp C làm một hành vi ở ô 1 hoặc ô 2 (dừng lại, rời đi, đứng dậy, giằng co).
+- Ô 0 chọn "không" khi clip kết thúc trước hoặc ngay tại mốc End, hoặc sau mốc End không còn thấy bên nào của cặp C. Đây là trường hợp thường gặp và hợp lệ.
+- Mốc End theo biến Event End của SHRP 2 (Hankey, Perez & McClafferty 2016, VTTI): các bên đã dừng hẳn hoặc trở lại di chuyển bình thường.
 
 ## Các ô
 

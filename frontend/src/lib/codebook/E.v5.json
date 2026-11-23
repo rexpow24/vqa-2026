@@ -1,0 +1,163 @@
+{
+  "group": "E",
+  "version": 5,
+  "frozen_on": "2026-11-23",
+  "source": "docs/guidelines/E-thuc-the.md",
+  "question": "Loại phương tiện và màu sắc của các bên liên quan là gì?",
+  "templates": [
+    {
+      "case": "Ô tô",
+      "text": "Xe ô tô màu [4] (có/không có camera hành trình)"
+    },
+    {
+      "case": "Xe khách, xe tải",
+      "text": "[1] màu [4]"
+    },
+    {
+      "case": "Xe máy",
+      "text": "Xe máy màu [4]"
+    },
+    {
+      "case": "Xe đạp",
+      "text": "Xe đạp màu [4]"
+    },
+    {
+      "case": "Xe cứu thương, xe ba gác, khác",
+      "text": "[1] màu [4]"
+    },
+    {
+      "case": "Người đi bộ",
+      "text": "Người đi bộ mặc áo [5]"
+    },
+    {
+      "case": "Động vật",
+      "text": "Động vật"
+    }
+  ],
+  "per_entity": true,
+  "max_entities": 2,
+  "cells": [
+    {
+      "id": "type",
+      "label": "Loại",
+      "required": true,
+      "when": "Luôn điền",
+      "options": [
+        {
+          "id": "type.car",
+          "label": "ô tô"
+        },
+        {
+          "id": "type.bus",
+          "label": "xe khách"
+        },
+        {
+          "id": "type.truck",
+          "label": "xe tải"
+        },
+        {
+          "id": "type.ambulance",
+          "label": "xe cứu thương"
+        },
+        {
+          "id": "type.motorbike",
+          "label": "xe máy"
+        },
+        {
+          "id": "type.cargo_tricycle",
+          "label": "xe ba gác"
+        },
+        {
+          "id": "type.pedestrian",
+          "label": "người đi bộ"
+        },
+        {
+          "id": "type.animal",
+          "label": "động vật"
+        },
+        {
+          "id": "type.bicycle",
+          "label": "xe đạp"
+        },
+        {
+          "id": "type.other",
+          "label": "khác",
+          "free_text": true
+        }
+      ]
+    },
+    {
+      "id": "dashcam",
+      "label": "Camera hành trình",
+      "required": false,
+      "when": "Bắt buộc chọn với ô tô",
+      "options": [
+        {
+          "id": "dashcam.yes",
+          "label": "có"
+        },
+        {
+          "id": "dashcam.no",
+          "label": "không"
+        }
+      ],
+      "required_when": "type.car"
+    },
+    {
+      "id": "vehicle_color",
+      "label": "Màu xe",
+      "required": false,
+      "when": "Bắt buộc với phương tiện có màu; không áp dụng ô tô có dashcam, xe đạp, người đi bộ và động vật",
+      "options": [
+        {
+          "id": "vehicle_color.white_gray_silver",
+          "label": "trắng, xám/bạc"
+        },
+        {
+          "id": "vehicle_color.black",
+          "label": "đen"
+        },
+        {
+          "id": "vehicle_color.red",
+          "label": "đỏ"
+        },
+        {
+          "id": "vehicle_color.blue_green",
+          "label": "xanh"
+        },
+        {
+          "id": "vehicle_color.yellow",
+          "label": "vàng"
+        }
+      ]
+    },
+    {
+      "id": "clothing_color",
+      "label": "Màu áo người điều khiển",
+      "required": false,
+      "when": "Chỉ với người đi bộ",
+      "options": [
+        {
+          "id": "clothing_color.white_gray_silver",
+          "label": "trắng, xám/bạc"
+        },
+        {
+          "id": "clothing_color.black",
+          "label": "đen"
+        },
+        {
+          "id": "clothing_color.red",
+          "label": "đỏ"
+        },
+        {
+          "id": "clothing_color.blue_green",
+          "label": "xanh"
+        },
+        {
+          "id": "clothing_color.yellow",
+          "label": "vàng"
+        }
+      ]
+    }
+  ]
+}

@@ -57,6 +57,71 @@ export function deriveViolation(cause: Slots | null | undefined, entities: Entit
   return { ...core, ...additions };
 }
 
+/** The C pair R and O read: [subject, object] of an entity subject, the two parties in key order for "cả hai bên". */
+export function causePair(cause: Slots | null | undefined): string[] {
+  if (!cause) return [];
+  const subject = cause.subject as SlotValue | undefined;
+  if (subject?.option === "subject.both") {
+    return (Array.isArray(cause.parties) ? cause.parties as Slots[] : [])
+      .map((party) => (party.party as SlotValue | undefined)?.entity).filter((key): key is string => !!key).sort();
+  }
+  if (subject?.entity === undefined) return [];
+  const object = (cause.object as SlotValue | undefined)?.entity;
+  return object === undefined ? [subject.entity] : [subject.entity, object];
+}
+
+/** The sign options of O.v2, in codebook order, each with the level it stands for. */
+function outcomeSigns(): { id: string; level: string; exclusive: boolean }[] {
+  const cell = getCodebook(currentVersion("O") ?? "")?.cells.find((item) => item.id === "signs");
+  return (cell?.options ?? []).map((item) => ({ id: item.id, level: String(item.level), exclusive: item.exclusive === true }));
+}
+
+/** The rank of an O.v2 level (none 0 ... severe 3), or undefined for "không đánh giá". */
+function levelRank(level: string): number | undefined {
+  const cell = getCodebook(currentVersion("O") ?? "")?.cells.find((item) => item.id === "level");
+  const rank = cell?.options?.find((item) => item.id === level)?.rank;
+  return typeof rank === "number" ? rank : undefined;
+}
+
+/** The level of a set of O.v2 signs: the highest level among them, or undefined for none. */
+export function outcomeLevel(signIds: string[]): string | undefined {
+  const levels = outcomeSigns().filter((sign) => signIds.includes(sign.id)).map((sign) => sign.level);
+  return levels.reduce<string | undefined>((best, level) =>
+    best === undefined || (levelRank(level) ?? -1) > (levelRank(best) ?? -1) ? level : best, undefined);
+}
+
+/** Whether O needs the annotator's signs (a C collision), as opposed to being fully derived from C. */
+export function outcomeNeedsAnnotator(cause: Slots | null | undefined): boolean {
+  return option(cause?.event_type) === "event_type.collision";
+}
+
+/**
+ * O.v2 from the caller's C and the cells the annotator gave (codebook O.v2, `inferred_from`):
+ * near miss is "không va chạm", a legacy C with an unclear event is "không đánh giá", and a
+ * collision keeps the known signs in codebook order with the highest of their levels.
+ * A collision without a sign has no level yet (the save is refused); no C gives null.
+ * The level the client sent is never used.
+ */
+export function deriveOutcome(cause: Slots | null | undefined, submitted: Slots | null | undefined): Slots | null {
+  const event = option(cause?.event_type);
+  if (!cause || !event) return null;
+  if (event === "event_type.near_miss") return { level: { option: "level.none" } };
+  if (event !== "event_type.collision") return { level: { option: "level.not_assessed" } };
+  const value = submitted?.signs as SlotValue | undefined;
+  const chosen = new Set(value?.options ?? (value?.option ? [value.option] : []));
+  const signs = outcomeSigns().filter((sign) => chosen.has(sign.id)).map((sign) => sign.id);
+  const given = Array.isArray(submitted?.parties) ? (submitted!.parties as SlotValue[]).map((ref) => ref?.entity) : [];
+  const parties = given.length && given.every((key): key is string => typeof key === "string") ? given : causePair(cause);
+  const out: Slots = {};
+  const level = outcomeLevel(signs);
+  if (level) {
+    out.level = { option: level };
+    out.signs = { options: signs };
+  }
+  if (parties.length) out.parties = parties.slice(0, 2).map((key) => ({ entity: key }));
+  return out;
+}
+
 const PREVENTION: Record<string, string> = {
   "behavior.wrong_way": "main_action.stay_in_lane",
   "behavior.wrong_lane": "main_action.stay_in_lane",

@@ -1,0 +1,10 @@
+sequenceDiagram
+  participant F as EntityCard
+  participant R as PUT /entities
+  participant D as save_video_entities
+  F->>F: entityProblems (longer than max_entities?)
+  F->>R: entities, version
+  R->>R: version = currentVersion("E"); too long -> 422 too_many_entities
+  R->>D: rpc(version = E.v5)
+  D->>D: lock assignment; too long -> raise too_many_entities
+  D-->>R: saved E answer

@@ -1,0 +1,8 @@
+sequenceDiagram
+  participant Page as E form (any open page)
+  participant Route as PUT /api/videos/[id]/entities
+  participant DB as save_video_entities
+  Page->>Route: entities (maybe with colours from an old page)
+  Route->>Route: keep cells defined by E.v6, compose E sentence
+  Route->>DB: E.v6 entities
+  DB->>DB: validate_video_entity E.v6 branch, max 2

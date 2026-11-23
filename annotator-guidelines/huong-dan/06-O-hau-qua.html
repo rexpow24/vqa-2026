@@ -15,11 +15,34 @@ a{color:var(--link)}
 <ul>
 <li>Câu hỏi chuẩn: Hậu quả va chạm và mức độ hư hỏng quan sát được là gì?</li>
 <li>Tên thực thể A, B, C lấy từ Nhóm E. Các bên được tự điền từ cặp chủ thể và đối tượng của Nhóm C.</li>
-<li>Mỗi ô chọn đúng một giá trị.</li>
-<li>Không ghi thương tích hay tử vong. Chỉ ghi điều nhìn thấy, ví dụ "người nằm trên đường".</li>
-<li>Ràng buộc với C: loại sự kiện "va chạm" thì mức độ không được là "không va chạm"; "suýt va chạm" thì mức độ là "không va chạm" (hoặc "không rõ").
-  Suýt va chạm chỉ dùng khi không có thiệt hại; bên né ngã, trượt hoặc chạm thực thể khác thì C là "va chạm" và ghi mức độ theo hậu quả nhìn thấy.</li>
+<li>Mức độ không chọn bằng tay. Hệ thống tự suy ra từ Nhóm C và các dấu hiệu bạn chọn.</li>
+<li>Không ghi thương tích hay tử vong. Chỉ ghi hậu quả vật lý nhìn thấy.</li>
+<li>Mức độ tính cho toàn sự kiện: lấy mức cao nhất trong các bên.</li>
 </ul>
+<h2>O đọc từ C</h2>
+<table>
+<thead>
+<tr>
+<th>Nhóm C</th>
+<th>Nhóm O</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Suýt va chạm</td>
+<td>Tự điền "không va chạm", không cần chọn gì.</td>
+</tr>
+<tr>
+<td>Không rõ loại sự kiện (chỉ có ở câu C cũ)</td>
+<td>Tự điền "không đánh giá", không cần chọn gì.</td>
+</tr>
+<tr>
+<td>Va chạm</td>
+<td>Chọn mọi dấu hiệu thấy rõ, ít nhất một dấu hiệu.</td>
+</tr>
+</tbody>
+</table>
+<p>Suýt va chạm chỉ dùng khi không có thiệt hại; bên né ngã, trượt hoặc chạm thực thể khác thì C là "va chạm" và ghi dấu hiệu theo hậu quả nhìn thấy.</p>
 <h2>Các ô</h2>
 <table>
 <thead>
@@ -30,12 +53,12 @@ a{color:var(--link)}
 </thead>
 <tbody>
 <tr>
-<td>1. Mức độ</td>
-<td>không va chạm · va chạm nhẹ · va chạm vừa · va chạm mạnh · không rõ</td>
+<td>1. Mức độ (tự suy ra)</td>
+<td>không va chạm · va chạm nhẹ · va chạm vừa · va chạm mạnh · không đánh giá</td>
 </tr>
 <tr>
-<td>2. Dấu hiệu nhìn thấy</td>
-<td>lựa chọn theo mức độ (bảng dưới)</td>
+<td>2. Dấu hiệu nhìn thấy rõ</td>
+<td>nhiều lựa chọn, theo bảng dưới</td>
 </tr>
 </tbody>
 </table>
@@ -43,30 +66,75 @@ a{color:var(--link)}
 <thead>
 <tr>
 <th>Mức độ</th>
-<th>Dấu hiệu nhìn thấy</th>
+<th>Dấu hiệu nhìn thấy rõ</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Không va chạm</td>
-<td>không có</td>
-</tr>
-<tr>
 <td>Va chạm nhẹ</td>
-<td>chạm quẹt, vẫn đứng yên · chạm quẹt, vẫn đi tiếp</td>
+<td>có chạm nhưng các bên vẫn giữ thăng bằng</td>
 </tr>
 <tr>
 <td>Va chạm vừa</td>
-<td>lệch hướng · dừng đột ngột · xe ngã · người ngã</td>
+<td>ngã tại chỗ · xoay ngang hoặc lệch hướng mất lái</td>
 </tr>
 <tr>
 <td>Va chạm mạnh</td>
-<td>bị lật · bị văng · biến dạng rõ · người nằm trên đường</td>
+<td>bị lật · người bị hất văng khỏi xe · xe bị hất khỏi quỹ đạo · thân hoặc khung xe biến dạng lớn · va chạm thứ cấp</td>
 </tr>
 </tbody>
 </table>
-<p>Chọn dấu hiệu nặng nhất nhìn thấy.
-Không rõ khi va chạm xảy ra ngoài khung hình hoặc bị che hoàn toàn.</p>
+<p>Mức độ là mức cao nhất trong các dấu hiệu đã chọn.
+Chỉ chọn dấu hiệu khi thấy rõ trong video.
+Hậu quả bị cắt hoặc bị che: chọn những gì thấy rõ, không đoán thêm; đã có chạm thì tối thiểu là "va chạm nhẹ".</p>
+<h2>Định nghĩa dấu hiệu</h2>
+<table>
+<thead>
+<tr>
+<th>Dấu hiệu</th>
+<th>Khi nào chọn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>có chạm nhưng các bên vẫn giữ thăng bằng</td>
+<td>Có tiếp xúc, không bên nào ngã, xoay hay bị hất. Không đi cùng dấu hiệu khác.</td>
+</tr>
+<tr>
+<td>ngã tại chỗ</td>
+<td>Người hoặc xe đổ xuống cạnh điểm va chạm, người vẫn ở cạnh xe. Người ngã và xe ngã là cùng một dấu hiệu.</td>
+</tr>
+<tr>
+<td>xoay ngang hoặc lệch hướng mất lái</td>
+<td>Xe bị xoay ngang hoặc lệch khỏi hướng đi và mất lái sau cú va chạm.</td>
+</tr>
+<tr>
+<td>bị lật</td>
+<td>Xe lật nghiêng hoặc lật ngửa.</td>
+</tr>
+<tr>
+<td>người bị hất văng khỏi xe</td>
+<td>Người tách khỏi xe: bay lên, lên nắp ca-pô, lăn hoặc trượt ra khỏi chỗ xe đổ.</td>
+</tr>
+<tr>
+<td>xe bị hất khỏi quỹ đạo</td>
+<td>Cả xe bị đẩy hoặc văng ra xa khỏi điểm va chạm.</td>
+</tr>
+<tr>
+<td>thân hoặc khung xe biến dạng lớn</td>
+<td>Thân hoặc khung xe bị bẹp. Trầy xước, vỡ đèn, vỡ gương hoặc móp nhỏ không tính.</td>
+</tr>
+<tr>
+<td>va chạm thứ cấp</td>
+<td>Sau va chạm đầu, một bên va tiếp vào xe, người hoặc vật khác.</td>
+</tr>
+</tbody>
+</table>
+<h2>Cơ sở</h2>
+<ul>
+<li>GraDE (Darji &amp; Gondaliya, Journal of Trends in Computer Science and Smart Technology 8(4), 2026, doi:10.36548/jtcsst.2026.4.006) chấm mức độ vật lý nhìn thấy, không chấm thương tích: một dấu hiệu nặng thấy rõ là đủ (lật, biến dạng lớn, xe bị xoay hoặc hất khỏi quỹ đạo), còn va chạm nhẹ là chạm mà xe vẫn đứng thẳng và giữ quỹ đạo.</li>
+<li>SHRP 2 Naturalistic Driving Study chấm mức độ va chạm theo các tiêu chí rời rạc (Level 1-4), không theo cảm nhận chung.</li>
+</ul>
 <h2>Mẫu câu</h2>
 <table>
 <thead>
@@ -89,8 +157,8 @@ Không rõ khi va chạm xảy ra ngoài khung hình hoặc bị che hoàn toàn
 <td>Không quan sát thấy va chạm hoặc hư hỏng phương tiện.</td>
 </tr>
 <tr>
-<td>Không rõ</td>
-<td>Không thể xác định.</td>
+<td>C không rõ loại sự kiện</td>
+<td>Không đánh giá hậu quả vì nhóm C không rõ loại sự kiện.</td>
 </tr>
 </tbody>
 </table></main></body></html>

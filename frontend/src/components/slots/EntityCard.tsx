@@ -4,7 +4,7 @@ import { useState } from "react";
 import { currentVersion } from "@/lib/codebook";
 import type { Entity } from "@/lib/codebook/compose";
 import {
-  buildEntityCells, entityCells, entityProblems, errorText, nextEntityKey, preview, sameSlots, type Cells,
+  buildEntityCells, entityCells, entityLimit, entityProblems, errorText, nextEntityKey, preview, sameSlots, type Cells,
 } from "@/lib/codebook/form";
 import { CardHeader, DraftReference, SaveBar, Sentence, postJson, type SaveError, type SlotDraft } from "@/components/slots/common";
 import { FieldRow, FreeText, OptionPicker } from "@/components/slots/SlotField";
@@ -61,13 +61,18 @@ export function EntityCard({ videoId, draft, saved, canSave, onSaved }: {
       }
     } finally { setSaving(false); }
   }
-  const nextKey = nextEntityKey(list.map((entity) => entity.key));
+  const limit = entityLimit();
+  // E.v5: at most the two main parties, so no add button at the limit.
+  const nextKey = limit !== null && list.length >= limit ? null : nextEntityKey(list.map((entity) => entity.key));
 
   return <article className="rounded-lg border border-border-strong bg-surface" data-qgroup="E">
     <CardHeader draft={draft} saved={stored} />
     <DraftReference draft={draft} />
     <div className="flex flex-col gap-3 border-t border-border px-4 py-3">
-      <p className="text-xs text-foreground/70">Khai báo từng bên liên quan (A, B, C...). Các nhóm khác chọn bên từ danh sách đã lưu ở đây.</p>
+      <p className="text-xs text-foreground/70">{limit === null
+        ? "Khai báo từng bên liên quan (A, B, C...). Các nhóm khác chọn bên từ danh sách đã lưu ở đây."
+        : `Khai báo tối đa ${limit} bên chính: cặp va chạm đầu tiên, không có va chạm thì cặp suýt va chạm đầu tiên; xe tự trượt hoặc tự lật thì 1 bên. Các nhóm khác chọn bên từ danh sách đã lưu ở đây.`}</p>
+      {found._list && <p role="alert" className="text-sm text-red">{found._list}</p>}
       {list.map((entity) => {
         const cells = entity.cells as Cells;
         const usedBy = serverError?.code === "entity_referenced" && serverError.entity === entity.key;
@@ -99,7 +104,8 @@ export function EntityCard({ videoId, draft, saved, canSave, onSaved }: {
     <Sentence dirty={dirty} preview={sentence} saved={stored ? draft.edited_answer : null} />
     <SaveBar canSave={canSave} saving={saving} dirty={dirty} label="Lưu các bên"
       status={saving ? "Đang lưu…" : !dirty ? "✓ Đã lưu" : stored ? "Có thay đổi chưa lưu" : ""}
-      error={serverError?.message ?? (tried && Object.keys(found).length ? "Mỗi bên cần chọn loại, xem chữ đỏ ở trên." : undefined)}
+      error={serverError?.message ?? (tried && Object.keys(found).length
+        ? found._list ?? "Mỗi bên cần chọn loại, xem chữ đỏ ở trên." : undefined)}
       onSave={() => { void save(); }} />
   </article>;
 }

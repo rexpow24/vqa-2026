@@ -202,3 +202,42 @@ def test_slot_only_export_still_produces_choice_agreement(tmp_path, capsys, synt
     assert "S / test.v1" in report
     assert len((out / "by_slot_group.csv").read_text(encoding="utf-8").splitlines()) == 4
 
+
+
+def test_o_v2_signs_agree_whatever_order_they_were_ticked_and_o_v1_still_scores():
+    # O.v2 (features/o-codebook-v2): signs are a set; parties are optional and not scored.
+    first = {"level": {"option": "level.severe"}, "signs": {"options": ["sign.fell_in_place", "sign.person_thrown"]},
+             "parties": [{"entity": "A"}, {"entity": "B"}]}
+    second = {"signs": {"options": ["sign.person_thrown", "sign.fell_in_place"]}, "level": {"option": "level.severe"},
+              "parties": [{"entity": "B"}]}
+    assert slot_signature(json.dumps(first), "O.v2") == slot_signature(json.dumps(second), "O.v2")
+    fewer = {"level": {"option": "level.severe"}, "signs": {"options": ["sign.person_thrown"]}}
+    assert slot_signature(json.dumps(first), "O.v2") != slot_signature(json.dumps(fewer), "O.v2")
+    v1 = {"level": {"option": "level.minor"}, "sign": {"option": "sign.scrape_stationary"}, "parties": [{"entity": "A"}]}
+    assert slot_signature(json.dumps(v1), "O.v1") == '{"level":{"option":"level.minor"},"sign":{"option":"sign.scrape_stationary"}}'
+
+
+def test_e_v5_scores_its_conditional_cells_like_e_v4():
+    """features/two-entity-subject-rules: E.v5 keeps the E.v4 cells, so it keeps their scoring."""
+    from scripts.iaa_round import conditional_scored_cell_ids, slot_signature
+    row = {"entities": [
+        {"key": "A", "cells": {"type": {"option": "type.car"}, "dashcam": {"option": "dashcam.yes"},
+                               "vehicle_color": {"option": "vehicle_color.red"}}},
+        {"key": "B", "cells": {"type": {"option": "type.motorbike"}, "vehicle_color": {"option": "vehicle_color.red"}}},
+    ]}
+    assert conditional_scored_cell_ids("E.v5") == conditional_scored_cell_ids("E.v4") == {"dashcam", "vehicle_color"}
+    assert slot_signature(json.dumps(row), "E.v5") == slot_signature(json.dumps(row), "E.v4")
+    assert "vehicle_color.red" in slot_signature(json.dumps(row), "E.v5")
+    assert slot_signature(json.dumps(row), "E.v5").count('"vehicle_color":') == 1  # the dashcam car's colour is dropped
+
+
+def test_e_v6_scores_the_dashcam_only_and_never_a_colour():
+    """features/e-v6-no-colors: E.v6 asks no colour, so only the car's dashcam is conditional."""
+    from scripts.iaa_round import conditional_scored_cell_ids, slot_signature
+    row = {"entities": [
+        {"key": "A", "cells": {"type": {"option": "type.car"}, "dashcam": {"option": "dashcam.yes"}}},
+        {"key": "B", "cells": {"type": {"option": "type.motorbike"}}},
+    ]}
+    assert conditional_scored_cell_ids("E.v6") == {"dashcam"}
+    signature = slot_signature(json.dumps(row), "E.v6")
+    assert "dashcam.yes" in signature and "color" not in signature

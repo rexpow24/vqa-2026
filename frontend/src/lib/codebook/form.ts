@@ -12,7 +12,7 @@
 
 import { getCodebook, currentVersion, type Codebook, type CodebookCell, type CodebookOption } from "./index.ts";
 import { compose, type Entity, type SlotValue, type Slots } from "./compose.ts";
-import { derivePreventionFromCause, deriveViolation } from "./derivation.ts";
+import { causePair, deriveOutcome, derivePreventionFromCause, deriveViolation, outcomeNeedsAnnotator } from "./derivation.ts";
 
 export type Cells = Record<string, SlotValue>;
 export type PartyState = { entity?: string; option?: string; cells: Cells };
@@ -61,18 +61,7 @@ const keysOf = (context: FormContext) => [...context.entities].map((entity) => e
 const responsibleKeysOf = (context: FormContext) => context.entities.filter((entity) =>
   (entity.cells.type as SlotValue | undefined)?.option !== "type.animal").map((entity) => entity.key).sort();
 
-/** The C pair R and O read: [subject, object] of an entity subject, the two parties in key order for "cả hai bên". */
-export function causePair(cause: Slots | null | undefined): string[] {
-  if (!cause) return [];
-  const subject = cause.subject as SlotValue | undefined;
-  if (subject?.option === "subject.both") {
-    return (Array.isArray(cause.parties) ? cause.parties as Slots[] : [])
-      .map((party) => (party.party as SlotValue | undefined)?.entity).filter((key): key is string => !!key).sort();
-  }
-  if (subject?.entity === undefined) return [];
-  const object = (cause.object as SlotValue | undefined)?.entity;
-  return object === undefined ? [subject.entity] : [subject.entity, object];
-}
+export { causePair };
 
 function field(book: Codebook, cellId: string, scope: "outer" | number, extra: Partial<Field> = {}): Field {
   const cell = cellOf(book, cellId);
@@ -131,12 +120,14 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
         note: "Chọn 1 hoặc 2 bên; không xác định được thì chọn \"không rõ\"." }));
       return out;
     case "O": {
-      out.push(field(book, "level", "outer"));
-      const signs = childOptions(book, "sign", optionOf(cells.level));
-      if (signs.length) out.push(field(book, "sign", "outer", { options: signs }));
-      if (signs.some((option) => option.parent !== "level.none")) {
-        out.push(field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: keys,
-          note: "Tự điền từ chủ thể và đối tượng của nhóm C; chọn 1 hoặc 2 bên." }));
+      // O.v2: the level is derived from C and the signs (outcomeState), never chosen;
+      // signs and parties are asked only on a C collision.
+      out.push(field(book, "level", "outer", { readOnly: true,
+        note: "Tự suy ra: C suýt va chạm là không va chạm; C va chạm là mức cao nhất của các dấu hiệu đã chọn." }));
+      if (outcomeNeedsAnnotator(context.cause)) {
+        out.push(field(book, "signs", "outer", { required: true }),
+          field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: keys,
+            note: "Tự điền từ chủ thể và đối tượng của nhóm C; chọn 1 hoặc 2 bên." }));
       }
       return out;
     }
@@ -247,7 +238,8 @@ function payloadValue(value: SlotValue): SlotValue {
 }
 
 /** The slots payload of the save route for these choices; hidden or stale values are left out. */
-export function buildSlots(qgroup: string, state: FormState, context: FormContext): Slots {
+export function buildSlots(qgroup: string, given: FormState, context: FormContext): Slots {
+  const state = qgroup === "O" ? outcomeState(given, context) : given;
   const visible = fields(qgroup, state, context);
   const slots: Slots = {};
   const parties: Slots[] = [];
@@ -370,6 +362,21 @@ export function staleChoices(qgroup: string, savedVersion: string | null, slots:
   return out;
 }
 
+/**
+ * O.v2: the form state with the level the server will store, derived from C and
+ * the chosen signs (derivation.ts, deriveOutcome). Signs and parties stay in the
+ * state when C is not a collision, so switching C back does not lose them;
+ * buildSlots leaves them out because their fields are hidden.
+ */
+export function outcomeState(state: FormState, context: FormContext): FormState {
+  const derived = deriveOutcome(context.cause, { signs: state.cells.signs });
+  const cells = { ...state.cells };
+  const level = derived?.level as SlotValue | undefined;
+  if (level) cells.level = level;
+  else delete cells.level;
+  return { ...state, cells };
+}
+
 /** A new, empty form; O starts with the C pair (codebook O, "auto_fill"). */
 export function defaultState(qgroup: string, context: FormContext): FormState {
   const state = emptyState();
@@ -407,7 +414,7 @@ export function choose(qgroup: string, state: FormState, item: Field, value: Slo
   }
   const target = item.scope === "outer" ? next.cells : (next.parties[item.scope] ??= { cells: {} }).cells;
   if (slot === undefined) delete target[item.cellId];
-  else target[item.cellId] = slot;
+  else target[item.cellId] = qgroup === "O" && item.cellId === "signs" ? exclusiveSigns(item, currentValue(state, item), slot) : slot;
   const keys = keysOf(context);
   if (qgroup === "C" && item.cellId === "subject" && item.scope === "outer") {
     if (slot?.entity !== undefined && keys.length === 2) {
@@ -448,6 +455,20 @@ export function choose(qgroup: string, state: FormState, item: Field, value: Slo
   return next;
 }
 
+/**
+ * O.v2 "có chạm nhưng các bên vẫn giữ thăng bằng" contradicts every other sign:
+ * picking it keeps it alone, and picking another sign drops it.
+ */
+function exclusiveSigns(item: Field, before: SlotValue | undefined, after: SlotValue): SlotValue {
+  const exclusive = item.options.filter((option) => option.exclusive === true).map((option) => option.id);
+  const previous = new Set(before?.options ?? []);
+  const chosen = after.options ?? (after.option ? [after.option] : []);
+  const added = chosen.filter((id) => !previous.has(id));
+  const alone = added.find((id) => exclusive.includes(id));
+  const options = alone ? [alone] : chosen.length > 1 ? chosen.filter((id) => !exclusive.includes(id)) : chosen;
+  return { options };
+}
+
 function fillTwoParties(state: FormState, keys: string[]) {
   const chosen = state.parties.map((party) => party.entity).filter((key): key is string => !!key && keys.includes(key));
   for (const key of keys) if (chosen.length < 2 && !chosen.includes(key)) chosen.push(key);
@@ -461,8 +482,9 @@ const suffix = (option: string | undefined) => option?.split(".").slice(1).join(
  * database's rules so the annotator sees them next to the cell before sending,
  * plus the C/O rule the database leaves to the form (spec, Non-goals).
  */
-export function problems(qgroup: string, state: FormState, context: FormContext): Record<string, string> {
+export function problems(qgroup: string, given: FormState, context: FormContext): Record<string, string> {
   const out: Record<string, string> = {};
+  const state = qgroup === "O" ? outcomeState(given, context) : given;
   const visible = fields(qgroup, state, context);
   for (const item of visible) {
     if (item.kind === "refs") {
@@ -508,20 +530,8 @@ export function problems(qgroup: string, state: FormState, context: FormContext)
   }
   const refs = visible.find((item) => item.kind === "refs");
   if (refs && state.refs.length > 2) out[refs.key] = "Chọn tối đa 2 bên.";
-  if (qgroup === "O") {
-    const level = optionOf(state.cells.level);
-    const event = optionOf(context.cause?.event_type as SlotValue | undefined);
-    // A C.v1 answer may carry the evasion cells; C.v2 dropped them, and its
-    // near miss means no damage at all (C-nguyen-nhan.md), so O must be none.
-    const v1Evasion = context.cause?.evader !== undefined;
-    const avoided = optionOf(context.cause?.evasion_result as SlotValue | undefined) === "evasion_result.avoided";
-    if (event === "event_type.collision" && level === "level.none") {
-      out["outer.level"] = "Nhóm C là \"va chạm\" nên mức độ không được là \"không va chạm\".";
-    } else if (event === "event_type.near_miss" && v1Evasion && avoided && level && level !== "level.none") {
-      out["outer.level"] = "Nhóm C là \"suýt va chạm\", né \"tránh được\" nên mức độ là \"không va chạm\".";
-    } else if (event === "event_type.near_miss" && !v1Evasion && level && level !== "level.none" && level !== "level.unclear") {
-      out["outer.level"] = "Nhóm C là \"suýt va chạm\" nên mức độ là \"không va chạm\".";
-    }
+  if (qgroup === "O" && !deriveOutcome(context.cause, null)) {
+    out["outer.level"] = "Lưu nhóm C trước để hệ thống suy ra mức độ.";
   }
   return out;
 }
@@ -556,6 +566,7 @@ export function entityCells(cells: Cells): CodebookCell[] {
   }
   if (type && !["type.car", "type.bicycle", "type.pedestrian", "type.animal"].includes(type)) shown.add("vehicle_color");
   if (type === "type.pedestrian") shown.add("clothing_color");
+  // E.v6 has no colour cells (features/e-v6-no-colors): filtering by the book drops them.
   return book.cells.filter((cell) => shown.has(cell.id)).map((cell) => ({
     ...cell,
     required: cell.id === "type" || cell.id === "dashcam" && type === "type.car"
@@ -575,9 +586,23 @@ export function buildEntityCells(cells: Cells): Cells {
   return out;
 }
 
-/** What blocks saving the entity list, by "<key>.<cell>". */
+/**
+ * The most parties the current E book takes (E.v5 `max_entities`: the two main
+ * parties of the first collision, else of the first near miss), or null for a
+ * book without a limit.
+ */
+export function entityLimit(): number | null {
+  const limit = E_BOOK().max_entities;
+  return typeof limit === "number" ? limit : null;
+}
+
+/** What blocks saving the entity list, by "<key>.<cell>"; "_list" for the list itself. */
 export function entityProblems(entities: Entity[]): Record<string, string> {
   const out: Record<string, string> = {};
+  const limit = entityLimit();
+  if (limit !== null && entities.length > limit) {
+    out._list = `Chỉ khai báo ${limit} bên chính; xóa bớt ${entities.length - limit} bên.`;
+  }
   for (const entity of entities) {
     const cells = buildEntityCells(entity.cells as Cells);
     if (!cells.type) out[`${entity.key}.type`] = "Chưa chọn loại.";
@@ -587,8 +612,9 @@ export function entityProblems(entities: Entity[]): Record<string, string> {
     if (type === "type.car" && !cells.dashcam) {
       out[`${entity.key}.dashcam`] = "Ô tô bắt buộc chọn có hoặc không có camera hành trình.";
     }
-    const colorRequired = type !== undefined && !["type.car", "type.bicycle", "type.pedestrian", "type.animal"].includes(type)
-      || type === "type.car" && cells.dashcam?.option === "dashcam.no";
+    const colorAsked = E_BOOK().cells.some((cell) => cell.id === "vehicle_color");
+    const colorRequired = colorAsked && (type !== undefined && !["type.car", "type.bicycle", "type.pedestrian", "type.animal"].includes(type)
+      || type === "type.car" && cells.dashcam?.option === "dashcam.no");
     if (colorRequired && !cells.vehicle_color) out[`${entity.key}.vehicle_color`] = "Bắt buộc chọn màu xe.";
     if (type === "type.car" && cells.dashcam?.option === "dashcam.yes" && cells.vehicle_color) {
       out[`${entity.key}.vehicle_color`] = "Ô tô có dashcam không chọn màu xe.";
@@ -680,9 +706,12 @@ export function errorText(qgroup: string, code: string | undefined, message: str
     unexpected_slots: "Câu trả lời dạng chữ không gửi ô. Tải lại trang.",
     reason: "Câu trả lời dạng ô không mang lý do. Tải lại trang.",
     entity_key: "Mỗi bên là một chữ cái in hoa khác nhau.",
+    too_many_entities: "Chỉ khai báo 2 bên chính: cặp va chạm đầu tiên, không có va chạm thì cặp suýt va chạm đầu tiên.",
     forbidden: "Video này không được giao cho bạn dạng chọn ô.",
     adjudicated: "Câu này đã được thống nhất, không sửa được nữa.",
     invalid_value: "Dữ liệu ô không hợp lệ. Tải lại trang rồi chọn lại.",
+    level_mismatch: "Mức độ phải là mức cao nhất của các dấu hiệu đã chọn. Tải lại trang rồi lưu lại.",
+    exclusive_sign: "\"có chạm nhưng các bên vẫn giữ thăng bằng\" không đi cùng dấu hiệu khác.",
   };
   return { message: text[code ?? ""] ?? `Không lưu được (${code ?? "lỗi"}). Tải lại trang rồi thử lại.`, cellId: target };
 }

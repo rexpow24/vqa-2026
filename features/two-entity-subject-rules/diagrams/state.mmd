@@ -1,0 +1,7 @@
+stateDiagram-v2
+  [*] --> Empty
+  Empty --> OneParty: add A
+  OneParty --> TwoParties: add B
+  TwoParties --> TwoParties: add button hidden (limit)
+  Legacy3 --> TwoParties: remove one, save as E.v5
+  Legacy3 --> Legacy3: stored rows untouched

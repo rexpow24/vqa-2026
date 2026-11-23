@@ -47,14 +47,14 @@ test("E joins the entities in key order, lower-casing all but the first", () => 
     entity("A", { type: "type.car", dashcam: "dashcam.yes" }),
     entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.red" }),
     entity("C", { type: "type.pedestrian", clothing_color: "clothing_color.white_gray_silver" }),
-  ] }), "Xe ô tô (có camera hành trình), xe máy màu đỏ, người đi bộ mặc áo trắng, xám/bạc.");
+  ] }), "Xe ô tô (có camera hành trình), xe máy, người đi bộ.");
 });
 
 test("E.v4 phrases an ambulance with its colour and a bicycle without a colour", () => {
   assert.equal(compose("E", { entities: [
     entity("A", { type: "type.ambulance", vehicle_color: "vehicle_color.white_gray_silver" }),
     entity("B", { type: "type.bicycle" }),
-  ] }), "Xe cứu thương màu trắng, xám/bạc, xe đạp.");
+  ] }), "Xe cứu thương, xe đạp.");
 });
 
 test("E without any declared entity cannot be determined", () => {
@@ -73,21 +73,21 @@ test("E names trucks and buses by type and colour", () => {
     entity("A", { type: "type.truck", vehicle_color: "vehicle_color.blue_green" }),
     entity("B", { type: "type.bus", vehicle_color: "vehicle_color.white_gray_silver" }),
     entity("C", { type: "type.animal" }),
-  ] }), "Xe tải màu xanh, xe khách màu trắng, xám/bạc, động vật.");
+  ] }), "Xe tải, xe khách, động vật.");
 });
 
 test("E omits colour for a bicycle", () => {
   assert.equal(compose("E", { entities: [
     entity("A", { type: "type.bicycle" }),
     entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.red" }),
-  ] }), "Xe đạp, xe máy màu đỏ.");
+  ] }), "Xe đạp, xe máy.");
 });
 
 test("E adds the letter when two entities share type and colour", () => {
   assert.equal(compose("E", { entities: [
     entity("A", { type: "type.motorbike", vehicle_color: "vehicle_color.white_gray_silver" }),
     entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.white_gray_silver" }),
-  ] }), "Xe máy màu trắng, xám/bạc A, xe máy màu trắng, xám/bạc B.");
+  ] }), "Xe máy A, xe máy B.");
 });
 
 const ENTITIES = [
@@ -102,7 +102,7 @@ test("C names the parties by their E name and fills the collision pattern", () =
   assert.equal(compose("C", { event_type: o("event_type.collision"), subject: e("B"), object: e("A"),
     conflict_type: o("conflict_type.k04"), action: o("action.k04.lane_change_left") },
   { entities: ENTITIES }),
-  "Xe máy màu đỏ chuyển sang làn bên trái, đi vào đường đi của xe ô tô (có camera hành trình), dẫn đến va chạm.");
+  "Xe máy chuyển sang làn bên trái, đi vào đường đi của xe ô tô (có camera hành trình), dẫn đến va chạm.");
 });
 
 test("C.v1 near miss names who evaded, how, and the result", () => {
@@ -110,16 +110,16 @@ test("C.v1 near miss names who evaded, how, and the result", () => {
     conflict_type: o("conflict_type.k15"), action: o("action.k15.left_to_right"),
     evader: e("A"), evasion: o("evasion.hard_brake"), evasion_result: { option: "evasion_result.hit_other", entity: "B" } },
   { entities: ENTITIES, version: "C.v1" }),
-  "Người đi bộ mặc áo trắng, xám/bạc từ trái sang phải, cắt ngang phía trước xe ô tô (có camera hành trình), "
-  + "xe ô tô (có camera hành trình) phải phanh gấp, chạm vào xe máy màu đỏ.");
+  "Người đi bộ từ trái sang phải, cắt ngang phía trước xe ô tô (có camera hành trình), "
+  + "xe ô tô (có camera hành trình) phải phanh gấp, chạm vào xe máy.");
 });
 
 test("C drops the parts an unclear or relation-less cell leaves empty", () => {
   assert.equal(compose("C", { event_type: o("event_type.collision"), subject: e("B"), conflict_type: o("conflict_type.unclear") },
-    { entities: ENTITIES }), "Xe máy màu đỏ, dẫn đến va chạm.");
+    { entities: ENTITIES }), "Xe máy, dẫn đến va chạm.");
   assert.equal(compose("C", { event_type: o("event_type.collision"), subject: e("B"),
     conflict_type: o("conflict_type.k18"), action: o("action.k18.skid") }, { entities: ENTITIES }),
-  "Xe máy màu đỏ trượt, dẫn đến va chạm.");
+  "Xe máy trượt, dẫn đến va chạm.");
 });
 
 test("C refuses an entity the annotator did not declare", () => {
@@ -129,9 +129,9 @@ test("C refuses an entity the annotator did not declare", () => {
 
 test("V uses the three guideline sentences, with the free text of 'khác'", () => {
   assert.equal(compose("V", { result: o("result.yes"), violator: e("B"), behavior: o("behavior.wrong_lane") },
-    { entities: ENTITIES }), "Xe máy màu đỏ đi sai làn, lấn làn.");
+    { entities: ENTITIES }), "Xe máy đi sai làn, lấn làn.");
   assert.equal(compose("V", { result: o("result.yes"), violator: e("C"), behavior: { option: "behavior.other", text: "đi vào làn xe buýt" } },
-    { entities: ENTITIES }), "Người đi bộ mặc áo trắng, xám/bạc đi vào làn xe buýt.");
+    { entities: ENTITIES }), "Người đi bộ đi vào làn xe buýt.");
   assert.equal(compose("V", { result: o("result.none_observed") }, { version: "V.v9" }), "Không quan sát thấy vi phạm quy tắc giao thông rõ ràng.");
   assert.equal(compose("V", { result: o("result.unclear") }), "Không thể xác định.");
 });
@@ -139,12 +139,12 @@ test("V uses the three guideline sentences, with the free text of 'khác'", () =
 test("V.v3 composes multiple behaviour tags in codebook order", () => {
   assert.equal(compose("V", { result: o("result.yes"), violator: e("B"),
     behavior: { options: ["behavior.no_helmet", "behavior.wrong_lane"] } }, { entities: ENTITIES }),
-  "Xe máy màu đỏ đi sai làn, lấn làn và không đội mũ bảo hiểm.");
+  "Xe máy đi sai làn, lấn làn và không đội mũ bảo hiểm.");
   assert.equal(compose("V", { result: o("result.yes"), violator: o("violator.both"), parties: [
     { party: e("A"), behavior: { options: ["behavior.wrong_lane", "behavior.no_helmet"] } },
     { party: e("B"), behavior: { options: ["behavior.fail_to_yield"] } },
   ] }, { entities: ENTITIES, version: "V.v3" }),
-  "Xe ô tô (có camera hành trình) đi sai làn, lấn làn và không đội mũ bảo hiểm, đồng thời xe máy màu đỏ không nhường đường.");
+  "Xe ô tô (có camera hành trình) đi sai làn, lấn làn và không đội mũ bảo hiểm, đồng thời xe máy không nhường đường.");
 });
 
 test("V.v6 composes an unidentified keeper beside a vehicle without widening older V or C", () => {
@@ -165,28 +165,46 @@ test("V.v6 composes an unidentified keeper beside a vehicle without widening old
     ] }, { entities: ENTITIES }), { code: "parties" });
 });
 
-test("O names both parties, one party, or uses the fixed sentences", () => {
+test("O.v1 names both parties, one party, or uses the fixed sentences", () => {
+  const v1 = { version: "O.v1", entities: ENTITIES };
   assert.equal(compose("O", { parties: [e("B"), e("A")], level: o("level.minor"), sign: o("sign.scrape_continued") },
-    { entities: ENTITIES }), "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm nhẹ, chạm quẹt, vẫn đi tiếp.");
+    v1), "Xe máy và xe ô tô (có camera hành trình) va chạm nhẹ, chạm quẹt, vẫn đi tiếp.");
   assert.equal(compose("O", { parties: [e("B")], level: o("level.severe"), sign: o("sign.overturned") },
-    { entities: ENTITIES }), "Xe máy màu đỏ bị lật.");
-  assert.equal(compose("O", { level: o("level.none"), sign: o("sign.none") }), "Không quan sát thấy va chạm hoặc hư hỏng phương tiện.");
-  assert.equal(compose("O", { level: o("level.unclear") }), "Không thể xác định.");
+    v1), "Xe máy bị lật.");
+  assert.equal(compose("O", { level: o("level.none"), sign: o("sign.none") }, v1), "Không quan sát thấy va chạm hoặc hư hỏng phương tiện.");
+  assert.equal(compose("O", { level: o("level.unclear") }, v1), "Không thể xác định.");
+});
+
+test("O.v2 lists the derived level and every visible sign, with fixed sentences for none and not assessed", () => {
+  const signs = (...ids: string[]) => ({ options: ids });
+  assert.equal(compose("O", { parties: [e("B"), e("A")], level: o("level.severe"),
+    signs: signs("sign.fell_in_place", "sign.person_thrown") }, { entities: ENTITIES }),
+  "Xe máy và xe ô tô (có camera hành trình) va chạm mạnh, ngã tại chỗ, người bị hất văng khỏi xe.");
+  assert.equal(compose("O", { parties: [e("B")], level: o("level.moderate"), signs: signs("sign.fell_in_place") },
+    { entities: ENTITIES }), "Xe máy ngã tại chỗ.");
+  assert.equal(compose("O", { level: o("level.none") }), "Không quan sát thấy va chạm hoặc hư hỏng phương tiện.");
+  assert.equal(compose("O", { level: o("level.not_assessed") }), "Không đánh giá hậu quả vì nhóm C không rõ loại sự kiện.");
+  assert.throws(() => compose("O", { level: o("level.unclear") }), { code: "unknown_option" });
+  assert.throws(() => compose("O", { level: o("level.minor"), signs: signs("sign.overturned") }), { code: "level_mismatch" });
+  assert.throws(() => compose("O", { level: o("level.severe") }), { code: "missing_cell" });
+  assert.throws(() => compose("O", { level: o("level.none"), signs: signs("sign.fell_in_place") }), { code: "level_mismatch" });
+  assert.throws(() => compose("O", { level: o("level.severe"), signs: signs("sign.contact_balanced", "sign.overturned") }),
+    { code: "exclusive_sign" });
 });
 
 test("Prev gives one clause per party in key order", () => {
   assert.equal(compose("Prev", { parties: [{ party: e("B"), main_action: o("main_action.observe_and_yield") }] },
-    { entities: ENTITIES }), "Xe máy màu đỏ nên quan sát và nhường đường.");
+    { entities: ENTITIES }), "Xe máy nên quan sát và nhường đường.");
   assert.equal(compose("Prev", { parties: [
     { party: e("B"), main_action: o("main_action.slow_down") },
     { party: e("A"), main_action: { option: "main_action.other", text: "bấm còi cảnh báo" } },
   ] }, { entities: ENTITIES }),
-  "Xe ô tô (có camera hành trình) nên bấm còi cảnh báo; xe máy màu đỏ nên giảm tốc.");
+  "Xe ô tô (có camera hành trình) nên bấm còi cảnh báo; xe máy nên giảm tốc.");
 });
 
 test("Prev does not repeat \"và\" when an action already holds one", () => {
   assert.equal(compose("Prev", { parties: [{ party: e("B"), main_action: o("main_action.slow_down") }] }, { entities: ENTITIES }),
-  "Xe máy màu đỏ nên giảm tốc.");
+  "Xe máy nên giảm tốc.");
 });
 
 test("Prev with an unclear party cannot be determined", () => {
@@ -197,7 +215,7 @@ test("C with both parties uses the \"Cả A và B\" pattern, parties in key orde
   assert.equal(compose("C", { event_type: o("event_type.collision"), subject: o("subject.both"), conflict_type: o("conflict_type.k11"),
     parties: [{ party: e("B"), action: o("action.k11.right_to_left") }, { party: e("A"), action: o("action.k11.left_to_right") }] },
   { entities: ENTITIES }),
-  "Xe ô tô (có camera hành trình) từ trái sang phải, đồng thời xe máy màu đỏ từ phải sang trái, "
+  "Xe ô tô (có camera hành trình) từ trái sang phải, đồng thời xe máy từ phải sang trái, "
   + "đi vào đường đi của nhau, dẫn đến va chạm.");
   assert.equal(compose("C", { event_type: o("event_type.near_miss"), subject: o("subject.both"), conflict_type: o("conflict_type.k11"),
     parties: [{ party: e("A"), action: o("action.k11.left_to_right") }, { party: e("C"), action: o("action.k11.right_to_left") }] },
@@ -210,29 +228,29 @@ test("C with both parties uses the \"Cả A và B\" pattern, parties in key orde
 test("C.v2 near miss has no evasion part, and \"tốc độ cao\" reads as a phrase", () => {
   assert.equal(compose("C", { event_type: o("event_type.near_miss"), subject: e("C"), object: e("A"),
     conflict_type: o("conflict_type.k15"), action: o("action.k15.left_to_right") }, { entities: ENTITIES, version: "C.v2" }),
-  "Người đi bộ mặc áo trắng, xám/bạc từ trái sang phải, cắt ngang phía trước xe ô tô (có camera hành trình), suýt xảy ra va chạm.");
+  "Người đi bộ từ trái sang phải, cắt ngang phía trước xe ô tô (có camera hành trình), suýt xảy ra va chạm.");
   assert.equal(compose("C", { event_type: o("event_type.collision"), subject: e("A"), object: e("B"),
     conflict_type: o("conflict_type.k08"), action: o("action.k08.encroach_overtaking"), speed: o("speed.high") }, { entities: ENTITIES, version: "C.v2" }),
-  "Xe ô tô (có camera hành trình) lấn khi vượt và chạy tốc độ cao, đi đối đầu với xe máy màu đỏ, dẫn đến va chạm.");
+  "Xe ô tô (có camera hành trình) lấn khi vượt và chạy tốc độ cao, đi đối đầu với xe máy, dẫn đến va chạm.");
   assert.equal(compose("C", { event_type: o("event_type.unclear"), subject: e("B"), conflict_type: o("conflict_type.k18"),
-    action: o("action.k18.skid") }, { entities: ENTITIES, version: "C.v3" }), "Xe máy màu đỏ trượt.");
+    action: o("action.k18.skid") }, { entities: ENTITIES, version: "C.v3" }), "Xe máy trượt.");
 });
 
 test("V.v2 \"cả hai bên\": one behaviour per party, one sentence when both did the same", () => {
   const both = (a: string, b: string) => ({ result: o("result.yes"), violator: o("violator.both"),
     parties: [{ party: e("B"), behavior: o(b) }, { party: e("A"), behavior: o(a) }] });
   assert.equal(compose("V", both("behavior.wrong_lane", "behavior.no_slowdown_intersection"), { entities: ENTITIES, version: "V.v2" }),
-    "Xe ô tô (có camera hành trình) đi sai làn, lấn làn, đồng thời xe máy màu đỏ không giảm tốc độ qua giao lộ.");
+    "Xe ô tô (có camera hành trình) đi sai làn, lấn làn, đồng thời xe máy không giảm tốc độ qua giao lộ.");
   assert.equal(compose("V", both("behavior.fail_to_yield", "behavior.fail_to_yield"), { entities: ENTITIES, version: "V.v2" }),
-    "Cả xe ô tô (có camera hành trình) và xe máy màu đỏ cùng không nhường đường.");
+    "Cả xe ô tô (có camera hành trình) và xe máy cùng không nhường đường.");
   assert.throws(() => compose("V", { result: o("result.yes"), violator: o("violator.both"),
     parties: [{ party: e("A"), behavior: o("behavior.wrong_lane") }] }, { entities: ENTITIES, version: "V.v2" }), { code: "parties" });
 });
 
 test("Attr names one or two parties in key order, or cannot be determined", () => {
-  assert.equal(compose("Attr", { parties: [e("B")] }, { entities: ENTITIES }), "Xe máy màu đỏ.");
+  assert.equal(compose("Attr", { parties: [e("B")] }, { entities: ENTITIES }), "Xe máy.");
   assert.equal(compose("Attr", { parties: [e("B"), e("A")] }, { entities: ENTITIES }),
-    "Cả xe ô tô (có camera hành trình) và xe máy màu đỏ.");
+    "Cả xe ô tô (có camera hành trình) và xe máy.");
   assert.equal(compose("Attr", { parties: o("parties.unclear") }, { entities: ENTITIES }), "Không thể xác định.");
   assert.throws(() => compose("Attr", { parties: [e("A"), e("A")] }, { entities: ENTITIES }), { code: "parties" });
 });
@@ -248,10 +266,10 @@ const C_BOTH_BA = { event_type: o("event_type.collision"), subject: o("subject.b
 test("R reads its subject and object from C, the first party by key for subject.both", () => {
   const r = { has_aftermath: o("has_aftermath.yes"), subject: o("subject.stopped"), object: o("object.left"), bystanders: o("bystanders.helped") };
   assert.equal(compose("R", r, { entities: ENTITIES, cause: C_BOTH_BA }),
-    "Xe ô tô (có camera hành trình) dừng lại, xe máy màu đỏ tiếp tục di chuyển, rời đi, người và xe xung quanh dừng lại hoặc đến hỗ trợ.");
+    "Xe ô tô (có camera hành trình) dừng lại, xe máy tiếp tục di chuyển, rời đi, người và xe xung quanh dừng lại hoặc đến hỗ trợ.");
   assert.equal(compose("R", r, { entities: ENTITIES, cause: { event_type: o("event_type.collision"), subject: e("B"), object: e("C"),
     conflict_type: o("conflict_type.unclear") } }),
-  "Xe máy màu đỏ dừng lại, người đi bộ mặc áo trắng, xám/bạc tiếp tục di chuyển, rời đi, người và xe xung quanh dừng lại hoặc đến hỗ trợ.");
+  "Xe máy dừng lại, người đi bộ tiếp tục di chuyển, rời đi, người và xe xung quanh dừng lại hoặc đến hỗ trợ.");
 });
 
 test("R uses the guideline's short forms", () => {
@@ -269,4 +287,21 @@ test("R uses the guideline's short forms", () => {
 test("R without a C answer cannot be composed", () => {
   assert.throws(() => compose("R", { has_aftermath: o("has_aftermath.yes"), subject: o("subject.stopped"), bystanders: o("bystanders.helped") },
     { entities: ENTITIES }), { code: "cause_missing" });
+});
+
+test("E.v6 names parties without colour; same-type parties get their letter (features/e-v6-no-colors)", () => {
+  assert.equal(compose("E", { entities: [
+    entity("A", { type: "type.motorbike" }), entity("B", { type: "type.motorbike" }),
+  ] }), "Xe máy A, xe máy B.");
+  assert.equal(compose("E", { entities: [
+    entity("A", { type: "type.car", dashcam: "dashcam.yes" }), entity("B", { type: "type.pedestrian" }),
+  ] }), "Xe ô tô (có camera hành trình), người đi bộ.");
+});
+
+test("E.v6 names a stored E.v5 party that still carries colours, without throwing", () => {
+  const legacy = [
+    entity("A", { type: "type.truck", vehicle_color: "vehicle_color.blue_green" }),
+    entity("B", { type: "type.pedestrian", clothing_color: "clothing_color.red" }),
+  ];
+  assert.equal(compose("E", { entities: legacy }), "Xe tải, người đi bộ.");
 });

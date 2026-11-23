@@ -1,0 +1,12 @@
+psql:/tmp/probe_e6.sql:13: ERROR:  Slot answer: E.v6 has no cell vehicle_color here
+HINT:  unknown_cell
+psql:/tmp/probe_e6.sql:15: ERROR:  Slot answer: car entities require dashcam
+HINT:  missing_cell
+psql:/tmp/probe_e6.sql:17: ERROR:  Slot answer: only cars take a dashcam value
+HINT:  unexpected_cell
+ two_ok   | t
+psql:/tmp/probe_e6.sql:20: ERROR:  Slot answer: E.v6 takes at most 2 entities
+HINT:  too_many_entities
+ e5_colour_still_ok |     1
+       probe        
+ e5_colour_inserted

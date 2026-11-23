@@ -134,9 +134,13 @@ function templateText(book: Codebook, name: string): string {
  */
 function entityPhrase(book: Codebook, cells: Slots): { core: string; rest: string } {
   const type = chosenOption(book, "type", cells.type);
-  const color = clearLabel(book, cells, "vehicle_color");
+  // E.v6 asks no colour (features/e-v6-no-colors); a party stored under an
+  // older book keeps its colour cells, which the current book cannot name, so
+  // a cell the book does not define is left out instead of refused.
+  const defined = (cellId: string) => book.cells.some((cell) => cell.id === cellId);
+  const color = defined("vehicle_color") ? clearLabel(book, cells, "vehicle_color") : null;
   const colored = (name: string) => (color ? `${name} màu ${color}` : name);
-  const clothing = clearLabel(book, cells, "clothing_color");
+  const clothing = defined("clothing_color") ? clearLabel(book, cells, "clothing_color") : null;
   switch (type.id) {
     case "type.car": {
       const dashcamChoice = (cells.dashcam as SlotValue | undefined)?.option;
@@ -387,6 +391,7 @@ function composeViolationLegacy(book: Codebook, slots: Slots, context: ComposeCo
  * C pair the form fills in: one or two entity references.
  */
 function composeOutcome(book: Codebook, slots: Slots, context: ComposeContext): string {
+  if (book.version >= 2) return composeOutcomeSigns(book, slots, context);
   const level = chosenOption(book, "level", slots.level);
   if (level.id === "level.none") return templateText(book, "Không va chạm");
   if (level.id === "level.unclear") return templateText(book, "Không rõ");
@@ -395,6 +400,43 @@ function composeOutcome(book: Codebook, slots: Slots, context: ComposeContext): 
   const parties = Array.isArray(slots.parties) ? slots.parties.map(name) : [];
   if (parties.length === 1) return sentence([`${parties[0]} ${sign}`]);
   return sentence([parties.length === 2 ? `${parties[0]} và ${parties[1]} ${level.label}` : level.label, sign]);
+}
+
+/**
+ * O.v2: the level is derived, so the sentence checks it against the signs
+ * instead of trusting it: none and not assessed carry no sign and use their
+ * fixed sentences; a collision level is the highest level of its signs, and
+ * the "giữ thăng bằng" sign stands alone. Signs print in codebook order.
+ */
+function composeOutcomeSigns(book: Codebook, slots: Slots, context: ComposeContext): string {
+  const level = chosenOption(book, "level", slots.level);
+  const signCell = book.cells.find((cell) => cell.id === "signs")!;
+  const value = slots.signs as SlotValue | undefined;
+  const ids = value?.options ?? (value?.option ? [value.option] : []);
+  const signs = ids.map((id) => {
+    const found = signCell.options?.find((candidate) => candidate.id === id);
+    if (!found) throw new ComposeError("unknown_option", `Lựa chọn "${id}" không thuộc ô "${signCell.label}".`);
+    return found;
+  });
+  const rank = (id: unknown) => book.cells.find((cell) => cell.id === "level")?.options?.find((item) => item.id === id)?.rank;
+  if (level.id === "level.none" || level.id === "level.not_assessed") {
+    if (signs.length) throw new ComposeError("level_mismatch", `"${level.label}" không đi cùng dấu hiệu nào.`);
+    return templateText(book, level.id === "level.none" ? "Không va chạm" : "C không rõ loại sự kiện");
+  }
+  if (!signs.length) throw new ComposeError("missing_cell", `Chưa chọn ô "${signCell.label}".`);
+  if (signs.length > 1 && signs.some((sign) => sign.exclusive === true)) {
+    throw new ComposeError("exclusive_sign", "\"có chạm nhưng các bên vẫn giữ thăng bằng\" không đi cùng dấu hiệu khác.");
+  }
+  const highest = signs.reduce((best, sign) => (Number(rank(sign.level)) > Number(rank(best.level)) ? sign : best));
+  if (highest.level !== level.id) {
+    throw new ComposeError("level_mismatch", "Mức độ phải là mức cao nhất của các dấu hiệu đã chọn.");
+  }
+  const order = (signCell.options ?? []).map((item) => item.id);
+  const text = signs.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)).map((sign) => sign.label).join(", ");
+  const name = namer(context);
+  const parties = Array.isArray(slots.parties) ? slots.parties.map(name) : [];
+  if (parties.length === 1) return sentence([`${parties[0]} ${text}`]);
+  return sentence([parties.length === 2 ? `${parties[0]} và ${parties[1]} ${level.label}` : level.label, text]);
 }
 
 /**

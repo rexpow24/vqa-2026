@@ -15,6 +15,10 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
+try:
+    from entity_match import apply_entity_match
+except ImportError:
+    from scripts.entity_match import apply_entity_match
 from iaa_round import (
     DECISION_EXCLUDED_GROUPS,
     filter_video_sequence_range,
@@ -382,6 +386,8 @@ def main(argv=None):
                         help="compare agreement after excluding each named codebook cell; accepts labels or IDs")
     parser.add_argument("--video-from", type=int, help="first admin video sequence number to include (inclusive)")
     parser.add_argument("--video-to", type=int, help="last admin video sequence number to include (inclusive)")
+    parser.add_argument("--entity-match", choices=["identity", "identity-nocolor", "letter"], default="identity",
+                    help="identity (default): compare entity references by the vehicle each letter names in group E (colors as low-weight tie-breakers); identity-nocolor: same without colors; letter: compare letters literally")
     parser.add_argument("--include-unfinished", action="store_true",
                         help="include rows where assignment_status is not completed")
     args = parser.parse_args(argv)
@@ -397,6 +403,9 @@ def main(argv=None):
     if args.video_from is not None and args.video_to is not None and args.video_from > args.video_to:
         raise ValueError("--video-from không được lớn hơn --video-to.")
     source = filter_video_sequence_range(source, args.video_from, args.video_to)
+    source, entity_match_line = apply_entity_match(source, args.entity_match, args.include_unfinished)
+    if entity_match_line:
+        print(entity_match_line)
     required = {"answer_format", "slots", "qgroup", "codebook_version", "video_id", "draft_id",
                 "annotator_id", "annotator_name", "filename"}
     missing = sorted(required - set(source.columns))

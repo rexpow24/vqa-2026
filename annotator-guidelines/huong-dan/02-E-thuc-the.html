@@ -14,8 +14,11 @@ a{color:var(--link)}
 figure img{display:block;max-width:100%;height:auto;margin:0 auto}
 </style></head><body><main><div class="nav"><a href="../00-DOC-TRUOC.html">&larr; Mục lục</a></div><h1>Hướng dẫn gán nhãn Nhóm E: thực thể (Entities)</h1>
 <ul>
-<li>Câu hỏi chuẩn: Loại phương tiện và màu sắc của các bên liên quan là gì?</li>
-<li>Chỉ khai báo các bên trực tiếp va chạm hoặc suýt va chạm. Phương tiện nền chỉ khai báo khi có tác động đến sự việc.</li>
+<li>Câu hỏi chuẩn: Loại phương tiện của các bên liên quan là gì?</li>
+<li>Chỉ khai báo tối đa 2 bên chính: cặp của va chạm đầu tiên; không có va chạm thì cặp của tình huống suýt va chạm đầu tiên.</li>
+<li>Phương tiện tự trượt hoặc tự lật mà không có bên nào khác (C là K18) thì chỉ khai báo 1 bên.</li>
+<li>Phương tiện nền và các bên của va chạm xảy ra sau đó không khai báo; form không cho thêm bên thứ ba (từ codebook E.v5, 2026-11-23).</li>
+<li>Không ghi màu xe và màu áo (từ codebook E.v6, 2026-11-23); hai bên cùng loại phân biệt bằng tên A, B.</li>
 <li>Mỗi phương tiện hoặc bên liên quan là một thực thể riêng, có tên ổn định A, B, C xuyên suốt video; tên thực thể không phụ thuộc vào loại hoặc màu.</li>
 <li>Nếu trong các bên liên quan có đúng một xe có camera hành trình, gán xe đó là A. Gán các bên còn lại theo vị trí ở khung hình đầu tiên tất cả các bên liên quan cùng xuất hiện và nhận diện được: từ trái sang phải; nếu nằm gần như cùng một cột thì từ trên xuống dưới.</li>
 <li>Nếu không có xe camera hành trình, gán tất cả các bên theo vị trí ở khung hình đầu tiên tất cả các bên liên quan cùng xuất hiện và nhận diện được: từ trái sang phải; nếu nằm gần như cùng một cột thì từ trên xuống dưới.</li>
@@ -55,24 +58,13 @@ figure img{display:block;max-width:100%;height:auto;margin:0 auto}
 <td>Chỉ với ô tô</td>
 </tr>
 <tr>
-<td>4. Màu xe</td>
-<td>trắng · đen · xám, bạc · đỏ · xanh · vàng · nâu · màu khác · màu sáng · màu tối · không rõ</td>
-<td>Bỏ trống với ô tô có camera hành trình, người đi bộ, động vật</td>
-</tr>
-<tr>
-<td>5. Màu áo người điều khiển</td>
-<td>như ô 4</td>
-<td>Chỉ với người đi bộ</td>
-</tr>
-<tr>
-<td>6. Số người trên xe</td>
+<td>4. Số người trên xe</td>
 <td>1 · 2 · 3 trở lên</td>
 <td>Chỉ với xe máy</td>
 </tr>
 </tbody>
 </table>
-<p>Ghi màu cụ thể chỉ khi nhìn rõ. Ban đêm, xa hoặc ngược sáng thì chọn "màu sáng" hoặc "màu tối".
-Không ghi loại xe chi tiết hơn bảng trên (không "tay ga", không "24-29 chỗ"), không ghi biển số, khuôn mặt.
+<p>Không ghi loại xe chi tiết hơn bảng trên (không "tay ga", không "24-29 chỗ"), không ghi biển số, khuôn mặt.
 Xe container và xe bán tải ghi là xe tải.
 Xe máy điện được ghi là xe máy; xe đạp điện được ghi là xe đạp.
 Xe ba gác là nhãn riêng cho xe ba bánh chở hàng.</p>
@@ -91,27 +83,27 @@ Xe ba gác là nhãn riêng cho xe ba bánh chở hàng.</p>
 </tr>
 <tr>
 <td>Ô tô khác</td>
-<td>Xe ô tô màu [4]</td>
+<td>Xe ô tô (không có camera hành trình)</td>
 </tr>
 <tr>
 <td>Xe khách, xe tải</td>
-<td>[1] [2] màu [4]</td>
+<td>[1] [2]</td>
 </tr>
 <tr>
 <td>Xe máy</td>
-<td>Xe máy màu [4] do người mặc áo [5] điều khiển (chở [6] người, khi từ 2 trở lên)</td>
+<td>Xe máy (chở [4] người, khi từ 2 trở lên)</td>
 </tr>
 <tr>
 <td>Xe đạp</td>
-<td>Xe đạp màu [4]</td>
+<td>Xe đạp</td>
 </tr>
 <tr>
 <td>Xe cứu thương, xe ba gác, khác</td>
-<td>[1] màu [4]</td>
+<td>[1]</td>
 </tr>
 <tr>
 <td>Người đi bộ</td>
-<td>Người đi bộ mặc áo [5]</td>
+<td>Người đi bộ</td>
 </tr>
 <tr>
 <td>Động vật</td>
@@ -120,4 +112,4 @@ Xe ba gác là nhãn riêng cho xe ba bánh chở hàng.</p>
 </tbody>
 </table>
 <p>Câu trả lời ghép các bên theo thứ tự A, B, C, nối bằng dấu phẩy, kết thúc bằng dấu chấm.
-Ô "không rõ" thì bỏ vế đó khỏi câu, ví dụ không rõ màu áo thì chỉ ghi "Xe máy màu đen".</p></main></body></html>
+Ô "không rõ" thì bỏ vế đó khỏi câu.</p></main></body></html>

@@ -1,0 +1,17 @@
+sequenceDiagram
+  participant A as Annotator
+  participant F as Slot form
+  participant R as Save route
+  participant D as Database
+  A->>F: save C (event type)
+  F->>R: POST C slots
+  R->>R: deriveOutcome(C, stored O)
+  R->>D: save_slot_answers(C, Prev, O if derivable)
+  D->>D: validate_slots + validate_outcome_slots
+  A->>F: tick signs on O (collision)
+  F->>F: outcomeState: level = max(sign level)
+  F->>R: POST O slots
+  R->>R: deriveOutcome(C, submitted)
+  R->>D: save_slot_answers(O.v2)
+  A->>R: complete video
+  R->>D: refuse if O.v2 contradicts C

@@ -641,6 +641,59 @@ reads licence plates and shop signs correctly as configured.
 startup log. The only thing keeping it private is the `127.0.0.1` in the compose port
 mapping. Do not change that to `0.0.0.0` without putting something in front of it.
 
+### 15b. Group O.v2: a derived outcome level
+
+Added 2026-11-23 (`features/o-codebook-v2/`).
+
+```
+C saved ──▶ deriveOutcome(C, O) ──▶ near miss: O = không va chạm (written with C)
+                                 ├─▶ legacy C unclear: O = không đánh giá
+                                 └─▶ collision: annotator ticks signs, level = max(sign level)
+```
+
+**Why the level is not a choice.** On O.v1 two annotators who saw the same fall picked different levels because the level and the sign were judged separately and "người nằm trên đường" describes every fall. Ticking observable signs and deriving the level moves the judgement to facts that can be pointed at in the video, the way GraDE and SHRP 2 grade severity.
+
+**Why three callers.** O depends on C, and C can change after O is saved. The save route derives O on an O save, on a C save, and on page sync, so a near miss never waits for the annotator; a C changed to a collision cannot invent signs, so `complete` refuses the video until O is answered again.
+
+**Why the database rule is keyed on the `signs` cell.** `validate_slots` validates every row against its own `codebook_version`; checking for the cell rather than the version number keeps O.v1 rows valid without a version switch in SQL.
+
+
+### 15c. E.v5: at most the two main parties
+
+Added 2026-11-23 (`features/two-entity-subject-rules/`).
+
+```
+EntityCard ──▶ entityProblems / no add button at max_entities
+   │
+PUT /entities ──▶ version := currentVersion("E"); > max ──▶ 422 too_many_entities
+   │
+save_video_entities ──▶ content.max_entities of that version; > max ──▶ hint too_many_entities
+```
+
+**Why a limit in the book, not in code.** `max_entities: 2` lives in `codebook/E.v5.json`; the form, the route and the SQL function all read it, so the next E book (colour removal) copies one key instead of three constants.
+
+**Why the route ignores the client version.** Every other group trusts the version a page sends; for E that would let a page opened before E.v5 keep saving lists of three under E.v4. Saving E under the current book, like O and Prev, closes that path. Stored E.v1-E.v4 lists of three or four stay as stored: nothing re-runs `save_video_entities` on them.
+
+**Why C did not change.** The C form already fills the object from the other party when E has exactly two; with E capped at two the "choose from E" path for three or more parties is unreachable. C.v4's stale `object.auto_fill` text is not displayed or read by code, so the frozen file stays and the guideline carries the wording.
+
+### 15d. E.v6: no colours
+
+Added 2026-11-23 (`features/e-v6-no-colors/`). The user dropped vehicle and clothing colour from E because annotators disagreed on them; parties are named by type, and two of the same type by their letter ("xe máy A", "xe máy B"), with A and B fixed by the positional rule.
+
+```
+stored party (any E version, may hold colours)
+   │
+entityPhrase(current E book) ──▶ reads a colour only if that book defines the cell ──▶ "xe máy"
+   │
+PUT /entities ──▶ keeps only cells the current book defines ──▶ save_video_entities (E.v6)
+   │
+validate_video_entity ──▶ E.v6 branch: car needs dashcam, only cars take one; validate_slots refuses colour cells
+```
+
+**Why names drop colour on old videos too.** Every group composes party names with the current E book. A party stored under E.v5 still has its colour cells, which E.v6 cannot name; refusing them would break C, O, R, Attr and Prev on every video already labelled, so a cell the book does not define is left out. Stored sentences are not rewritten.
+
+**Why the route strips instead of refusing.** A page opened before the deploy still sends colours; dropping cells the current book does not define keeps that save working, and the database still refuses a colour sent past the route.
+
 ---
 
 ## Sources

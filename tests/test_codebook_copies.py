@@ -15,7 +15,7 @@ SOURCE = ROOT / "codebook"
 COPY = ROOT / "frontend" / "src" / "lib" / "codebook"
 GROUPS = ["S", "E", "C", "V", "O", "R", "Prev"]
 # Every frozen codebook file, v1 and later.
-NAMES = [f"{g}.v1.json" for g in GROUPS] + ["S.v2.json", "C.v2.json", "V.v2.json", "V.v3.json", "V.v4.json", "V.v5.json", "V.v6.json", "Attr.v1.json", "E.v2.json", "C.v3.json", "E.v3.json", "R.v2.json", "Prev.v2.json", "V.v7.json", "V.v8.json", "Prev.v3.json", "S.v3.json", "E.v4.json", "C.v4.json", "V.v9.json", "Prev.v4.json"]
+NAMES = [f"{g}.v1.json" for g in GROUPS] + ["S.v2.json", "C.v2.json", "V.v2.json", "V.v3.json", "V.v4.json", "V.v5.json", "V.v6.json", "Attr.v1.json", "E.v2.json", "C.v3.json", "E.v3.json", "R.v2.json", "Prev.v2.json", "V.v7.json", "V.v8.json", "Prev.v3.json", "S.v3.json", "E.v4.json", "C.v4.json", "V.v9.json", "Prev.v4.json", "O.v2.json", "E.v5.json", "E.v6.json"]
 
 
 def load(group):
@@ -202,3 +202,72 @@ def test_r_prev_and_v_next_versions_encode_requested_removals_and_derivation():
     assert behavior["multiple"] is True
     assert behavior["allow_manual_additions"] is True
     assert behavior["additions_optional"] is True
+
+
+O_V2_SIGNS = {
+    "sign.contact_balanced": "level.minor",
+    "sign.fell_in_place": "level.moderate",
+    "sign.spun_or_lost_control": "level.moderate",
+    "sign.overturned": "level.severe",
+    "sign.person_thrown": "level.severe",
+    "sign.vehicle_thrown": "level.severe",
+    "sign.major_deformation": "level.severe",
+    "sign.secondary_collision": "level.severe",
+}
+
+
+def test_o_v2_drops_unclear_and_derives_the_level_from_multi_select_signs():
+    o2 = json.loads((SOURCE / "O.v2.json").read_text(encoding="utf-8"))
+    cells = {cell["id"]: cell for cell in o2["cells"]}
+    assert set(cells) == {"parties", "level", "signs"}
+    levels = [option["id"] for option in cells["level"]["options"]]
+    assert levels == ["level.none", "level.minor", "level.moderate", "level.severe", "level.not_assessed"]
+    assert cells["level"]["read_only"] is True and cells["level"]["required"] is True
+    signs = cells["signs"]
+    assert signs["multiple"] is True and "parent_cell" not in signs
+    assert {option["id"]: option["level"] for option in signs["options"]} == O_V2_SIGNS
+    assert all(option["id"] != "level.unclear" for option in cells["level"]["options"])
+    assert all(template["text"] != "Không thể xác định." for template in o2["templates"])
+    assert o2["inferred_from"] == "C"
+
+
+def test_o_v2_migration_seeds_exact_bytes():
+    migration = ROOT / "supabase" / "migrations" / "20261123100000_o_v2_visible_signs.sql"
+    seeded = dict(re.findall(r"\('([^']+)', 'O', 2, \$cb\$.*?\$cb\$::jsonb,\s*'([0-9a-f]{64})'",
+                             migration.read_text(encoding="utf-8"), re.S))
+    assert seeded.get("O.v2") == hashlib.sha256((SOURCE / "O.v2.json").read_bytes()).hexdigest()
+
+
+def test_e_v5_keeps_the_e_v4_cells_and_takes_at_most_two_parties():
+    """features/two-entity-subject-rules: the two main parties of the first collision, else of the first near miss."""
+    e4 = json.loads((SOURCE / "E.v4.json").read_text(encoding="utf-8"))
+    e5 = json.loads((SOURCE / "E.v5.json").read_text(encoding="utf-8"))
+    assert e5["cells"] == e4["cells"] and e5["templates"] == e4["templates"]
+    assert e5["max_entities"] == 2 and e5["version"] == 5
+
+
+E_V5_MIGRATION = ROOT / "supabase" / "migrations" / "20261123110000_e_v5_two_entities.sql"
+
+
+def test_e_v5_migration_seeds_exact_bytes_and_limits_the_list():
+    text = E_V5_MIGRATION.read_text(encoding="utf-8")
+    seeded = dict(re.findall(r"\('([^']+)', 'E', 5, \$cb\$.*?\$cb\$::jsonb,\s*'([0-9a-f]{64})'", text, re.S))
+    assert seeded.get("E.v5") == hashlib.sha256((SOURCE / "E.v5.json").read_bytes()).hexdigest()
+    assert "too_many_entities" in text and "max_entities" in text
+
+
+def test_e_v6_drops_colours_and_keeps_two_parties():
+    """features/e-v6-no-colors: annotators disagreed on colours; parties are named by type and letter."""
+    e5 = json.loads((SOURCE / "E.v5.json").read_text(encoding="utf-8"))
+    e6 = json.loads((SOURCE / "E.v6.json").read_text(encoding="utf-8"))
+    assert [cell["id"] for cell in e6["cells"]] == ["type", "dashcam"]
+    assert e6["cells"] == [cell for cell in e5["cells"] if cell["id"] in {"type", "dashcam"}]
+    assert e6["max_entities"] == 2 and e6["version"] == 6
+    assert not any("màu" in t["text"] or "áo" in t["text"] for t in e6["templates"])
+
+
+def test_e_v6_migration_seeds_exact_bytes_and_drops_colour_rules():
+    text = (ROOT / "supabase" / "migrations" / "20261123120000_e_v6_no_colors.sql").read_text(encoding="utf-8")
+    seeded = dict(re.findall(r"\('([^']+)', 'E', 6, \$cb\$.*?\$cb\$::jsonb,\s*'([0-9a-f]{64})'", text, re.S))
+    assert seeded.get("E.v6") == hashlib.sha256((SOURCE / "E.v6.json").read_bytes()).hexdigest()
+    assert "'E.v6'" in text

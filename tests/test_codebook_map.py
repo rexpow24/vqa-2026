@@ -590,10 +590,14 @@ def test_frozen_c_conflict_types_and_actions_match_the_guideline_table():
 
 
 def test_frozen_o_signs_per_level_match_the_guideline_table():
-    cb, md = _frozen("O"), _guideline("O")
-    rows = re.findall(r"^\| (Không va chạm|Va chạm nhẹ|Va chạm vừa|Va chạm mạnh) \| ([^|]+?) \|$", md.split("## Mẫu câu")[0], re.M)
+    # O.v2 (features/o-codebook-v2): signs carry their level; the guideline lists them per level.
+    cb, md = _newest("O"), _guideline("O")
+    rows = re.findall(r"^\| (Va chạm nhẹ|Va chạm vừa|Va chạm mạnh) \| ([^|]+?) \|$", md.split("## Định nghĩa dấu hiệu")[0], re.M)
     cells = {c["id"]: c for c in cb["cells"]}
     level_id = {o["label"]: o["id"] for o in cells["level"]["options"]}
+    assert len(rows) == 3
     for level, signs in rows:
-        got = [o["label"] for o in cells["sign"]["options"] if o["parent"] == level_id[level.lower()]]
+        got = [o["label"] for o in cells["signs"]["options"] if o["level"] == level_id[level.lower()]]
         assert got == signs.split(" · "), level
+    defined = re.findall(r"^\| ([^|]+?) \| [^|]+? \|$", md.split("## Định nghĩa dấu hiệu")[1].split("## ")[0], re.M)
+    assert defined[2:] == [o["label"] for o in cells["signs"]["options"]]

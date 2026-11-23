@@ -60,6 +60,11 @@ from functools import lru_cache
 import numpy as np
 import pandas as pd
 
+try:
+    from entity_match import apply_entity_match
+except ImportError:  # imported as scripts.iaa_round
+    from scripts.entity_match import apply_entity_match
+
 NA_TOKEN = "<NA>"
 # The app writes "Không trả lời được" as the effective answer of every
 # NOT_ANSWERABLE row; the guideline's phrase is folded in too.
@@ -271,9 +276,16 @@ def optional_cell_ids(codebook_version):
 
 
 def conditional_scored_cell_ids(codebook_version):
-    """Cells required only for applicable entities in the current E codebook."""
-    if str(codebook_version) in {"E.v3", "E.v4"}:
+    """Cells that are optional in the codebook but scored whenever the answer has them."""
+    if str(codebook_version) in {"E.v3", "E.v4", "E.v5"}:
         return frozenset({"dashcam", "vehicle_color"})
+    # E.v6 asks no colour (features/e-v6-no-colors): only the car's dashcam is conditional.
+    if str(codebook_version) == "E.v6":
+        return frozenset({"dashcam"})
+    # O.v2 signs are required on a collision and absent otherwise (the level decides),
+    # so they are scored whenever present (features/o-codebook-v2).
+    if str(codebook_version) == "O.v2":
+        return frozenset({"signs"})
     return frozenset()
 
 
@@ -341,9 +353,22 @@ def slot_signature(value, codebook_version=""):
             return [remove_optional(child) for child in node]
         return node
 
-    if version in {"E.v3", "E.v4"}:
+    def sort_choices(node):
+        # A multiple-choice cell ({"options": [...]}) is a set: the order the
+        # annotator ticked it in is not a disagreement (O.v2 signs, V tags).
+        if isinstance(node, dict):
+            return {
+                key: sorted(child) if key == "options" and isinstance(child, list)
+                and all(isinstance(item, str) for item in child) else sort_choices(child)
+                for key, child in node.items()
+            }
+        if isinstance(node, list):
+            return [sort_choices(child) for child in node]
+        return node
+
+    if version in {"E.v3", "E.v4", "E.v5", "E.v6"}:
         parsed = normalize_e_entities(parsed, version)
-    parsed = remove_optional(parsed)
+    parsed = sort_choices(remove_optional(parsed))
     # V.v6 introduced a non-entity party which can occupy either form position.
     # Preserve historical-version scoring and the existing optional-cell policy.
     group, _, revision = str(codebook_version).partition(".v")
@@ -476,6 +501,8 @@ def main(argv=None):
                     help="keep rows of annotators who have not completed the video (default: assignment_status = completed only)")
     ap.add_argument("--exclude-groups", nargs="+", metavar="QGROUP", default=[],
                     help="exclude one or more question groups (for example: --exclude-groups N C V); report compares before and after")
+    ap.add_argument("--entity-match", choices=["identity", "identity-nocolor", "letter"], default="identity",
+                    help="identity (default): compare entity references by the vehicle each letter names in group E (colors as low-weight tie-breakers); identity-nocolor: same without colors; letter: compare letters literally")
     ap.add_argument("--exclude-annotators", nargs="+", metavar="ID_OR_NAME", default=[],
                     help="exclude annotators by ID or exact name; report compares agreement before and after")
     args = ap.parse_args(argv)
@@ -489,6 +516,7 @@ def main(argv=None):
     if args.video_from is not None and args.video_to is not None and args.video_from > args.video_to:
         raise ValueError("--video-from không được lớn hơn --video-to.")
     source = filter_video_sequence_range(source, args.video_from, args.video_to)
+    source, entity_match_line = apply_entity_match(source, args.entity_match, args.include_unfinished)
     slot_df = source[source["answer_format"] == "slots"].copy() if "answer_format" in source else source.iloc[0:0].copy()
     df = text_rows(source)
     n_slot_rows = len(slot_df)
@@ -579,6 +607,8 @@ def main(argv=None):
 
     lines = []
     P = lines.append
+    if entity_match_line:
+        P(entity_match_line)
     if requested_excluded_groups:
         P("PHÂN TÍCH ẢNH HƯỞNG KHI LOẠI NHÓM")
         P(f"  Nhóm bị loại thêm: {', '.join(sorted(requested_excluded_groups))}")
@@ -656,7 +686,7 @@ def main(argv=None):
     if n_slot_rows:
         P(f"Dữ liệu lựa chọn: {slot_df['annotator_id'].nunique()} người | {slot_df['video_id'].nunique()} video | {slot_df['draft_id'].nunique()} câu hỏi | {n_slot_rows} dòng.")
         P("Nhóm V được loại theo quyết định taxonomy hiện hành.")
-        P("Ô optional bị bỏ; dashcam/màu xe của E.v3/v4 được tính theo điều kiện của từng thực thể.")
+        P("Ô optional bị bỏ; dashcam/màu xe của E.v3/v4/v5 được tính theo điều kiện của từng thực thể.")
         if args.video_from is not None or args.video_to is not None:
             P(f"Phạm vi số thứ tự video: {args.video_from or 1}-{args.video_to or 'hết'} (cột seq trong CSV).")
     if excluded_groups:
@@ -810,8 +840,8 @@ def main(argv=None):
         P("")
         P(f"TẦNG 3 - LỰA CHỌN THEO Ô ({label}), 95% CI bootstrap theo video")
         P("  Ô tùy chọn bỏ qua       : " + (", ".join(sorted(optional_fields)) if optional_fields else "không có"))
-        if str(version) in {"E.v3", "E.v4"}:
-            P(f"  Ô {version} tính theo điều kiện: dashcam/màu xe theo loại thực thể và codebook.")
+        if str(version) in {"E.v3", "E.v4", "E.v5", "E.v6"}:
+            P(f"  Ô {version} tính theo điều kiện: dashcam (và màu xe trước E.v6) theo loại thực thể và codebook.")
         P(f"  % đáp án ô trùng khớp : {pairwise_pct(units):.3f}")
         P(f"  Fleiss kappa           : {kappa:.3f}   CI [{ci_kappa[0]:.3f}, {ci_kappa[1]:.3f}]")
         P(f"  Krippendorff alpha     : {alpha:.3f}   CI [{ci_alpha[0]:.3f}, {ci_alpha[1]:.3f}]")

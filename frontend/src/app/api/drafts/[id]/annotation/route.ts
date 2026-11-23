@@ -4,7 +4,8 @@ import { needsKeyframes } from "@/lib/qgroups";
 import { ComposeError, compose, type Slots } from "@/lib/codebook/compose";
 import { editProblem, sentenceToStore } from "@/lib/codebook/edit";
 import { currentVersion, isSlotGroup } from "@/lib/codebook";
-import { derivePreventionFromCause } from "@/lib/codebook/derivation";
+import { deriveOutcome, derivePreventionFromCause } from "@/lib/codebook/derivation";
+import { outcomeRow } from "@/lib/codebook/outcome";
 
 type Context = { params: Promise<{ id: string }> };
 const VERDICTS = ["AGREE", "NOT_ANSWERABLE", "DISAGREE"];
@@ -144,21 +145,29 @@ async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: st
   const entities = (declared ?? []).map((row) => ({ key: row.entity_key as string, cells: row.cells as Slots }));
   // R names its parties after the caller's C answer, so saving C re-composes
   // an R answer already there, and both rows go in one call (spec Open 6).
-  const linked = draft.qgroup === "C" || draft.qgroup === "R" || draft.qgroup === "Prev"
+  const linked = draft.qgroup === "C" || draft.qgroup === "R" || draft.qgroup === "Prev" || draft.qgroup === "O"
     ? await slotAnswer(supabase, annotatorId, draft.video_id,
       draft.qgroup === "C" ? "R" : "C") : null;
   if (draft.qgroup === "R" && !linked) return slotError("cause_missing", "Lưu nhóm C trước khi lưu nhóm R.");
   if (draft.qgroup === "Prev" && !linked) {
     return slotError("cause_missing", "Lưu nhóm C trước để hệ thống tự sinh Prev.");
   }
+  if (draft.qgroup === "O" && !linked) {
+    return slotError("cause_missing", "Lưu nhóm C trước để hệ thống suy ra mức độ của nhóm O.");
+  }
   // The caller's C as stored before this save: an R whose sentence the new C
   // does not change keeps its own sentence, hand edits included.
   const oldCause = draft.qgroup === "C" && linked ? await slotAnswer(supabase, annotatorId, draft.video_id, "C") : null;
   const rows: Record<string, unknown>[] = [];
   try {
-    const canonicalSlots = draft.qgroup === "Prev"
-      ? derivePreventionFromCause(linked!.slots, entities) : slots as Slots;
-    const canonicalVersion = draft.qgroup === "Prev" ? currentVersion(draft.qgroup)! : version;
+    // Prev and O are derived from the caller's C: what the client sent for a
+    // derived cell (O level) is never stored (features/o-codebook-v2).
+    const canonicalSlots = draft.qgroup === "Prev" ? derivePreventionFromCause(linked!.slots, entities)
+      : draft.qgroup === "O" ? deriveOutcome(linked!.slots, slots as Slots) ?? {} : slots as Slots;
+    const canonicalVersion = draft.qgroup === "Prev" || draft.qgroup === "O" ? currentVersion(draft.qgroup)! : version;
+    if (draft.qgroup === "O" && !canonicalSlots.level) {
+      return slotError("missing_cell", "Nhóm C là va chạm: chọn ít nhất một dấu hiệu nhìn thấy rõ.");
+    }
     const composed = compose(draft.qgroup, canonicalSlots,
       { version: canonicalVersion, entities, cause: draft.qgroup === "R" ? linked!.slots : undefined });
     const problem = edited === null || edited.trim() === composed ? null : editProblem(composed, edited);
@@ -169,6 +178,10 @@ async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: st
     if (draft.qgroup === "C") {
       rows.push(...derivedAnswerRows(slots as Slots, entities,
         await questionDraftId(supabase, draft.video_id, "Prev")));
+      // A near miss fully decides O; a collision re-derives only an O.v2 answer that has signs.
+      const outcome = outcomeRow(slots as Slots, await slotAnswer(supabase, annotatorId, draft.video_id, "O"), entities,
+        await questionDraftId(supabase, draft.video_id, "O"));
+      if (outcome) rows.push(outcome);
     }
     if (draft.qgroup === "C" && linked) {
       const linkedContext = { version: linked.codebook_version, entities };

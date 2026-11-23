@@ -1,0 +1,10 @@
+stateDiagram-v2
+  [*] --> NoCause: no C saved
+  NoCause --> None: C near_miss
+  NoCause --> NotAssessed: legacy C unclear
+  NoCause --> NeedsSigns: C collision
+  NeedsSigns --> Derived: >= 1 sign ticked
+  Derived --> Derived: level = max(sign levels)
+  None --> NeedsSigns: C changed to collision
+  NotAssessed --> NeedsSigns: C changed to collision
+  Derived --> None: C changed to near_miss

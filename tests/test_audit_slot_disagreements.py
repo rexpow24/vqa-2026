@@ -27,3 +27,13 @@ def test_c_audit_still_displays_its_entity_and_action(monkeypatch):
     lines = format_answer_lines({"parties": [{"party": {"entity": "B"},
         "action": {"option": "action.k11.right_to_left"}}]}, "C.v2", indent="")
     assert lines == ["Bên B: từ phải sang trái"]
+
+
+def test_o_v2_audit_displays_the_derived_level_and_every_sign(monkeypatch):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "scripts"))
+    from audit_slot_disagreements import format_answer_lines
+
+    text = "\n".join(format_answer_lines({"level": {"option": "level.severe"},
+        "signs": {"options": ["sign.fell_in_place", "sign.person_thrown"]}}, "O.v2"))
+    assert "Mức độ: va chạm mạnh" in text
+    assert "ngã tại chỗ" in text and "người bị hất văng khỏi xe" in text

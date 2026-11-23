@@ -4,7 +4,7 @@ import { useState } from "react";
 import { currentVersion } from "@/lib/codebook";
 import type { SlotValue } from "@/lib/codebook/compose";
 import {
-  buildSlots, causePair, choose, currentValue, errorText, fields, prefilledKeys, prefillFromCause, preview, problems,
+  buildSlots, causePair, choose, currentValue, errorText, fields, outcomeState, prefilledKeys, prefillFromCause, preview, problems,
   rawValue, sameSlots, staleChoices, stateFromSlots, type Field, type FormContext,
 } from "@/lib/codebook/form";
 import { needsKeyframes } from "@/lib/qgroups";
@@ -40,8 +40,10 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const derived = qgroup === "Prev" ? prefillFromCause(qgroup, context, savedSlots) : null;
   const prefill = qgroup === "Prev" ? derived : savedSlots ? null : prefillFromCause(qgroup, context);
   const [touched, setTouched] = useState(false);
-  const form = qgroup === "Prev" && derived ? derived : prefill && !touched ? prefill
+  const chosen = qgroup === "Prev" && derived ? derived : prefill && !touched ? prefill
     : qgroup === "O" && !refsTouched ? { ...state, refs: causePair(context.cause) } : state;
+  // O.v2 shows the level it will store: derived from C and the ticked signs, never chosen.
+  const form = qgroup === "O" ? outcomeState(chosen, context) : chosen;
   const prefilled = prefilledKeys(qgroup, form, prefill, context);
   const savedMarks = draft.human_keyframes_s.map(Number);
   const savedPair = savedMarks.length === 2 && savedMarks[0] < savedMarks[1];
@@ -120,7 +122,7 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     const old = item.scope === "outer" && !currentValue(form, item) ? stale.cells[item.cellId] : undefined;
     return [item.note, old && `Bản cũ chọn "${old}"; lựa chọn này đã bỏ ở bản mới, chọn lại.`].filter(Boolean).join(" ") || undefined;
   };
-  const badgeOf = (item: Field) => item.readOnly && qgroup === "Prev"
+  const badgeOf = (item: Field) => item.readOnly && (qgroup === "Prev" || qgroup === "O")
     ? "tự suy ra, không sửa" : prefilled.has(item.key) ? "điền sẵn từ C" : undefined;
   const outer = visible.filter((item) => item.scope === "outer");
   const scopes = [...new Set(visible.filter((item) => item.scope !== "outer").map((item) => item.scope as number))];
@@ -183,6 +185,8 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
       {!savedSlots && draft.verdict && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
         Câu này đã lưu dạng chữ trước khi nhóm {qgroup} có ô{draft.edited_answer ? `: "${draft.edited_answer}"` : ""}.
         Chọn ô rồi bấm Lưu để thay.</p>}
+      {qgroup === "O" && !context.cause && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
+        Mức độ của O suy ra từ nhóm C: lưu nhóm C trước.</p>}
       {qgroup === "R" && !context.cause && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
         Chủ thể và đối tượng của R lấy từ nhóm C: lưu nhóm C trước.</p>}
       {qgroup === "R" && context.cause && pair.length === 0 && <p className="text-xs text-foreground/60">
