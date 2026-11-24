@@ -13,6 +13,8 @@ import { CardHeader, DraftReference, EditableSentence, SaveBar, postJson, type S
 import { editProblem } from "@/lib/codebook/edit";
 import { Chip, EntityChip, FieldRow, FreeText, OptionPicker } from "@/components/slots/SlotField";
 import { ConflictHint, type ReferenceClip } from "@/components/slots/ConflictHint";
+import { TrainingGate } from "@/components/slots/TrainingGate";
+import { requiredTraining } from "@/lib/trainings";
 
 /** The draft rows the save route returns: the saved row, and the caller's R when C re-composed it. */
 export type SavedSlotRow = Partial<SlotDraft> & { draft_id: string };
@@ -26,11 +28,14 @@ type Saved = SavedSlotRow & { also?: SavedSlotRow[] };
  * refused save keeps every choice. An answer saved with an older codebook
  * opens with what the current one still has and saves with the current one (F-v1).
  */
-export function SlotCard({ draft, context, labels, duration, playhead, canSave, onSeek, onSaved, onReference }: {
+export function SlotCard({ draft, context, labels, duration, playhead, canSave, onSeek, onSaved, onReference,
+  trainingsDone = null, onTrained }: {
   draft: SlotDraft; context: FormContext; labels: Record<string, string>; duration: number; playhead: number;
   canSave: boolean; onSeek: (time: number) => void; onSaved: (saved: Saved) => void;
   /** Group C: open a reference clip beside the video (features/c-reference-hints). */
   onReference?: (clip: ReferenceClip) => void;
+  /** Training ids the caller completed; null when not gated (features/c-training-gate). */
+  trainingsDone?: string[] | null; onTrained?: (id: string) => void;
 }) {
   const qgroup = draft.qgroup;
   const savedSlots = draft.verdict === "SLOTS" ? draft.slots : null;
@@ -174,6 +179,14 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
         && <ConflictHint option={value?.option} onOpen={onReference} />}
     </FieldRow>;
   };
+
+  const training = trainingsDone ? requiredTraining(qgroup) : null;
+  if (training && canSave && !trainingsDone!.includes(training.id)) {
+    return <article className="rounded-lg border border-border-strong bg-surface" data-qgroup={qgroup}>
+      <CardHeader draft={draft} saved={!!savedSlots} />
+      <TrainingGate training={training} qgroup={qgroup} onDone={() => onTrained?.(training.id)} />
+    </article>;
+  }
 
   return <article className="rounded-lg border border-border-strong bg-surface" data-qgroup={qgroup}>
     <CardHeader draft={draft} saved={!!savedSlots} />

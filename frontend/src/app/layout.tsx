@@ -24,9 +24,12 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const hosted = process.env.VERCEL === "1" || process.env.PLATFORM_MODE === "hosted";
   const profile = hosted ? await currentProfile() : null;
   return (
+    // suppressHydrationWarning: a browser extension adds classes to <html> (seen: "mdl-js"), which
+    // React reports as a hydration mismatch. It covers this element's attributes only, not its children.
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <header className="px-6 pt-5">

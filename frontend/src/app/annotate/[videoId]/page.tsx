@@ -77,7 +77,13 @@ export default async function VideoPage({ params }: Context) {
     }).sort((a, b) => a.annotator_name.localeCompare(b.annotator_name, "vi")
       || groupOrder(a.qgroup) - groupOrder(b.qgroup));
   }
-  return <HostedLabeling video={video} initialAssignment={assignmentResult.data}
+  // features/c-training-gate: the training videos the caller watched; admins are not gated (null).
+  const trainingResult = slotForm && profile.role !== "admin"
+    ? await supabase.from("training_completions").select("training").eq("annotator_id", profile.id)
+    : { data: null, error: null };
+  if (trainingResult.error) throw new Error(trainingResult.error.message);
+  const trainingsDone = profile.role === "admin" ? null : (trainingResult.data ?? []).map((row) => row.training as string);
+  return <HostedLabeling video={video} initialAssignment={assignmentResult.data} trainingsDone={trainingsDone}
     initialLabel={labelResult.data as { event_label: "accident" | "near-miss" } | null}
     initialDrafts={initialDrafts as HostedDraft[]}
     labelDecision={(labelDecisionResult.data?.event_label ?? null) as "accident" | "near-miss" | null}

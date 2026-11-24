@@ -55,6 +55,8 @@ try {
   if (created.error) throw created.error;
   userId = created.data.user.id;
   must(await privileged.from("user_profiles").insert({ id: userId, email, name: tag, role: "annotator", enabled: true }));
+  // Group C is saved only after the C training (features/c-training-gate); this test is not about that gate.
+  must(await privileged.from("training_completions").insert({ annotator_id: userId, training: "C-v1" }));
   const user = await signIn(email, password);
 
   const video = must(await privileged.from("videos").insert({

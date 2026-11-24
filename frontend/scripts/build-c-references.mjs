@@ -30,6 +30,8 @@ const DRIVE = {
   "K08-K09": "1cSrf4nINIUPtfVti-MFSwMUfPqKylX0x", "K09-K14": "1zVpqbBbrLylyJInDvoYpnk81h4ongvaM",
   "K10-K14": "1hcaqAHRBFquIq2Bqxq2ANnsi9Oeyl521", "K11-K12": "1Yn5mJ6qKFYj9QN8YYrIfeGbi5IQ0y3AQ",
   "K11-K14": "15x9qXQUREhP9KM3lnPu9hzNqlnUMnJn1", "K12-K14": "1294pBwbHxSAYa2qeMaQGyeAS9zeZ_l4T",
+  // The full C training video, mandatory before labelling C (features/c-training-gate).
+  "C-training-full": "11g4B8N8AJ4DYoDi5b0NSBVstfslywYeq",
 };
 
 // Annotator pairs that chose these two K on the same video, round #21-#40 (C.v4, 6 annotators, 20 videos).

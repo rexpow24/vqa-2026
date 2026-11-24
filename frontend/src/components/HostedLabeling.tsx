@@ -61,11 +61,13 @@ async function requestJson<T>(url: string, body?: object): Promise<T> {
 }
 
 export function HostedLabeling({ video, initialAssignment, initialLabel, initialDrafts, labelDecision,
-  answerFormat = "text", initialEntities = [], adminAnswers }: {
+  answerFormat = "text", initialEntities = [], adminAnswers, trainingsDone = null }: {
   video: Video; initialAssignment: Assignment | null; initialLabel: Label | null; initialDrafts: HostedDraft[];
   labelDecision: EventLabel | null;
   // "slots": S, E, C, O, R, Prev are answered with the slot form; N and Attr stay text.
   answerFormat?: "text" | "slots"; initialEntities?: Entity[]; adminAnswers?: AdminAnswer[];
+  /** Training ids the caller completed (features/c-training-gate); null when not gated (admins). */
+  trainingsDone?: string[] | null;
 }) {
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -81,6 +83,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   const derivedSyncVideo = useRef("");
   // Group C reference clip shown beside the video (features/c-reference-hints).
   const [reference, setReference] = useState<ReferenceClip | null>(null);
+  const [trained, setTrained] = useState<string[] | null>(trainingsDone);
   function openReference(clip: ReferenceClip) {
     setReference(clip);
     // Logged so the admin can see who opens references least; a failed log never blocks labeling.
@@ -276,6 +279,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
             }} />
           : <SlotCard key={draft.id} draft={draft} context={slotContext} labels={entityLabels} duration={Number(video.duration_s)}
             playhead={playhead} canSave={!!assignment} onSeek={seek} onReference={draft.qgroup === "C" ? openReference : undefined}
+            trainingsDone={trained} onTrained={(id) => setTrained((current) => current ? [...current, id] : current)}
             onSaved={({ also, ...row }) => slotSaved(draft, [{ ...row, draft_id: draft.id }, ...(also ?? [])])} />)
           : draft.decision ? <DecidedCard key={draft.id} draft={draft} onSeek={seek} /> : <DraftCard key={draft.id} draft={draft} duration={Number(video.duration_s)}
           playhead={playhead} canSave={!!assignment} onSeek={seek} onSaved={(saved) => {
