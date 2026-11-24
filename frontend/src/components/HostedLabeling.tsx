@@ -87,7 +87,8 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   function openReference(clip: ReferenceClip) {
     setReference(clip);
     // Logged so the admin can see who opens references least; a failed log never blocks labeling.
-    void fetch("/api/references/views", { method: "POST", headers: { "Content-Type": "application/json" },
+    // Only the group C clips (K..) are logged: reference_views takes C references only.
+    if (/^K\d\d/.test(clip.id)) void fetch("/api/references/views", { method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ reference: clip.id, chosen: clip.chosen, video_id: video.id }) }).catch(() => undefined);
   }
   const ready = drafts.length === GROUP_CODES.length;
@@ -268,6 +269,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
           : slotForm(draft) ? (draft.qgroup === "E"
           ? <EntityCard key={draft.id} videoId={video.id} draft={draft} saved={entities} canSave={!!assignment}
             trainingsDone={trained} onTrained={(id) => setTrained((current) => current ? [...current, id] : current)}
+            onReference={openReference}
             onSaved={async (saved, row) => {
               setEntities(saved);
               try {

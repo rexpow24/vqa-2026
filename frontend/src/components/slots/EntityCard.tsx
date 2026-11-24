@@ -10,6 +10,8 @@ import { CardHeader, DraftReference, SaveBar, Sentence, postJson, type SaveError
 import { FieldRow, FreeText, OptionPicker } from "@/components/slots/SlotField";
 import { BTN, FOCUS } from "@/components/slots/styles";
 import { TrainingGate } from "@/components/slots/TrainingGate";
+import { EntityHint } from "@/components/slots/EntityHint";
+import type { ReferenceClip } from "@/components/slots/ConflictHint";
 import { requiredTraining } from "@/lib/trainings";
 
 type SavedEntities = { entities: Entity[] | null; edited_answer: string; slots: { entities: Entity[] } };
@@ -20,11 +22,13 @@ type SavedEntities = { entities: Entity[] | null; edited_answer: string; slots: 
  * group then picks its parties from the saved list. A party another group
  * still points to cannot be removed or changed (409 from the database).
  */
-export function EntityCard({ videoId, draft, saved, canSave, onSaved, trainingsDone = null, onTrained }: {
+export function EntityCard({ videoId, draft, saved, canSave, onSaved, trainingsDone = null, onTrained, onReference }: {
   videoId: string; draft: SlotDraft; saved: Entity[]; canSave: boolean;
   onSaved: (entities: Entity[], row: { edited_answer: string; slots: { entities: Entity[] } }) => void;
   /** Training ids the caller completed; null when not gated (features/c-training-gate). */
   trainingsDone?: string[] | null; onTrained?: (id: string) => void;
+  /** Opens the E training video beside the labelling video (features/e-naming-hint). */
+  onReference?: (clip: ReferenceClip) => void;
 }) {
   const [list, setList] = useState<Entity[]>(() => saved.length ? saved : [{ key: "A", cells: {} }]);
   const [saving, setSaving] = useState(false);
@@ -112,6 +116,7 @@ export function EntityCard({ videoId, draft, saved, canSave, onSaved, trainingsD
       })}
       {nextKey && <button type="button" onClick={() => setList((current) => [...current, { key: nextKey, cells: {} }])}
         className={`${BTN} self-start px-3 py-1.5 text-sm`}>+ Thêm bên {nextKey}</button>}
+      <EntityHint parties={list} onOpen={onReference} />
     </div>
     <Sentence dirty={dirty} preview={sentence} saved={stored ? draft.edited_answer : null} />
     <SaveBar canSave={canSave} saving={saving} dirty={dirty} label="Lưu các bên"
