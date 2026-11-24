@@ -1,0 +1,349 @@
+{
+  "status": "DRAFT for owner review; C1, C2, C3 confirmed; C4, C5, C6, C7 corrected per owner 2026-11-24",
+  "voice": "Hải Đăng (VieNeu-TTS v3turbo, same setup as tham-khao-C/video-training/render_training.py)",
+  "guideline": "docs/guidelines/E-thuc-the.md (E.v6, 2026-11-24)",
+  "visual_kinds": {
+    "card": "text card, no footage",
+    "play": "play the clip segment [start, end] of the source clip at the given speed",
+    "freeze": "hold a still from boxes.json (overlays already defined there)"
+  },
+  "scenes": [
+    {
+      "id": "S00",
+      "rule": "intro",
+      "visual": [
+        {
+          "kind": "card",
+          "title": "Nhóm E: các bên liên quan",
+          "lines": [
+            "Khai báo những bên nào?",
+            "Gọi tên A, B thế nào?",
+            "Chọn loại xe nào?"
+          ]
+        }
+      ],
+      "narration": "Bài này hướng dẫn nhóm E. Có ba việc: khai báo những bên nào, gọi tên A và B ra sao, và chọn loại xe nào. Mỗi phần có một video thật để xem."
+    },
+    {
+      "id": "S01",
+      "rule": "1. Chọn bên",
+      "visual": [
+        {
+          "kind": "card",
+          "title": "1. Khai báo những bên nào",
+          "lines": [
+            "Tối đa 2 bên chính",
+            "Cặp của va chạm đầu tiên",
+            "Không có va chạm: cặp của lần suýt va chạm đầu tiên",
+            "Một xe tự trượt, tự lật (K18): 1 bên"
+          ]
+        }
+      ],
+      "narration": "Quy tắc thứ nhất: chỉ khai báo tối đa hai bên chính. Đó là hai bên của va chạm đầu tiên. Nếu không có va chạm, lấy hai bên của lần suýt va chạm đầu tiên."
+    },
+    {
+      "id": "S02",
+      "rule": "1. Va chạm thắng suýt va chạm xảy ra trước",
+      "clip": "C1",
+      "visual": [
+        {
+          "kind": "play",
+          "clip": "C1",
+          "start": 0.0,
+          "end": 1.6,
+          "speed": 1.0,
+          "privacy_masks_from": "C1-a"
+        },
+        {
+          "kind": "freeze",
+          "still": "C1-a"
+        }
+      ],
+      "narration": "Xem video này. Ngay đầu video, một xe máy tạt sát đầu xe ghi hình. Đây là suýt va chạm, nhưng video chưa hết."
+    },
+    {
+      "id": "S03",
+      "rule": "1. Va chạm thắng suýt va chạm xảy ra trước",
+      "clip": "C1",
+      "visual": [
+        {
+          "kind": "play",
+          "clip": "C1",
+          "start": 8.4,
+          "end": 10.6,
+          "speed": 0.5
+        },
+        {
+          "kind": "freeze",
+          "still": "C1-b"
+        },
+        {
+          "kind": "freeze",
+          "still": "C1-c"
+        }
+      ],
+      "narration": "Phía trước, hai xe máy va chạm và một xe ngã. Có va chạm thì lấy cặp va chạm, dù lần suýt va chạm xảy ra trước. Vậy chỉ khai báo hai xe máy này. Xe ghi hình và xe máy lúc đầu không khai báo."
+    },
+    {
+      "id": "S04",
+      "rule": "1. Một xe tự trượt, tự lật (K18): 1 bên - CHƯA CÓ CLIP ĐÃ XÁC MINH",
+      "visual": [
+        {
+          "kind": "card",
+          "title": "Một xe tự trượt, tự lật",
+          "lines": [
+            "Không có bên nào khác (C là K18): khai báo 1 bên",
+            "(chưa có video minh họa đã xác minh)"
+          ]
+        }
+      ],
+      "narration": "Nếu chỉ có một xe tự trượt hoặc tự lật, không có bên nào khác, thì chỉ khai báo một bên."
+    },
+    {
+      "id": "S05",
+      "rule": "2. Xe ghi hình là A",
+      "visual": [
+        {
+          "kind": "card",
+          "title": "2. Gọi tên A, B",
+          "lines": [
+            "Có đúng 1 xe ghi hình trong cặp: xe đó là A",
+            "Xe ghi hình thường không thấy trong khung, vẫn là A"
+          ]
+        }
+      ],
+      "narration": "Quy tắc thứ hai là cách gọi tên. Nếu trong các bên có đúng một xe ghi hình, xe đó là A. Xe ghi hình thường không thấy trong khung hình, nhưng vẫn là A."
+    },
+    {
+      "id": "S06",
+      "rule": "2. Xe ghi hình là A",
+      "clip": "C2",
+      "visual": [
+        {
+          "kind": "play",
+          "clip": "C2",
+          "start": 2.5,
+          "end": 7.0,
+          "speed": 1.0
+        },
+        {
+          "kind": "freeze",
+          "still": "C2-a"
+        },
+        {
+          "kind": "freeze",
+          "still": "C2-b"
+        }
+      ],
+      "narration": "Ở video này, xe tải ép vào làn của xe ghi hình. Xe ghi hình là A, xe tải là B. Khi xe ghi hình thuộc cặp chính, xe ghi hình là A."
+    },
+    {
+      "id": "S07",
+      "rule": "2. Xe ghi hình là A (+ loại xe đạp)",
+      "clip": "C5",
+      "visual": [
+        {
+          "kind": "play",
+          "clip": "C5",
+          "start": 3.0,
+          "end": 4.8,
+          "speed": 1.0
+        },
+        {
+          "kind": "freeze",
+          "still": "C5-a"
+        },
+        {
+          "kind": "freeze",
+          "still": "C5-b"
+        }
+      ],
+      "narration": "Tương tự, người đi xe đạp áo trắng giữa đường đi về phía xe ghi hình. Xe ghi hình là A, xe đạp là B."
+    },
+    {
+      "id": "S08",
+      "rule": "2. Không có xe ghi hình: theo vị trí",
+      "visual": [
+        {
+          "kind": "card",
+          "title": "Không có xe ghi hình trong cặp",
+          "lines": [
+            "Tìm khung hình đầu tiên cả hai bên cùng xuất hiện và nhận ra được",
+            "Trái sang phải: bên trái là A",
+            "Gần như cùng một cột: bên ở trên là A"
+          ]
+        }
+      ],
+      "narration": "Nếu không có xe ghi hình trong cặp, hãy tìm khung hình đầu tiên mà cả hai bên cùng xuất hiện và nhận ra được. Bên nằm bên trái là A. Nếu hai bên gần như cùng một cột, bên ở trên là A."
+    },
+    {
+      "id": "S09",
+      "rule": "2. Không có xe ghi hình: theo vị trí",
+      "clip": "C3",
+      "visual": [
+        {
+          "kind": "play",
+          "clip": "C3",
+          "start": 0.0,
+          "end": 1.2,
+          "speed": 1.0
+        },
+        {
+          "kind": "freeze",
+          "still": "C3-a"
+        }
+      ],
+      "narration": "Ở khung hình này, hai xe máy cùng xuất hiện. Xe ở bên trái, cũng là xe ở trên, là A. Xe còn lại là B."
+    },
+    {
+      "id": "S10",
+      "rule": "2. Tên giữ nguyên cả video",
+      "clip": "C3",
+      "visual": [
+        {
+          "kind": "play",
+          "clip": "C3",
+          "start": 2.2,
+          "end": 3.8,
+          "speed": 0.5
+        },
+        {
+          "kind": "freeze",
+          "still": "C3-b"
+        },
+        {
+          "kind": "freeze",
+          "still": "C3-c"
+        }
+      ],
+      "narration": "Sau đó hai xe đổi chỗ cho nhau. Tên vẫn giữ nguyên: A vẫn là A, B vẫn là B. Tên đặt một lần và dùng cho cả video, kể cả khi xe bị che rồi xuất hiện lại."
+    },
+    {
+      "id": "S11",
+      "rule": "1. Không va chạm: cặp suýt va chạm đầu tiên + 2. theo vị trí",
+      "clip": "C4",
+      "visual": [
+        {
+          "kind": "play",
+          "clip": "C4",
+          "start": 4.6,
+          "end": 8.6,
+          "speed": 1.0
+        },
+        {
+          "kind": "freeze",
+          "still": "C4-a"
+        },
+        {
+          "kind": "freeze",
+          "still": "C4-b"
+        }
+      ],
+      "narration": "Video này không có va chạm. Xe tải đi ngược chiều khiến xe máy phải tránh sát lề, sụp ổ gà và suýt ngã. Vậy khai báo cặp suýt va chạm đầu tiên: xe máy và xe tải. Ở khung đầu tiên cả hai cùng xuất hiện, xe máy bên trái là A, xe tải là B. Xe ghi hình không khai báo."
+    },
+    {
+      "id": "S12",
+      "rule": "2. Theo vị trí (+ loại xe ba gác)",
+      "clip": "C7",
+      "visual": [
+        {
+          "kind": "play",
+          "clip": "C7",
+          "start": 4.6,
+          "end": 6.8,
+          "speed": 1.0
+        },
+        {
+          "kind": "freeze",
+          "still": "C7-a"
+        },
+        {
+          "kind": "freeze",
+          "still": "C7-b"
+        }
+      ],
+      "narration": "Video ban đêm này có xe ba gác ở giữa đường và một xe máy bật đèn ở phía sau, bên phải. Ở khung đầu tiên cả hai cùng xuất hiện, xe ba gác bên trái là A, xe máy là B."
+    },
+    {
+      "id": "S13",
+      "rule": "3. Loại xe",
+      "visual": [
+        {
+          "kind": "card",
+          "title": "3. Chọn loại",
+          "lines": [
+            "Xe máy: xe số, tay ga, côn tay, xe máy điện (không có bàn đạp)",
+            "Xe đạp: xe đạp thường, xe đạp điện (có bàn đạp)",
+            "Xe ba gác: mọi xe 3 bánh, kể cả xe tự chế"
+          ]
+        },
+        {
+          "kind": "freeze",
+          "still": "C5-b"
+        },
+        {
+          "kind": "freeze",
+          "still": "C7-b"
+        }
+      ],
+      "narration": "Quy tắc thứ ba là loại xe. Xe máy gồm xe số, xe tay ga, xe côn tay và xe máy điện, tức là xe không có bàn đạp. Xe đạp gồm xe đạp thường và xe đạp điện, tức là xe có bàn đạp. Mọi xe ba bánh, kể cả xe tự chế, đều chọn xe ba gác."
+    },
+    {
+      "id": "S14",
+      "rule": "3. Xe đạp điện là xe đạp (+ 2. theo vị trí)",
+      "clip": "C6",
+      "visual": [
+        {
+          "kind": "freeze",
+          "still": "C6-a"
+        },
+        {
+          "kind": "play",
+          "clip": "C6",
+          "start": 3.5,
+          "end": 5.0,
+          "speed": 1.0
+        },
+        {
+          "kind": "freeze",
+          "still": "C6-b"
+        }
+      ],
+      "narration": "Đây là xe đạp điện, nên chọn xe đạp. Khung đầu tiên cả hai cùng xuất hiện là ngay đầu video: xe tải bên trái là A, xe đạp là B."
+    },
+    {
+      "id": "S15",
+      "rule": "3. Các loại còn lại",
+      "visual": [
+        {
+          "kind": "card",
+          "title": "Các loại còn lại",
+          "lines": [
+            "Ô tô (có / không camera hành trình), xe khách, xe tải, xe cứu thương",
+            "Người đi bộ, động vật",
+            "Xe container, xe bán tải: chọn xe tải",
+            "Không còn lựa chọn \"khác\""
+          ]
+        }
+      ],
+      "narration": "Các loại còn lại là ô tô, xe khách, xe tải, xe cứu thương, người đi bộ và động vật. Xe container và xe bán tải chọn xe tải. Với ô tô, chọn thêm có hay không có camera hành trình. Không còn lựa chọn khác, mỗi bên phải thuộc một loại trong danh sách."
+    },
+    {
+      "id": "S16",
+      "rule": "summary",
+      "visual": [
+        {
+          "kind": "card",
+          "title": "Tóm tắt",
+          "lines": [
+            "Cặp của va chạm đầu tiên; không có thì cặp suýt va chạm đầu tiên; một xe tự ngã: 1 bên",
+            "Xe ghi hình là A",
+            "Không có xe ghi hình: trái sang phải, cùng cột thì trên xuống, ở khung đầu tiên cả hai cùng xuất hiện",
+            "Tên giữ nguyên cả video"
+          ]
+        }
+      ],
+      "narration": "Tóm lại. Chọn cặp của va chạm đầu tiên, không có thì cặp suýt va chạm đầu tiên, một xe tự ngã thì chỉ một bên. Xe ghi hình là A. Không có xe ghi hình thì xếp từ trái sang phải ở khung đầu tiên cả hai cùng xuất hiện. Tên giữ nguyên cả video."
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import { needsKeyframes } from "@/lib/qgroups";
-import { requiredTraining } from "@/lib/trainings";
+import { trainingRequired } from "@/lib/trainings-server";
 import { ComposeError, compose, type Slots } from "@/lib/codebook/compose";
 import { editProblem, sentenceToStore } from "@/lib/codebook/edit";
 import { currentVersion, isSlotGroup } from "@/lib/codebook";
@@ -30,15 +30,8 @@ export async function POST(request: Request, context: Context) {
   if (draftError || !draft) return Response.json({ error: "Không tìm thấy bản nháp." }, { status: 404 });
   if (draft.qgroup === "V") return Response.json({ error: "Nhóm V đã được gỡ khỏi luồng gán nhãn.", code: "group_removed" }, { status: 410 });
   // features/c-training-gate: a group with a training video is saved only after the caller watched it.
-  const training = profile.role === "admin" ? null : requiredTraining(draft.qgroup);
-  if (training) {
-    const { data: completed } = await supabase.from("training_completions").select("training")
-      .eq("annotator_id", profile.id).eq("training", training.id).maybeSingle();
-    if (!completed) {
-      return Response.json({ error: `Xem hết video hướng dẫn nhóm ${draft.qgroup} trước khi gán nhãn nhóm này.`,
-        code: "training_required" }, { status: 403 });
-    }
-  }
+  const untrained = await trainingRequired(supabase, profile, draft.qgroup);
+  if (untrained) return untrained;
   // Groups without evidence frames store none, even from a client that still sends some.
   // Groups that take them store exactly two: [start, end] of the event, start
   // before end (same rule as validate_qa_annotation, 20261112000016_keyframes_start_end.sql).

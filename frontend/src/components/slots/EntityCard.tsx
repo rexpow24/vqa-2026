@@ -9,6 +9,8 @@ import {
 import { CardHeader, DraftReference, SaveBar, Sentence, postJson, type SaveError, type SlotDraft } from "@/components/slots/common";
 import { FieldRow, FreeText, OptionPicker } from "@/components/slots/SlotField";
 import { BTN, FOCUS } from "@/components/slots/styles";
+import { TrainingGate } from "@/components/slots/TrainingGate";
+import { requiredTraining } from "@/lib/trainings";
 
 type SavedEntities = { entities: Entity[] | null; edited_answer: string; slots: { entities: Entity[] } };
 
@@ -18,9 +20,11 @@ type SavedEntities = { entities: Entity[] | null; edited_answer: string; slots: 
  * group then picks its parties from the saved list. A party another group
  * still points to cannot be removed or changed (409 from the database).
  */
-export function EntityCard({ videoId, draft, saved, canSave, onSaved }: {
+export function EntityCard({ videoId, draft, saved, canSave, onSaved, trainingsDone = null, onTrained }: {
   videoId: string; draft: SlotDraft; saved: Entity[]; canSave: boolean;
   onSaved: (entities: Entity[], row: { edited_answer: string; slots: { entities: Entity[] } }) => void;
+  /** Training ids the caller completed; null when not gated (features/c-training-gate). */
+  trainingsDone?: string[] | null; onTrained?: (id: string) => void;
 }) {
   const [list, setList] = useState<Entity[]>(() => saved.length ? saved : [{ key: "A", cells: {} }]);
   const [saving, setSaving] = useState(false);
@@ -64,6 +68,14 @@ export function EntityCard({ videoId, draft, saved, canSave, onSaved }: {
   const limit = entityLimit();
   // E.v5: at most the two main parties, so no add button at the limit.
   const nextKey = limit !== null && list.length >= limit ? null : nextEntityKey(list.map((entity) => entity.key));
+
+  const training = trainingsDone ? requiredTraining("E") : null;
+  if (training && canSave && !trainingsDone!.includes(training.id)) {
+    return <article className="rounded-lg border border-border-strong bg-surface" data-qgroup="E">
+      <CardHeader draft={draft} saved={stored} />
+      <TrainingGate training={training} qgroup="E" onDone={() => onTrained?.(training.id)} />
+    </article>;
+  }
 
   return <article className="rounded-lg border border-border-strong bg-surface" data-qgroup="E">
     <CardHeader draft={draft} saved={stored} />

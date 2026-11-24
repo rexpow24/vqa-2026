@@ -2,6 +2,7 @@ import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import { currentVersion, getCodebook } from "@/lib/codebook";
 import { ComposeError, compose } from "@/lib/codebook/compose";
+import { trainingRequired } from "@/lib/trainings-server";
 
 type Context = { params: Promise<{ id: string }> };
 type Entity = { key: string; cells: Record<string, unknown> };
@@ -17,6 +18,9 @@ export async function PUT(request: Request, context: Context) {
   const { id } = await context.params;
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return Response.json({ error: "Invalid JSON" }, { status: 400 }); }
+  // features/c-training-gate: group E is saved only after the caller watched the E training video.
+  const untrained = await trainingRequired(await createClient(), profile, "E");
+  if (untrained) return untrained;
   // Always the current E book, whatever an old open page sends (the O/Prev
   // pattern): E.v5 takes at most the two main parties, so an E.v4 page must not
   // keep writing lists of three (features/two-entity-subject-rules).

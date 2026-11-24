@@ -267,6 +267,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
           ? <DerivedSummaryCard key={draft.id} draft={draft} />
           : slotForm(draft) ? (draft.qgroup === "E"
           ? <EntityCard key={draft.id} videoId={video.id} draft={draft} saved={entities} canSave={!!assignment}
+            trainingsDone={trained} onTrained={(id) => setTrained((current) => current ? [...current, id] : current)}
             onSaved={async (saved, row) => {
               setEntities(saved);
               try {

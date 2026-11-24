@@ -7,6 +7,7 @@ export type Training = { id: string; video: string; title: string };
 
 const TRAININGS: Record<string, Training> = {
   C: { id: "C-v1", video: "C-training-full", title: "Video hướng dẫn nhóm C: kiểu xung đột và cách chọn chủ thể" },
+  E: { id: "E-v1", video: "E-training-full", title: "Video hướng dẫn nhóm E: chọn bên, đặt tên A/B và chọn loại xe" },
 };
 
 /** The training a group requires, or null when it requires none. */

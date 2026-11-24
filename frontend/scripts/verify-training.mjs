@@ -51,9 +51,14 @@ try {
   }))).select("id,qgroup")).map((draft) => [draft.qgroup, draft.id]));
   must(await privileged.from("video_assignments").insert({ video_id: video.id, annotator_id: one.id, status: "pending",
     answer_format: "slots" }));
-  const entities = await request(base, `/api/videos/${video.id}/entities`, one.cookie, "PUT", { codebook_version: "E.v6", entities: [
+  const E_PARTIES = [
     { key: "A", cells: { type: opt("type.car"), dashcam: opt("dashcam.yes") } },
-    { key: "B", cells: { type: opt("type.motorbike"), vehicle_color: opt("vehicle_color.red") } }] });
+    { key: "B", cells: { type: opt("type.motorbike"), vehicle_color: opt("vehicle_color.red") } }];
+  const earlyE = await request(base, `/api/videos/${video.id}/entities`, one.cookie, "PUT", { entities: E_PARTIES });
+  check("E cannot be saved before the E training is completed", earlyE.status === 403 && earlyE.data?.code === "training_required", earlyE);
+  const doneE = await request(base, "/api/trainings/E-v1/complete", one.cookie, "POST", {});
+  check("completing E-v1 is recorded", doneE.status === 200, doneE);
+  const entities = await request(base, `/api/videos/${video.id}/entities`, one.cookie, "PUT", { codebook_version: "E.v6", entities: E_PARTIES });
   if (entities.status !== 200) throw new Error(`entities: ${JSON.stringify(entities)}`);
   const saveC = () => request(base, `/api/drafts/${drafts.C}/annotation`, one.cookie, "POST", { verdict: "SLOTS", codebook_version: "C.v4",
     slots: { event_type: opt("event_type.collision"), subject: { entity: "B" }, object: { entity: "A" },
@@ -87,7 +92,8 @@ try {
   const rowOne = stats.data?.find((row) => row.annotator_id === one.id);
   const rowTwo = stats.data?.find((row) => row.annotator_id === two.id);
   check("the admin sees who completed the C training", !stats.error && Boolean(rowOne?.training_c_completed_at)
-    && rowTwo && rowTwo.training_c_completed_at === null, { error: stats.error, rowOne, rowTwo });
+    && Boolean(rowOne?.training_e_completed_at) && rowTwo && rowTwo.training_c_completed_at === null
+    && rowTwo.training_e_completed_at === null, { error: stats.error, rowOne, rowTwo });
 } finally {
   if (videoId) await privileged.from("videos").delete().eq("id", videoId);
   for (const id of created) {

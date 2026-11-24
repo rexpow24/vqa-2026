@@ -32,6 +32,8 @@ const DRIVE = {
   "K11-K14": "15x9qXQUREhP9KM3lnPu9hzNqlnUMnJn1", "K12-K14": "1294pBwbHxSAYa2qeMaQGyeAS9zeZ_l4T",
   // The full C training video, mandatory before labelling C (features/c-training-gate).
   "C-training-full": "11g4B8N8AJ4DYoDi5b0NSBVstfslywYeq",
+  // The group E training video (A/B naming), folder 1CHFZcsI2tKTj9woLcrmD9yK_kMUuplog, uploaded 2026-11-24.
+  "E-training-full": "1_MeZTyHq7B6KJmhso7GhqKKsT93D4f67",
 };
 
 // Annotator pairs that chose these two K on the same video, round #21-#40 (C.v4, 6 annotators, 20 videos).

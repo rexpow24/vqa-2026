@@ -1,0 +1,512 @@
+{
+  "status": "DRAFT - proposed labels for owner review, not ground truth",
+  "frame_size": [
+    1920,
+    1080
+  ],
+  "coords": "pixels in the 1920x1080 source frame; x,y = top-left corner; boxes estimated by eye from gridded frames",
+  "roles": {
+    "A": "declared party A",
+    "B": "declared party B",
+    "skip": "visible road user that is NOT declared (shown to teach exclusion)"
+  },
+  "clips": {
+    "C1": {
+      "seq": 23,
+      "filename": "dqZf2LTzIy8_305300_335567_t01.mp4",
+      "source": "finished/dqZf2LTzIy8_305300_335567_t01.mp4",
+      "duration_s": 14.0,
+      "segment_masks": {
+        "note": "for the 0.0-1.6 s play segment: interpolate linearly between keyframes; check every frame after render",
+        "plate": [
+          {
+            "t": 0.0,
+            "x": 1345,
+            "y": 222,
+            "w": 75,
+            "h": 42
+          },
+          {
+            "t": 0.3,
+            "x": 1505,
+            "y": 222,
+            "w": 95,
+            "h": 48
+          },
+          {
+            "t": 0.6,
+            "x": 1815,
+            "y": 232,
+            "w": 105,
+            "h": 50
+          },
+          {
+            "t": 0.75,
+            "x": 1880,
+            "y": 235,
+            "w": 40,
+            "h": 50
+          }
+        ],
+        "face": [
+          {
+            "t": 0.45,
+            "x": 1840,
+            "y": 260,
+            "w": 80,
+            "h": 130
+          },
+          {
+            "t": 0.6,
+            "x": 1805,
+            "y": 265,
+            "w": 115,
+            "h": 125
+          },
+          {
+            "t": 0.9,
+            "x": 1490,
+            "y": 255,
+            "w": 155,
+            "h": 135
+          },
+          {
+            "t": 1.2,
+            "x": 1255,
+            "y": 305,
+            "w": 155,
+            "h": 115
+          },
+          {
+            "t": 1.6,
+            "x": 1140,
+            "y": 295,
+            "w": 170,
+            "h": 135
+          }
+        ]
+      }
+    },
+    "C2": {
+      "seq": 16,
+      "filename": "ulavEbwx0gg_328167_344900_t01.mp4",
+      "source": "finished/ulavEbwx0gg_328167_344900_t01.mp4",
+      "duration_s": 8.0
+    },
+    "C3": {
+      "seq": 38,
+      "filename": "qGmTgtNrMJw_529800_541500_t01.mp4",
+      "source": "finished/qGmTgtNrMJw_529800_541500_t01.mp4",
+      "duration_s": 10.0
+    },
+    "C4": {
+      "seq": null,
+      "filename": "AeseZkBqBf0_435733_453000_t01.mp4",
+      "source": "finished/AeseZkBqBf0_435733_453000_t01.mp4",
+      "duration_s": 15.0,
+      "note": "NOT K18 (owner 2026-11-24): near miss truck (wrong way) vs motorbike"
+    },
+    "C5": {
+      "seq": 22,
+      "filename": "Awei5Z4MiQQ_116867_131867_t01.mp4",
+      "source": "finished/Awei5Z4MiQQ_116867_131867_t01.mp4",
+      "duration_s": 5.0
+    },
+    "C6": {
+      "seq": null,
+      "filename": "dqZf2LTzIy8_699567_722500_t01.mp4",
+      "source": "finished/dqZf2LTzIy8_699567_722500_t01.mp4",
+      "duration_s": 7.0
+    },
+    "C7": {
+      "seq": null,
+      "filename": "_aFA9cPBTYQ_350967_389767_t01.mp4",
+      "source": "finished/_aFA9cPBTYQ_350967_389767_t01.mp4",
+      "duration_s": 11.0
+    }
+  },
+  "stills": [
+    {
+      "id": "C1-a",
+      "clip": "C1",
+      "t": 0.6,
+      "caption": "Xe máy tạt sát xe ghi hình: suýt va chạm, nhưng chưa phải cặp cần khai báo",
+      "corner": "Xe ghi hình (ngoài khung): KHÔNG khai báo",
+      "boxes": [
+        {
+          "role": "skip",
+          "label": "xe máy: KHÔNG khai báo",
+          "x": 1620,
+          "y": 270,
+          "w": 300,
+          "h": 330
+        }
+      ],
+      "privacy_masks": [
+        {
+          "why": "truck plate 34C-... painted on the cargo box, legible in finished/",
+          "x": 1815,
+          "y": 232,
+          "w": 100,
+          "h": 50
+        },
+        {
+          "why": "unblurred side face of the motorbike rider",
+          "x": 1805,
+          "y": 265,
+          "w": 115,
+          "h": 125
+        }
+      ]
+    },
+    {
+      "id": "C1-b",
+      "clip": "C1",
+      "t": 9.45,
+      "caption": "Va chạm đầu tiên là giữa hai xe máy này: chỉ khai báo cặp này",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe máy",
+          "x": 915,
+          "y": 512,
+          "w": 45,
+          "h": 90
+        },
+        {
+          "role": "B",
+          "label": "B · xe máy",
+          "x": 978,
+          "y": 530,
+          "w": 75,
+          "h": 80,
+          "label_pos": "below"
+        }
+      ]
+    },
+    {
+      "id": "C1-c",
+      "clip": "C1",
+      "t": 10.0,
+      "caption": "Xe máy A ngã sau va chạm với xe máy B",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe máy",
+          "x": 875,
+          "y": 508,
+          "w": 80,
+          "h": 90
+        },
+        {
+          "role": "B",
+          "label": "B · xe máy",
+          "x": 1088,
+          "y": 535,
+          "w": 128,
+          "h": 95,
+          "label_pos": "below"
+        }
+      ]
+    },
+    {
+      "id": "C2-a",
+      "clip": "C2",
+      "t": 3.0,
+      "caption": "Có đúng một xe ghi hình trong cặp: xe ghi hình là A",
+      "corner": "A · ô tô (xe ghi hình, ngoài khung)",
+      "boxes": [
+        {
+          "role": "B",
+          "label": "B · xe tải",
+          "x": 1195,
+          "y": 395,
+          "w": 190,
+          "h": 100
+        }
+      ]
+    },
+    {
+      "id": "C2-b",
+      "clip": "C2",
+      "t": 6.0,
+      "caption": "Xe tải ép vào làn của xe ghi hình: suýt va chạm",
+      "corner": "A · ô tô (xe ghi hình, ngoài khung)",
+      "boxes": [
+        {
+          "role": "B",
+          "label": "B · xe tải",
+          "x": 1205,
+          "y": 215,
+          "w": 715,
+          "h": 685
+        }
+      ]
+    },
+    {
+      "id": "C3-a",
+      "clip": "C3",
+      "t": 0.9,
+      "caption": "Khung đầu tiên hai bên cùng xuất hiện: bên trái (và ở trên) là A",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe máy",
+          "x": 470,
+          "y": 168,
+          "w": 36,
+          "h": 66
+        },
+        {
+          "role": "B",
+          "label": "B · xe máy",
+          "x": 598,
+          "y": 355,
+          "w": 90,
+          "h": 172,
+          "label_pos": "below"
+        }
+      ]
+    },
+    {
+      "id": "C3-b",
+      "clip": "C3",
+      "t": 2.6,
+      "caption": "Hai xe tiến lại gần nhau",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe máy",
+          "x": 646,
+          "y": 228,
+          "w": 56,
+          "h": 108
+        },
+        {
+          "role": "B",
+          "label": "B · xe máy",
+          "x": 724,
+          "y": 282,
+          "w": 72,
+          "h": 138,
+          "label_pos": "below"
+        }
+      ]
+    },
+    {
+      "id": "C3-c",
+      "clip": "C3",
+      "t": 3.4,
+      "caption": "Hai xe đổi chỗ: tên vẫn giữ nguyên",
+      "boxes": [
+        {
+          "role": "B",
+          "label": "B · xe máy",
+          "x": 745,
+          "y": 268,
+          "w": 80,
+          "h": 128
+        },
+        {
+          "role": "A",
+          "label": "A · xe máy",
+          "x": 800,
+          "y": 275,
+          "w": 95,
+          "h": 118,
+          "label_pos": "below"
+        }
+      ]
+    },
+    {
+      "id": "C4-a",
+      "clip": "C4",
+      "t": 7.2,
+      "caption": "Khung đầu tiên cả hai cùng xuất hiện: xe máy bên trái là A",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe máy",
+          "x": 795,
+          "y": 515,
+          "w": 42,
+          "h": 70,
+          "label_pos": "left"
+        },
+        {
+          "role": "B",
+          "label": "B · xe tải",
+          "x": 858,
+          "y": 393,
+          "w": 172,
+          "h": 212
+        }
+      ]
+    },
+    {
+      "id": "C4-b",
+      "clip": "C4",
+      "t": 7.8,
+      "caption": "Không có va chạm: khai báo cặp suýt va chạm đầu tiên",
+      "corner": "Xe ghi hình (ngoài khung): KHÔNG khai báo",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe máy",
+          "x": 625,
+          "y": 512,
+          "w": 85,
+          "h": 115,
+          "label_pos": "left"
+        },
+        {
+          "role": "B",
+          "label": "B · xe tải",
+          "x": 866,
+          "y": 416,
+          "w": 136,
+          "h": 172
+        }
+      ]
+    },
+    {
+      "id": "C5-a",
+      "clip": "C5",
+      "t": 3.9,
+      "caption": "B là người đi xe đạp áo trắng giữa đường",
+      "corner": "A · ô tô (xe ghi hình, ngoài khung)",
+      "boxes": [
+        {
+          "role": "B",
+          "label": "B · xe đạp",
+          "x": 855,
+          "y": 618,
+          "w": 40,
+          "h": 82
+        }
+      ]
+    },
+    {
+      "id": "C5-b",
+      "clip": "C5",
+      "t": 4.4,
+      "caption": "Xe đạp thường, có bàn đạp: chọn \"xe đạp\"",
+      "corner": "A · ô tô (xe ghi hình, ngoài khung)",
+      "boxes": [
+        {
+          "role": "B",
+          "label": "B · xe đạp",
+          "x": 786,
+          "y": 616,
+          "w": 82,
+          "h": 120
+        }
+      ]
+    },
+    {
+      "id": "C6-a",
+      "clip": "C6",
+      "t": 0.0,
+      "caption": "Khung đầu tiên cả hai cùng xuất hiện: xe tải bên trái là A",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe tải",
+          "x": 940,
+          "y": 655,
+          "w": 53,
+          "h": 62
+        },
+        {
+          "role": "B",
+          "label": "B · xe đạp",
+          "x": 1092,
+          "y": 676,
+          "w": 66,
+          "h": 62,
+          "label_pos": "below"
+        }
+      ]
+    },
+    {
+      "id": "C6-b",
+      "clip": "C6",
+      "t": 4.5,
+      "caption": "Xe đạp điện: chọn \"xe đạp\"",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe tải",
+          "x": 595,
+          "y": 555,
+          "w": 335,
+          "h": 255
+        },
+        {
+          "role": "B",
+          "label": "B · xe đạp",
+          "x": 705,
+          "y": 665,
+          "w": 200,
+          "h": 175,
+          "label_pos": "below"
+        }
+      ]
+    },
+    {
+      "id": "C7-a",
+      "clip": "C7",
+      "t": 5.2,
+      "caption": "Khung đầu tiên cả hai cùng xuất hiện: xe ba gác bên trái là A",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe ba gác",
+          "x": 976,
+          "y": 324,
+          "w": 110,
+          "h": 228
+        },
+        {
+          "role": "B",
+          "label": "B · xe máy",
+          "x": 1263,
+          "y": 383,
+          "w": 68,
+          "h": 74
+        }
+      ]
+    },
+    {
+      "id": "C7-b",
+      "clip": "C7",
+      "t": 6.0,
+      "caption": "Xe 3 bánh chở hàng: chọn \"xe ba gác\"",
+      "boxes": [
+        {
+          "role": "A",
+          "label": "A · xe ba gác",
+          "x": 966,
+          "y": 328,
+          "w": 110,
+          "h": 224
+        },
+        {
+          "role": "B",
+          "label": "B · xe máy",
+          "x": 1076,
+          "y": 403,
+          "w": 76,
+          "h": 92,
+          "label_pos": "below"
+        }
+      ]
+    }
+  ],
+  "corrections": [
+    "2026-11-24 owner: C4 is a near miss (wrong-way truck vs motorbike), not K18",
+    "2026-11-24 owner: C5 party B is the white-shirt cyclist mid-road, not the red-shirt person at the right",
+    "2026-11-24 owner: C7 pair is xe ba gác + motorbike with headlight to its right, not the white scooter",
+    "2026-11-24 owner: C6 vehicle confirmed as xe đạp; first co-appearance frame is t=0.0 (truck left = A)"
+  ]
+}
