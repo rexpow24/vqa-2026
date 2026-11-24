@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LabelGroup } from "@/components/LabelGroup";
-import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
+import { ImpactKeyframes } from "@/components/slots/ImpactKeyframes";
 import type { ReferenceClip } from "@/components/slots/ConflictHint";
 import { BTN, BTN_BASE, FOCUS, NEUTRAL, QUESTION } from "@/components/slots/styles";
 import { GROUP_CODES, groupName, needsKeyframes } from "@/lib/qgroups";
@@ -95,7 +95,9 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   // The saved parties of group E, which every other slot group picks from.
   const [entities, setEntities] = useState<Entity[]>(initialEntities);
   const causeDraft = drafts.find((draft) => draft.qgroup === "C");
-  const slotContext = { entities, cause: causeDraft?.verdict === "SLOTS" ? causeDraft.slots : null };
+  // C keyframes and the duration feed the R has_aftermath suggestion (features/impact-keyframe).
+  const slotContext = { entities, cause: causeDraft?.verdict === "SLOTS" ? causeDraft.slots : null,
+    causeKeyframes: causeDraft?.verdict ? causeDraft.human_keyframes_s.map(Number) : null, duration: Number(video.duration_s) };
   const entityLabels = Object.fromEntries(entities.map((entity) => [entity.key, entityLabel(entity)]));
   const slotForm = (draft: HostedDraft) => answerFormat === "slots" && isSlotGroup(draft.qgroup) && !draft.decision;
   useEffect(() => {
@@ -310,16 +312,15 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
   const [note, setNote] = useState(draft.reason_note ?? "");
   const [answer, setAnswer] = useState(draft.edited_answer ?? draft.answer);
   const [editing, setEditing] = useState(false);
-  // Evidence is exactly two frames, [start, end] of the event, start < end.
-  // A row saved under the earlier 1-3 rule is shown as `legacy` and leaves
-  // both slots empty: it stays valid as stored, and saving it again here
-  // needs a start and an end (the API refuses anything else).
+  // Evidence is exactly two frames, [start, end] of the event, start < end,
+  // set from one impact mark (features/impact-keyframe). A row saved under the
+  // earlier 1-3 rule is shown as `legacy` and leaves the span empty: it stays
+  // valid as stored, and saving it again here needs a mark (the API refuses
+  // anything else).
   const savedMarks = draft.human_keyframes_s.map(Number);
   const savedPair = savedMarks.length === 2 && savedMarks[0] < savedMarks[1];
   const legacy = savedPair ? [] : savedMarks;
-  const [start, setStart] = useState<number | null>(savedPair ? savedMarks[0] : null);
-  const [end, setEnd] = useState<number | null>(savedPair ? savedMarks[1] : null);
-  const [markError, setMarkError] = useState("");
+  const [span, setSpan] = useState<[number, number] | null>(savedPair ? [savedMarks[0], savedMarks[1]] : null);
   const [saving, setSaving] = useState(false);
   // The exact payload that last failed, so a failure is not retried in a loop.
   const [failed, setFailed] = useState<string | null>(null);
@@ -329,7 +330,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
   // before that rule, rewritten under AGREE.
   const answerChanged = normalize(answer) !== normalize(draft.answer);
   const strayEdit = !!verdict && verdict !== "DISAGREE" && answerChanged;
-  const marksDone = start !== null && end !== null && start < end;
+  const marksDone = span !== null;
   const blocked = !canSave || !verdict || (needsMarks && !marksDone) ||
     (verdict === "DISAGREE" && (!reason || (reason === "khác" && !note.trim()) || !answerChanged)) || strayEdit;
   function chooseVerdict(value: Verdict) {
@@ -338,14 +339,6 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
     else { setAnswer(draft.answer); setEditing(false); }
   }
 
-  function setMark(which: "start" | "end", time: number) {
-    setMarkError("");
-    if (!Number.isFinite(time) || time < 0 || time > duration) return setMarkError("Mốc nằm ngoài video.");
-    const rounded = Number(time.toFixed(3));
-    if (which === "start" && end !== null && rounded >= end) return setMarkError("Start phải trước end.");
-    if (which === "end" && start !== null && rounded <= start) return setMarkError("End phải sau start.");
-    if (which === "start") setStart(rounded); else setEnd(rounded);
-  }
   // Trimmed the way the API stores it, so after a save the stored row equals
   // the payload exactly. `dirty` compares the two rather than the raw inputs:
   // a reason left in state after switching away from "Không đồng ý" is not
@@ -354,7 +347,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
     verdict, reason_code: verdict === "DISAGREE" ? reason : null,
     reason_note: verdict === "DISAGREE" ? note.trim() : null,
     edited_answer: verdict === "DISAGREE" && answerChanged ? answer.trim() : null,
-    human_keyframes_s: needsMarks && start !== null && end !== null ? [start, end] : [],
+    human_keyframes_s: needsMarks && span ? [...span] : [],
   });
   const stored = JSON.stringify({
     verdict: draft.verdict, reason_code: draft.reason_code, reason_note: draft.reason_note,
@@ -389,7 +382,7 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
     : !dirty ? (draft.verdict ? "✓ Đã lưu" : "")
     : !canSave ? "Chỉ xem"
     : !verdict ? ""
-    : needsMarks && !marksDone ? "Đặt start và end để lưu"
+    : needsMarks && !marksDone ? "Đặt mốc va chạm để lưu"
     : verdict === "DISAGREE" && !reason ? "Chọn lý do để lưu"
     : verdict === "DISAGREE" && reason === "khác" && !note.trim() ? "Ghi lý do để lưu"
     : verdict === "DISAGREE" && !answerChanged ? "Sửa đáp án cho đúng để lưu"
@@ -417,16 +410,9 @@ function DraftCard({ draft, duration, playhead, canSave, onSeek, onSaved, onErro
       </div>
     </div>
     {needsMarks && <div className="flex flex-col gap-2 border-t border-border px-4 py-3 text-xs">
-      <span className="text-foreground/80">hãy đánh 2 key frames (start end) start là frame bắt đầu end là frame kết thúc sự kiện</span>
-      <div className="grid gap-2 sm:grid-cols-2">
-        {(["start", "end"] as const).map((which) => <KeyframeSlot key={which} label={which === "start" ? "Start" : "End"}
-          value={which === "start" ? start : end} playhead={playhead} duration={duration} onSeek={onSeek}
-          onSet={(time) => setMark(which, time)}
-          onClear={() => { setMarkError(""); if (which === "start") setStart(null); else setEnd(null); }} />)}
-      </div>
-      {markError && <span className="text-red">{markError}</span>}
+      <ImpactKeyframes value={span} playhead={playhead} duration={duration} onSeek={onSeek} onChange={setSpan} />
       {legacy.length > 0 && <span className="text-amber">
-        Mốc đã lưu theo quy tắc cũ: {legacy.map((time) => time.toFixed(2)).join(", ")}s. Đặt lại start và end để lưu lần sau.
+        Mốc đã lưu theo quy tắc cũ: {legacy.map((time) => time.toFixed(2)).join(", ")}s. Đặt mốc va chạm để lưu lần sau.
       </span>}
       {draft.predicted_keyframes_s && draft.predicted_keyframes_s.length > 0 && <span className="text-foreground/60">
         Model đoán: {draft.predicted_keyframes_s.map((time) => Number(time).toFixed(2)).join(", ")}

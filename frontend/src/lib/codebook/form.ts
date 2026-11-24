@@ -12,6 +12,7 @@
 
 import { getCodebook, currentVersion, type Codebook, type CodebookCell, type CodebookOption } from "./index.ts";
 import { compose, type Entity, type SlotValue, type Slots } from "./compose.ts";
+import { suggestAftermath } from "../keyframes.ts";
 import { causePair, deriveOutcome, derivePreventionFromCause, deriveViolation, outcomeNeedsAnnotator,
   signLevelLabels } from "./derivation.ts";
 
@@ -19,7 +20,12 @@ export type Cells = Record<string, SlotValue>;
 export type PartyState = { entity?: string; option?: string; cells: Cells };
 export type FormState = { cells: Cells; parties: PartyState[]; refs: string[] };
 /** `entities`: the annotator's saved E list; `cause`: the saved C cells, which R and O read. */
-export type FormContext = { entities: Entity[]; cause?: Slots | null };
+/**
+ * What a form reads besides its own cells: the E parties, the caller's saved C
+ * cells, and, for the R aftermath suggestion, the caller's C keyframes
+ * ([start, end]) and the clip duration in seconds.
+ */
+export type FormContext = { entities: Entity[]; cause?: Slots | null; causeKeyframes?: number[] | null; duration?: number };
 
 /**
  * One visible input. `scope` is "outer" or a party index; `kind` is a cell
@@ -313,10 +319,22 @@ export function stateFromSlots(qgroup: string, slots: Slots | null | undefined, 
   return { cells: rest as Cells, parties: list.map(partyState), refs: [] };
 }
 
-/** Keep C-derived V fields synchronized while preserving the annotator's separately entered additions. */
+/**
+ * What a group takes from the caller's C: V and Prev are derived (V keeps the
+ * annotator's separately entered additions); R gets `has_aftermath` suggested
+ * from the C End mark, only while `saved` (the R answer) is empty.
+ */
 export function prefillFromCause(qgroup: string, context: FormContext, saved?: Slots | null): FormState | null {
   if (qgroup === "V") return stateFromSlots("V", deriveViolation(context.cause, context.entities, saved), context);
   if (qgroup === "Prev") return stateFromSlots("Prev", derivePreventionFromCause(context.cause, context.entities), context);
+  if (qgroup === "R") {
+    // A suggestion from the C End mark (features/impact-keyframe); the annotator can change it.
+    const option = suggestAftermath(context.causeKeyframes, context.duration, saved);
+    if (!option) return null;
+    const state = defaultState("R", context);
+    state.cells.has_aftermath = { option };
+    return state;
+  }
   return null;
 }
 

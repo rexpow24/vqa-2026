@@ -15,8 +15,8 @@
 | 3. Hành động | lựa chọn theo kiểu xung đột (bảng dưới) |
 | Mốc | Start · End |
 
-Mốc End là thời điểm các thao tác né cuối cùng đã xong và mọi bên liên quan đã dừng hẳn hoặc trở lại di chuyển bình thường, tùy điều nào đến trước; không lấy lúc va chạm hay lúc xe còn đang trượt.
-Cơ sở: biến Event End của SHRP 2 (Hankey, Perez & McClafferty 2016, VTTI).
+Mốc Start và End: tại khung va chạm bấm "Đặt mốc va chạm"; hệ thống tự đặt Start = mốc - 2 giây, End = mốc + 2 giây (cắt theo đầu, cuối clip). Suýt va chạm: đặt mốc tại khoảnh khắc hai bên gần nhau nhất.
+Khoảng ±2 giây là quy ước của dự án, chọn theo khoảng Start-End mà annotator đã đặt ở video #1-#40 (trung vị 3,6 giây).
 
 Ô 0 "va chạm" gồm cả trường hợp phương tiện tự lật hoặc văng khỏi đường dù không chạm bên nào, kể cả khi trước đó có né.
 Cơ sở: ANSI D16.1-2007 (Manual on Classification of Motor Vehicle Traffic Accidents, bản NHTSA phát hành), mục 2.6.1 định nghĩa overturning accident là tai nạn có sự kiện gây hại đầu tiên là phương tiện bị lật, và mục 2.6.3 xếp nó vào noncollision accident, tức vẫn là tai nạn.

@@ -8,7 +8,7 @@ import {
   rawValue, sameSlots, staleChoices, stateFromSlots, type Field, type FormContext,
 } from "@/lib/codebook/form";
 import { needsKeyframes } from "@/lib/qgroups";
-import { KeyframeSlot } from "@/components/slots/KeyframeSlot";
+import { ImpactKeyframes } from "@/components/slots/ImpactKeyframes";
 import { CardHeader, DraftReference, EditableSentence, SaveBar, postJson, type SaveError, type SlotDraft } from "@/components/slots/common";
 import { editProblem } from "@/lib/codebook/edit";
 import { Chip, EntityChip, FieldRow, FreeText, OptionPicker } from "@/components/slots/SlotField";
@@ -23,7 +23,8 @@ type Saved = SavedSlotRow & { also?: SavedSlotRow[] };
 /**
  * The slot form of one question (S, C, O, R, Attr, Prev). Starts empty
  * (decision 3 of the slot data model: no prefill from the draft), except Prev,
- * which is derived from the saved C answer;
+ * which is derived from the saved C answer, and an unsaved R, whose
+ * has_aftermath is suggested from the C End mark (features/impact-keyframe);
  * saves with the button, and shows the sentence the server composed. A
  * refused save keeps every choice. An answer saved with an older codebook
  * opens with what the current one still has and saves with the current one (F-v1).
@@ -55,9 +56,8 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const prefilled = prefilledKeys(qgroup, form, prefill, context);
   const savedMarks = draft.human_keyframes_s.map(Number);
   const savedPair = savedMarks.length === 2 && savedMarks[0] < savedMarks[1];
-  const [start, setStart] = useState<number | null>(savedPair ? savedMarks[0] : null);
-  const [end, setEnd] = useState<number | null>(savedPair ? savedMarks[1] : null);
-  const [markError, setMarkError] = useState("");
+  // [start, end] from one impact mark (features/impact-keyframe); a saved pair is kept as stored.
+  const [span, setSpan] = useState<[number, number] | null>(savedPair ? [savedMarks[0], savedMarks[1]] : null);
   const [saving, setSaving] = useState(false);
   const [tried, setTried] = useState(false);
   const [serverError, setServerError] = useState<SaveError | null>(null);
@@ -75,8 +75,8 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const visible = fields(qgroup, form, context);
   const slots = buildSlots(qgroup, form, context);
   const found = problems(qgroup, form, context);
-  const marks = needsMarks && start !== null && end !== null ? [start, end] : [];
-  if (needsMarks && marks.length !== 2) found.keyframes = "Đặt start và end.";
+  const marks = needsMarks && span ? [...span] : [];
+  if (needsMarks && marks.length !== 2) found.keyframes = "Đặt mốc va chạm.";
   // No preview while a cell still blocks the save: an empty Prev composed to "Không thể xác định.",
   // which read as an answer nobody gave.
   const sentence = Object.keys(found).some((key) => key !== "keyframes") ? null : preview(qgroup, slots, context);
@@ -95,14 +95,6 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     // A hand edit is of the old sentence; a changed cell starts again from the new composed one.
     if (edit !== null) { setEdit(null); setEditNotice("Đã đổi ô nên câu sửa tay được bỏ; bấm \"Sửa câu\" để sửa lại."); }
   }
-  function setMark(which: "start" | "end", time: number) {
-    setMarkError(""); setServerError(null);
-    if (!Number.isFinite(time) || time < 0 || time > duration) return setMarkError("Mốc nằm ngoài video.");
-    const rounded = Number(time.toFixed(3));
-    if (which === "start" && end !== null && rounded >= end) return setMarkError("Start phải trước end.");
-    if (which === "end" && start !== null && rounded <= start) return setMarkError("End phải sau start.");
-    if (which === "start") setStart(rounded); else setEnd(rounded);
-  }
   async function save() {
     setTried(true); setServerError(null);
     if (Object.keys(found).length) return;
@@ -113,6 +105,9 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
         ...(edit !== null && stored !== sentence ? { edited_answer: edit } : {}),
       });
       if (edit !== null && stored === sentence) setEdit(null);
+      // A saved suggestion (R has_aftermath) becomes the form's own state: once
+      // R is saved no prefill is computed, and the untouched state is empty.
+      if (prefill && !touched && qgroup !== "Prev") { setState(chosen); setTouched(true); }
       setEditNotice(null);
       setTried(false);
       onSaved(saved);
@@ -131,7 +126,8 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     return [item.note, old && `Bản cũ chọn "${old}"; lựa chọn này đã bỏ ở bản mới, chọn lại.`].filter(Boolean).join(" ") || undefined;
   };
   const badgeOf = (item: Field) => item.readOnly && (qgroup === "Prev" || qgroup === "O")
-    ? "tự suy ra, không sửa" : prefilled.has(item.key) ? "điền sẵn từ C" : undefined;
+    ? "tự suy ra, không sửa" : !prefilled.has(item.key) ? undefined
+    : qgroup === "R" ? "gợi ý từ mốc C" : "điền sẵn từ C";
   const outer = visible.filter((item) => item.scope === "outer");
   const scopes = [...new Set(visible.filter((item) => item.scope !== "outer").map((item) => item.scope as number))];
   const twoParties = visible.some((item) => item.kind === "party");
@@ -221,15 +217,9 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
           : items.map(renderField);
       })}
     </div>
-    {needsMarks && <div className="flex flex-col gap-2 border-t border-border px-4 py-3 text-xs">
-      <span className="text-foreground/80">hãy đánh 2 key frames (start end) start là frame bắt đầu end là frame kết thúc sự kiện</span>
-      <div className="grid gap-2 sm:grid-cols-2">
-        {(["start", "end"] as const).map((which) => <KeyframeSlot key={which} label={which === "start" ? "Start" : "End"}
-          value={which === "start" ? start : end} playhead={playhead} duration={duration} onSeek={onSeek}
-          onSet={(time) => setMark(which, time)}
-          onClear={() => { setMarkError(""); if (which === "start") setStart(null); else setEnd(null); }} />)}
-      </div>
-      {(markError || (tried && found.keyframes)) && <span role="alert" className="font-medium text-red">{markError || found.keyframes}</span>}
+    {needsMarks && <div className="border-t border-border px-4 py-3">
+      <ImpactKeyframes value={span} playhead={playhead} duration={duration} onSeek={onSeek}
+        onChange={(pair) => { setServerError(null); setSpan(pair); }} error={tried ? found.keyframes : undefined} />
     </div>}
     <EditableSentence composed={sentence} edit={edit} problem={editError} notice={editNotice} dirty={dirty}
       saved={savedSlots ? draft.edited_answer : null}

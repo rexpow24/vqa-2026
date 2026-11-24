@@ -545,3 +545,21 @@ test("E.v6 is current: the E.v5 cells without the clothing colour (features/o-le
     { type: { option: "type.pedestrian" } });
   assert.equal(entityLabel(entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.red" })), "B · xe máy màu đỏ");
 });
+
+test("R prefills has_aftermath from the C End mark, only while R is unsaved and C has keyframes", () => {
+  const cause = { subject: { entity: "B" }, object: { entity: "A" }, event_type: { option: "event_type.collision" } };
+  const late: FormContext = { ...TWO, cause, causeKeyframes: [8, 12], duration: 20 };
+  const state = prefillFromCause("R", late)!;
+  assert.deepEqual(state.cells.has_aftermath, { option: "has_aftermath.yes" });
+  assert.deepEqual([...prefilledKeys("R", state, state, late)], ["outer.has_aftermath"]);
+  assert.deepEqual(keys("R", state, late), ["outer.has_aftermath", "outer.subject", "outer.object", "outer.bystanders"]);
+  const short: FormContext = { ...late, duration: 13 };
+  assert.deepEqual(prefillFromCause("R", short)!.cells.has_aftermath, { option: "has_aftermath.no" });
+  assert.equal(prefillFromCause("R", { ...late, causeKeyframes: [] }), null);
+  assert.equal(prefillFromCause("R", { ...TWO, cause }), null);
+  assert.equal(prefillFromCause("R", late, { has_aftermath: { option: "has_aftermath.no" } }), null);
+  // Changing the suggestion keeps the annotator's choice; the field is no longer marked as prefilled.
+  const item = fields("R", state, late).find((candidate) => candidate.key === "outer.has_aftermath")!;
+  const changed = choose("R", state, item, { option: "has_aftermath.no" }, late);
+  assert.equal(prefilledKeys("R", changed, state, late).size, 0);
+});
