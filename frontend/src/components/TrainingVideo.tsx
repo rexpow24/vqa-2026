@@ -34,7 +34,7 @@ export function TrainingVideo({ training, heading, done, record, welcome = false
     <div className="text-sm text-muted">{training.title}</div>
     {missing
       ? <p className="rounded border border-border px-3 py-2 text-sm text-muted">Video chưa sẵn sàng. Hãy quay lại sau.</p>
-      : <video src={`/api/references/${training.video}/stream`} controls playsInline preload="metadata"
+      : <video src={`/api/references/${training.video}/stream`} poster={welcome ? "/welcome-poster.jpg" : undefined} controls playsInline preload="metadata"
         onEnded={() => { void complete(); }} onError={() => setMissing(true)}
         className="max-h-[60vh] w-full rounded-md border border-border-strong bg-black object-contain" />}
     {state === "saving" && <span role="status" className="text-xs text-muted">Đang ghi nhận đã xem…</span>}

@@ -59,7 +59,8 @@ The local stack was running during the recording.
 An annotator without `WELCOME-v1` is redirected from `/annotate` to `/huong-dan`, and every save answers 403 until it is recorded.
 The welcome video cannot be watched before it exists, so before take 1 the recorder logs in once in a separate, unrecorded context and calls `POST /api/trainings/WELCOME-v1/complete`.
 The recorded login in S01 then lands on `/annotate` as the narration says.
-The `welcome` Drive id is empty until this video is uploaded; S14 shows the `/huong-dan` page without playing its welcome player.
+During the recording, the `welcome` Drive id was empty, so S14 shows the `/huong-dan` page without playing its welcome player.
+The completed video was later uploaded and its Drive id is now configured in `frontend/scripts/build-c-references.mjs`.
 
 ### Training gates
 

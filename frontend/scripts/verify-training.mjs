@@ -118,8 +118,10 @@ try {
     guide.status);
   const adminPage = await request(base, "/annotate", admin.cookie);
   check("an admin is never sent to /huong-dan", adminPage.status === 200 && !redirectsTo(adminPage, "/huong-dan"), adminPage.status);
-  const welcomeClip = await request(base, "/api/references/welcome/stream", three.cookie);
-  check("the welcome stream answers 404 while it has no Drive file", welcomeClip.status === 404, welcomeClip.status);
+  const welcomeClip = await fetch(`${base}/api/references/welcome/stream`,
+    { headers: { Range: "bytes=0-1023", Cookie: three.cookie } });
+  check("the welcome stream is available from Drive", welcomeClip.status === 206, welcomeClip.status);
+  await welcomeClip.body?.cancel().catch(() => undefined);
   const welcomeDone = await request(base, "/api/trainings/WELCOME-v1/complete", three.cookie, "POST", {});
   check("completing WELCOME-v1 is recorded", welcomeDone.status === 200, welcomeDone);
   // C names the parties of E, so `three` declares them first (each annotator has their own E).

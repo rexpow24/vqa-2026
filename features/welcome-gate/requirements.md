@@ -6,10 +6,11 @@ Every annotator must watch the welcome video to the end before labelling anythin
 ## Decisions
 
 - The welcome training has the id `WELCOME-v1` and the reference video id `welcome`; it is not tied to a question group.
-- Its Drive id is not known yet: `welcome` is listed with an empty Drive id, and the reference stream answers 404 until a real id is set in `scripts/build-c-references.mjs` and `C.json` is rebuilt.
+- The welcome video is `welcome.mp4` on Drive, id `1MrKGKa2CJCc4lrAOD46D2jWLjKvaJJXV`.
+  The id is set in `scripts/build-c-references.mjs` and copied into generated `C.json` by the build script.
 - "Watched" means the video was played to its end (the `ended` event), as for the C and E trainings.
 - Admins are never gated.
-- Until the welcome video is uploaded, no annotator can complete `WELCOME-v1`, so this must not reach production before the Drive id is set.
+- The welcome video stream was checked in the local frontend before deployment.
 
 ## Acceptance
 

@@ -25,7 +25,7 @@ export function conflictHint(code: string): ConflictHint | null {
 
 /**
  * The Drive file of a reference clip ("K08" or "K08-K09"), or null when it is
- * not listed or listed without a file yet (the welcome placeholder).
+ * not listed or listed without a file yet.
  */
 export function referenceDriveId(id: string): string | null {
   return Object.hasOwn(VIDEOS, id) && VIDEOS[id] ? VIDEOS[id] : null;
