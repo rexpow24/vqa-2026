@@ -38,6 +38,10 @@ async function makeAnnotator(label) {
   const { data, error } = await privileged.auth.admin.createUser({ email, password, email_confirm: true });
   if (error) throw error;
   must(await privileged.from("user_profiles").insert({ id: data.user.id, email, name: label, role: "annotator", enabled: true }));
+  // Saving and /annotate need the welcome video (features/welcome-gate) and C/E their trainings
+  // (features/c-training-gate); this test is not about those gates.
+  must(await privileged.from("training_completions").insert(["WELCOME-v1", "C-v1", "E-v1"]
+    .map((training) => ({ annotator_id: data.user.id, training }))));
   const { client, cookie } = await signIn(email, password);
   return { id: data.user.id, client, cookie };
 }

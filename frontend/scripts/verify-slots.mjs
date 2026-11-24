@@ -52,6 +52,10 @@ async function makeUser(label, role) {
   if (error) throw error;
   userIds.push(data.user.id);
   must(await privileged.from("user_profiles").insert({ id: data.user.id, email, name: `${tag} ${label}`, role, enabled: true }));
+  // Saving and /annotate need the welcome video (features/welcome-gate) and C/E their trainings
+  // (features/c-training-gate); this test is not about those gates.
+  must(await privileged.from("training_completions").insert(["WELCOME-v1", "C-v1", "E-v1"]
+    .map((training) => ({ annotator_id: data.user.id, training }))));
   return { id: data.user.id, email, ...(await signIn(email, password)) };
 }
 

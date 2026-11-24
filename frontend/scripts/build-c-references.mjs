@@ -34,6 +34,9 @@ const DRIVE = {
   "C-training-full": "11g4B8N8AJ4DYoDi5b0NSBVstfslywYeq",
   // The group E training video (A/B naming), folder 1CHFZcsI2tKTj9woLcrmD9yK_kMUuplog, uploaded 2026-11-24.
   "E-training-full": "1_MeZTyHq7B6KJmhso7GhqKKsT93D4f67",
+  // The welcome video about the app, mandatory before labelling anything (features/welcome-gate).
+  // Empty until it is uploaded: the stream route answers 404 for an empty id. Set the Drive id and rebuild.
+  welcome: "",
 };
 
 // Annotator pairs that chose these two K on the same video, round #21-#40 (C.v4, 6 annotators, 20 videos).

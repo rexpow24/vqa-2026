@@ -23,9 +23,12 @@ export function conflictHint(code: string): ConflictHint | null {
   return Object.hasOwn(TYPES, code) ? TYPES[code] : null;
 }
 
-/** The Drive file of a reference clip ("K08" or "K08-K09"), or null when it is not listed. */
+/**
+ * The Drive file of a reference clip ("K08" or "K08-K09"), or null when it is
+ * not listed or listed without a file yet (the welcome placeholder).
+ */
 export function referenceDriveId(id: string): string | null {
-  return Object.hasOwn(VIDEOS, id) ? VIDEOS[id] : null;
+  return Object.hasOwn(VIDEOS, id) && VIDEOS[id] ? VIDEOS[id] : null;
 }
 
 /** Every K, in order, for the "đang phân vân" picker. */

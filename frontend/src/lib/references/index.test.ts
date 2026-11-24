@@ -28,4 +28,6 @@ test("only listed reference ids resolve to a Drive file", () => {
   assert.equal(referenceDriveId("K99"), null);
   assert.equal(referenceDriveId("../../etc"), null);
   assert.equal(referenceDriveId("toString"), null);
+  // features/welcome-gate: listed, but without a Drive file until it is uploaded
+  assert.equal(referenceDriveId("welcome"), null);
 });

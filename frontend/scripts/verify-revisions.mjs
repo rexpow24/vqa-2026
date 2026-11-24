@@ -38,6 +38,11 @@ async function makeAnnotator(label) {
     id: data.user.id, email, name: label, role: "annotator", enabled: true,
   });
   if (profileError) throw profileError;
+  // Saving and /annotate need the welcome video (features/welcome-gate) and C/E their trainings
+  // (features/c-training-gate); this test is not about those gates.
+  const { error: trainingError } = await privileged.from("training_completions").insert(["WELCOME-v1", "C-v1", "E-v1"]
+    .map((training) => ({ annotator_id: data.user.id, training })));
+  if (trainingError) throw trainingError;
   const { client, cookie } = await signIn(email, password);
   return { id: data.user.id, client, cookie };
 }

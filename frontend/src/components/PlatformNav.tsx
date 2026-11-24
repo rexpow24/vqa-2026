@@ -23,6 +23,7 @@ export function PlatformNav({ profile }: { profile: Profile | null }) {
   // Every management page sits here, so no page needs its own links back.
   const links: [string, string, boolean][] = [
     ["/annotate", "Gán nhãn", pathname.startsWith("/annotate")],
+    ["/huong-dan", "Hướng dẫn", pathname.startsWith("/huong-dan")],
     ...(profile.role === "admin" ? [
       ["/admin", "Dashboard", pathname === "/admin"],
       ["/admin/users", "Người dùng", pathname.startsWith("/admin/users")],

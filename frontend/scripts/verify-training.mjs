@@ -1,11 +1,12 @@
-// Verifies the mandatory group C training (features/c-training-gate/requirements.md)
-// through the real routes and the local database: C cannot be saved until the
-// caller completed C-v1, completing it is recorded for the caller only, and the
-// admin dashboard sees it.
+// Verifies the mandatory trainings (features/c-training-gate/requirements.md,
+// features/welcome-gate/requirements.md) through the real routes and the local
+// database: nothing can be saved and /annotate sends the annotator to /huong-dan
+// until WELCOME-v1, C cannot be saved until C-v1, completing one is recorded for
+// the caller only, and the admin dashboard sees it.
 //
 //   TEST_BASE_URL=http://localhost:3006 node scripts/verify-training.mjs
 //
-// Local Supabase only. Creates two annotators, one admin and one video, removed in `finally`.
+// Local Supabase only. Creates three annotators, one admin and one video, removed in `finally`.
 
 import crypto from "node:crypto";
 import { loadEnv, refuseUnlessLocal } from "./lib/env.mjs";
@@ -37,20 +38,27 @@ async function makeUser(suffix, role) {
   return { id: result.data.user.id, ...(await signIn(email, password)) };
 }
 const opt = (option) => ({ option });
+// A redirect from a page with a streamed loading.tsx is a meta refresh in a 200 body, not a 307.
+const redirectsTo = (response, target) => (response.status === 307 && response.location?.endsWith(target))
+  || new RegExp(`url=${target}["/]|NEXT_REDIRECT;[a-z]+;${target};`).test(String(response.data));
 
 try {
   const one = await makeUser("a", "annotator");
   const two = await makeUser("b", "annotator");
+  const three = await makeUser("c", "annotator");
   const admin = await makeUser("admin", "admin");
+  // `one` tests the group gates alone; `three` tests the welcome gate with both group trainings done.
+  must(await privileged.from("training_completions").insert([{ annotator_id: one.id, training: "WELCOME-v1" },
+    { annotator_id: three.id, training: "C-v1" }, { annotator_id: three.id, training: "E-v1" }]));
   const video = must(await privileged.from("videos").insert({ drive_file_id: tag, filename: `zzz-${tag}.mp4`, duration_s: 10,
-    agreement_sample: false }).select("id").single());
+    agreement_sample: true }).select("id").single()); // agreement videos take several annotators (validate_assignment)
   videoId = video.id;
   const drafts = Object.fromEntries(must(await privileged.from("video_drafts").insert(GROUP_CODES.map((group) => ({
     video_id: video.id, qgroup: group, group_name: group, question: `Q ${group}`, answer: `A ${group}`,
     source_sha256: "0".repeat(64), source_kind: "admin_csv", prompt_version: 0,
   }))).select("id,qgroup")).map((draft) => [draft.qgroup, draft.id]));
-  must(await privileged.from("video_assignments").insert({ video_id: video.id, annotator_id: one.id, status: "pending",
-    answer_format: "slots" }));
+  must(await privileged.from("video_assignments").insert([one.id, three.id].map((annotatorId) => ({ video_id: video.id,
+    annotator_id: annotatorId, status: "pending", answer_format: "slots" }))));
   const E_PARTIES = [
     { key: "A", cells: { type: opt("type.car"), dashcam: opt("dashcam.yes") } },
     { key: "B", cells: { type: opt("type.motorbike"), vehicle_color: opt("vehicle_color.red") } }];
@@ -60,7 +68,7 @@ try {
   check("completing E-v1 is recorded", doneE.status === 200, doneE);
   const entities = await request(base, `/api/videos/${video.id}/entities`, one.cookie, "PUT", { codebook_version: "E.v6", entities: E_PARTIES });
   if (entities.status !== 200) throw new Error(`entities: ${JSON.stringify(entities)}`);
-  const saveC = () => request(base, `/api/drafts/${drafts.C}/annotation`, one.cookie, "POST", { verdict: "SLOTS", codebook_version: "C.v4",
+  const saveC = (user = one) => request(base, `/api/drafts/${drafts.C}/annotation`, user.cookie, "POST", { verdict: "SLOTS", codebook_version: "C.v4",
     slots: { event_type: opt("event_type.collision"), subject: { entity: "B" }, object: { entity: "A" },
       conflict_type: opt("conflict_type.k04"), action: opt("action.k04.lane_change_left") }, human_keyframes_s: [1, 3] });
 
@@ -88,9 +96,46 @@ try {
   const forged = await two.client.from("training_completions").insert({ annotator_id: one.id, training: "C-v1" });
   check("an annotator cannot record a completion for someone else", Boolean(forged.error), forged.error);
 
+  // features/welcome-gate: `three` has C-v1 and E-v1 but not the welcome video.
+  const welcomeC = await saveC(three);
+  check("C cannot be saved before WELCOME-v1, even with C-v1 and E-v1 done",
+    welcomeC.status === 403 && welcomeC.data?.code === "training_required" && welcomeC.data?.training === "WELCOME-v1", welcomeC);
+  const welcomeS = await request(base, `/api/drafts/${drafts.S}/annotation`, three.cookie, "POST", { verdict: "SLOTS",
+    codebook_version: "S.v3", slots: {} });
+  check("a group without its own training is refused before WELCOME-v1", welcomeS.status === 403
+    && welcomeS.data?.code === "training_required", welcomeS);
+  const welcomeE = await request(base, `/api/videos/${video.id}/entities`, three.cookie, "PUT", { entities: E_PARTIES });
+  check("E cannot be saved before WELCOME-v1", welcomeE.status === 403 && welcomeE.data?.code === "training_required", welcomeE);
+  const listPage = await request(base, "/annotate", three.cookie);
+  check("/annotate sends the annotator to /huong-dan before WELCOME-v1", redirectsTo(listPage, "/huong-dan"),
+    { status: listPage.status, location: listPage.location });
+  const videoPage = await request(base, `/annotate/${video.id}`, three.cookie);
+  check("the labelling page sends the annotator to /huong-dan and shows nothing of the video",
+    redirectsTo(videoPage, "/huong-dan") && !String(videoPage.data).includes(`zzz-${tag}`),
+    { status: videoPage.status, location: videoPage.location });
+  const guide = await request(base, "/huong-dan", three.cookie);
+  check("the guide page renders for that annotator", guide.status === 200 && String(guide.data).includes("Video welcome (bắt buộc)"),
+    guide.status);
+  const adminPage = await request(base, "/annotate", admin.cookie);
+  check("an admin is never sent to /huong-dan", adminPage.status === 200 && !redirectsTo(adminPage, "/huong-dan"), adminPage.status);
+  const welcomeClip = await request(base, "/api/references/welcome/stream", three.cookie);
+  check("the welcome stream answers 404 while it has no Drive file", welcomeClip.status === 404, welcomeClip.status);
+  const welcomeDone = await request(base, "/api/trainings/WELCOME-v1/complete", three.cookie, "POST", {});
+  check("completing WELCOME-v1 is recorded", welcomeDone.status === 200, welcomeDone);
+  // C names the parties of E, so `three` declares them first (each annotator has their own E).
+  const welcomeE2 = await request(base, `/api/videos/${video.id}/entities`, three.cookie, "PUT", { entities: E_PARTIES });
+  check("once the welcome video is watched, E saves", welcomeE2.status === 200, welcomeE2);
+  const welcomeSaved = await saveC(three);
+  check("once the welcome video is watched, C saves", welcomeSaved.status === 200, welcomeSaved);
+  const openList = await request(base, "/annotate", three.cookie);
+  check("/annotate opens after WELCOME-v1", openList.status === 200 && !redirectsTo(openList, "/huong-dan"), openList.status);
+
   const stats = await admin.client.rpc("reference_view_stats");
   const rowOne = stats.data?.find((row) => row.annotator_id === one.id);
   const rowTwo = stats.data?.find((row) => row.annotator_id === two.id);
+  const rowThree = stats.data?.find((row) => row.annotator_id === three.id);
+  check("the admin sees who watched the welcome video", !stats.error && Boolean(rowThree?.training_welcome_completed_at)
+    && rowTwo && rowTwo.training_welcome_completed_at === null, { error: stats.error, rowThree, rowTwo });
   check("the admin sees who completed the C training", !stats.error && Boolean(rowOne?.training_c_completed_at)
     && Boolean(rowOne?.training_e_completed_at) && rowTwo && rowTwo.training_c_completed_at === null
     && rowTwo.training_e_completed_at === null, { error: stats.error, rowOne, rowTwo });

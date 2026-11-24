@@ -13,7 +13,7 @@ export default async function AdminPage() {
   // features/c-reference-hints: least opens first, so whoever skips the references tops the list.
   const referenceRows = (references.data ?? []) as { annotator_id: string; name: string; label: string | null; opens: number;
     videos_opened: number; c_answers: number; last_opened_at: string | null; training_c_completed_at: string | null;
-    training_e_completed_at: string | null }[];
+    training_e_completed_at: string | null; training_welcome_completed_at: string | null }[];
   const cards = [
     ["Người gán nhãn", stats.totalAnnotators],
     ["Video", stats.totalVideos],
@@ -49,19 +49,21 @@ export default async function AdminPage() {
       </table>
     </div>
     <section className="flex flex-col gap-2">
-      <h3 className="text-base font-semibold">Video hướng dẫn (nhóm C, E) và tham khảo nhóm C</h3>
+      <h3 className="text-base font-semibold">Video hướng dẫn (welcome, nhóm C, E) và tham khảo nhóm C</h3>
       <p className="text-xs text-muted">Số lần mở video K hoặc video so sánh từ thẻ nhắc ở ô &quot;kiểu xung đột&quot;, cạnh số câu C đã lưu. Ít nhất xếp trên cùng.</p>
       <div className="overflow-x-auto rounded-md border border-border bg-surface">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-border text-xs text-muted"><tr>
             <th className="p-3">Người gán nhãn</th><th className="p-3">Lượt mở</th><th className="p-3">Số video đã mở</th>
-            <th className="p-3">Câu C đã lưu</th><th className="p-3">Lần mở gần nhất</th><th className="p-3">Đã xem hướng dẫn C</th><th className="p-3">Đã xem hướng dẫn E</th>
+            <th className="p-3">Câu C đã lưu</th><th className="p-3">Lần mở gần nhất</th><th className="p-3">Đã xem video welcome</th><th className="p-3">Đã xem hướng dẫn C</th><th className="p-3">Đã xem hướng dẫn E</th>
           </tr></thead>
           <tbody>{referenceRows.map((row) => <tr key={row.annotator_id} className="border-b border-border last:border-0">
             <td className="p-3">{row.name}{row.label && <span className="ml-2 text-xs text-muted">{row.label}</span>}</td>
             <td className={`p-3 tabular-nums ${Number(row.opens) === 0 ? "text-amber" : ""}`}>{row.opens}</td>
             <td className="p-3 tabular-nums">{row.videos_opened}</td><td className="p-3 tabular-nums">{row.c_answers}</td>
             <td className="p-3 text-muted">{row.last_opened_at ? new Date(row.last_opened_at).toLocaleString("vi-VN") : "Chưa mở"}</td>
+            <td className={`p-3 ${row.training_welcome_completed_at ? "text-muted" : "text-amber"}`}>
+              {row.training_welcome_completed_at ? new Date(row.training_welcome_completed_at).toLocaleString("vi-VN") : "Chưa xem"}</td>
             <td className={`p-3 ${row.training_c_completed_at ? "text-muted" : "text-amber"}`}>
               {row.training_c_completed_at ? new Date(row.training_c_completed_at).toLocaleString("vi-VN") : "Chưa xem"}</td>
             <td className={`p-3 ${row.training_e_completed_at ? "text-muted" : "text-amber"}`}>

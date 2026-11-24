@@ -45,6 +45,11 @@ try {
   });
   expect(created, 201, "User creation");
   testUserId = created.data.id;
+  // Saving and /annotate need the welcome video (features/welcome-gate) and C/E their trainings
+  // (features/c-training-gate); this test is not about those gates.
+  const { error: trainingError } = await privileged.from("training_completions").insert(["WELCOME-v1", "C-v1", "E-v1"]
+    .map((training) => ({ annotator_id: testUserId, training })));
+  if (trainingError) throw trainingError;
   const annotator = await signIn(tempEmail, tempPassword);
   const { data: references, error: referenceError } = await annotator.client.from("video_reference_labels")
     .select("video_id").eq("video_id", videoId);

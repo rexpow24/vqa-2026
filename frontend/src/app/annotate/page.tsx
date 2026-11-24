@@ -2,6 +2,7 @@ import Link from "next/link";
 import LegacyAnnotate from "@/components/LegacyAnnotate";
 import { requireProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
+import { requireWelcome } from "@/lib/trainings-server";
 import { Pagination, readPage } from "@/components/Pagination";
 
 const PAGE_SIZE = 10;
@@ -34,6 +35,8 @@ export default async function AnnotatePage({ searchParams }: PageProps<"/annotat
   const requested = readPage(params.page);
 
   const supabase = await createClient();
+  // features/welcome-gate: an annotator watches the welcome video on /huong-dan before anything else.
+  await requireWelcome(supabase, profile);
   const [listResult, progressResult] = await Promise.all([
     supabase.rpc("my_assignments", { page_size: PAGE_SIZE, page_offset: (requested - 1) * PAGE_SIZE, search: query || null }),
     supabase.rpc("annotator_progress"),

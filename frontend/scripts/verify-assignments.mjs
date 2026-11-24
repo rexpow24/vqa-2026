@@ -41,6 +41,8 @@ async function makeAnnotator(label) {
   const { data, error } = await privileged.auth.admin.createUser({ email, password, email_confirm: true });
   if (error) throw error;
   must(await privileged.from("user_profiles").insert({ id: data.user.id, email, name: label, role: "annotator", enabled: true }));
+  // /annotate sends an annotator without the welcome video to /huong-dan (features/welcome-gate); not this test's subject.
+  must(await privileged.from("training_completions").insert({ annotator_id: data.user.id, training: "WELCOME-v1" }));
   return { id: data.user.id, ...(await signIn(email, password)) };
 }
 

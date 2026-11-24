@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const LOCAL_ONLY = /^\/(?:queue|run|review|relabel|prompts|export)(?:\/|$)/;
 // Pages that require a session. Deliberately not /api/*: those reply 401 JSON.
-const PROTECTED_PAGE = /^\/(?:annotate|admin)(?:\/|$)/;
+const PROTECTED_PAGE = /^\/(?:annotate|admin|huong-dan)(?:\/|$)/;
 
 export async function proxy(request: NextRequest) {
   const hosted = process.env.VERCEL === "1" || process.env.PLATFORM_MODE === "hosted";

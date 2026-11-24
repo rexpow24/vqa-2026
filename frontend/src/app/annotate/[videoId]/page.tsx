@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { HostedLabeling, type HostedDraft } from "@/components/HostedLabeling";
 import { groupOrder } from "@/lib/qgroups";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireWelcome } from "@/lib/trainings-server";
 
 type Context = { params: Promise<{ videoId: string }> };
 
@@ -11,6 +12,8 @@ export default async function VideoPage({ params }: Context) {
   const profile = await requireProfile();
   const { videoId } = await params;
   const supabase = await createClient();
+  // features/welcome-gate: before any of the video is read, so nothing of it reaches an untrained annotator.
+  await requireWelcome(supabase, profile);
   const { data: video } = await supabase.from("videos")
     .select("id,seq,filename,duration_s,available,status").eq("id", videoId).maybeSingle();
   if (!video || video.status !== "active") notFound();
