@@ -24,14 +24,15 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const hosted = process.env.VERCEL === "1" || process.env.PLATFORM_MODE === "hosted";
   const profile = hosted ? await currentProfile() : null;
   return (
-    // suppressHydrationWarning: a browser extension adds classes to <html> (seen: "mdl-js"), which
-    // React reports as a hydration mismatch. It covers this element's attributes only, not its children.
+    // suppressHydrationWarning on <html> and <body>: browser extensions add attributes there (seen:
+    // class "mdl-js" on <html>, ColorZilla's cz-shortcut-listen on <body>), which React reports as a
+    // hydration mismatch. It covers each element's own attributes only, not its children.
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+      <body className="min-h-full flex flex-col bg-background text-foreground" suppressHydrationWarning>
         <header className="px-6 pt-5">
           <h1 className="text-sm font-medium tracking-wide text-foreground">
             VQA Clip Pipeline
