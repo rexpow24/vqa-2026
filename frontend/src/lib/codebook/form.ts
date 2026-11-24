@@ -15,6 +15,7 @@ import { compose, type Entity, type SlotValue, type Slots } from "./compose.ts";
 import { suggestAftermath } from "../keyframes.ts";
 import { causePair, deriveOutcome, derivePreventionFromCause, deriveViolation, outcomeNeedsAnnotator,
   signLevelLabels } from "./derivation.ts";
+import { subjectRoleLabel } from "./c-roles.ts";
 
 export type Cells = Record<string, SlotValue>;
 export type PartyState = { entity?: string; option?: string; cells: Cells };
@@ -157,15 +158,16 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
       return out;
     }
     case "C": {
-      out.push(field(book, "event_type", "outer"), field(book, "subject", "outer", { entities: keys }));
+      // features/c-role-question: the conflict type (and its action) comes before the
+      // subject, which is asked by the role of that type ("Bên nào là xe đổi làn?").
+      // Form order and text only; the stored slots are the same in any order.
       const both = optionOf(cells.subject) === "subject.both";
       const subjectKey = cells.subject?.entity;
-      if (!both) {
-        out.push(field(book, "object", "outer", { entities: keys.filter((key) => key !== subjectKey),
-          note: keys.length === 2 ? "Video có 2 bên: tự điền bên còn lại." : undefined }));
-      }
-      out.push(field(book, "conflict_type", "outer"));
       const actions = childOptions(book, "action", optionOf(cells.conflict_type));
+      const role = subjectRoleLabel(optionOf(cells.conflict_type));
+      out.push(field(book, "event_type", "outer"), field(book, "conflict_type", "outer"));
+      if (!both && actions.length) out.push(field(book, "action", "outer", { options: actions }));
+      out.push(field(book, "subject", "outer", { entities: keys, ...(role ? { label: role } : {}) }));
       if (both) {
         for (const index of [0, 1]) {
           out.push({ ...field(book, "subject", index, { kind: "party", key: `${index}.party`, cellId: "party",
@@ -174,7 +176,8 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
         }
         return out;
       }
-      if (actions.length) out.push(field(book, "action", "outer", { options: actions }));
+      out.push(field(book, "object", "outer", { entities: keys.filter((key) => key !== subjectKey),
+        note: keys.length === 2 ? "Video có 2 bên: tự điền bên còn lại." : undefined }));
       if (book.cells.some((cell) => cell.id === "speed")) out.push(field(book, "speed", "outer"));
       // C.v1 only: the evasion cells were removed in C.v2.
       if (optionOf(cells.event_type) === "event_type.near_miss" && book.cells.some((cell) => cell.id === "evader")) {

@@ -163,8 +163,8 @@ test("Current C near miss keeps the object, omits removed speed, and drops legac
   const state = fill("C", THREE, [["outer.event_type", { option: "event_type.near_miss" }], ["outer.subject", { entity: "B" }],
     ["outer.object", { entity: "A" }], ["outer.conflict_type", { option: "conflict_type.k14" }],
     ["outer.action", { option: "action.k14.left_to_right" }]]);
-  assert.deepEqual(keys("C", state, THREE), ["outer.event_type", "outer.subject", "outer.object", "outer.conflict_type",
-    "outer.action"]);
+  assert.deepEqual(keys("C", state, THREE), ["outer.event_type", "outer.conflict_type", "outer.action", "outer.subject",
+    "outer.object"]);
   assert.deepEqual(problems("C", state, THREE), {});
   assert.match(preview("C", buildSlots("C", state, THREE), THREE)!, /suýt xảy ra va chạm\.$/);
   const old = stateFromSlots("C", { ...buildSlots("C", state, THREE), speed: { option: "speed.high" },
@@ -177,7 +177,7 @@ test("C \"cả hai bên\" gives one action per party, fills the two parties and 
   const state = fill("C", TWO, [["outer.event_type", { option: "event_type.near_miss" }], ["outer.subject", { option: "subject.both" }],
     ["outer.conflict_type", { option: "conflict_type.k11" }], ["0.action", { option: "action.k11.left_to_right" }],
     ["1.action", { option: "action.k11.right_to_left" }]]);
-  assert.deepEqual(keys("C", state, TWO), ["outer.event_type", "outer.subject", "outer.conflict_type",
+  assert.deepEqual(keys("C", state, TWO), ["outer.event_type", "outer.conflict_type", "outer.subject",
     "0.party", "0.action", "1.party", "1.action"]);
   assert.deepEqual(buildSlots("C", state, TWO), {
     event_type: { option: "event_type.near_miss" }, subject: { option: "subject.both" },
@@ -185,6 +185,39 @@ test("C \"cả hai bên\" gives one action per party, fills the two parties and 
     parties: [{ party: { entity: "A" }, action: { option: "action.k11.left_to_right" } },
       { party: { entity: "B" }, action: { option: "action.k11.right_to_left" } }],
   });
+  assert.deepEqual(problems("C", state, TWO), {});
+});
+
+test("C asks the conflict type and action before the subject (features/c-role-question)", () => {
+  assert.deepEqual(keys("C", emptyState(), TWO), ["outer.event_type", "outer.conflict_type", "outer.subject", "outer.object"]);
+  const state = fill("C", TWO, [["outer.event_type", { option: "event_type.collision" }],
+    ["outer.conflict_type", { option: "conflict_type.k04" }]]);
+  assert.deepEqual(keys("C", state, TWO), ["outer.event_type", "outer.conflict_type", "outer.action", "outer.subject", "outer.object"]);
+});
+
+test("C names the subject by the role of the chosen conflict type", () => {
+  const subjectOf = (state: FormState) => fields("C", state, TWO).find((item) => item.key === "outer.subject")!;
+  const plain = subjectOf(emptyState());
+  assert.equal(plain.label, "Chủ thể");
+  assert.equal(plain.note, getCodebook("C.v4")!.cells.find((cell) => cell.id === "subject")!.note);
+  const k04 = fill("C", TWO, [["outer.conflict_type", { option: "conflict_type.k04" }]]);
+  assert.equal(subjectOf(k04).label, "Bên nào là xe đổi làn?");
+  assert.deepEqual(subjectOf(k04).options.map((option) => option.id), ["subject.both", "subject.unclear"]);
+  const unclear = fill("C", TWO, [["outer.conflict_type", { option: "conflict_type.unclear" }]]);
+  assert.equal(subjectOf(unclear).label, "Chủ thể");
+});
+
+test("C keeps the subject and its auto-filled object when the conflict type changes after it", () => {
+  let state = fill("C", TWO, [["outer.event_type", { option: "event_type.collision" }],
+    ["outer.conflict_type", { option: "conflict_type.k04" }], ["outer.subject", { entity: "B" }]]);
+  assert.deepEqual(state.cells.object, { entity: "A" });
+  state = fill("C", TWO, [["outer.conflict_type", { option: "conflict_type.k12" }]], state);
+  assert.deepEqual(state.cells.subject, { entity: "B" });
+  assert.equal(fields("C", state, TWO).find((item) => item.key === "outer.subject")!.label, "Bên nào là xe từ đường nhánh?");
+  state = fill("C", TWO, [["outer.action", { option: "action.k12.exit_from_left" }]], state);
+  assert.deepEqual(buildSlots("C", state, TWO), { event_type: { option: "event_type.collision" },
+    conflict_type: { option: "conflict_type.k12" }, action: { option: "action.k12.exit_from_left" },
+    subject: { entity: "B" }, object: { entity: "A" } });
   assert.deepEqual(problems("C", state, TWO), {});
 });
 
