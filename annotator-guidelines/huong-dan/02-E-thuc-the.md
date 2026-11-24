@@ -24,7 +24,7 @@
 
 | Ô | Lựa chọn | Khi nào điền |
 | --- | --- | --- |
-| 1. Loại | ô tô · xe khách · xe tải · xe cứu thương · xe máy · xe đạp · xe ba gác · người đi bộ · động vật · khác | Luôn điền |
+| 1. Loại | ô tô · xe khách · xe tải · xe cứu thương · xe máy · xe đạp · xe ba gác · người đi bộ · động vật | Luôn điền |
 | 2. Cỡ | to · nhỏ | Chỉ với xe khách, xe tải |
 | 3. Camera hành trình | có · không | Chỉ với ô tô |
 | 4. Số người trên xe | 1 · 2 · 3 trở lên | Chỉ với xe máy, xe hai bánh, xe máy điện, xe đạp điện |
@@ -34,8 +34,10 @@ Gộp trắng, xám, ghi và bạc vào một lựa chọn "trắng, xám/bạc"
 Không dùng màu khác, không rõ, tối hoặc nâu; chỉ chọn màu trong danh sách hiện hành khi nhìn thấy đủ rõ.
 Không ghi loại xe chi tiết hơn bảng trên (không "tay ga", không "24-29 chỗ"), không ghi biển số, khuôn mặt.
 Xe container và xe bán tải ghi là xe tải.
-Xe máy điện được ghi là xe máy; xe đạp điện được ghi là xe đạp.
-Xe ba gác là nhãn riêng cho xe ba bánh chở hàng.
+Xe máy gồm xe số, xe tay ga, xe côn tay và xe máy điện (không có bàn đạp).
+Xe đạp gồm xe đạp thường và xe đạp điện (có bàn đạp).
+Xe ba gác gồm mọi xe 3 bánh, kể cả các loại xe tự chế; không gộp vào xe máy hoặc xe đạp.
+Không còn lựa chọn "khác": mỗi bên được xếp vào một loại trong bảng trên.
 
 ## Mẫu câu
 
@@ -46,7 +48,7 @@ Xe ba gác là nhãn riêng cho xe ba bánh chở hàng.
 | Xe khách, xe tải | [1] [2] màu [5] |
 | Xe máy | Xe máy màu [5] (chở [4] người, khi từ 2 trở lên) |
 | Xe đạp | Xe đạp |
-| Xe cứu thương, xe ba gác, khác | [1] màu [5] |
+| Xe cứu thương, xe ba gác | [1] màu [5] |
 | Người đi bộ | Người đi bộ |
 | Động vật | Động vật |
 

@@ -22,7 +22,7 @@
       "text": "Xe đạp"
     },
     {
-      "case": "Xe cứu thương, xe ba gác, khác",
+      "case": "Xe cứu thương, xe ba gác",
       "text": "[1] màu [3]"
     },
     {
@@ -78,11 +78,6 @@
         {
           "id": "type.bicycle",
           "label": "xe đạp"
-        },
-        {
-          "id": "type.other",
-          "label": "khác",
-          "free_text": true
         }
       ]
     },

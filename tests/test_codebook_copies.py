@@ -280,14 +280,36 @@ def test_e_v6_drops_the_clothing_colour_and_keeps_the_vehicle_colour():
     e5 = json.loads((SOURCE / "E.v5.json").read_text(encoding="utf-8"))
     e6 = json.loads((SOURCE / "E.v6.json").read_text(encoding="utf-8"))
     assert [cell["id"] for cell in e6["cells"]] == ["type", "dashcam", "vehicle_color"]
-    assert e6["cells"] == [cell for cell in e5["cells"] if cell["id"] != "clothing_color"]
+    # E.v6 = E.v5 without the clothing colour and, since features/e-type-definitions, without type "khác".
+    without_other = [{**cell, "options": [o for o in cell["options"] if o["id"] != "type.other"]} if cell["id"] == "type" else cell
+                     for cell in e5["cells"] if cell["id"] != "clothing_color"]
+    assert e6["cells"] == without_other
     assert e6["max_entities"] == 2 and e6["version"] == 6
     assert not any("áo" in t["text"] for t in e6["templates"])
     assert any("màu [3]" in t["text"] for t in e6["templates"])
 
 
 def test_e_v6_migration_seeds_exact_bytes_and_drops_colour_rules():
+    """20261123120000 seeded E.v6 and ran in production; 20261124130000 revises the row in place
+    (features/e-type-definitions) and must carry the file's bytes."""
     text = (ROOT / "supabase" / "migrations" / "20261123120000_e_v6_no_colors.sql").read_text(encoding="utf-8")
-    seeded = dict(re.findall(r"\('([^']+)', 'E', 6, \$cb\$.*?\$cb\$::jsonb,\s*'([0-9a-f]{64})'", text, re.S))
-    assert seeded.get("E.v6") == hashlib.sha256((SOURCE / "E.v6.json").read_bytes()).hexdigest()
     assert "'E.v6'" in text
+    revision = (ROOT / "supabase" / "migrations" / "20261124130000_e_v6_no_other_type.sql").read_text(encoding="utf-8")
+    content = re.search(r"set content = \$cb\$(.*?)\$cb\$::jsonb,\s*sha256 = '([0-9a-f]{64})'", revision, re.S)
+    assert content, "the revision must update the E.v6 row's content and sha256"
+    source = (SOURCE / "E.v6.json").read_bytes()
+    assert content.group(2) == hashlib.sha256(source).hexdigest()
+    assert json.loads(content.group(1)) == json.loads(source.decode("utf-8"))
+    assert "where id = 'E.v6'" in revision
+
+
+def test_e_v6_has_no_other_type_but_older_books_keep_it():
+    """features/e-type-definitions: every party is one of the listed types since E.v6."""
+    e6 = json.loads((SOURCE / "E.v6.json").read_text(encoding="utf-8"))
+    types = [o["id"] for o in next(c for c in e6["cells"] if c["id"] == "type")["options"]]
+    assert "type.other" not in types
+    assert types == ["type.car", "type.bus", "type.truck", "type.ambulance", "type.motorbike", "type.cargo_tricycle",
+                     "type.pedestrian", "type.animal", "type.bicycle"]
+    assert all("khác" not in t["case"].replace("khách", "") for t in e6["templates"])
+    e4 = json.loads((SOURCE / "E.v4.json").read_text(encoding="utf-8"))
+    assert "type.other" in [o["id"] for o in next(c for c in e4["cells"] if c["id"] == "type")["options"]]

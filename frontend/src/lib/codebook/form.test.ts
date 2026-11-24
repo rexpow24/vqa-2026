@@ -443,12 +443,11 @@ test("E shows each cell only when its codebook condition holds, and sends only t
     { type: { option: "type.pedestrian" } });
 });
 
-test("E needs a type, and a short text for \"khác\"", () => {
+test("E needs a type, and E.v6 offers no \"khác\" (features/e-type-definitions)", () => {
   assert.deepEqual(entityProblems([entity("A", {})]), { "A.type": "Chưa chọn loại." });
-  assert.deepEqual(entityProblems([{ key: "B", cells: { type: { option: "type.other", text: " " } } }]),
-    { "B.type": "Ghi ngắn loại cho lựa chọn \"khác\".", "B.vehicle_color": "Bắt buộc chọn màu xe." });
-  assert.deepEqual(entityProblems([{ key: "B", cells: { type: { option: "type.other", text: "xe lu" },
-    vehicle_color: { option: "vehicle_color.yellow" } } }]), {});
+  const typeCell = entityCells(entity("A", {}).cells).find((cell) => cell.id === "type")!;
+  assert.ok(!typeCell.options!.some((option) => option.id === "type.other"));
+  assert.ok(typeCell.options!.some((option) => option.id === "type.cargo_tricycle"));
   assert.equal(nextEntityKey(["A", "C"]), "B");
   assert.equal(entityLabel(entity("B", { type: "type.motorbike", vehicle_color: "vehicle_color.red" })), "B · xe máy màu đỏ");
 });

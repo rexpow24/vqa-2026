@@ -20,15 +20,16 @@
 
 | Ô | Lựa chọn | Khi nào điền |
 | --- | --- | --- |
-| 1. Loại | ô tô · xe khách · xe tải · xe cứu thương · xe máy · xe đạp · xe ba gác · người đi bộ · động vật · khác | Luôn điền |
+| 1. Loại | ô tô · xe khách · xe tải · xe cứu thương · xe máy · xe đạp · xe ba gác · người đi bộ · động vật | Luôn điền |
 | 2. Camera hành trình | có · không | Bắt buộc với ô tô |
 | 3. Màu xe | trắng, xám/bạc · đen · đỏ · xanh · vàng | Bắt buộc với phương tiện có màu; không áp dụng ô tô có dashcam, xe đạp, người đi bộ và động vật |
 
 Gộp trắng, xám, ghi và bạc vào một lựa chọn "trắng, xám/bạc".
 Không dùng màu khác, không rõ, tối hoặc nâu; chỉ chọn màu trong danh sách hiện hành khi nhìn thấy đủ rõ.
-Xe máy điện được ghi là xe máy, xe đạp điện được ghi là xe đạp.
-Xe máy điện được ghi là xe máy; xe đạp điện được ghi là xe đạp.
-Xe ba gác là nhãn riêng cho xe ba bánh chở hàng, không gộp vào xe máy hoặc xe đạp.
+Xe máy gồm xe số, xe tay ga, xe côn tay và xe máy điện (không có bàn đạp).
+Xe đạp gồm xe đạp thường và xe đạp điện (có bàn đạp).
+Xe ba gác gồm mọi xe 3 bánh, kể cả các loại xe tự chế; không gộp vào xe máy hoặc xe đạp.
+Không còn lựa chọn "khác": mỗi bên được xếp vào một loại trong bảng trên.
 Không ghi loại xe chi tiết hơn bảng trên (không "tay ga", không "24-29 chỗ"), không ghi biển số, khuôn mặt.
 Xe container và xe bán tải ghi là xe tải.
 
@@ -47,7 +48,7 @@ Quy tắc định danh theo thực thể và giữ ID xuyên suốt video phù h
 | Xe khách, xe tải | [1] màu [3] |
 | Xe máy | Xe máy màu [3] |
 | Xe đạp | Xe đạp |
-| Xe cứu thương, xe ba gác, khác | [1] màu [3] |
+| Xe cứu thương, xe ba gác | [1] màu [3] |
 | Người đi bộ | Người đi bộ |
 | Động vật | Động vật |
 
