@@ -15,6 +15,7 @@ import { entityLabel } from "@/lib/codebook/form";
 import { EntityCard } from "@/components/slots/EntityCard";
 import { SlotCard, type SavedSlotRow } from "@/components/slots/SlotCard";
 import { AdminAnswerReview, type AdminAnswer } from "@/components/AdminAnswerReview";
+import { VideoReportButton } from "@/components/VideoReportButton";
 
 type Video = { id: string; seq: number; filename: string; duration_s: number };
 type Assignment = { id: string; status: string; completed_at: string | null };
@@ -197,7 +198,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
   async function goToNextVideo() {
     setBusy(true); setError(""); setMessage("");
     try {
-      const response = await fetch("/api/videos/next", { cache: "no-store" });
+      const response = await fetch(`/api/videos/next?after_video_id=${encodeURIComponent(video.id)}`, { cache: "no-store" });
       const next = await response.json() as { next_video_id?: string | null; next_filename?: string | null; error?: string };
       if (!response.ok) throw new Error(next.error ?? "Không thể tìm video kế tiếp.");
       if (next.next_video_id) {
@@ -216,6 +217,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
     <div className="flex flex-wrap items-center gap-3">
       <Link href="/annotate" className="text-sm text-accent">← Danh sách video</Link>
       <h2 className="text-lg font-semibold"><span className="tabular-nums text-accent">{`#${video.seq}`}</span> {video.filename}</h2>
+      {assignment && <VideoReportButton videoId={video.id} />}
       <span className="ml-auto text-sm text-foreground/80">{done}/{drafts.length} câu đã duyệt</span>
     </div>
     {error && <p role="alert" className="rounded border border-red/40 bg-red/10 p-3 text-sm text-red">{error}</p>}

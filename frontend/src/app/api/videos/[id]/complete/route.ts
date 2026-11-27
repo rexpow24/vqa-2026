@@ -21,9 +21,9 @@ export async function POST(_request: Request, context: Context) {
   if (error) return Response.json({ error: error.message }, { status: 422 });
   if (!data) return Response.json({ error: "Assignment not found" }, { status: 404 });
 
-  // Hand back the next unfinished assigned video (by number) so the client
-  // can go straight there instead of bouncing through the list.
-  const { data: queue } = await supabase.rpc("next_assigned_video");
+  // Advance by sequence from the video just completed, even if an older
+  // assignment is still unfinished.
+  const { data: queue } = await supabase.rpc("next_assigned_video_after", { after_video_id: id });
   const next = Array.isArray(queue) && queue.length ? queue[0] : null;
   return Response.json({
     ...data,

@@ -29,6 +29,7 @@ export function PlatformNav({ profile }: { profile: Profile | null }) {
       ["/admin/users", "Người dùng", pathname.startsWith("/admin/users")],
       ["/admin/videos", "Video", pathname.startsWith("/admin/videos")],
       ["/admin/assignments", "Phân công", pathname.startsWith("/admin/assignments")],
+      ["/admin/reports", "Báo cáo", pathname.startsWith("/admin/reports")],
     ] as [string, string, boolean][] : []),
   ];
   return <nav className="mt-3 flex flex-wrap items-center gap-x-5 border-b border-border px-6 text-sm">
