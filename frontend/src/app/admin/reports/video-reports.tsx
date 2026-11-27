@@ -36,9 +36,8 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
   const [message, setMessage] = useState("");
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [summaries, setSummaries] = useState<Record<string, string>>({});
-  const conflictReports = reports.filter((report) => report.reason === "cell_conflict");
-  const openCount = conflictReports.filter((report) => report.status === "open").length;
-  const resolvedCount = conflictReports.length - openCount;
+  const openCount = reports.filter((report) => report.status === "open").length;
+  const resolvedCount = reports.length - openCount;
   const visible = filter === "all" ? reports : reports.filter((report) => filter === "open" ? report.status === "open" : report.status === filter);
 
   async function finalize(report: VideoReportRow) {
@@ -76,7 +75,7 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
     <header><h2 className="text-xl font-semibold">Báo cáo và phân xử</h2>
       <p className="mt-1 text-sm text-muted">Annotator bỏ phiếu trên web. Admin xem các ý kiến, chốt đáp án rồi chép nội dung kết quả để gửi annotator cập nhật.</p></header>
     <section aria-label="Thống kê conflict" className="grid gap-3 sm:grid-cols-3">
-      <div className="rounded-lg border border-border bg-surface p-4"><p className="text-sm text-muted">Tổng conflict theo ô</p><p className="mt-1 text-3xl font-semibold">{conflictReports.length}</p></div>
+      <div className="rounded-lg border border-border bg-surface p-4"><p className="text-sm text-muted">Tổng báo cáo conflict</p><p className="mt-1 text-3xl font-semibold">{reports.length}</p></div>
       <div className="rounded-lg border border-amber/40 bg-amber/5 p-4"><p className="text-sm text-amber">Còn dư / chưa chốt</p><p className="mt-1 text-3xl font-semibold">{openCount}</p></div>
       <div className="rounded-lg border border-green/40 bg-green/5 p-4"><p className="text-sm text-green">Đã xử lý / chốt</p><p className="mt-1 text-3xl font-semibold">{resolvedCount}</p></div>
     </section>
@@ -93,7 +92,7 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
         <div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0">
           <h3 className="font-semibold">{report.video ? <><span className="text-accent">#{report.video.seq}</span> {report.video.filename}</> : "Video không còn tồn tại"}</h3>
           <p className="mt-1 text-sm text-amber">{reasonLabel[report.reason]}{report.question_group ? ` · Nhóm ${report.question_group}` : ""}</p>
-          {report.target_label && <p className="mt-1 text-sm">{report.entity_key ? `Bên ${report.entity_key} · ` : report.target_index !== null ? `Bên ${report.target_index + 1} · ` : ""}{report.target_label}</p>}
+          {report.target_label && <p className="mt-1 text-sm">{report.reason === "cell_conflict" && report.entity_key ? `Bên ${report.entity_key} · ` : report.reason === "cell_conflict" && report.target_index !== null ? `Bên ${report.target_index + 1} · ` : ""}{report.target_label}</p>}
           <p className="mt-1 text-xs text-muted">Báo cáo bởi {report.annotator?.name || report.annotator?.email || "annotator"} · {new Date(report.created_at).toLocaleString("vi-VN")}</p>
         </div><span className={`rounded border px-2 py-1 text-xs ${report.status === "open" ? "border-amber/50 text-amber" : "border-green/50 text-green"}`}>{statusLabel[report.status]}</span></div>
         {report.note && <p className="mt-3 whitespace-pre-wrap rounded border border-border bg-background p-3 text-sm">{report.note}</p>}
