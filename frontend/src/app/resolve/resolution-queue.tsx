@@ -26,6 +26,7 @@ export function ResolutionQueue({ initialCases }: { initialCases: ResolutionCase
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const videoCount = new Set(cases.map((item) => item.video_id)).size;
 
   async function submit(item: ResolutionCase) {
     setBusy(item.id); setError(""); setNotice("");
@@ -44,7 +45,7 @@ export function ResolutionQueue({ initialCases }: { initialCases: ResolutionCase
   return <div className="flex flex-col gap-5">
     <header>
       <h2 className="text-2xl font-semibold">Cần annotator hỗ trợ</h2>
-      <p className="mt-1 text-sm text-muted">Có <strong className="text-accent">{cases.length}</strong> ô đang cần bạn xem và chọn đáp án. Người tạo báo cáo không được biểu quyết trường hợp của mình.</p>
+      <p className="mt-1 text-sm text-muted">Có <strong className="text-accent">{videoCount}</strong> video ({cases.length} ô) đang cần bạn xem và chọn đáp án. Người tạo báo cáo không được biểu quyết trường hợp của mình.</p>
     </header>
     {notice && <p role="status" className="rounded border border-green/40 bg-green/10 p-3 text-sm text-green">{notice}</p>}
     {error && <p role="alert" className="rounded border border-red/40 bg-red/10 p-3 text-sm text-red">{error}</p>}
