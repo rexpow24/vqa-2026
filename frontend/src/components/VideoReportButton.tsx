@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { BTN, FOCUS } from "@/components/slots/styles";
+import { BTN_BASE, FOCUS } from "@/components/slots/styles";
 
 type Reason = "overcut" | "too_difficult";
 const choices: { value: Reason; label: string; detail: string }[] = [
@@ -40,8 +40,16 @@ export function VideoReportButton({ videoId }: { videoId: string }) {
   }
 
   return <div className="relative">
-    <button type="button" className={`${BTN} px-3 py-1.5 text-xs ${sent ? "text-green" : ""}`}
+    <button type="button" className={`${BTN_BASE} inline-flex min-h-11 min-w-40 items-center justify-center gap-2 px-4 py-2 text-sm font-bold shadow-sm ${sent
+      ? "border-green/60 bg-green/10 text-green hover:border-green hover:bg-green/15"
+      : "border-amber/80 bg-amber text-background hover:border-amber hover:bg-amber/90"}`}
       aria-expanded={open} onClick={() => { setOpen((value) => !value); setError(""); }}>
+      {sent ? <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="h-4 w-4">
+        <path d="m4 10 4 4 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg> : <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="h-4 w-4">
+        <path d="M10 2.5 1.9 17h16.2L10 2.5Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+        <path d="M10 7v4m0 2.8v.1" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      </svg>}
       {sent ? "Đã báo cáo" : "Báo cáo video"}
     </button>
     {open && <form onSubmit={submit} className="absolute right-0 top-full z-20 mt-2 w-[min(24rem,calc(100vw-3rem))] rounded-md border border-border-strong bg-surface p-4 shadow-xl">
