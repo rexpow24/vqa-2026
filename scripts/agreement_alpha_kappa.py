@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Short agreement report for videos #41-#60 and the eight label groups.
+"""Legacy exploratory report for videos #41-#60 and the eight label groups.
 
 Usage:
   python scripts/agreement_alpha_kappa.py
   python scripts/agreement_alpha_kappa.py "C:/path/answers-agreement.csv" --boot 2000
 
-The report has one row per label group. It summarizes all available four-person
-panels with a mean alpha and a video-level 95% bootstrap confidence interval.
+This report requires four completed annotators per video and skips partial
+panels. Its pooled-fields alpha combines different variables into one synthetic
+category space, so it must not be used as a reliability claim for any field or
+group. Use agreement_krippendorff.py for standard per-field and whole-answer
+alpha, including units with at least two annotators.
 """
 from __future__ import annotations
 
@@ -187,6 +190,8 @@ def run(source: Path, out: Path, draws: int, seed: int):
     out.mkdir(parents=True, exist_ok=True)
     lines = [
         "# Báo cáo độ đồng thuận", "",
+        "CẢNH BÁO: Alpha ô gộp ở đây chỉ để đối chiếu cách cũ, không phải alpha độ tin cậy của từng ô hay cả nhóm.",
+        "Script này bỏ video thiếu người; dùng `agreement_krippendorff.py` cho kết quả chính thức theo từng ô và cả bộ ô.", "",
         f"- Video: {seq_range}",
         f"- Dữ liệu: {len(rows)} dòng, {len(completed)} hoàn thành; loại {len(rows)-len(completed)} dòng chưa hoàn thành.",
         f"- 4 người: trung bình trên mọi tổ hợp 4 người có thể chọn; CI 95% bootstrap theo video ({draws:,} lần).",

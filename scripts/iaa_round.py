@@ -159,7 +159,9 @@ def kripp_alpha(units, dist):
                 de += counts[i] * counts[j] * dist(uniq[i], uniq[j], False)
         de /= n * (n - 1)
     if de == 0:
-        return 1.0 if do == 0 else np.nan
+        # With only one observed category, expected disagreement is zero and
+        # alpha is undefined (0/0), even if every coder chose that category.
+        return np.nan
     return 1.0 - do / de
 
 
