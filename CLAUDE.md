@@ -97,6 +97,9 @@ Pooled per-cell group alpha is a separate third statistic and does not replace e
 Keep C.K primary labels as the basis of official agreement; do not count a possible second K as agreement with both labels.
 The optional C.K alternative and its partial-credit weight are a **proposal**, not an approved or implemented feature.
 The proposed calibration uses other annotators' primary K on shared training videos; solo videos provide pair frequencies and drift signals but cannot validate or recalibrate the weight without independent overlap or adjudication.
+The latest user preference is one mandatory primary K plus one optional secondary K with reported probability `u`; the displayed primary share is `1-u`.
+An explicit no-alternative confirmation is needed if missing secondary K is displayed as primary share 1, which does not establish correctness.
+Average reported shares by actual K code across annotators, even when their primary/secondary roles differ; see [the worked diagram](docs/research/c-k-calibration-worked-example-2026-11-27.html).
 See [the dated decision and design](docs/research/c-k-uncertainty-calibration-2026-11-27.md).
 
 ## Working agreements

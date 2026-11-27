@@ -2,6 +2,15 @@
 
 Ngày: 2026-11-27.
 
+## Cập nhật đề xuất theo yêu cầu mới nhất
+
+Người dùng muốn mỗi annotator chọn K chính, tùy chọn đúng một K phụ và nhập xác suất `u` của K phụ; hệ thống lấy `1-u` cho K chính.
+Khi không có K phụ, cần xác nhận rõ “không phân vân”; trọng số 1 cho K chính chỉ là quy ước biểu diễn, không chứng minh nhãn đúng 100%.
+Trên video nhiều người, cộng xác suất theo **mã K thực tế** rồi chia số người; kết quả chung có thể có hơn hai K.
+Đề xuất hiện tại là giữ `u` theo từng câu và hiệu chỉnh từ dữ liệu chồng lấn của training; video làm riêng chỉ giúp đếm cặp và theo dõi thay đổi, trừ phần có kiểm tra độc lập.
+Xem [hình và ví dụ số](c-k-calibration-worked-example-2026-11-27.html).
+Phần từ “Nhận xét về hướng đi” trở xuống ghi lại **đề xuất trước đó**, trong đó % được hỏi theo khả năng đồng nghiệp chọn K phụ; không coi đó là cách hỏi đã chốt cho giao diện mới.
+
 ## Quyết định đã chốt: báo cáo hai cách đo agreement
 
 - **Theo từng ô:** tính Krippendorff's alpha danh nghĩa riêng cho từng trường của S, E và C trên cùng tập video và cùng phiên bản codebook.

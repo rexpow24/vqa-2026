@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nhóm C: K phụ và hiệu chỉnh xác suất</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: dark; --paper:#0a0b0d; --surface:#14161a; --surface2:#1a1d22; --ink:#e7e9ec; --muted:#a5abb5; --rule:#3d434d; --accent:#3b82f6; --warning:#f59e0b; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.5 Geist,Arial,sans-serif; padding:32px 24px 48px; }
+    main { max-width:1280px; margin:auto; }
+    .eyebrow { color:var(--accent); font:600 12px 'Geist Mono',monospace; letter-spacing:.12em; margin:0 0 8px; text-transform:uppercase; }
+    h1 { font-size:42px; line-height:1.08; letter-spacing:-.04em; margin:0 0 12px; }
+    h2 { font-size:26px; margin:32px 0 9px; letter-spacing:-.025em; }
+    p { margin:0 0 14px; }
+    .lead,.note { color:var(--muted); }
+    .lead { font-size:17px; max-width:1050px; }
+    .diagram { background:var(--surface); border:1px solid var(--rule); overflow-x:auto; }
+    svg { display:block; width:100%; min-width:1280px; }
+    .svg-ink { fill:var(--ink); font:600 20px Geist,Arial,sans-serif; }
+    .svg-body { fill:var(--ink); font:500 17px Geist,Arial,sans-serif; }
+    .svg-muted { fill:var(--muted); font:400 15px Geist,Arial,sans-serif; }
+    .svg-key { fill:var(--muted); font:600 13px 'Geist Mono',monospace; letter-spacing:.07em; }
+    .svg-val { fill:var(--ink); font:700 30px Geist,Arial,sans-serif; }
+    .svg-accent { fill:var(--accent); font:700 40px Geist,Arial,sans-serif; }
+    .svg-warning { fill:var(--warning); font:600 15px Geist,Arial,sans-serif; }
+    table { width:100%; border-collapse:collapse; margin:14px 0 18px; }
+    th,td { padding:11px 15px; border-bottom:1px solid var(--rule); text-align:left; vertical-align:top; }
+    th { color:var(--muted); font:600 13px 'Geist Mono',monospace; text-transform:uppercase; }
+    td strong { color:var(--ink); }
+    .callout { border-left:4px solid var(--warning); background:var(--surface2); padding:14px 18px; margin:18px 0; }
+    .note { font-size:14px; margin:12px 0; }
+    a { color:#83b6ff; }
+    @media print { body{padding:0} .diagram{overflow:visible} svg{min-width:0} }
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">VQA-VN-Traffic-2026 / C.K</p>
+  <h1>K phụ đi vào điểm số như thế nào?</h1>
+  <p class="lead">Hai phép tính khác nhau: cộng câu trả lời của nhiều người trên một video, rồi kiểm tra xem % tự báo có khớp với lựa chọn độc lập trong vòng training không.</p>
+
+  <h2>01. Bốn người xem cùng một video</h2>
+  <div class="diagram">
+    <svg viewBox="0 0 1280 660" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="d1-title d1-desc">
+      <title id="d1-title">Cộng xác suất K của bốn annotator</title>
+      <desc id="d1-desc">A: K08 70%, K09 30%; B: K08 80%, K09 20%; C: chỉ K08; D: chỉ K09. Trung bình theo từng mã K cho kết quả K08 62,5%, K09 37,5%.</desc>
+      <defs><marker id="arrow-one" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#8a909b"/></marker></defs>
+      <rect x="0" y="0" width="1280" height="660" fill="#14161a"/>
+      <text x="48" y="46" class="svg-key">CÂU TRẢ LỜI TỪNG NGƯỜI</text>
+      <text x="840" y="46" class="svg-key">GỘP THEO MÃ K, KHÔNG THEO VỊ TRÍ CHÍNH/PHỤ</text>
+      <path d="M790 296 H824" stroke="#8a909b" stroke-width="3" fill="none" marker-end="url(#arrow-one)"/>
+
+      <rect x="48" y="70" width="742" height="100" rx="8" fill="#1a1d22" stroke="#3d434d"/>
+      <text x="70" y="105" class="svg-ink">A</text><text x="116" y="105" class="svg-body">K chính K08</text><text x="410" y="105" class="svg-body">K phụ K09 · u = 30%</text>
+      <text x="116" y="142" class="svg-muted">K08 = 70%</text><text x="410" y="142" class="svg-muted">K09 = 30%</text>
+
+      <rect x="48" y="182" width="742" height="100" rx="8" fill="#1a1d22" stroke="#3d434d"/>
+      <text x="70" y="217" class="svg-ink">B</text><text x="116" y="217" class="svg-body">K chính K08</text><text x="410" y="217" class="svg-body">K phụ K09 · u = 20%</text>
+      <text x="116" y="254" class="svg-muted">K08 = 80%</text><text x="410" y="254" class="svg-muted">K09 = 20%</text>
+
+      <rect x="48" y="294" width="742" height="100" rx="8" fill="#1a1d22" stroke="#3d434d"/>
+      <text x="70" y="329" class="svg-ink">C</text><text x="116" y="329" class="svg-body">K chính K08</text><text x="410" y="329" class="svg-body">Xác nhận: không có K phụ</text>
+      <text x="116" y="366" class="svg-muted">K08 = 100% trong quy tắc hai K</text>
+
+      <rect x="48" y="406" width="742" height="100" rx="8" fill="#1a1d22" stroke="#3d434d"/>
+      <text x="70" y="441" class="svg-ink">D</text><text x="116" y="441" class="svg-body">K chính K09</text><text x="410" y="441" class="svg-body">Xác nhận: không có K phụ</text>
+      <text x="116" y="478" class="svg-muted">K09 = 100% trong quy tắc hai K</text>
+
+      <rect x="840" y="70" width="392" height="436" rx="8" fill="#1a1d22" stroke="#3b82f6" stroke-width="2"/>
+      <text x="868" y="111" class="svg-ink">K08</text><text x="1110" y="111" class="svg-val">62,5%</text>
+      <text x="868" y="143" class="svg-muted">(70 + 80 + 100 + 0) / 4</text>
+      <rect x="868" y="166" width="320" height="22" rx="3" fill="#303742"/><rect x="868" y="166" width="200" height="22" rx="3" fill="#3b82f6"/>
+      <text x="868" y="245" class="svg-ink">K09</text><text x="1110" y="245" class="svg-val">37,5%</text>
+      <text x="868" y="277" class="svg-muted">(30 + 20 + 0 + 100) / 4</text>
+      <rect x="868" y="300" width="320" height="22" rx="3" fill="#303742"/><rect x="868" y="300" width="120" height="22" rx="3" fill="#8a909b"/>
+      <path d="M868 358 H1204" stroke="#3d434d" stroke-width="1"/>
+      <text x="868" y="395" class="svg-body">K09 là K chính của D</text>
+      <text x="868" y="425" class="svg-muted">nên 100% của D cộng vào K09.</text>
+      <text x="868" y="465" class="svg-body">Tổng cuối: 62,5% + 37,5% = 100%.</text>
+
+      <rect x="48" y="532" width="1184" height="92" rx="6" fill="#252018" stroke="#8c632e"/>
+      <text x="70" y="568" class="svg-warning">LƯU Ý VỀ NGƯỜI KHÔNG CHỌN K PHỤ</text>
+      <text x="70" y="598" class="svg-body">100% ở đây chỉ là quy ước sau khi xác nhận không có K phụ. Nó không chứng minh người đó đúng 100%.</text>
+    </svg>
+  </div>
+  <p class="note">Nếu các cặp khác nhau, vẫn cộng theo mã K. Ví dụ A: K08 70% / K09 30%; B: K08 60% / K10 40%; C: K09 80% / K08 20%; D: chỉ K08.</p>
+  <table>
+    <thead><tr><th>Kết quả của biến thể</th><th>Phép cộng từ A, B, C, D</th><th>Trung bình</th></tr></thead>
+    <tbody>
+      <tr><td>K08</td><td>(70 + 60 + 20 + 100) / 4</td><td><strong>62,5%</strong></td></tr>
+      <tr><td>K09</td><td>(30 + 0 + 80 + 0) / 4</td><td><strong>27,5%</strong></td></tr>
+      <tr><td>K10</td><td>(0 + 40 + 0 + 0) / 4</td><td><strong>10%</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h2>02. Hiệu chỉnh một câu trả lời mới bằng vòng training</h2>
+  <div class="diagram">
+    <svg viewBox="0 0 1280 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="d2-title d2-desc">
+      <title id="d2-title">Kết hợp phần trăm tự báo và tỷ lệ lựa chọn độc lập ở training</title>
+      <desc id="d2-desc">Một annotator mới báo K08 chính, K09 phụ 30%. Trong các ca training tương tự, người khác chọn K08 12 lượt, K09 8 lượt. Nếu kappa giả định bằng 10, xác suất K09 đã hiệu chỉnh là 36,7%, K08 là 63,3%.</desc>
+      <defs><marker id="arrow-two" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#8a909b"/></marker></defs>
+      <rect x="0" y="0" width="1280" height="620" fill="#14161a"/>
+      <text x="42" y="48" class="svg-key">ÁP DỤNG CHO 1 VIDEO RIÊNG SAU TRAINING</text>
+      <path d="M402 246 H434" stroke="#8a909b" stroke-width="3" fill="none" marker-end="url(#arrow-two)"/>
+      <path d="M844 246 H876" stroke="#8a909b" stroke-width="3" fill="none" marker-end="url(#arrow-two)"/>
+
+      <rect x="42" y="104" width="360" height="282" rx="8" fill="#1a1d22" stroke="#3d434d"/>
+      <text x="66" y="146" class="svg-key">01 · NGƯỜI GÁN NHÃN NHẬP</text>
+      <text x="66" y="193" class="svg-ink">K chính K08</text>
+      <text x="66" y="235" class="svg-ink">K phụ K09</text>
+      <text x="66" y="285" class="svg-accent">30%</text>
+      <text x="66" y="320" class="svg-muted">tự báo cho K09</text>
+      <text x="66" y="356" class="svg-muted">K08 tạm thời = 70%</text>
+
+      <rect x="442" y="104" width="402" height="282" rx="8" fill="#1a1d22" stroke="#3d434d"/>
+      <text x="466" y="146" class="svg-key">02 · ĐỐI CHIẾU TỪ TRAINING</text>
+      <text x="466" y="193" class="svg-body">Ca K08 → K09 tương tự</text>
+      <text x="466" y="238" class="svg-ink">Người khác chọn K08: 12</text>
+      <text x="466" y="278" class="svg-ink">Người khác chọn K09: 8</text>
+      <text x="466" y="323" class="svg-muted">Tỷ lệ quan sát: K09 = 8 / 20 = 40%</text>
+      <text x="466" y="357" class="svg-muted">Không tính phiếu của người cần hiệu chỉnh.</text>
+
+      <rect x="884" y="104" width="350" height="282" rx="8" fill="#1a1d22" stroke="#3b82f6" stroke-width="2"/>
+      <text x="908" y="146" class="svg-key">03 · ĐIỂM CỦA VIDEO MỚI</text>
+      <text x="908" y="203" class="svg-ink">K09</text><text x="1060" y="203" class="svg-accent">36,7%</text>
+      <text x="908" y="260" class="svg-ink">K08</text><text x="1060" y="260" class="svg-val">63,3%</text>
+      <path d="M908 296 H1208" stroke="#3d434d" stroke-width="1"/>
+      <text x="908" y="335" class="svg-muted">VLM chọn K09: 0,367 điểm mềm</text>
+      <text x="908" y="362" class="svg-muted">VLM chọn K08: 0,633 điểm mềm</text>
+
+      <rect x="42" y="418" width="1192" height="100" rx="6" fill="#202631" stroke="#3d434d"/>
+      <text x="66" y="459" class="svg-body">K09 hiệu chỉnh = (κ × 0,30 + 8) / (κ + 20)</text>
+      <text x="66" y="495" class="svg-body">Nếu κ = 10 thì (10 × 0,30 + 8) / 30 = 0,367. K08 = 1 − 0,367 = 0,633.</text>
+      <text x="42" y="566" class="svg-warning">κ = 10 CHỈ LÀ SỐ MINH HỌA. PHẢI CHỌN BẰNG KIỂM TRA TRÊN VIDEO TRAINING.</text>
+    </svg>
+  </div>
+
+  <p class="note">Điểm cứng vẫn là K08 = 1, K09 = 0. Nếu những người khác chọn K10 trong các ca training tương tự, phải ghi riêng tỷ lệ đó; 36,7% chỉ là xác suất có điều kiện trong cặp K08/K09.</p>
+
+  <h2>Vì sao chọn cách này?</h2>
+  <table>
+    <thead><tr><th>Cách</th><th>Điều giữ được</th><th>Vấn đề</th></tr></thead>
+    <tbody>
+      <tr><td>Chỉ dùng tần suất cặp ở training</td><td>Quy tắc đơn giản.</td><td>Video người báo phân vân 5% và video báo 45% bị cho cùng một điểm.</td></tr>
+      <tr><td><strong>% từng câu + kiểm tra ở training</strong></td><td><strong>Giữ sự khác nhau giữa video, đồng thời sửa mức % quá cao hoặc thấp.</strong></td><td>Cần đủ ca đối chiếu; cặp hiếm phải dùng hàm chung.</td></tr>
+      <tr><td>Thêm 200 video riêng mỗi người vào phép hiệu chỉnh</td><td>Biết cặp nào được khai nhiều và hành vi có đổi không.</td><td>Không biết % khai có đúng không nếu không có người thứ hai kiểm tra cùng video.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Ranh giới của kết quả:</strong> 36,7% ở hình dự đoán khả năng một annotator khác chọn K09 trong cặp K08/K09 theo cùng codebook. Nó chưa phải xác suất K09 đúng theo thực tế. Muốn hiệu chỉnh xác suất đúng, cần một tập video có kết luận độc lập để đối chiếu.</div>
+  <p class="note">Nguồn cho việc thu xác suất nhãn chính và nhãn thứ hai từ từng annotator: Collins, Bhatt và Weller (2022), HCOMP. Công thức kết hợp với số liệu training ở đây là đề xuất minh họa cho dự án, không phải công thức của bài báo.</p>
+</main>
+</body>
+</html>
