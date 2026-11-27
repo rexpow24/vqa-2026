@@ -6,7 +6,7 @@ export default async function VideoReportsPage() {
   await requireProfile("admin");
   const supabase = await createClient();
   const { data: reports, error } = await supabase.from("video_reports")
-    .select("id,video_id,annotator_id,reason,note,status,created_at,resolved_at")
+    .select("id,video_id,annotator_id,reason,question_group,entity_key,target_label,note,vote_summary,status,created_at,resolved_at")
     .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   const videoIds = [...new Set((reports ?? []).map((report) => report.video_id))];

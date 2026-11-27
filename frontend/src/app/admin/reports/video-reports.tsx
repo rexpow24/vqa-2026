@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { ReportVideoEvidence } from "./report-video-evidence";
 
-type Reason = "overcut" | "too_difficult";
+type Reason = "overcut" | "too_difficult" | "entity_color_unclear" | "cause_too_difficult";
 type Status = "open" | "needs_relabel" | "dismissed";
 export type VideoReportRow = {
-  id: string; video_id: string; annotator_id: string; reason: Reason; note: string | null;
+  id: string; video_id: string; annotator_id: string; reason: Reason; question_group: "E" | "C" | null;
+  entity_key: string | null; target_label: string | null; vote_summary: string | null; note: string | null;
   status: Status; created_at: string; resolved_at: string | null;
   video: { id: string; seq: number; filename: string } | null;
   annotator: { id: string; name: string | null; email: string | null } | null;
@@ -14,9 +16,11 @@ export type VideoReportRow = {
 const reasonLabel: Record<Reason, string> = {
   overcut: "Video bị cắt quá mức",
   too_difficult: "Tình huống quá khó",
+  entity_color_unclear: "Màu xe khó nhìn hoặc không rõ",
+  cause_too_difficult: "Tình huống ở nhóm C quá khó",
 };
 const statusLabel: Record<Status, string> = {
-  open: "Chờ xử lý", needs_relabel: "Cần gán nhãn lại", dismissed: "Đã bỏ qua",
+  open: "Chờ vote Zalo", needs_relabel: "Vote: gán nhãn lại", dismissed: "Vote: giữ nguyên",
 };
 
 export function VideoReports({ initialReports }: { initialReports: VideoReportRow[] }) {
@@ -25,6 +29,7 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [voteSummaries, setVoteSummaries] = useState<Record<string, string>>({});
   const visible = filter === "all" ? reports : reports.filter((report) => report.status === filter);
 
   async function resolve(report: VideoReportRow, action: Exclude<Status, "open">) {
@@ -32,16 +37,16 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
     try {
       const response = await fetch(`/api/admin/video-reports/${report.id}`, {
         method: "PATCH", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
+        body: JSON.stringify({ action, vote_summary: voteSummaries[report.id] ?? "" }),
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? `Lỗi ${response.status}`);
       setReports((current) => current.map((row) => row.id === report.id ? {
-        ...row, status: action, resolved_at: new Date().toISOString(),
+        ...row, status: action, vote_summary: voteSummaries[report.id]?.trim() || null, resolved_at: new Date().toISOString(),
       } : row));
       setMessage(action === "needs_relabel"
-        ? `Đã đánh dấu video #${report.video?.seq ?? "?"} cần gán nhãn lại. Bài gán nhãn cũ được giữ để người báo cáo xem và cập nhật.`
-        : `Đã bỏ qua báo cáo video #${report.video?.seq ?? "?"}.`);
+        ? `Đã ghi nhận vote: video #${report.video?.seq ?? "?"} cần gán nhãn lại.`
+        : `Đã ghi nhận vote: giữ nguyên nhãn video #${report.video?.seq ?? "?"}.`);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Không xử lý được báo cáo.");
     } finally { setBusy(null); }
@@ -50,7 +55,7 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
   return <div className="flex flex-col gap-5">
     <div>
       <h2 className="text-xl font-semibold">Báo cáo video</h2>
-      <p className="mt-1 text-sm text-muted">Xem video bị cắt quá mức hoặc có tình huống khó, rồi đánh dấu cần gán nhãn lại.</p>
+      <p className="mt-1 text-sm text-muted">Xem video, tải ảnh gửi nhóm Zalo để mọi người vote, rồi lưu kết quả cuối cùng tại đây.</p>
     </div>
     <div className="flex flex-wrap items-center gap-2">
       {(["open", "needs_relabel", "dismissed", "all"] as const).map((value) => <button key={value} type="button"
@@ -66,6 +71,7 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
           <div className="min-w-0">
             <h3 className="font-semibold">{report.video ? <><span className="text-accent">#{report.video.seq}</span> {report.video.filename}</> : "Video không còn tồn tại"}</h3>
             <p className="mt-1 text-sm text-amber">{reasonLabel[report.reason]}</p>
+            {report.target_label && <p className="mt-1 text-sm text-foreground/80">{report.target_label}</p>}
             <p className="mt-1 text-xs text-muted">Báo cáo bởi {report.annotator?.name || report.annotator?.email || "người gán nhãn"} · {new Date(report.created_at).toLocaleString("vi-VN")}</p>
           </div>
           <span className={`rounded border px-2 py-1 text-xs ${report.status === "open" ? "border-amber/50 text-amber" : report.status === "needs_relabel" ? "border-accent/50 text-accent" : "border-border text-muted"}`}>
@@ -73,15 +79,22 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
           </span>
         </div>
         {report.note && <p className="mt-3 whitespace-pre-wrap rounded border border-border bg-background p-3 text-sm">{report.note}</p>}
+        {report.video && <ReportVideoEvidence videoId={report.video.id} seq={report.video.seq} />}
+        {report.vote_summary && <p className="mt-3 rounded border border-green/30 bg-green/10 p-2 text-sm text-green">Kết quả Zalo: {report.vote_summary}</p>}
         <div className="mt-3 flex flex-wrap gap-2">
           {report.video && <Link href={`/annotate/${report.video.id}`} className="rounded border border-border px-3 py-1.5 text-sm hover:border-accent">Mở video</Link>}
           {report.status === "open" && <>
+            <label className="basis-full text-xs text-muted">Kết quả vote (không bắt buộc)
+              <input value={voteSummaries[report.id] ?? ""} maxLength={500}
+                onChange={(event) => setVoteSummaries((current) => ({ ...current, [report.id]: event.target.value }))}
+                placeholder="Ví dụ: 5/7 chọn gán nhãn lại" className="mt-1 block w-full max-w-xl rounded border border-border bg-background px-2 py-1.5 text-sm text-foreground" />
+            </label>
             <button type="button" disabled={busy !== null} onClick={() => void resolve(report, "needs_relabel")}
               className="rounded bg-accent px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50">
-              {busy === report.id ? "Đang xử lý…" : "Đánh dấu cần gán nhãn lại"}
+              {busy === report.id ? "Đang lưu…" : "Vote: cần gán nhãn lại"}
             </button>
             <button type="button" disabled={busy !== null} onClick={() => void resolve(report, "dismissed")}
-              className="rounded border border-border px-3 py-1.5 text-sm text-muted hover:text-foreground disabled:opacity-50">Bỏ qua</button>
+              className="rounded border border-border px-3 py-1.5 text-sm text-muted hover:text-foreground disabled:opacity-50">Vote: giữ nguyên</button>
           </>}
         </div>
       </article>)}</div>}

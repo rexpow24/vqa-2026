@@ -15,6 +15,7 @@ import { Chip, EntityChip, FieldRow, FreeText, OptionPicker } from "@/components
 import { ConflictHint, type ReferenceClip } from "@/components/slots/ConflictHint";
 import { TrainingGate } from "@/components/slots/TrainingGate";
 import { requiredTraining } from "@/lib/trainings";
+import { GroupReportButton } from "@/components/GroupReportButton";
 
 /** The draft rows the save route returns: the saved row, and the caller's R when C re-composed it. */
 export type SavedSlotRow = Partial<SlotDraft> & { draft_id: string };
@@ -29,9 +30,9 @@ type Saved = SavedSlotRow & { also?: SavedSlotRow[] };
  * refused save keeps every choice. An answer saved with an older codebook
  * opens with what the current one still has and saves with the current one (F-v1).
  */
-export function SlotCard({ draft, context, labels, duration, playhead, canSave, onSeek, onSaved, onReference,
+export function SlotCard({ videoId, draft, context, labels, duration, playhead, canSave, onSeek, onSaved, onReference,
   trainingsDone = null, onTrained, onCleared }: {
-  draft: SlotDraft; context: FormContext; labels: Record<string, string>; duration: number; playhead: number;
+    videoId: string; draft: SlotDraft; context: FormContext; labels: Record<string, string>; duration: number; playhead: number;
   canSave: boolean; onSeek: (time: number) => void; onSaved: (saved: Saved) => void;
   /** Group C: open a reference clip beside the video (features/c-reference-hints). */
   onReference?: (clip: ReferenceClip) => void;
@@ -51,7 +52,9 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   const prefill = qgroup === "Prev" ? derived : savedSlots ? null : prefillFromCause(qgroup, context);
   const [touched, setTouched] = useState(false);
   const chosen = qgroup === "Prev" && derived ? derived : prefill && !touched ? prefill
-    : qgroup === "O" && !refsTouched ? { ...state, refs: causePair(context.cause) } : state;
+    : qgroup === "O" && !refsTouched
+      ? { ...state, refs: fields("O", state, context).find((item) => item.kind === "refs")?.readOnly ? state.refs : causePair(context.cause) }
+      : state;
   // O.v2 shows the level it will store: derived from C and the ticked signs, never chosen (features/o-signs-max-grouped).
   const form = qgroup === "O" ? outcomeState(chosen, context) : chosen;
   const prefilled = prefilledKeys(qgroup, form, prefill, context);
@@ -174,10 +177,14 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     const selectedIds = value?.options ?? (value?.option ? [value.option] : []);
     const option = item.options.find((candidate) => candidate.id === value?.option);
     const freeTextOption = item.options.find((candidate) => candidate.free_text && selectedIds.includes(candidate.id));
+    const selectedOption = item.options.find((candidate) => candidate.id === value?.option);
     return <FieldRow key={item.key} label={item.label} optional={!item.required} note={noteOf(item)} badge={badgeOf(item)}
       error={errorOf(item)}>
         <OptionPicker options={item.options} entities={item.entities} labels={labels} value={value}
           required={item.required} multiple={item.multiple} disabled={item.readOnly} onChange={(next) => update(item, next)} />
+      {qgroup === "C" && item.cellId === "conflict_type" && <GroupReportButton videoId={videoId}
+        reason="cause_too_difficult" questionGroup="C" disabled={!canSave}
+        targetLabel={selectedOption ? `${typeof selectedOption.code === "string" ? `${selectedOption.code} · ` : ""}${selectedOption.label}` : undefined} />}
       {freeTextOption && <FreeText label={`${item.label}: khác`} value={value?.text ?? ""}
         disabled={item.readOnly} onChange={(text) => update(item, item.multiple ? { options: selectedIds, text } : { option: freeTextOption.id, text })} />}
       {option?.from_entities && <div className="flex flex-wrap items-center gap-1.5 border-l-2 border-accent/40 pl-2">

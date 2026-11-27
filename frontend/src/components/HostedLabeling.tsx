@@ -298,7 +298,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
                 await slotSaved(draft, [{ draft_id: draft.id, verdict: "SLOTS", ...row }]);
               }
             }} />
-          : <SlotCard key={draft.id} draft={draft} context={slotContext} labels={entityLabels} duration={Number(video.duration_s)}
+          : <SlotCard key={draft.id} videoId={video.id} draft={draft} context={slotContext} labels={entityLabels} duration={Number(video.duration_s)}
             playhead={playhead} canSave={!!assignment} onSeek={seek} onReference={draft.qgroup === "C" ? openReference : undefined}
             trainingsDone={trained} onTrained={(id) => setTrained((current) => current ? [...current, id] : current)}
             onCleared={(dependentGroups) => {

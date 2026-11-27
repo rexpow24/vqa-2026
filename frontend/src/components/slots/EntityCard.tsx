@@ -13,6 +13,7 @@ import { TrainingGate } from "@/components/slots/TrainingGate";
 import { EntityHint } from "@/components/slots/EntityHint";
 import type { ReferenceClip } from "@/components/slots/ConflictHint";
 import { requiredTraining } from "@/lib/trainings";
+import { GroupReportButton } from "@/components/GroupReportButton";
 
 type SavedEntities = { entities: Entity[] | null; edited_answer: string; slots: { entities: Entity[] } };
 
@@ -108,6 +109,8 @@ export function EntityCard({ videoId, draft, saved, canSave, onSaved, trainingsD
               error={tried ? found[`${entity.key}.${cell.id}`] : undefined}>
               <OptionPicker options={cell.options ?? []} entities={null} labels={{}} value={option ? value : undefined}
                 required={cell.required} onChange={(next) => setCell(entity.key, cell.id, next)} />
+              {cell.id === "vehicle_color" && <GroupReportButton videoId={videoId} reason="entity_color_unclear"
+                questionGroup="E" entityKey={entity.key} targetLabel={`Bên ${entity.key} · Màu xe`} disabled={!canSave} />}
               {option?.free_text && <FreeText label={`Bên ${entity.key}: loại khác`} value={value?.text ?? ""}
                 onChange={(text) => setCell(entity.key, cell.id, { option: option.id, text })} />}
             </FieldRow>;
