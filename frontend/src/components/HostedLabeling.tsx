@@ -194,6 +194,20 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Không thể hoàn thành video."); }
     finally { setBusy(false); }
   }
+  async function goToNextVideo() {
+    setBusy(true); setError(""); setMessage("");
+    try {
+      const response = await fetch("/api/videos/next", { cache: "no-store" });
+      const next = await response.json() as { next_video_id?: string | null; next_filename?: string | null; error?: string };
+      if (!response.ok) throw new Error(next.error ?? "Không thể tìm video kế tiếp.");
+      if (next.next_video_id) {
+        router.push(`/annotate/${next.next_video_id}`);
+      } else {
+        setMessage("Không còn video nào đang chờ bạn gán nhãn.");
+      }
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "Không thể tìm video kế tiếp."); }
+    finally { setBusy(false); }
+  }
   function seek(time: number) {
     if (videoRef.current) videoRef.current.currentTime = time;
   }
@@ -301,11 +315,16 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
             setAssignment((current) => current?.status === "pending" ? { ...current, status: "in_progress" } : current);
             setMessage(`Đã lưu câu ${draft.qgroup}.`); setError("");
           }} onError={setError} />)}
-        {ready && <button type="button" disabled={busy || !label || done !== GROUP_CODES.length || !assignment || assignment.status === "completed"}
+        {ready && assignment?.status === "completed" ? <button type="button" disabled={busy}
+          onClick={() => { void goToNextVideo(); }} className={`self-end rounded-md border border-green bg-green px-5 py-2.5 text-sm font-semibold text-black
+            transition-colors hover:bg-green/85 disabled:cursor-not-allowed disabled:border-border-strong disabled:bg-surface-2
+            disabled:text-foreground/60 max-sm:self-stretch ${FOCUS}`}>
+          {busy ? "Đang tìm video…" : "Đi tiếp video"}
+        </button> : ready && <button type="button" disabled={busy || !label || done !== GROUP_CODES.length || !assignment}
           onClick={complete} className={`self-end rounded-md border border-green bg-green px-5 py-2.5 text-sm font-semibold text-black
             transition-colors hover:bg-green/85 disabled:cursor-not-allowed disabled:border-border-strong disabled:bg-surface-2
             disabled:text-foreground/60 max-sm:self-stretch ${FOCUS}`}>
-          {assignment?.status === "completed" ? "Video đã hoàn thành" : "Hoàn thành video"}
+          Hoàn thành video
         </button>}
       </div>
     </div>
