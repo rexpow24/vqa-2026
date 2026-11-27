@@ -15,7 +15,8 @@ Use the linked source as the authority when a summary here and the source differ
 - The project plan describes agreement by coded field and names nominal Krippendorff's alpha, with thresholds and sample-size assumptions recorded alongside their evidence status: [plan, P5-P7 and evidence review](../../features/codebook-multiple-choice/plan.md).
 - The same plan labels some choices as proposals, secondary-source summaries, or lacking a source. Preserve those qualifications in thesis writing rather than presenting every threshold as an established standard.
 - The current scripts and reports are implementation artifacts: [iaa_round.py](../../scripts/iaa_round.py) and [audit_slot_disagreements.py](../../scripts/audit_slot_disagreements.py).
-- The latest discussion's working recommendation is per-aspect alpha as the primary result and exact whole-answer agreement as a supplementary result. This is not yet recorded as a formal project decision, and the analysis output is not implemented and verified; do not describe it as a completed decision or result.
+- The 2026-11-27 reporting decision is to publish nominal Krippendorff's alpha for each coded field as the primary result and nominal alpha for the exact whole-group answer as a supplementary result: [decision and C.K calibration proposal](../research/c-k-uncertainty-calibration-2026-11-27.md).
+- Pooled per-cell group alpha is a third statistic and does not replace either result; the decision is not evidence that existing scripts already produce and verify both outputs.
 
 ## Animal-related V labels
 

@@ -90,6 +90,15 @@ covered, default to "ship it" and move on.**
 
 ---
 
+## Annotation measurement, 2026-11-27
+
+The user decided to report nominal Krippendorff's alpha **per coded field** as the primary agreement result and alpha on each group's **exact whole-answer tuple** as a supplementary result.
+Pooled per-cell group alpha is a separate third statistic and does not replace either result.
+Keep C.K primary labels as the basis of official agreement; do not count a possible second K as agreement with both labels.
+The optional C.K alternative and its partial-credit weight are a **proposal**, not an approved or implemented feature.
+The proposed calibration uses other annotators' primary K on shared training videos; solo videos provide pair frequencies and drift signals but cannot validate or recalibrate the weight without independent overlap or adjudication.
+See [the dated decision and design](docs/research/c-k-uncertainty-calibration-2026-11-27.md).
+
 ## Working agreements
 
 - **One app, one process — superseded 2026-09-22, mid-migration.** `streamlit run app.py`
