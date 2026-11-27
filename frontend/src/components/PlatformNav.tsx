@@ -24,6 +24,7 @@ export function PlatformNav({ profile }: { profile: Profile | null }) {
   const links: [string, string, boolean][] = [
     ["/annotate", "Gán nhãn", pathname.startsWith("/annotate")],
     ["/huong-dan", "Hướng dẫn", pathname.startsWith("/huong-dan")],
+    ...(profile.role === "annotator" ? [["/resolve", "Cần hỗ trợ", pathname.startsWith("/resolve")]] as [string, string, boolean][] : []),
     ...(profile.role === "admin" ? [
       ["/admin", "Dashboard", pathname === "/admin"],
       ["/admin/users", "Người dùng", pathname.startsWith("/admin/users")],

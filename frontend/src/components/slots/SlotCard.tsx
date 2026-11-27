@@ -164,6 +164,9 @@ export function SlotCard({ videoId, draft, context, labels, duration, playhead, 
         })}
         {item.options.map((choice) => <Chip key={choice.id} pressed={option === choice.id} disabled={item.readOnly}
           onClick={() => update(item, option === choice.id ? [] : { option: choice.id })}>{choice.label}</Chip>)}</div>
+        {(["S", "C", "R", "O"] as string[]).includes(qgroup) && <GroupReportButton videoId={videoId}
+          questionGroup={qgroup as "S" | "C" | "R" | "O"} targetCell={item.cellId} targetLabel={item.label}
+          targetIndex={typeof item.scope === "number" ? item.scope : undefined} disabled={!canSave} />}
       </FieldRow>;
     }
     if (item.kind === "party") {
@@ -171,20 +174,22 @@ export function SlotCard({ videoId, draft, context, labels, duration, playhead, 
       return <FieldRow key={item.key} label={item.label} badge={badgeOf(item)} error={errorOf(item)}>
         <OptionPicker options={item.options} entities={item.entities} labels={labels} value={value}
           required={item.required} disabled={item.readOnly} onChange={(next) => update(item, next)} />
+        {(["S", "C", "R", "O"] as string[]).includes(qgroup) && <GroupReportButton videoId={videoId}
+          questionGroup={qgroup as "S" | "C" | "R" | "O"} targetCell={item.cellId} targetLabel={item.label}
+          targetIndex={typeof item.scope === "number" ? item.scope : undefined} disabled={!canSave} />}
       </FieldRow>;
     }
     const value = currentValue(form, item);
     const selectedIds = value?.options ?? (value?.option ? [value.option] : []);
     const option = item.options.find((candidate) => candidate.id === value?.option);
     const freeTextOption = item.options.find((candidate) => candidate.free_text && selectedIds.includes(candidate.id));
-    const selectedOption = item.options.find((candidate) => candidate.id === value?.option);
     return <FieldRow key={item.key} label={item.label} optional={!item.required} note={noteOf(item)} badge={badgeOf(item)}
       error={errorOf(item)}>
         <OptionPicker options={item.options} entities={item.entities} labels={labels} value={value}
           required={item.required} multiple={item.multiple} disabled={item.readOnly} onChange={(next) => update(item, next)} />
-      {qgroup === "C" && item.cellId === "conflict_type" && <GroupReportButton videoId={videoId}
-        reason="cause_too_difficult" questionGroup="C" disabled={!canSave}
-        targetLabel={selectedOption ? `${typeof selectedOption.code === "string" ? `${selectedOption.code} · ` : ""}${selectedOption.label}` : undefined} />}
+      {(["S", "C", "R", "O"] as string[]).includes(qgroup) && <GroupReportButton videoId={videoId}
+        questionGroup={qgroup as "S" | "C" | "R" | "O"} targetCell={item.cellId} targetLabel={item.label}
+        targetIndex={typeof item.scope === "number" ? item.scope : undefined} disabled={!canSave} />}
       {freeTextOption && <FreeText label={`${item.label}: khác`} value={value?.text ?? ""}
         disabled={item.readOnly} onChange={(text) => update(item, item.multiple ? { options: selectedIds, text } : { option: freeTextOption.id, text })} />}
       {option?.from_entities && <div className="flex flex-wrap items-center gap-1.5 border-l-2 border-accent/40 pl-2">
