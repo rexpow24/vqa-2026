@@ -2,7 +2,7 @@
 // architecture.md "One derivation, three callers"). Pure: the routes read the
 // rows and pass them in; this decides what O must say for a given C.
 
-import { currentVersion } from "./index.ts";
+import { currentVersion, getCodebook } from "./index.ts";
 import { compose, type Entity, type SlotValue, type Slots } from "./compose.ts";
 import { deriveOutcome, outcomeNeedsAnnotator } from "./derivation.ts";
 import { sameSlots } from "./form.ts";
@@ -24,6 +24,9 @@ export function outcomeRow(cause: Slots, stored: StoredOutcome, entities: Entity
   if (outcomeNeedsAnnotator(cause) && !keepSigns) return null;
   const slots = deriveOutcome(cause, outcomeNeedsAnnotator(cause) ? stored!.slots : null);
   if (!slots?.level) return null;
+  if (getCodebook(version)?.cells.find((cell) => cell.id === "parties")?.read_only) {
+    slots.parties = entities.map((entity) => entity.key).sort().slice(0, 2).map((key) => ({ entity: key }));
+  }
   const sentence = compose("O", slots, { version, entities });
   if (stored?.codebook_version === version && sameSlots(stored.slots, slots) && stored.edited_answer === sentence) return null;
   return { draft_id: draftId, codebook_version: version, slots, human_keyframes_s: [], edited_answer: sentence };

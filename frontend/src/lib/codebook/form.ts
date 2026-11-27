@@ -66,6 +66,7 @@ const cellOf = (book: Codebook, id: string): CodebookCell => {
 };
 
 const keysOf = (context: FormContext) => [...context.entities].map((entity) => entity.key).sort();
+const outcomePartyKeysOf = (context: FormContext) => keysOf(context).slice(0, 2);
 const responsibleKeysOf = (context: FormContext) => context.entities.filter((entity) =>
   (entity.cells.type as SlotValue | undefined)?.option !== "type.animal").map((entity) => entity.key).sort();
 
@@ -133,7 +134,9 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
       // under the label of its level, and the level is the highest of the ticked signs.
       if (!outcomeNeedsAnnotator(context.cause)) {
         out.push(field(book, "level", "outer", { readOnly: true,
-          note: "Tự điền: C suýt va chạm là không va chạm." }));
+          note: "Tự điền: C suýt va chạm là không va chạm." }),
+        field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: outcomePartyKeysOf(context),
+          required: true, readOnly: true, note: "Tự chọn cả A và B từ nhóm E; không chỉnh sửa." }));
         return out;
       }
       const groups = signLevelLabels();
@@ -141,8 +144,10 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
         note: "Tự suy ra: mức cao nhất của các dấu hiệu đã chọn." }),
       field(book, "signs", "outer", { required: true,
         options: (cellOf(book, "signs").options ?? []).map((item) => ({ ...item, group: groups[item.id] })) }),
-      field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: keys,
-        note: "Tự điền từ chủ thể và đối tượng của nhóm C; chọn 1 hoặc 2 bên." }));
+      field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: outcomePartyKeysOf(context),
+        required: true, readOnly: book.version >= 3,
+        note: book.version >= 3 ? "Tự chọn cả A và B từ nhóm E; không chỉnh sửa."
+          : "Tự điền từ chủ thể và đối tượng của nhóm C; chọn 1 hoặc 2 bên." }));
       return out;
     }
     case "R": {
@@ -309,7 +314,8 @@ export function stateFromSlots(qgroup: string, slots: Slots | null | undefined, 
   };
   if (qgroup === "O" || qgroup === "Attr") {
     const cells = (Array.isArray(parties) || parties === undefined ? rest : { ...rest, parties }) as Cells;
-    return { cells, parties: [], refs: list.map((ref) => (ref as SlotValue).entity).filter((key): key is string => !!key) };
+    const refs = list.map((ref) => (ref as SlotValue).entity).filter((key): key is string => !!key);
+    return { cells, parties: [], refs: qgroup === "O" && bookOf("O").version >= 3 ? outcomePartyKeysOf(context) : refs };
   }
   if (qgroup === "Prev") {
     if (list.length === 1 && (list[0].party as SlotValue | undefined)?.option === "party.unclear") {
@@ -408,7 +414,7 @@ export function outcomeState(state: FormState, context: FormContext): FormState 
 /** A new, empty form; O starts with the C pair (codebook O, "auto_fill"). */
 export function defaultState(qgroup: string, context: FormContext): FormState {
   const state = emptyState();
-  if (qgroup === "O") state.refs = causePair(context.cause);
+  if (qgroup === "O") state.refs = bookOf("O").version >= 3 ? outcomePartyKeysOf(context) : causePair(context.cause);
   return state;
 }
 
@@ -512,6 +518,7 @@ const suffix = (option: string | undefined) => option?.split(".").slice(1).join(
  */
 export function problems(qgroup: string, given: FormState, context: FormContext): Record<string, string> {
   const out: Record<string, string> = {};
+  const book = bookOf(qgroup);
   const state = qgroup === "O" ? outcomeState(given, context) : given;
   const visible = fields(qgroup, state, context);
   for (const item of visible) {
@@ -558,6 +565,13 @@ export function problems(qgroup: string, given: FormState, context: FormContext)
   }
   const refs = visible.find((item) => item.kind === "refs");
   if (refs && state.refs.length > 2) out[refs.key] = "Chọn tối đa 2 bên.";
+  if (qgroup === "O" && book.version >= 3 && refs) {
+    const expected = outcomePartyKeysOf(context);
+    if (expected.length !== 2) out[refs.key] = "Cần khai báo đủ bên A và B ở nhóm E trước khi lưu nhóm O.";
+    else if (JSON.stringify(validRefs(state, refs)) !== JSON.stringify(expected)) {
+      out[refs.key] = "Nhóm O luôn gồm cả bên A và bên B.";
+    }
+  }
   if (qgroup === "O" && !deriveOutcome(context.cause, null)) {
     out["outer.level"] = "Lưu nhóm C trước để hệ thống suy ra mức độ.";
   }
