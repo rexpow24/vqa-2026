@@ -58,7 +58,7 @@ export async function PUT(request: Request, context: Context) {
     let used: { entity?: string; groups?: string[] } = {};
     try { used = JSON.parse(error.details ?? "{}"); } catch { /* keep the message alone */ }
     return Response.json({
-      error: `Bên ${used.entity ?? ""} đang được dùng ở nhóm ${(used.groups ?? []).join(", ")}; bỏ chọn bên đó ở các nhóm này trước.`,
+      error: `Bên ${used.entity ?? ""} đang được dùng ở nhóm ${(used.groups ?? []).join(", ")}; xóa câu đã chọn ở các nhóm này trước.`,
       code: "entity_referenced", entity: used.entity, groups: used.groups ?? [],
     }, { status: 409 });
   }

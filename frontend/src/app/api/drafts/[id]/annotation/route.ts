@@ -79,6 +79,44 @@ export async function POST(request: Request, context: Context) {
   return Response.json({ ...data, predicted_keyframes_s: draft.predicted_keyframes_s });
 }
 
+/** Remove a saved slot answer so the annotator can make a fresh selection. */
+export async function DELETE(_request: Request, context: Context) {
+  const profile = await requireApiProfile();
+  if (profile instanceof Response) return profile;
+  const { id } = await context.params;
+  const supabase = await createClient();
+  const { data: draft, error: draftError } = await supabase.from("video_drafts")
+    .select("video_id,qgroup").eq("id", id).single();
+  if (draftError || !draft) return Response.json({ error: "Không tìm thấy bản nháp." }, { status: 404 });
+  const { data: assignment } = await supabase.from("video_assignments").select("answer_format")
+    .eq("video_id", draft.video_id).eq("annotator_id", profile.id).maybeSingle();
+  if (assignment?.answer_format !== "slots" || !isSlotGroup(draft.qgroup)) {
+    return slotError("text_group", "Chỉ xóa được câu đã chọn ở nhóm dạng ô.", 422);
+  }
+  const { data: removed, error } = await supabase.from("qa_annotations").delete()
+    .eq("draft_id", id).eq("annotator_id", profile.id).eq("verdict", "SLOTS")
+    .select("draft_id");
+  if (error?.message.includes("adjudicated")) {
+    return slotError("adjudicated", "Câu này đã được thống nhất, không sửa được nữa.", 409);
+  }
+  if (error) return slotError("delete_failed", error.message);
+  if (!removed?.length) return Response.json({ error: "Không tìm thấy câu đã lưu để xóa." }, { status: 404 });
+
+  // C is the source for R, O and Prev. Removing it also removes those
+  // now-invalid dependent answers. N is synthesized from all groups.
+  const dependentGroups = draft.qgroup === "C" ? ["R", "O", "Prev", "N"] : ["N"];
+  if (dependentGroups.length) {
+    const { data: dependentDrafts } = await supabase.from("video_drafts").select("id")
+      .eq("video_id", draft.video_id).in("qgroup", dependentGroups);
+    const dependentIds = (dependentDrafts ?? []).map((row) => row.id);
+    if (dependentIds.length) await supabase.from("qa_annotations").delete()
+      .eq("annotator_id", profile.id).in("draft_id", dependentIds);
+  }
+  await supabase.from("video_assignments").update({ status: "in_progress" })
+    .eq("annotator_id", profile.id).eq("video_id", draft.video_id).neq("status", "completed");
+  return Response.json({ deleted: true, qgroup: draft.qgroup, dependent_groups: dependentGroups });
+}
+
 type Draft = { video_id: string; qgroup: string; answer: string; predicted_keyframes_s: number[] };
 type Client = Awaited<ReturnType<typeof createClient>>;
 const slotError = (code: string, error: string, status = 422) => Response.json({ error, code }, { status });

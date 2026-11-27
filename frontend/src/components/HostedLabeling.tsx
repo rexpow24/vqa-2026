@@ -285,6 +285,15 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
           : <SlotCard key={draft.id} draft={draft} context={slotContext} labels={entityLabels} duration={Number(video.duration_s)}
             playhead={playhead} canSave={!!assignment} onSeek={seek} onReference={draft.qgroup === "C" ? openReference : undefined}
             trainingsDone={trained} onTrained={(id) => setTrained((current) => current ? [...current, id] : current)}
+            onCleared={(dependentGroups) => {
+              const cleared = new Set([draft.qgroup, ...dependentGroups]);
+              setDrafts((current) => current.map((item) => cleared.has(item.qgroup)
+                ? { ...item, verdict: null, reason_code: null, reason_note: null, edited_answer: null,
+                  human_keyframes_s: [], slots: null, codebook_version: null, generated_answer: null }
+                : item));
+              setMessage(draft.qgroup === "C" ? "Đã xóa nhóm C và các câu phụ thuộc để chọn lại." : `Đã xóa câu đã chọn ở nhóm ${draft.qgroup}.`);
+              setError("");
+            }}
             onSaved={({ also, ...row }) => slotSaved(draft, [{ ...row, draft_id: draft.id }, ...(also ?? [])])} />)
           : draft.decision ? <DecidedCard key={draft.id} draft={draft} onSeek={seek} /> : <DraftCard key={draft.id} draft={draft} duration={Number(video.duration_s)}
           playhead={playhead} canSave={!!assignment} onSeek={seek} onSaved={(saved) => {

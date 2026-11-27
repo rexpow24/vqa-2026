@@ -15,7 +15,7 @@ export type SlotDraft = {
 /** A refused request: the route's Vietnamese `error`, its machine `code`, and the cell it names if any. */
 export type SaveError = { message: string; code?: string; status?: number; cellId?: string; groups?: string[]; entity?: string };
 
-export async function postJson<T>(url: string, method: "POST" | "PUT", body: object): Promise<T> {
+export async function postJson<T>(url: string, method: "POST" | "PUT" | "DELETE", body: object): Promise<T> {
   const response = await fetch(url, { method, cache: "no-store",
     headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
   const result = await response.json().catch(() => ({}));
@@ -102,10 +102,15 @@ export function EditableSentence({ composed, edit, problem, notice, dirty, saved
   </div>;
 }
 
-export function SaveBar({ canSave, saving, dirty, status, error, onSave, label = "Lưu" }: {
+export function SaveBar({ canSave, saving, dirty, status, error, onSave, label = "Lưu", onClear, clearing = false }: {
   canSave: boolean; saving: boolean; dirty: boolean; status: string; error?: string; onSave: () => void; label?: string;
+  onClear?: () => void; clearing?: boolean;
 }) {
   return <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-border px-4 py-3">
+    {onClear && <button type="button" disabled={!canSave || saving || clearing} onClick={onClear}
+      className={`rounded-md border border-red/50 px-3 py-2 text-sm text-red transition-colors hover:bg-red/10
+        disabled:cursor-not-allowed disabled:opacity-50 max-sm:w-full ${FOCUS}`}>
+      {clearing ? "Đang xóa…" : "Xóa câu đã chọn"}</button>}
     <button type="button" disabled={!canSave || saving || !dirty} onClick={onSave}
       className={`rounded-md border border-accent bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors
         hover:brightness-110 disabled:cursor-not-allowed disabled:border-border-strong disabled:bg-surface-2

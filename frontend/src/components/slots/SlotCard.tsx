@@ -30,13 +30,14 @@ type Saved = SavedSlotRow & { also?: SavedSlotRow[] };
  * opens with what the current one still has and saves with the current one (F-v1).
  */
 export function SlotCard({ draft, context, labels, duration, playhead, canSave, onSeek, onSaved, onReference,
-  trainingsDone = null, onTrained }: {
+  trainingsDone = null, onTrained, onCleared }: {
   draft: SlotDraft; context: FormContext; labels: Record<string, string>; duration: number; playhead: number;
   canSave: boolean; onSeek: (time: number) => void; onSaved: (saved: Saved) => void;
   /** Group C: open a reference clip beside the video (features/c-reference-hints). */
   onReference?: (clip: ReferenceClip) => void;
   /** Training ids the caller completed; null when not gated (features/c-training-gate). */
   trainingsDone?: string[] | null; onTrained?: (id: string) => void;
+  onCleared: (dependentGroups: string[]) => void;
 }) {
   const qgroup = draft.qgroup;
   const savedSlots = draft.verdict === "SLOTS" ? draft.slots : null;
@@ -59,6 +60,7 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
   // [start, end] from one impact mark (features/impact-keyframe); a saved pair is kept as stored.
   const [span, setSpan] = useState<[number, number] | null>(savedPair ? [savedMarks[0], savedMarks[1]] : null);
   const [saving, setSaving] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const [tried, setTried] = useState(false);
   const [serverError, setServerError] = useState<SaveError | null>(null);
   const needsMarks = needsKeyframes(qgroup);
@@ -115,6 +117,18 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
       const error = cause as SaveError;
       setServerError({ ...error, ...errorText(qgroup, error.code, error.message) });
     } finally { setSaving(false); }
+  }
+  async function clearAnswer() {
+    setClearing(true); setServerError(null);
+    try {
+      const result = await postJson<{ deleted: boolean; dependent_groups: string[] }>(`/api/drafts/${draft.id}/annotation`, "DELETE", {});
+      setState(stateFromSlots(qgroup, null, context));
+      setRefsTouched(false); setTouched(false); setSpan(null); setEdit(null); setEditNotice(null); setTried(false);
+      onCleared(result.dependent_groups);
+    } catch (cause) {
+      const error = cause as SaveError;
+      setServerError({ ...error, ...errorText(qgroup, error.code, error.message) });
+    } finally { setClearing(false); }
   }
 
   // A server error about one cell shows next to the first field of that cell.
@@ -227,6 +241,6 @@ export function SlotCard({ draft, context, labels, duration, playhead, canSave, 
     <SaveBar canSave={canSave} saving={saving} dirty={dirty} status={status}
       error={serverError?.message
         ?? (tried && Object.keys(found).length ? "Còn ô chưa chọn hoặc chưa hợp lệ, xem chữ đỏ ở trên." : undefined)}
-      onSave={() => { void save(); }} />
+      onSave={() => { void save(); }} onClear={savedSlots ? () => { void clearAnswer(); } : undefined} clearing={clearing} />
   </article>;
 }
