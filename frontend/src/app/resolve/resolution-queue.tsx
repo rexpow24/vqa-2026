@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 
 type Option = { id: string; label: string };
@@ -57,8 +56,9 @@ export function ResolutionQueue({ initialCases }: { initialCases: ResolutionCase
             <div><h3 className="font-semibold"><span className="text-accent">#{item.seq}</span> {item.filename}</h3>
               <p className="mt-1 text-sm">Nhóm {item.question_group} · {item.entity_key ? `Bên ${item.entity_key} · ` : item.target_index !== null ? `Bên ${item.target_index + 1} · ` : ""}{item.target_label}</p>
               <p className="mt-1 text-xs text-muted">Xin hỗ trợ bởi {item.reporter_name || "annotator"}</p></div>
-            <Link href={`/annotate/${item.video_id}`} className="rounded border border-border px-3 py-1.5 text-sm hover:border-accent">Mở video</Link>
           </div>
+          <video src={`/api/videos/${item.video_id}/stream`} controls playsInline preload="metadata"
+            className="mt-3 max-h-[55vh] w-full max-w-3xl rounded bg-black" />
           {item.note && <p className="mt-3 rounded border border-border bg-background p-3 text-sm">Ghi chú: {item.note}</p>}
           <details className="mt-3 rounded border border-border bg-background p-3">
             <summary className="cursor-pointer text-sm font-medium">Xem câu trả lời hiện tại (đã che ô cần phân xử)</summary>

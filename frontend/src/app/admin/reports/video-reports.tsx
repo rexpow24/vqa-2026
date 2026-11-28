@@ -39,12 +39,17 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
   const openCount = reports.filter((report) => report.status === "open").length;
   const resolvedCount = reports.length - openCount;
   const visible = filter === "all" ? reports : reports.filter((report) => filter === "open" ? report.status === "open" : report.status === filter);
+  function tally(report: VideoReportRow) {
+    const counts = new Map<string, number>();
+    for (const vote of report.votes) counts.set(vote.answer, (counts.get(vote.answer) ?? 0) + 1);
+    return [...counts].map(([answer, count]) => ({ answer, count })).sort((a, b) => b.count - a.count || a.answer.localeCompare(b.answer, "vi"));
+  }
 
   async function finalize(report: VideoReportRow) {
     setBusy(report.id); setError(""); setMessage("");
     try {
       const response = await fetch(`/api/admin/reports/${report.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answer: answers[report.id] ?? "" }) });
+        body: JSON.stringify({ answer: answers[report.id] ?? (tally(report)[0]?.count > report.votes.length / 2 ? tally(report)[0].answer : "") }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? `Lỗi ${response.status}`);
       setReports((current) => current.map((row) => row.id === report.id ? { ...row, status: "resolved", final_answer: result.final_answer, resolved_at: new Date().toISOString() } : row));
@@ -101,10 +106,15 @@ export function VideoReports({ initialReports }: { initialReports: VideoReportRo
         {report.video && <ReportVideoEvidence videoId={report.video.id} seq={report.video.seq} />}
         {report.reason === "cell_conflict" && <div className="mt-3 rounded border border-border p-3">
           <h4 className="text-sm font-semibold">Ý kiến annotator ({report.votes.length})</h4>
+          {tally(report).length > 0 && <p className="mt-2 rounded border border-accent/40 bg-accent/5 p-2 text-sm">
+            {tally(report)[0].count > report.votes.length / 2 ? "Đa số chọn" : "Phiếu cao nhất"}: <strong>{tally(report)[0].answer}</strong> ({tally(report)[0].count}/{report.votes.length})
+            {tally(report)[0].count <= report.votes.length / 2 ? " · chưa có đa số" : ""}
+            <span className="mt-1 block text-xs text-muted">{tally(report).map((item) => `${item.answer}: ${item.count}`).join(" · ")}</span>
+          </p>}
           {report.votes.length ? <ul className="mt-2 flex flex-col gap-1 text-sm">{report.votes.map((vote) => <li key={vote.id} className="rounded bg-background p-2"><strong>{vote.annotator?.name ?? "Annotator"}:</strong> {vote.answer}</li>)}</ul>
             : <p className="mt-2 text-sm text-muted">Chưa có annotator gửi lựa chọn.</p>}
           {report.status === "open" ? <><label className="mt-3 block text-sm font-medium">Đáp án cuối cùng do admin chốt
-            <input value={answers[report.id] ?? ""} maxLength={1000} onChange={(event) => setAnswers((current) => ({ ...current, [report.id]: event.target.value }))}
+            <input value={answers[report.id] ?? (tally(report)[0]?.count > report.votes.length / 2 ? tally(report)[0].answer : "")} maxLength={1000} onChange={(event) => setAnswers((current) => ({ ...current, [report.id]: event.target.value }))}
               className="mt-1 block w-full max-w-2xl rounded border border-border bg-background px-3 py-2 text-foreground" placeholder="Nhập đáp án chính thức" />
           </label><button type="button" disabled={busy !== null} onClick={() => void finalize(report)} className="mt-3 rounded bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{busy === report.id ? "Đang chốt…" : "Chốt đáp án"}</button></>
             : report.final_answer && <div className="mt-3 rounded border border-green/30 bg-green/10 p-3"><p className="text-sm"><strong>Đáp án admin:</strong> {report.final_answer}</p>

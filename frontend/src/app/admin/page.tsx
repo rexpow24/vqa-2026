@@ -37,13 +37,14 @@ export default async function AdminPage() {
       <table className="w-full text-left text-sm">
         <thead className="border-b border-border text-xs text-muted"><tr>
           <th className="p-3">Người gán nhãn</th><th className="p-3">Đã giao</th><th className="p-3">Hoàn thành</th>
-          <th className="p-3">Còn lại</th><th className="p-3">Tiến độ</th><th className="p-3">Câu đã duyệt</th><th className="p-3">Hoạt động gần nhất</th>
+          <th className="p-3">Còn lại</th><th className="p-3">Tiến độ</th><th className="p-3">Câu đã duyệt</th><th className="p-3">Báo cáo đã gửi</th><th className="p-3">Hoạt động gần nhất</th>
         </tr></thead>
         <tbody>{stats.users.map((item) => <tr key={item.profile.id} className="border-b border-border last:border-0">
           <td className="p-3">{item.profile.name}{!item.profile.enabled && <span className="ml-2 text-xs text-amber">Tạm khóa</span>}</td>
           <td className="p-3 tabular-nums">{item.assigned}</td><td className="p-3 tabular-nums">{item.completed}</td>
           <td className="p-3 tabular-nums">{item.remaining}</td><td className="p-3 tabular-nums">{item.completionRate}%</td>
           <td className="p-3 tabular-nums">{item.annotations}</td>
+          <td className="p-3 tabular-nums">{item.reportsSent}</td>
           <td className="p-3 text-muted">{item.lastActivity ? new Date(item.lastActivity).toLocaleString("vi-VN") : "Chưa có"}</td>
         </tr>)}</tbody>
       </table>

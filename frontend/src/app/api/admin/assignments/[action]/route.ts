@@ -54,6 +54,14 @@ export async function POST(request: Request, context: Context) {
       ? await supabase.rpc("plan_agreement_group", { group_size: size })
       : await supabase.rpc("create_agreement_group", { group_size: size }));
   }
+  if (action === "prepare-round-four") {
+    return respond(await supabase.rpc("prepare_fourth_agreement_round"));
+  }
+  if (action === "assign-round-four") {
+    const ids = Array.isArray(body.annotator_ids) ? body.annotator_ids.map(uuid) : [];
+    if (!ids.length || ids.some((id) => !id)) return Response.json({ error: "Chọn ít nhất một annotator." }, { status: 422 });
+    return respond(await supabase.rpc("assign_fourth_agreement_round", { annotators: ids }));
+  }
   if (action === "assign-group" || action === "unassign-group") {
     const ids = Array.isArray(body.annotator_ids) ? body.annotator_ids.map(uuid) : [];
     const from = int(body.from);

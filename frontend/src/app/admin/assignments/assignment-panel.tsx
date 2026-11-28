@@ -88,8 +88,11 @@ export function AssignmentPanel({ overview, strata, slotRanges }: {
   const cell = (event: string, difficulty: string) => strata.find((row) => row.event_label === event && row.difficulty === difficulty);
   const planned = (event: string, difficulty: string) => plan?.filter((row) => row.event_label === event && row.difficulty === difficulty).length ?? 0;
   const perRound = Math.max(1, Math.floor(Number(roundSize)) || 1);
-  const rounds = Array.from({ length: Math.ceil(overview.group_size / perRound) }, (_, index) =>
-    ({ number: index + 1, from: index * perRound + 1, to: Math.min(overview.group_size, (index + 1) * perRound) }));
+  const rounds = overview.group_size === 160
+    ? [{ number: 1, from: 1, to: 20 }, { number: 2, from: 21, to: 40 },
+      { number: 3, from: 41, to: 60 }, { number: 4, from: 61, to: 160 }]
+    : Array.from({ length: Math.ceil(overview.group_size / perRound) }, (_, index) =>
+      ({ number: index + 1, from: index * perRound + 1, to: Math.min(overview.group_size, (index + 1) * perRound) }));
   const current = rounds[Math.min(round, rounds.length - 1)];
   const holders = (from: number, to: number) => overview.annotators.filter((person) =>
     intervals(person.agreement_ranges).some(([lo, hi]) => lo <= to && hi >= from)).map((person) => person.name);
@@ -177,9 +180,18 @@ export function AssignmentPanel({ overview, strata, slotRanges }: {
       </table></div>}
       {overview.group_size > 0 && <fieldset className="flex flex-col gap-3 border-t border-border pt-3">
         <legend className="sr-only">Giao theo vòng training</legend>
+        {overview.group_size === 60 && <div className="rounded border border-accent/40 bg-accent/5 p-3">
+          <p className="text-sm">Vòng 4 gồm 100 video #61-160. Giữ nguyên 60 video, lượt giao và câu trả lời cũ.</p>
+          <button type="button" disabled={busy} className="mt-2 rounded bg-accent px-3 py-1.5 text-sm font-semibold text-white disabled:opacity-40"
+            onClick={() => void run(() => post<{ group_size: number }>("prepare-round-four", {}),
+              () => "Đã mở vòng 4 (#61-160). Chọn người bên dưới rồi bấm Giao vòng 4.")}>
+            Mở vòng 4 (100 video #61-160)
+          </button>
+        </div>}
         <div className="flex flex-wrap items-end gap-3">
-          <label className="flex flex-col gap-1 text-sm">Số video mỗi vòng<input type="number" min={1} value={roundSize}
+          {overview.group_size !== 160 && <label className="flex flex-col gap-1 text-sm">Số video mỗi vòng<input type="number" min={1} value={roundSize}
             onChange={(event) => { setRoundSize(event.target.value); setRound(0); }} className={`${input} w-24`} /></label>
+          }
           <span className="pb-2 text-xs text-muted">{`${overview.group_size} video · ${rounds.length} vòng`}</span>
         </div>
         <div className="flex flex-col gap-1.5">{rounds.map((item, index) => {
@@ -197,7 +209,9 @@ export function AssignmentPanel({ overview, strata, slotRanges }: {
           {person.name}{person.label ? <span className="text-xs text-muted">({person.label})</span> : null}
         </label>)}</div>
         {current && <button type="button" className={`${button} self-start`} disabled={busy || !groupPeople.length} onClick={() => run(
-          () => post<{ assigned: number; videos: number }>("assign-group", { annotator_ids: groupPeople, from: current.from, to: current.to }),
+          () => current.number === 4
+            ? post<{ assigned: number; videos: number }>("assign-round-four", { annotator_ids: groupPeople })
+            : post<{ assigned: number; videos: number }>("assign-group", { annotator_ids: groupPeople, from: current.from, to: current.to }),
           (result) => `Vòng ${current.number}: đã giao thêm ${result.assigned} lượt (${result.videos} video).`)}>
           {`Giao vòng ${current.number} (#${current.from}-${current.to}) cho ${groupPeople.length} người`}</button>}
         {current && <div className="flex flex-wrap items-center gap-3">

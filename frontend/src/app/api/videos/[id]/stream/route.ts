@@ -15,7 +15,10 @@ async function stream(request: Request, context: Context, head = false) {
   // readable by no session, so it is looked up privileged after that check.
   const supabase = await createClient();
   const { data: visible } = await supabase.from("videos").select("id,status").eq("id", id).maybeSingle();
-  if (!visible || visible.status !== "active") return new Response("Not found", { status: 404 });
+  if (!visible) {
+    const { data: helping } = await supabase.rpc("can_view_resolution_video", { p_video_id: id });
+    if (!helping) return new Response("Not found", { status: 404 });
+  } else if (visible.status !== "active") return new Response("Not found", { status: 404 });
   const { data: video } = await createAdminClient().from("videos").select("drive_file_id").eq("id", id).single();
   if (!video) return new Response("Not found", { status: 404 });
 

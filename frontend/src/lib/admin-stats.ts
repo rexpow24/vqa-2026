@@ -8,6 +8,7 @@ export type UserStats = {
   completed: number;
   remaining: number;
   annotations: number;
+  reportsSent: number;
   completionRate: number;
   lastActivity: string | null;
 };
@@ -32,11 +33,16 @@ type StatsPayload = {
 
 export async function getAdminStats() {
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("admin_stats");
-  if (error) throw new Error(error.message);
+  const [statsResult, reportResult] = await Promise.all([
+    supabase.rpc("admin_stats"), supabase.rpc("report_counts_by_annotator"),
+  ]);
+  if (statsResult.error ?? reportResult.error) throw new Error(statsResult.error?.message ?? reportResult.error!.message);
+  const data = statsResult.data;
   // The function returns nothing at all when the caller is not an admin.
   if (!data) throw new Error("Admin access required");
   const payload = data as StatsPayload;
+  const reportCounts = new Map(((reportResult.data ?? []) as { annotator_id: string; sent_count: number }[])
+    .map((row) => [row.annotator_id, Number(row.sent_count)]));
 
   const users: UserStats[] = (payload.users ?? []).map((row) => {
     const assigned = Number(row.assigned);
@@ -50,6 +56,7 @@ export async function getAdminStats() {
       completed,
       remaining: Math.max(0, assigned - completed),
       annotations: Number(row.annotations),
+      reportsSent: reportCounts.get(row.id) ?? 0,
       completionRate: assigned ? Math.round((completed / assigned) * 100) : 0,
       lastActivity: row.last_activity,
     };
