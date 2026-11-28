@@ -33,8 +33,9 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ### Email notifications for video reports
 
-Set `RESEND_API_KEY` and `REPORT_EMAIL_FROM` in the Vercel Production environment to email every enabled admin when an annotator creates a report.
-`REPORT_EMAIL_FROM` must use a sender domain verified in Resend, for example `VQA Traffic <reports@example.com>`.
+Set `GMAIL_USER` to the sender's Google email address and `GMAIL_APP_PASSWORD` to a Google App Password in the Vercel Production environment.
+The sender account must have 2-Step Verification enabled and allow App Passwords.
+Do not use the account's normal password or commit the App Password to the repository.
 Recipients are read from enabled admin profiles in Supabase; no recipient list is stored in environment variables.
 Reports are saved even if email delivery is unavailable, and the report API includes `notification_status` as `sent`, `unconfigured`, or `failed`.
 
