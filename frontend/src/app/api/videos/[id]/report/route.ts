@@ -1,6 +1,7 @@
 import { requireApiProfile } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 import { currentVersion, getCodebook } from "@/lib/codebook";
+import { notifyAdminsOfVideoReport } from "@/lib/report-email";
 
 type Context = { params: Promise<{ id: string }> };
 const REASONS = new Set(["overcut", "too_difficult", "entity_color_unclear", "cause_too_difficult", "cell_conflict"]);
@@ -104,10 +105,16 @@ export async function POST(request: Request, context: Context) {
     target_index: body.reason === "cell_conflict" && Number.isInteger(body.target_index) ? body.target_index as number : null,
     report_snapshot: reportSnapshot,
     note: typeof body.note === "string" ? body.note.trim() || null : null,
-  }).select("id,status,created_at").single();
+  }).select("id,video_id,reason,question_group,entity_key,target_label,target_cell,target_index,note,status,created_at").single();
   if (error?.code === "23505") {
     return Response.json({ error: "Bạn đã gửi báo cáo cho video này, đang chờ admin xử lý." }, { status: 409 });
   }
   if (error) return Response.json({ error: error.message }, { status: 422 });
-  return Response.json(data, { status: 201 });
+  let notificationStatus: "sent" | "unconfigured" | "failed" = "failed";
+  try {
+    notificationStatus = await notifyAdminsOfVideoReport(data, profile);
+  } catch (cause) {
+    console.error("Could not email admins about video report", data.id, cause);
+  }
+  return Response.json({ ...data, notification_status: notificationStatus }, { status: 201 });
 }

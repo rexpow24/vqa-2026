@@ -31,6 +31,13 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
+### Email notifications for video reports
+
+Set `RESEND_API_KEY` and `REPORT_EMAIL_FROM` in the Vercel Production environment to email every enabled admin when an annotator creates a report.
+`REPORT_EMAIL_FROM` must use a sender domain verified in Resend, for example `VQA Traffic <reports@example.com>`.
+Recipients are read from enabled admin profiles in Supabase; no recipient list is stored in environment variables.
+Reports are saved even if email delivery is unavailable, and the report API includes `notification_status` as `sent`, `unconfigured`, or `failed`.
+
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
