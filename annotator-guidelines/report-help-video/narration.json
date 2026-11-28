@@ -1,0 +1,42 @@
+[
+  {
+    "id": "01-report",
+    "title": "Báo cáo đúng ô cần hỗ trợ",
+    "sentences": [
+      "Khi đã lưu câu trả lời mà còn phân vân về một ô, hãy bấm Xin hỗ trợ phân xử ô này ngay dưới ô đó.",
+      "Bạn có thể ghi chú lý do rồi bấm Gửi xin phân xử."
+    ]
+  },
+  {
+    "id": "02-privacy",
+    "title": "Chỉ ô được báo cáo bị che",
+    "sentences": [
+      "Annotator khác sẽ thấy video và các câu trả lời hiện tại của bạn, nhưng đáp án của ô đang xin hỗ trợ được che đi.",
+      "Người gửi báo cáo không được biểu quyết cho chính báo cáo của mình."
+    ]
+  },
+  {
+    "id": "03-queue",
+    "title": "Trang Cần hỗ trợ",
+    "sentences": [
+      "Mở trang Cần hỗ trợ để xem có bao nhiêu video và bao nhiêu ô đang cần bạn góp ý.",
+      "Mở video, xem ngữ cảnh và câu trả lời đã che ô cần phân xử trước khi chọn đáp án."
+    ]
+  },
+  {
+    "id": "04-vote",
+    "title": "Gửi lựa chọn độc lập",
+    "sentences": [
+      "Chọn phương án mà bạn thấy đúng, rồi bấm Gửi lựa chọn.",
+      "Mỗi người chỉ gửi một lựa chọn cho mỗi ô và trường hợp đã làm xong sẽ rời khỏi danh sách của bạn."
+    ]
+  },
+  {
+    "id": "05-admin",
+    "title": "Admin xem và chốt",
+    "sentences": [
+      "Ở trang Báo cáo và phân xử, admin xem số báo cáo còn mở, người gửi, từng lựa chọn và phương án được nhiều người chọn nhất.",
+      "Sau khi xem video và các ý kiến, admin chốt đáp án cuối cùng rồi sao chép kết quả để gửi lại annotator cập nhật."
+    ]
+  }
+]
