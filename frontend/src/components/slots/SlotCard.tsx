@@ -45,16 +45,11 @@ export function SlotCard({ videoId, draft, context, labels, duration, playhead, 
   const version = currentVersion(qgroup);
   const stale = staleChoices(qgroup, savedSlots ? draft.codebook_version : null, savedSlots);
   const [state, setState] = useState(() => stateFromSlots(qgroup, savedSlots, context));
-  // O starts with the C pair; until the annotator touches it, it follows C as C is saved.
-  const [refsTouched, setRefsTouched] = useState(savedSlots !== null);
   // Prev is derived from C and cannot be manually edited.
   const derived = qgroup === "Prev" ? prefillFromCause(qgroup, context, savedSlots) : null;
   const prefill = qgroup === "Prev" ? derived : savedSlots ? null : prefillFromCause(qgroup, context);
   const [touched, setTouched] = useState(false);
-  const chosen = qgroup === "Prev" && derived ? derived : prefill && !touched ? prefill
-    : qgroup === "O" && !refsTouched
-      ? { ...state, refs: fields("O", state, context).find((item) => item.kind === "refs")?.readOnly ? state.refs : causePair(context.cause) }
-      : state;
+  const chosen = qgroup === "Prev" && derived ? derived : prefill && !touched ? prefill : state;
   // O.v2 shows the level it will store: derived from C and the ticked signs, never chosen (features/o-signs-max-grouped).
   const form = qgroup === "O" ? outcomeState(chosen, context) : chosen;
   const prefilled = prefilledKeys(qgroup, form, prefill, context);
@@ -93,7 +88,6 @@ export function SlotCard({ videoId, draft, context, labels, duration, playhead, 
 
   function update(item: Field, value: SlotValue | string[] | undefined) {
     if (item.readOnly) return;
-    if (item.kind === "refs") setRefsTouched(true);
     setTouched(true);
     setState(choose(qgroup, form, item, value, context));
     setServerError(null);
@@ -126,7 +120,7 @@ export function SlotCard({ videoId, draft, context, labels, duration, playhead, 
     try {
       const result = await postJson<{ deleted: boolean; dependent_groups: string[] }>(`/api/drafts/${draft.id}/annotation`, "DELETE", {});
       setState(stateFromSlots(qgroup, null, context));
-      setRefsTouched(false); setTouched(false); setSpan(null); setEdit(null); setEditNotice(null); setTried(false);
+      setTouched(false); setSpan(null); setEdit(null); setEditNotice(null); setTried(false);
       onCleared(result.dependent_groups);
     } catch (cause) {
       const error = cause as SaveError;
@@ -149,6 +143,7 @@ export function SlotCard({ videoId, draft, context, labels, duration, playhead, 
   const scopes = [...new Set(visible.filter((item) => item.scope !== "outer").map((item) => item.scope as number))];
   const twoParties = visible.some((item) => item.kind === "party");
   const needsEntities = visible.some((item) => item.entities !== null) && context.entities.length === 0;
+  const needsOutcomeEntities = qgroup === "O" && context.entities.length < 2;
   const pair = causePair(context.cause);
   const status = saving ? "Đang lưu…" : !dirty ? "✓ Đã lưu" : savedSlots ? "Có thay đổi chưa lưu" : "";
 
@@ -216,6 +211,8 @@ export function SlotCard({ videoId, draft, context, labels, duration, playhead, 
     <div className="flex flex-col gap-3 border-t border-border px-4 py-3">
       {needsEntities && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber">
         Chưa có bên nào: khai báo và lưu các bên ở nhóm E trước.</p>}
+      {needsOutcomeEntities && <p className="rounded border border-amber/50 bg-amber/10 px-3 py-2 text-xs text-amber" role="alert">
+        Lưu đủ bên A và B ở nhóm E trước khi lưu nhóm O.</p>}
       {qgroup === "Prev" && <p className="rounded border border-accent/50 bg-accent/10 px-3 py-2 text-xs text-foreground/85">
         Hành động phòng tránh được suy ra trực tiếp từ tình huống C; nếu thiếu căn cứ về bên hoặc hành động, hệ thống ghi &quot;không thể xác định&quot;.</p>}
       {savedSlots && draft.codebook_version !== version && <p

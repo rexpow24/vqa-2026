@@ -31,24 +31,23 @@ const O_COLLISION: FormContext = { ...TWO, cause: { subject: { entity: "B" }, ob
   event_type: { option: "event_type.collision" } } };
 const keys = (qgroup: string, state: FormState, context: FormContext) => fields(qgroup, state, context).map((item) => item.key);
 
-test("S shows its seven cells (S.v2) and builds a flat payload that composes", () => {
+test("S shows its five current cells and builds a flat payload that composes", () => {
   const state = fill("S", TWO, [["outer.weather", { option: "weather.sunny" }], ["outer.light", { option: "light.day" }],
     ["outer.road_type", { option: "road_type.one_way" }], ["outer.surface", { option: "surface.dry" }],
-    ["outer.density", { option: "density.sparse" }], ["outer.segment", { option: "segment.straight" }],
-    ["outer.surface_material", { option: "surface_material.asphalt" }]]);
+    ["outer.segment", { option: "segment.straight" }]]);
   const slots = buildSlots("S", state, TWO);
-  assert.deepEqual(Object.keys(slots).sort(), ["density", "light", "road_type", "segment", "surface", "surface_material", "weather"]);
+  assert.deepEqual(Object.keys(slots).sort(), ["light", "road_type", "segment", "surface", "weather"]);
   assert.deepEqual(problems("S", state, TWO), {});
-  assert.equal(preview("S", slots, TWO), "Trời nắng, ban ngày, đường một chiều tại đoạn đường thẳng, mặt đường nhựa khô, mật độ xe thưa.");
+  assert.equal(preview("S", slots, TWO), "Trời nắng, ban ngày, đường một chiều tại đoạn đường thẳng, mặt đường khô.");
   const weather = fields("S", state, TWO).find((item) => item.key === "outer.weather")!;
   assert.ok(weather.options.some((option) => option.label === "tạnh ráo") && !weather.options.some((option) => option.label === "âm u"));
 });
 
-test("current rule codebooks add concrete, drop unclear C event, and retain C object", () => {
+test("current rule codebooks retain C object and drop unclear C event", () => {
   assert.deepEqual([currentVersion("S"), currentVersion("E"), currentVersion("C"), currentVersion("V")],
-    ["S.v3", "E.v6", "C.v4", "V.v9"]);
-  const scene = getCodebook("S.v3")!;
-  assert.ok(scene.cells.find((cell) => cell.id === "surface_material")!.options!.some((option) => option.label === "bê tông"));
+    ["S.v4", "E.v6", "C.v4", "V.v9"]);
+  const scene = getCodebook("S.v4")!;
+  assert.ok(scene.cells.find((cell) => cell.id === "weather")!.options!.some((option) => option.label === "tạnh ráo"));
   const cause = getCodebook("C.v4")!;
   assert.ok(cause.cells.find((cell) => cell.id === "event_type")!.options!.every((option) => option.id !== "event_type.unclear"));
   assert.ok(cause.cells.some((cell) => cell.id === "object"));
@@ -128,7 +127,7 @@ test("Prev uses the road user's role in K14: a pedestrian stops and looks, a cro
 
 test("S names every missing required cell", () => {
   const found = problems("S", fill("S", TWO, [["outer.weather", { option: "weather.rain" }]]), TWO);
-  assert.equal(Object.keys(found).length, 6);
+  assert.equal(Object.keys(found).length, 4);
   assert.equal(found["outer.light"], "Chưa chọn.");
 });
 
@@ -242,8 +241,8 @@ test("O.v2 on a collision asks the signs, grouped by level, and derives the leve
   const cause = { subject: { entity: "B" }, object: { entity: "A" }, event_type: { option: "event_type.collision" } };
   const context = { ...TWO, cause };
   const start = defaultState("O", context);
-  assert.deepEqual(start.refs, ["B", "A"]);
-  assert.deepEqual(keys("O", start, context), ["outer.level", "outer.signs", "outer.parties"]);
+  assert.deepEqual(start.refs, []);
+  assert.deepEqual(keys("O", start, context), ["outer.level", "outer.signs"]);
   const level = fields("O", start, context).find((item) => item.key === "outer.level")!;
   assert.equal(level.readOnly, true);
   assert.equal(problems("O", start, context)["outer.signs"], "Chưa chọn.");
@@ -259,14 +258,18 @@ test("O.v2 on a collision asks the signs, grouped by level, and derives the leve
   const damaged = fill("O", context, [["outer.signs", { options: ["sign.visible_body_damage", "sign.person_fell", "sign.vehicle_fell"] }]], start);
   assert.deepEqual(outcomeState(damaged, context).cells.level, { option: "level.moderate" });
   assert.deepEqual(buildSlots("O", damaged, context), { level: { option: "level.moderate" },
-    signs: { options: ["sign.vehicle_fell", "sign.person_fell", "sign.visible_body_damage"] }, parties: [{ entity: "B" }, { entity: "A" }] });
+    signs: { options: ["sign.vehicle_fell", "sign.person_fell", "sign.visible_body_damage"] }, parties: [{ entity: "A" }, { entity: "B" }] });
   assert.deepEqual(problems("O", damaged, context), {});
+  assert.deepEqual(buildSlots("O", { ...damaged, refs: ["B"] }, context).parties,
+    [{ entity: "A" }, { entity: "B" }]);
+  assert.equal(problems("O", damaged, { ...context, entities: context.entities.slice(0, 1) }).entities,
+    "Cần khai báo đủ bên A và B ở nhóm E trước khi lưu nhóm O.");
   assert.equal(preview("O", buildSlots("O", damaged, context), context),
-    "Xe máy màu đỏ và xe ô tô (có camera hành trình) va chạm vừa, xe đổ tại chỗ, người ngã tại chỗ, có hư hỏng nhìn thấy được ở thân xe (ô tô).");
+    "Xe ô tô (có camera hành trình) và xe máy màu đỏ va chạm vừa, xe đổ tại chỗ, người ngã tại chỗ, có hư hỏng nhìn thấy được ở thân xe (ô tô).");
   // A severe sign lifts the level; the moderate signs stay recorded.
   const thrown = fill("O", context, [["outer.signs", { options: ["sign.person_thrown", "sign.person_fell"] }]], damaged);
   assert.deepEqual(buildSlots("O", thrown, context), { level: { option: "level.severe" },
-    signs: { options: ["sign.person_fell", "sign.person_thrown"] }, parties: [{ entity: "B" }, { entity: "A" }] });
+    signs: { options: ["sign.person_fell", "sign.person_thrown"] }, parties: [{ entity: "A" }, { entity: "B" }] });
   // "có chạm nhưng các bên vẫn giữ thăng bằng" contradicts every other sign.
   const balanced = fill("O", context, [["outer.signs", { options: ["sign.person_fell", "sign.person_thrown", "sign.contact_balanced"] }]], thrown);
   assert.deepEqual(buildSlots("O", balanced, context).signs, { options: ["sign.contact_balanced"] });
@@ -281,11 +284,13 @@ test("O.v2 on a collision asks the signs, grouped by level, and derives the leve
   assert.deepEqual(keys("O", defaultState("O", nearMiss), nearMiss), ["outer.level"]);
   assert.equal(fields("O", defaultState("O", nearMiss), nearMiss)[0].readOnly, true);
   assert.deepEqual(outcomeState(defaultState("O", nearMiss), nearMiss).cells.level, { option: "level.none" });
-  assert.deepEqual(buildSlots("O", damaged, nearMiss), { level: { option: "level.none" } });
+  assert.deepEqual(buildSlots("O", damaged, nearMiss),
+    { level: { option: "level.none" }, parties: [{ entity: "A" }, { entity: "B" }] });
   assert.deepEqual(problems("O", damaged, nearMiss), {});
   const legacyUnclear = { ...TWO, cause: { ...cause, event_type: { option: "event_type.unclear" } } };
   // features/o-v2-sign-revision: "không đánh giá" was merged into "không va chạm".
-  assert.deepEqual(buildSlots("O", start, legacyUnclear), { level: { option: "level.none" } });
+  assert.deepEqual(buildSlots("O", start, legacyUnclear),
+    { level: { option: "level.none" }, parties: [{ entity: "A" }, { entity: "B" }] });
   assert.deepEqual(keys("O", defaultState("O", legacyUnclear), legacyUnclear), ["outer.level"]);
   const noCause = { ...TWO, cause: null };
   assert.deepEqual(keys("O", emptyState(), noCause), ["outer.level"]);
@@ -360,8 +365,7 @@ test("stored slots load back into the same form", () => {
     ["Prev", fill("Prev", TWO, [["outer.party", { option: "party.both" }], ["0.main_action", { option: "main_action.slow_down" }],
       ["1.main_action", { option: "main_action.signal" }]]), TWO],
     ["Prev", fill("Prev", TWO, [["outer.party", { option: "party.unclear" }]]), TWO],
-    ["O", fill("O", O_COLLISION, [["outer.signs", { options: ["sign.person_thrown"] }],
-      ["outer.parties", ["A"]]]), O_COLLISION],
+    ["O", fill("O", O_COLLISION, [["outer.signs", { options: ["sign.person_thrown"] }]]), O_COLLISION],
   ];
   for (const [qgroup, state, context] of cases) {
     const slots = buildSlots(qgroup, state, context);
@@ -443,11 +447,11 @@ test("F-v1: an answer saved with v1 keeps what v2 still has and names what it lo
   const slots = buildSlots("S", state, TWO);
   assert.equal(slots.weather, undefined);
   assert.equal(slots.light && (slots.light as { option: string }).option, "light.day");
-  assert.deepEqual(staleChoices("S", "S.v1", s1), { cells: { weather: "âm u" }, removed: [] });
+  assert.deepEqual(staleChoices("S", "S.v1", s1), { cells: { weather: "âm u" }, removed: ["Mật độ xe"] });
   assert.deepEqual(staleChoices("C", "C.v1", { event_type: { option: "event_type.near_miss" }, evader: { entity: "A" },
     evasion: { option: "evasion.hard_brake" } }), { cells: {}, removed: ["Bên né", "Cách né"] });
   const s2 = { ...s1, weather: { option: "weather.no_rain" } };
-  assert.deepEqual(staleChoices("S", "S.v2", s2), { cells: {}, removed: [] });
+  assert.deepEqual(staleChoices("S", "S.v2", s2), { cells: {}, removed: ["Mật độ xe"] });
 });
 
 test("C pair for R and O: entity subject and object, both parties in key order, nothing for unclear", () => {

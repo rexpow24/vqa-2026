@@ -134,20 +134,14 @@ export function fields(qgroup: string, state: FormState, context: FormContext): 
       // under the label of its level, and the level is the highest of the ticked signs.
       if (!outcomeNeedsAnnotator(context.cause)) {
         out.push(field(book, "level", "outer", { readOnly: true,
-          note: "Tự điền: C suýt va chạm là không va chạm." }),
-        field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: outcomePartyKeysOf(context),
-          required: true, readOnly: true, note: "Tự chọn cả A và B từ nhóm E; không chỉnh sửa." }));
+          note: "Tự điền: C suýt va chạm là không va chạm." }));
         return out;
       }
       const groups = signLevelLabels();
       out.push(field(book, "level", "outer", { readOnly: true,
         note: "Tự suy ra: mức cao nhất của các dấu hiệu đã chọn." }),
       field(book, "signs", "outer", { required: true,
-        options: (cellOf(book, "signs").options ?? []).map((item) => ({ ...item, group: groups[item.id] })) }),
-      field(book, "parties", "outer", { kind: "refs", key: "outer.parties", entities: outcomePartyKeysOf(context),
-        required: true, readOnly: book.version >= 3,
-        note: book.version >= 3 ? "Tự chọn cả A và B từ nhóm E; không chỉnh sửa."
-          : "Tự điền từ chủ thể và đối tượng của nhóm C; chọn 1 hoặc 2 bên." }));
+        options: (cellOf(book, "signs").options ?? []).map((item) => ({ ...item, group: groups[item.id] })) }));
       return out;
     }
     case "R": {
@@ -296,6 +290,7 @@ export function buildSlots(qgroup: string, given: FormState, context: FormContex
       slots.parties = [{ ...(parties[0] ?? {}), party: { entity: party.entity } }];
     }
   }
+  if (qgroup === "O") slots.parties = outcomePartyKeysOf(context).map((key) => ({ entity: key }));
   // An additional actor without a selected behavior is not an annotation.
   // Keep the optional actor choice in the in-memory form, but do not persist it alone.
   if (qgroup === "V" && slots.additional_violator && !slots.additional_behavior) delete slots.additional_violator;
@@ -315,7 +310,7 @@ export function stateFromSlots(qgroup: string, slots: Slots | null | undefined, 
   if (qgroup === "O" || qgroup === "Attr") {
     const cells = (Array.isArray(parties) || parties === undefined ? rest : { ...rest, parties }) as Cells;
     const refs = list.map((ref) => (ref as SlotValue).entity).filter((key): key is string => !!key);
-    return { cells, parties: [], refs: qgroup === "O" && bookOf("O").version >= 3 ? outcomePartyKeysOf(context) : refs };
+    return { cells, parties: [], refs: qgroup === "O" ? [] : refs };
   }
   if (qgroup === "Prev") {
     if (list.length === 1 && (list[0].party as SlotValue | undefined)?.option === "party.unclear") {
@@ -411,11 +406,11 @@ export function outcomeState(state: FormState, context: FormContext): FormState 
   return { ...state, cells };
 }
 
-/** A new, empty form; O starts with the C pair (codebook O, "auto_fill"). */
-export function defaultState(qgroup: string, context: FormContext): FormState {
-  const state = emptyState();
-  if (qgroup === "O") state.refs = bookOf("O").version >= 3 ? outcomePartyKeysOf(context) : causePair(context.cause);
-  return state;
+/** A new, empty form. Group O derives its parties when building slots. */
+// Keep the shared form factory signature for callers of every group.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function defaultState(_qgroup: string, _context: FormContext): FormState {
+  return emptyState();
 }
 
 /**
@@ -565,12 +560,8 @@ export function problems(qgroup: string, given: FormState, context: FormContext)
   }
   const refs = visible.find((item) => item.kind === "refs");
   if (refs && state.refs.length > 2) out[refs.key] = "Chọn tối đa 2 bên.";
-  if (qgroup === "O" && book.version >= 3 && refs) {
-    const expected = outcomePartyKeysOf(context);
-    if (expected.length !== 2) out[refs.key] = "Cần khai báo đủ bên A và B ở nhóm E trước khi lưu nhóm O.";
-    else if (JSON.stringify(validRefs(state, refs)) !== JSON.stringify(expected)) {
-      out[refs.key] = "Nhóm O luôn gồm cả bên A và bên B.";
-    }
+  if (qgroup === "O" && book.version >= 3 && outcomePartyKeysOf(context).length !== 2) {
+    out.entities = "Cần khai báo đủ bên A và B ở nhóm E trước khi lưu nhóm O.";
   }
   if (qgroup === "O" && !deriveOutcome(context.cause, null)) {
     out["outer.level"] = "Lưu nhóm C trước để hệ thống suy ra mức độ.";

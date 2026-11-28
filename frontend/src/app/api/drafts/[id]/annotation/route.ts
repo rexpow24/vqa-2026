@@ -209,6 +209,11 @@ async function saveSlotAnswer(supabase: Client, annotatorId: string, draftId: st
     const canonicalSlots = draft.qgroup === "Prev" ? derivePreventionFromCause(linked!.slots, entities)
       : draft.qgroup === "O" ? deriveOutcome(linked!.slots, slots as Slots) ?? {} : slots as Slots;
     const canonicalVersion = draft.qgroup === "Prev" || draft.qgroup === "O" ? currentVersion(draft.qgroup)! : version;
+    if (draft.qgroup === "O") {
+      const keys = entities.map((entity) => entity.key).sort().slice(0, 2);
+      if (keys.length !== 2) return slotError("missing_entities", "Lưu đủ bên A và B ở nhóm E trước khi lưu nhóm O.");
+      canonicalSlots.parties = keys.map((key) => ({ entity: key }));
+    }
     if (draft.qgroup === "O" && !canonicalSlots.level) {
       return slotError("missing_cell", "Nhóm C là va chạm: chọn ít nhất một dấu hiệu nhìn thấy rõ.");
     }
