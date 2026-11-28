@@ -32,6 +32,9 @@ export function VideoReportButton({ videoId }: { videoId: string }) {
       if (!response.ok) throw new Error(result.error ?? `Lỗi ${response.status}`);
       setSent(true);
       setOpen(false);
+      if (result.notification_status !== "sent") {
+        setError("Báo cáo đã lưu nhưng email thông báo admin chưa gửi được.");
+      }
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Không gửi được báo cáo.");
     } finally {
@@ -76,5 +79,6 @@ export function VideoReportButton({ videoId }: { videoId: string }) {
         {busy ? "Đang gửi…" : "Gửi báo cáo"}
       </button>
     </form>}
+    {error && !open && <p role="alert" className="mt-2 max-w-80 text-xs text-amber">{error}</p>}
   </div>;
 }

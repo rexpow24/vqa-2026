@@ -23,6 +23,9 @@ export function GroupReportButton({ videoId, questionGroup, targetCell, targetLa
       const result = await response.json();
       if (!response.ok) throw new Error(result.error ?? `Lỗi ${response.status}`);
       setSent(true); setOpen(false);
+      if (result.notification_status !== "sent") {
+        setError("Báo cáo đã lưu nhưng email thông báo admin chưa gửi được.");
+      }
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Không gửi được báo cáo."); }
     finally { setBusy(false); }
   }
@@ -46,5 +49,6 @@ export function GroupReportButton({ videoId, questionGroup, targetCell, targetLa
         <button type="button" onClick={() => setOpen(false)} className="rounded border border-border px-3 py-1.5 text-xs text-muted">Đóng</button>
       </div>
     </form>}
+    {error && !open && <p role="alert" className="mt-2 text-xs text-amber">{error}</p>}
   </div>;
 }

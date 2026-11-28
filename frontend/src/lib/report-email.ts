@@ -26,9 +26,11 @@ const reasonLabels: Record<string, string> = {
 };
 
 export async function notifyAdminsOfVideoReport(report: ReportForEmail, reporter: Reporter): Promise<"sent" | "unconfigured"> {
+  const resendKey = process.env.RESEND_API_KEY?.trim();
+  const resendFrom = process.env.REPORT_EMAIL_FROM?.trim() || "onboarding@resend.dev";
   const gmailUser = process.env.GMAIL_USER?.trim();
   const appPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, "");
-  if (!gmailUser || !appPassword) return "unconfigured";
+  if (!resendKey && (!gmailUser || !appPassword)) return "unconfigured";
 
   const db = createAdminClient();
   const [videoResult, adminsResult] = await Promise.all([
@@ -66,6 +68,22 @@ export async function notifyAdminsOfVideoReport(report: ReportForEmail, reporter
     "",
     "Xem và xử lý báo cáo: https://vqa-vn-traffic-labeling.vercel.app/admin/reports",
   ];
+  const subject = `[VQA Traffic] Báo cáo mới - video #${video.seq} - ${reason}`;
+  if (resendKey) {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json",
+        "Idempotency-Key": `video-report/${report.id}` },
+      body: JSON.stringify({ from: resendFrom, to: recipients, subject, text: lines.join("\n") }),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (response.ok) {
+      console.info("Sent video report email through Resend", report.id);
+      return "sent";
+    }
+    console.error("Resend rejected video report email", report.id, response.status, await response.text());
+  }
+  if (!gmailUser || !appPassword) throw new Error("No working email provider is configured");
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: { user: gmailUser, pass: appPassword },
@@ -76,7 +94,7 @@ export async function notifyAdminsOfVideoReport(report: ReportForEmail, reporter
   const result = await transporter.sendMail({
     from: { name: "VQA Traffic", address: gmailUser },
     to: recipients,
-    subject: `[VQA Traffic] Báo cáo mới - video #${video.seq} - ${reason}`,
+    subject,
     text: lines.join("\n"),
   });
   if (result.rejected.length) throw new Error(`Gmail rejected ${result.rejected.length} admin recipient(s)`);
