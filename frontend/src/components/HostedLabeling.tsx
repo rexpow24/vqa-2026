@@ -16,6 +16,7 @@ import { EntityCard } from "@/components/slots/EntityCard";
 import { SlotCard, type SavedSlotRow } from "@/components/slots/SlotCard";
 import { AdminAnswerReview, type AdminAnswer } from "@/components/AdminAnswerReview";
 import { VideoReportButton } from "@/components/VideoReportButton";
+import { DriveLinkPreview } from "@/components/DriveLinkPreview";
 
 type Video = { id: string; seq: number; filename: string; duration_s: number };
 type Assignment = { id: string; status: string; completed_at: string | null };
@@ -252,6 +253,7 @@ export function HostedLabeling({ video, initialAssignment, initialLabel, initial
             </figcaption>
           </figure>}
         </div>
+        <DriveLinkPreview streamPath={`/api/videos/${video.id}/stream`} />
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <button type="button" onClick={() => stepVideo(-1)} className={`${BTN} px-3 py-1.5 tabular-nums`}>-{step.toFixed(2)}s</button>
           <button type="button" onClick={togglePlay} className={`${BTN} px-3 py-1.5`}>Play / Pause</button>

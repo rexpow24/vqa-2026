@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { Training } from "@/lib/trainings";
 import { BTN } from "@/components/slots/styles";
+import { DriveLinkPreview } from "@/components/DriveLinkPreview";
 
 /**
  * One training video on /huong-dan (features/welcome-gate). Played to the end by
@@ -37,6 +38,7 @@ export function TrainingVideo({ training, heading, done, record, welcome = false
       : <video src={`/api/references/${training.video}/stream`} poster={welcome ? "/welcome-poster.jpg" : undefined} controls playsInline preload="metadata"
         onEnded={() => { void complete(); }} onError={() => setMissing(true)}
         className="max-h-[60vh] w-full rounded-md border border-border-strong bg-black object-contain" />}
+    <DriveLinkPreview streamPath={`/api/references/${training.video}/stream`} />
     {state === "saving" && <span role="status" className="text-xs text-muted">Đang ghi nhận đã xem…</span>}
     {state === "error" && <span role="alert" className="flex items-center gap-2 text-xs text-red">
       Chưa ghi nhận được.

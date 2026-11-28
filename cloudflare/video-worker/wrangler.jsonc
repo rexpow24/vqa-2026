@@ -1,0 +1,7 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vqa-vn-traffic-video",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-28",
+  "workers_dev": true
+}

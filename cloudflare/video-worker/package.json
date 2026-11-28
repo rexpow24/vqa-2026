@@ -1,0 +1,13 @@
+{
+  "name": "vqa-vn-traffic-video-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy",
+    "test": "node --test src/index.test.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.169.0"
+  }
+}

@@ -38,6 +38,8 @@ async function makeUser(suffix, role) {
 try {
   const anonymous = await fetch(`${base}/api/references/K08-K09/stream`, { headers: { Range: "bytes=0-1023" } });
   check("an anonymous reference stream is refused with 401", anonymous.status === 401, anonymous.status);
+  const anonymousPreview = await fetch(`${base}/api/references/K08-K09/stream?direct_drive_preview=link`);
+  check("an anonymous direct Drive preview is refused with 401", anonymousPreview.status === 401, anonymousPreview.status);
 
   const one = await makeUser("a", "annotator");
   const two = await makeUser("b", "annotator");
@@ -47,6 +49,15 @@ try {
   check("a signed-in annotator streams the K08-K09 comparison as a byte range", clip.status === 206
     && (clip.headers.get("content-type") ?? "").startsWith("video/"), { status: clip.status, type: clip.headers.get("content-type") });
   await clip.body?.cancel().catch(() => undefined);
+  const preview = await fetch(`${base}/api/references/K08-K09/stream?direct_drive_preview=link`, {
+    headers: { Cookie: one.cookie },
+  });
+  const exposedUrl = preview.ok ? (await preview.json()).driveUrl : "";
+  check("local preview shows an authorized viewer the permanent Drive URL",
+    preview.status === 200 && exposedUrl.startsWith("https://drive.google.com/uc?")
+    && new URL(exposedUrl).searchParams.get("id") === "1cSrf4nINIUPtfVti-MFSwMUfPqKylX0x",
+    { status: preview.status, driveUrl: exposedUrl });
+  console.log(`Local direct Drive preview URL: ${exposedUrl}`);
   const unknown = await fetch(`${base}/api/references/K99/stream`, { headers: { Cookie: one.cookie } });
   check("an unlisted reference id is 404, never proxied", unknown.status === 404, unknown.status);
 
