@@ -151,6 +151,26 @@ def prepare_saved_answer(browser, state: Path) -> None:
     ctx.close()
 
 
+def whole_video_take(page: Page, started: float) -> None:
+    page.goto(BASE + "/annotate/" + FIXTURE["video"]["id"], wait_until="domcontentloaded")
+    button = page.get_by_role("button", name="Báo cáo video", exact=True)
+    button.wait_for(timeout=30000)
+    title(page, "Báo cáo vấn đề của toàn video")
+    wait_until(started, 1.2)
+    click(page, button)
+    reason = page.get_by_role("radio", name=re.compile("Video bị cắt quá mức"))
+    reason.wait_for(timeout=10000)
+    wait_until(started, 3.5)
+    click(page, reason)
+    page.get_by_role("textbox", name=re.compile("Mô tả thêm")).fill("Video quá ngắn, thiếu phần trước của tình huống.")
+    page.screenshot(path=str(OUT / "evidence-whole-video-form.png"))
+    wait_until(started, audio_duration("00-whole-video") - 5.0)
+    click(page, page.get_by_role("button", name="Gửi báo cáo"))
+    page.get_by_role("button", name="Đã báo cáo").wait_for(timeout=30000)
+    page.screenshot(path=str(OUT / "evidence-whole-video-sent.png"))
+    wait_until(started, audio_duration("00-whole-video") + 1.0)
+
+
 def reporter_take(page: Page, started: float) -> None:
     page.goto(BASE + "/annotate/" + FIXTURE["video"]["id"], wait_until="domcontentloaded")
     card = page.locator('article[data-qgroup="S"]')
@@ -233,6 +253,13 @@ if __name__ == "__main__":
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(channel="chrome", headless=True,
                                              args=["--window-size=1600,900", "--force-device-scale-factor=1"])
+        if "--whole-only" in sys.argv:
+            state = log_in(browser, "reporter")
+            takes = [record(browser, "whole", state, whole_video_take)]
+            browser.close()
+            (OUT / "whole-take.json").write_text(json.dumps(takes, ensure_ascii=False, indent=2), encoding="utf-8")
+            print("Whole-video report walkthrough recorded", flush=True)
+            sys.exit(0)
         if "--admin-only" in sys.argv:
             takes = [record(browser, "admin", OUT / "admin.storage.json", admin_take)]
             browser.close()

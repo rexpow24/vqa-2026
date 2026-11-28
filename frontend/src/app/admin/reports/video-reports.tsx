@@ -23,7 +23,8 @@ const reasonLabel: Record<Reason, string> = {
 const statusLabel: Record<Status, string> = { open: "Còn cần xử lý", resolved: "Admin đã chốt", needs_relabel: "Cần gán nhãn lại", dismissed: "Đã đóng" };
 
 function zaloSummary(report: VideoReportRow, answer: string) {
-  return [`video_id: ${report.video_id}`, `nhóm: ${report.question_group ?? "-"}`,
+  return [`STT video: #${report.video?.seq ?? "?"}`, `tên video: ${report.video?.filename ?? "không rõ"}`,
+    `video_id: ${report.video_id}`, `report_id: ${report.id}`, `nhóm: ${report.question_group ?? "-"}`,
     `ô: ${report.entity_key ? `Bên ${report.entity_key} · ` : report.target_index !== null ? `Bên ${report.target_index + 1} · ` : ""}${report.target_label ?? "-"}`,
     `đáp án sau phân xử: ${answer}`].join("\n");
 }

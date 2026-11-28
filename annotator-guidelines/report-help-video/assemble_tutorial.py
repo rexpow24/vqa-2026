@@ -12,9 +12,9 @@ import soundfile as sf
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "output"
 CHAPTERS = {
+    "whole": ["00-whole-video"],
     "reporter": ["01-report", "02-privacy"],
     "peer": ["03-queue", "04-vote"],
-    "admin": ["05-admin"],
 }
 
 
@@ -27,24 +27,6 @@ def duration(path: Path) -> float:
                              "-of", "default=noprint_wrappers=1:nokey=1", str(path)],
                             check=True, capture_output=True, text=True)
     return float(result.stdout.strip())
-
-
-def admin_slides(scene_dir: Path) -> Path:
-    """Use full-resolution screenshots because Chrome's admin WebM has gray padding."""
-    stills = [OUT / "evidence-admin-votes.png", OUT / "evidence-admin-final.png"]
-    clips = []
-    for index, still in enumerate(stills, 1):
-        clip = scene_dir / f"admin-still-{index}.mp4"
-        command("-loop", "1", "-framerate", "30", "-i", str(still), "-t", "8",
-                "-vf", "scale=1920:1080:force_original_aspect_ratio=decrease,"
-                       "pad=1920:1080:(ow-iw)/2:(oh-ih)/2:black,format=yuv420p",
-                "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "20", str(clip))
-        clips.append(clip)
-    playlist = scene_dir / "admin-stills.txt"
-    playlist.write_text("\n".join(f"file '{clip.as_posix()}'" for clip in clips) + "\n", encoding="utf-8")
-    result = scene_dir / "admin-stills.mp4"
-    command("-f", "concat", "-safe", "0", "-i", str(playlist), "-c", "copy", str(result))
-    return result
 
 
 if __name__ == "__main__":
@@ -62,7 +44,7 @@ if __name__ == "__main__":
             samples.append(audio)
         wav = scene_dir / f"{name}.wav"
         sf.write(wav, np.concatenate(samples), rate)
-        raw = admin_slides(scene_dir) if name == "admin" else OUT / "raw" / f"{name}.webm"
+        raw = OUT / "raw" / f"{name}.webm"
         target = scene_dir / f"{name}.mp4"
         seconds = duration(raw)
         command("-i", str(raw), "-i", str(wav), "-map", "0:v:0", "-map", "1:a:0",

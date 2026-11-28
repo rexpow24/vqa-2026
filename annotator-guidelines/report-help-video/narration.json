@@ -1,5 +1,13 @@
 [
   {
+    "id": "00-whole-video",
+    "title": "Báo cáo vấn đề của toàn video",
+    "sentences": [
+      "Nếu cả video bị cắt quá mức hoặc tình huống quá khó, hãy bấm Báo cáo video ở cạnh tên video.",
+      "Chọn lý do, ghi thêm mô tả nếu cần rồi bấm Gửi báo cáo. Báo cáo toàn video sẽ được gửi cho admin xem."
+    ]
+  },
+  {
     "id": "01-report",
     "title": "Báo cáo đúng ô cần hỗ trợ",
     "sentences": [
@@ -29,14 +37,6 @@
     "sentences": [
       "Chọn phương án mà bạn thấy đúng, rồi bấm Gửi lựa chọn.",
       "Mỗi người chỉ gửi một lựa chọn cho mỗi ô và trường hợp đã làm xong sẽ rời khỏi danh sách của bạn."
-    ]
-  },
-  {
-    "id": "05-admin",
-    "title": "Admin xem và chốt",
-    "sentences": [
-      "Ở trang Báo cáo và phân xử, admin xem số báo cáo còn mở, người gửi, từng lựa chọn và phương án được nhiều người chọn nhất.",
-      "Sau khi xem video và các ý kiến, admin chốt đáp án cuối cùng rồi sao chép kết quả để gửi lại annotator cập nhật."
     ]
   }
 ]
