@@ -203,7 +203,7 @@ export function AssignmentPanel({ overview, strata, slotRanges }: {
             <span className="text-xs text-muted">{names.length ? `Đã giao: ${names.join(", ")}` : "Chưa giao"}</span>
           </label>;
         })}</div>
-        <div className="flex flex-wrap gap-3">{people.map((person) => <label key={person.id} className="flex items-center gap-1.5 text-sm">
+        <div className="flex flex-wrap gap-3">{candidates.map((person) => <label key={person.id} className="flex items-center gap-1.5 text-sm">
           <input type="checkbox" checked={groupPeople.includes(person.id)} onChange={(event) => setGroupPeople(event.target.checked
             ? [...groupPeople, person.id] : groupPeople.filter((id) => id !== person.id))} />
           {person.name}{person.label ? <span className="text-xs text-muted">({person.label})</span> : null}
